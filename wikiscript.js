@@ -34,7 +34,7 @@
 
     //window.onload = moreFields('writeroot');
 
-  var restServerURL = "http://localhost:7474";
+  var restServerURL = "http://localhost:7474/db/data";
 
   $(document).ready(function(){
     $("#createObj").on("click", function(event){
