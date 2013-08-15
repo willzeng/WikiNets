@@ -8,7 +8,6 @@
   }
 
 
-
 //-----------------------------------------
 
 
@@ -51,8 +50,6 @@
       //$("#output").append(JSON.stringify(nodeObject));
       $.ajax({
   type: "POST",
-  username: "6f60436c5",
-  password: "9d6fe0c2a",
   url: restServerURL + "/node",
   data: JSON.stringify(nodeObject),
   dataType: "json",
