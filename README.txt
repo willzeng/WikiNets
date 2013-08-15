@@ -1,4 +1,4 @@
-This is the code for WikiNets.
+This is the code for WikiNets. Feel free to contribute.
 
 wikinets.herokuapp.com
 
