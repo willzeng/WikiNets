@@ -34,7 +34,7 @@
 
     //window.onload = moreFields('writeroot');
 
-  var restServerURL = "http://993f61a8c.hosted.neo4j.org:7485/";
+  var restServerURL = "http://localhost:7474";
 
   $(document).ready(function(){
     $("#createObj").on("click", function(event){
