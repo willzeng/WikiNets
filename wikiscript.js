@@ -34,18 +34,7 @@
 
     //window.onload = moreFields('writeroot');
 
-  require('coffee-script');
-
-  var url = process.env.NEO4J_URL || 'http://localhost:7474';
-  var neo4js = require('neo4js');
-
-  var graphDb = new neo4js.GraphDatabase4Node(url);
-
-  var App = require('./myapp');
-
-  app = new App(graphDb);
-  
-  var restServerURL = url;
+  var restServerURL = "http://localhost:7474";
 
   $(document).ready(function(){
     $("#createObj").on("click", function(event){
