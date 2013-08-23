@@ -34,7 +34,7 @@
 
     //window.onload = moreFields('writeroot');
 
-  var restServerURL = "http://6f60436c5:9d6fe0c2a@993f61a8c.hosted.neo4j.org:7485/db/data";
+  var restServerURL = process.env.NEO4J_URL;
 
   $(document).ready(function(){
     $("#createObj").on("click", function(event){
