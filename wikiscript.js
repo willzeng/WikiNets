@@ -34,6 +34,7 @@
 
     //window.onload = moreFields('writeroot');
 
+  require('coffee-script');
   var restServerURL = process.env.NEO4J_URL;
 
   $(document).ready(function(){
