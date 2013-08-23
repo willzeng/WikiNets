@@ -18,7 +18,7 @@ module.exports = class MyApp
     indexPromise.then((index)->
         app.get '/', (request, response)->
           index.query("name:*").then((nodes)->
-              response.render 'index.jade', nodes:nodes
+              response.render 'index.html', nodes:nodes
           )
 
         app.post '/', (request, response)->
