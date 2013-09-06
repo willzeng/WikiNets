@@ -1,0 +1,115 @@
+!!! 5
+meta(charset='utf-8')
+html
+  head
+    title WikiNets
+    link(rel='stylesheet', type='text/css', href='style.css')
+    script(type='text/javascript', src='jquery-1.10.2.js')
+    script(type='text/javascript', src='wikiscript.js')
+    script(src='http://d3js.org/d3.v3.min.js')
+
+  body
+    #header(style='background-color: white;')
+      h1(style='margin-bottom: 5px; margin-left: 10px;')
+        a(href='http://thewikinetsproject.wordpress.com/') WikiNets
+
+    #edit_menu(style='display: none;')
+      #infobar
+          ul.menu
+            li
+              a(href='#', onclick='javascript:showlayer(\'en_1\')')  Edit Node/Arrow
+            ul#en_1.submenu
+              li
+                a(href='p1.html') Edit
+                | Here is where you will go to input information to edit a node or morphism.
+        #infobar
+          ul.menu
+            li
+              a(href='#', onclick='javascript:showlayer(\'enn_1\')')  Add Node/Arrow 
+            ul#enn_1.submenu
+              li Create node:
+              #readrootObj(style='display: none;')
+                input.propertyObj(name='propertyObj', value='propertyEx')
+                input.valueObj(name='valueObj', value='valueEx')
+                input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
+                br
+              form#create-node
+                span#writerootObj
+              input#moreFields(type='button', value='+', onclick='moreFields(\'writerootObj\',\'readrootObj\',\'nodeProperty\')')
+              div(style='float: right;')
+                input#createObj(type='button', value='Create node')
+              #output
+              li  Create arrow:
+              #readrootArr(style='display: none;')
+                input.propertyArr(name='propertyArr', value='property')
+                input.valueArr(name='valueArr', value='value')
+                input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
+                br
+              form#create-rel
+                div
+                  input#from(name='from', value='from: node ID')
+                  input#to(name='to', value='to: node ID')
+                br
+                span#writerootArr
+              input#moreFields(type='button', value='+', onclick='moreFields(\'writerootArr\',\'readrootArr\',\'relProperty\')')
+              div(style='float: right;')
+                input#create(type='button', value='Create arrow')
+              #output
+        #spacer(style='width: 30px; height: 30px; float: left;')
+        a(href='#',onclick='javascript:showlayer(\'browse_menu\');javascript:showlayer(\'edit_menu\')')
+          img(src='search.png', alt='Open the Edit Network menu.')
+
+
+    #browse_menu(style='display: block;')
+      #middlebar
+          ul.menu
+            li
+              a(href='#', onclick='javascript:showlayer(\'sm_1\')')  Search
+            ul#sm_1.submenu
+              li Node ID:
+              form#get-node
+                input#node-id(type='text', size='27')
+                input#get-n(type='submit', value='Get node')
+              #SearchOutput
+      #middlebar
+        ul.menu
+          li
+            a(href='#', onclick='javascript:showlayer(\'sm_2\')')  Toggle 
+          ul#sm_2.submenu
+            li
+              a(href='p1.html') Toggle
+              | Here is where a toggle box with options will go.
+      #infobar
+        ul.menu
+          li
+            a(href='#', onclick='javascript:showlayer(\'sm_3\')')  Info: ExampleNode
+          ul#sm_3.submenu
+            li
+              a(href='p1.html') Information
+              | Here there is plenty of room to put all sorts of example information about some particular node.  There could be citations too
+              sup 1
+              | perhaps.
+            li
+              a(href='p2.hmtl') Bibliography 
+              | 1. Will et. al. "Some Example Paper", Phys. Rev. Letters. 11-2229.
+      a(href='#',onclick='javascript:showlayer(\'edit_menu\');javascript:showlayer(\'browse_menu\')')
+        img(src='plus.png', alt='Open the Edit Network menu.')
+
+    script(type='text/javascript', src='vizscript.js')
+
+    #footer(style='clear: both; text-align: center; font-size: 12px; font-weight: bold;')
+      a(href='http://thewikinetsproject.wordpress.com') About
+      | |
+      a(href='http://thewikinetsproject.wordpress.com/about/') Contact
+
+    br
+
+    h1 nodes in index:
+    ul
+      each node in nodes
+       li= JSON.stringify(node._data)
+
+    h1 add new node:
+    form(method="post",action="/")
+      input(type="text",name="name")
+      input(type="submit",value="Submit")
