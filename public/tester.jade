@@ -11,7 +11,8 @@ html
   body
     h1 The Test page
 
-    h2 All the Node data
+    h2 All the grabbed data
     ul
-      each node in nodes
-       li= JSON.stringify(node)+","
+      each data in displaydata
+       li= JSON.stringify(data)+","
+

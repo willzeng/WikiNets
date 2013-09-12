@@ -32,16 +32,26 @@ module.exports = class MyApp
           )
     )
 
-    app.get('/test', (request, response)->
+    app.get('/nodes', (request, response)->
       graphDb.cypher.execute("start n=node(*) return n;").then(
         (res2)->
           console.log "Query Executed"
           console.log res2.data[0]
-          console.log ntmp[0]["data"] for ntmp in res2.data
           nodedata=(ntmp[0]["data"] for ntmp in res2.data)
-          response.render 'tester.jade', nodes:nodedata
-        )
+          response.render 'tester.jade', displaydata:nodedata
       )
+    )
+
+    app.get('/arrows', (request, response)->
+      graphDb.cypher.execute("start n=rel(*) return n;").then(
+        (res2)->
+          console.log "Query Executed"
+          console.log res2.data[0]
+          arrdata=([ntmp[0]["start"],ntmp[0]["end"],ntmp[0]["data"]] for ntmp in res2.data)
+          response.render 'tester.jade', displaydata:arrdata
+      )
+    )
+
               
     
 
