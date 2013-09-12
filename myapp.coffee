@@ -40,7 +40,7 @@ module.exports = class MyApp
         (noderes)->
           console.log "Query Executed"
           console.log noderes.data[0]
-          nodedata=(ntmp[0]["data"] for ntmp in noderes.data)
+          nodedata=(ntmp[0]["data"] for ntmp in noderes.data).splice(1)
           graphDb.cypher.execute("start n=rel(*) return n;").then(
             (arrres)->
               console.log "Query Executed"
