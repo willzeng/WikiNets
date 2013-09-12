@@ -32,28 +32,26 @@ module.exports = class MyApp
           )
     )
 
-    app.get('/nodes', (request, response)->
+    trim = (string)->
+      parseInt(string.match(/[0-9]*$/))
+
+    app.get('/json', (request, response)->
       graphDb.cypher.execute("start n=node(*) return n;").then(
-        (res2)->
+        (noderes)->
           console.log "Query Executed"
-          console.log res2.data[0]
-          nodedata=(ntmp[0]["data"] for ntmp in res2.data)
-          response.render 'tester.jade', displaydata:nodedata
+          console.log noderes.data[0]
+          nodedata=(ntmp[0]["data"] for ntmp in noderes.data)
+          graphDb.cypher.execute("start n=rel(*) return n;").then(
+            (arrres)->
+              console.log "Query Executed"
+              console.log arrres.data[0]
+              arrdata=({source:trim(ntmp[0]["start"]),target:trim(ntmp[0]["end"])} for ntmp in arrres.data)
+              response.render 'tester.jade', displaydata:[nodes:nodedata,links:arrdata][0]
+          )
       )
     )
 
-    app.get('/arrows', (request, response)->
-      graphDb.cypher.execute("start n=rel(*) return n;").then(
-        (res2)->
-          console.log "Query Executed"
-          console.log res2.data[0]
-          arrdata=([ntmp[0]["start"],ntmp[0]["end"],ntmp[0]["data"]] for ntmp in res2.data)
-          response.render 'tester.jade', displaydata:arrdata
-      )
-    )
 
-              
-    
 
     port = process.env.PORT || 3000
     app.listen port, -> console.log("Listening on " + port)
