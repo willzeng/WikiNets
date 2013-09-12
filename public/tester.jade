@@ -1,0 +1,17 @@
+!!! 5
+meta(charset='utf-8')
+html
+  head
+    title WikiNets
+    link(rel='stylesheet', type='text/css', href='style.css')
+    script(type='text/javascript', src='jquery-1.10.2.js')
+    script(type='text/javascript', src='wikiscript.js')
+    script(src='http://d3js.org/d3.v3.min.js')
+
+  body
+    h1 The Test page
+
+    h2 All the Node data
+    ul
+      each node in nodes
+       li= JSON.stringify(node)+","
