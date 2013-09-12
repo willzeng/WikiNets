@@ -41,18 +41,23 @@ module.exports = class MyApp
                 if (err) throw err;
                 console.log('.json SAVED!');
               });`
-              response.render 'index.jade', displaydata:displaydata
-          )
+              response.render 'index.jade', nodes:displaydata
+                        )
       )
     )
-
+    
     indexPromise = graphDb.index.createNodeIndex "myIndex"
     indexPromise.then((index)->
+      app.get '/', (request, response)->
+            )
+        )
+
       app.post '/', (request, response)->
         name = request.body.name
         node = graphDb.node {name:name}
 
         index.index(node, "name", name).then(()->
+            updateViz
             response.redirect "/"
         )
     )

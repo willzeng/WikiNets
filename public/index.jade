@@ -104,17 +104,19 @@ html
 
     br
 
-    h1 nodes in index:
-    ul
-      each node in nodes
-       li= JSON.stringify(node._data)
-
-    h1 edited output of nodes
-    ul
-      each node in nodes
-       li= JSON.stringify(node._data)+","
-
     h1 add new node:
     form(method="post",action="/")
       input(type="text",name="name")
       input(type="submit",value="Submit")
+
+    h1 nodes in database:
+    ul
+      each node in displaydata["nodes"]
+       li= JSON.stringify(node)
+
+    h1 arrows in database:
+    ul
+      each node in displaydata["links"]
+       li= JSON.stringify(node)
+
+
