@@ -38,7 +38,6 @@ var graph = "";
   var restServerURL = "http://6f60436c5:9d6fe0c2a@993f61a8c.hosted.neo4j.org:7485";
 
   $(document).ready(function(){
-    console.log("TESTESTETTESTESTSETEST\n\n\n");
     $("#createObj").on("click", function(event){
       var nodeObject = {};
       $('.nodeProperty').each(function(i, obj) {

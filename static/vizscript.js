@@ -1,6 +1,7 @@
 var width = 960,
     height = 500;
 
+/*Make AJAX query to get JSON data for visualization*/
 var graph= "";
 $.getJSON('/json', function(data){
     graph = data;

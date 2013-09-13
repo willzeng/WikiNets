@@ -95,12 +95,6 @@ html
       a(href='#',onclick='javascript:showlayer(\'edit_menu\');javascript:showlayer(\'browse_menu\')')
         img(src='plus.png', alt='Open the Edit Network menu.')
 
-    script
-      var graph=JSON.stringify(displaydata)
-
-    #jsongraph(style='display: block;')
-      != JSON.stringify(displaydata)
-
     script(type='text/javascript', src='vizscript.js')
 
     #footer(style='clear: both; text-align: center; font-size: 12px; font-weight: bold;')
