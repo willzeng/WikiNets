@@ -1,8 +1,19 @@
 var width = 960,
     height = 500;
 
+var graph= "";
+$.getJSON('/json', function(data){
+    graph = data;
+    console.log(graph);
+    var obj = {};
+graph.nodes.forEach( function(d) { 
 
-var graph={
+  if(! (d.group in obj) ){
+     obj[d.group] = [];
+  }
+  obj[d.group].push(d);
+});
+/*var graph={
   "nodes":[
     {"name":"Myriel","group":1},
     {"name":"Napoleon","group":1},
@@ -338,16 +349,9 @@ var graph={
     {"source":76,"target":48,"value":1},
     {"source":76,"target":58,"value":1}
   ]
-};
+};*/
 
-var obj = {};
-graph.nodes.forEach( function(d) { 
 
-  if(! (d.group in obj) ){
-     obj[d.group] = [];
-  }
-  obj[d.group].push(d);
-});
 
 
 function neighboring(a, b) {
@@ -577,3 +581,4 @@ var b=d3.select("#options")
     button_map[b]=d;
 //}
 */
+});
