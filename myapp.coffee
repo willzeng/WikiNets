@@ -112,6 +112,7 @@ module.exports = class MyApp
       getvizjson inputer, request, response
     )
 
+    ### Original index thingy:
     indexPromise = graphDb.index.createNodeIndex "myIndex"
     indexPromise.then((index)->
       app.post '/', (request, response)->
@@ -120,6 +121,20 @@ module.exports = class MyApp
 
         index.index(node, "name", name).then(()->
             response.redirect "/"
+        )
+    )
+    ###
+
+
+    indexPromise = graphDb.index.createNodeIndex "myIndex"
+    indexPromise.then((index)->
+      app.post '/create_node', (request, response)->
+        node = graphDb.node request.body
+        console.log "Node Created"
+
+        index.index(node, "name", request.body.name).then(()->
+          console.log "Index updated with node " + request.body.name + "\n\nRedirecting..."
+          response.redirect "/"
         )
     )
 

@@ -72,9 +72,14 @@ $(document).ready(function(){
       // currently, if the same property is assigned twice, the value is just overwritten
       // also might want to look out for security issues -- but I don't know what to look out for
       nodeObject[property] = value;
+      $(this)[0].parentNode.removeChild($(this)[0]);
     });
-    //$("#output").append(JSON.stringify(nodeObject));
-    $.post('/create_node', nodeObject);
+    $.post('/create_node', nodeObject, function(data) {
+      // this forces a reload of the entire page to update the data
+      // should be replaced by Erfan's stuff for updating only bits
+      // once he's got that working
+      window.location.reload();
+    });
   });
 
 
