@@ -19,7 +19,11 @@ module.exports = class MyApp
     trim = (string)->
       string.match(/[0-9]*$/)
 
-    app.get('/', (request,response)->
+    ### makes queries of database to build a JSON formatted for D3JS viz of the entire Neo4j database
+      that is stored in the displaydata variable.  Method then runs argument onSuccess(displaydata)
+    ###
+    getvizjson = (onSuccess, request, response)->
+      console.log "making getvizjson"
       graphDb.cypher.execute("start n=node(*) return n;").then(
         (noderes)->
           console.log "Query Executed"
@@ -92,34 +96,20 @@ module.exports = class MyApp
 
               ### Render the index.jade and pass it the displaydata, which is a
               JSON formatted for D3JS viz of the entire Neo4j database ###
-              response.render 'index.jade', displaydata:displaydata
+              onSuccess(displaydata)
           )
       )
+
+    app.get('/', (request,response)->
+      inputer = (builder)->response.render('index.jade', displaydata:builder)
+      getvizjson inputer, request, response
     )
 
 
     ###  Respondes with a JSON formatted for D3JS viz of the entire Neo4j database ###
     app.get('/json',(request,response)->
-      console.log("JSON REQUEST MADE")
-      graphDb.cypher.execute("start n=node(*) return n;").then(
-        (noderes)->
-          console.log "Query Executed"
-          console.log noderes.data[0]
-          nodeids=(trim(num[0]["self"]) for num in noderes.data).splice(1)
-          `var nodeconvert = {};
-          for (i = 0; i < nodeids.length-1; i++) {
-            nodeconvert[nodeids[i]+'']=i;            
-          }`
-          nodedata=(ntmp[0]["data"] for ntmp in noderes.data).splice(1)
-          graphDb.cypher.execute("start n=rel(*) return n;").then(
-            (arrres)->
-              console.log "Query Executed"
-              console.log arrres.data[0]
-              arrdata=({source:nodeconvert[trim(ntmp[0]["start"])],target:nodeconvert[trim(ntmp[0]["end"])]} for ntmp in arrres.data)
-              displaydata = [nodes:nodedata,links:arrdata][0]
-              response.json displaydata
-          )
-      )
+      inputer = (builder)->response.json builder
+      getvizjson inputer, request, response
     )
 
     indexPromise = graphDb.index.createNodeIndex "myIndex"
