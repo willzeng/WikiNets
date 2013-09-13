@@ -17,7 +17,7 @@ html
       #infobar
           ul.menu
             li
-              a(href='#', onclick='javascript:showlayer(\'en_1\')')  Edit Node/Arrow
+              a#toggle_en_1(href='#')  Edit Node/Arrow
             ul#en_1.submenu
               li
                 a(href='p1.html') Edit
@@ -25,7 +25,7 @@ html
         #infobar
           ul.menu
             li
-              a(href='#', onclick='javascript:showlayer(\'enn_1\')')  Add Node/Arrow 
+              a#toggle_enn_1(href="#")  Add Node/Arrow 
             ul#enn_1.submenu
               li Create node:
               #readrootObj(style='display: none;')
@@ -35,7 +35,7 @@ html
                 br
               form#create-node
                 span#writerootObj
-              input#moreFields(type='button', value='+', onclick='moreFields(\'writerootObj\',\'readrootObj\',\'nodeProperty\')')
+              input#moreFields(type='button', value='+', onclick='moreFields("writerootObj","readrootObj","nodeProperty")')
               div(style='float: right;')
                 input#createObj(type='button', value='Create node')
               #output
@@ -51,20 +51,19 @@ html
                   input#to(name='to', value='to: node ID')
                 br
                 span#writerootArr
-              input#moreFields(type='button', value='+', onclick='moreFields(\'writerootArr\',\'readrootArr\',\'relProperty\')')
+              input#moreFields(type='button', value='+', onclick='moreFields("writerootArr","readrootArr","relProperty")')
               div(style='float: right;')
                 input#create(type='button', value='Create arrow')
               #output
         #spacer(style='width: 30px; height: 30px; float: left;')
-        a(href='#',onclick='javascript:showlayer(\'browse_menu\');javascript:showlayer(\'edit_menu\')')
-          img(src='search.png', alt='Open the Edit Network menu.')
+        img.choose_menu(src='search.png', alt='Open the Explore Network menu.')
 
 
     #browse_menu(style='display: block;')
       #middlebar
           ul.menu
             li
-              a(href='#', onclick='javascript:showlayer(\'sm_1\')')  Search
+              a#toggle_sm_1(href="#")  Search
             ul#sm_1.submenu
               li Node ID:
               form#get-node
@@ -74,7 +73,7 @@ html
       #middlebar
         ul.menu
           li
-            a(href='#', onclick='javascript:showlayer(\'sm_2\')')  Toggle 
+            a#toggle_sm_2(href="#") Toggle 
           ul#sm_2.submenu
             li
               a(href='p1.html') Toggle
@@ -82,7 +81,7 @@ html
       #infobar
         ul.menu
           li
-            a(href='#', onclick='javascript:showlayer(\'sm_3\')')  Info: ExampleNode
+            a#toggle_sm_3(href="#")  Info: ExampleNode
           ul#sm_3.submenu
             li
               a(href='p1.html') Information
@@ -92,8 +91,7 @@ html
             li
               a(href='p2.hmtl') Bibliography 
               | 1. Will et. al. "Some Example Paper", Phys. Rev. Letters. 11-2229.
-      a(href='#',onclick='javascript:showlayer(\'edit_menu\');javascript:showlayer(\'browse_menu\')')
-        img(src='plus.png', alt='Open the Edit Network menu.')
+      img.choose_menu(src='plus.png', alt='Open the Edit Network menu.')
 
     script(type='text/javascript', src='vizscript.js')
 

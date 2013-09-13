@@ -38,6 +38,32 @@ var graph = "";
   var restServerURL = "http://6f60436c5:9d6fe0c2a@993f61a8c.hosted.neo4j.org:7485";
 
   $(document).ready(function(){
+    $("img.choose_menu").click(function() {
+      showlayer('browse_menu');
+      showlayer('edit_menu');
+    });
+    $("#toggle_en_1").click(function(a) {
+      a.preventDefault();
+      showlayer('en_1');
+    });
+    $("#toggle_enn_1").click(function(a) {
+      a.preventDefault();
+      showlayer('enn_1');
+    });
+    $("#toggle_sm_1").click(function(a) {
+      a.preventDefault();
+      showlayer('sm_1');
+    });
+    $("#toggle_sm_2").click(function(a) {
+      a.preventDefault();
+      showlayer('sm_2');
+    });
+    $("#toggle_sm_3").click(function(a) {
+      a.preventDefault();
+      showlayer('sm_3');
+    });
+
+
     $("#createObj").on("click", function(event){
       var nodeObject = {};
       $('.nodeProperty').each(function(i, obj) {
