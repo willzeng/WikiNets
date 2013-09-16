@@ -121,6 +121,7 @@ module.exports = class MyApp
 
         index.index(node, "name", request.body.name).then(()->
           console.log "Index updated with node " + request.body.name + "\n\n"
+          response.redirect "/"
         )
     )
 
