@@ -48,11 +48,10 @@ html
                 div
                   input#from(name='from', value='from: node ID')
                   input#to(name='to', value='to: node ID')
-                br
                 span#writerootArr
               input#moreFields(type='button', value='+', onclick='moreFields("writerootArr","readrootArr","relProperty")')
               div(style='float: right;')
-                input#create(type='button', value='Create arrow')
+                input#createArr(type='button', value='Create arrow')
         #spacer(style='width: 30px; height: 30px; float: left;')
         img.choose_menu(src='search.png', alt='Open the Explore Network menu.')
 
@@ -64,9 +63,9 @@ html
               a#toggle_sm_1(href="#")  Search
             ul#sm_1.submenu
               li Node ID:
-              form#get-node
+              form
                 input#node-id(type='text', size='27')
-                input#get-n(type='submit', value='Get node')
+                input#get-node(type='button', value='Get node')
               #SearchOutput
       #middlebar
         ul.menu

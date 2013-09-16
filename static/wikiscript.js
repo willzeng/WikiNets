@@ -81,28 +81,5 @@ $(document).ready(function(){
       window.location.reload();
     });
   });
-
-
-  $("form#get-node").submit(function(){
-    // should do some input checking here to make sure input is a number
-    $.ajax({
-      type: "GET",
-      url: restServerURL + "/node/" + $("#node-id").val(),
-      contentType: "application/json",
-      success: function( data, xhr, textStatus ) {
-        window.console && console.log( data + xhr + textStatus );
-      },
-      error: function( xhr ) {
-        alert("Error!");
-        window.console && console.log( xhr );
-      },
-      complete: function( data ) {
-        var mydata = $.parseJSON(data.responseText).data;
-        //alert( "Properties of node: " + JSON.stringify(mydata));
-        $("#SearchOutput").append(JSON.stringify(mydata, undefined, "<br />"));
-      }
-    });
-    return false;
-  });
  
 });
