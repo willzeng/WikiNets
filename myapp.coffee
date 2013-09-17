@@ -111,6 +111,25 @@ module.exports = class MyApp
       inputer = (builder)->response.json builder
       getvizjson inputer, request, response
     )
+
+
+    ###  Post function to test lookup by Node id that will return the value of the property 
+      "Info", which will eventuall go in the Infobox.  
+      Search for NodeID 312 to see an example.
+    ###
+    app.post('/search', (request,response)->
+      console.log "search query called"
+      searchid = request.body.nodeid
+      console.log "executing"+"start n=node("+searchid+") return n;"
+      graphDb.cypher.execute("start n=node("+searchid+") return n;").then(
+        (noderes)->
+          console.log "Node ID Lookup Executed"
+          console.log noderes.data[0][0]["data"]
+          nodedata=noderes.data[0][0]["data"]
+          console.log  nodedata["Info"]
+          response.json nodedata["Info"]
+      )
+    )
   
 
     indexPromise = graphDb.index.createNodeIndex "myIndex"

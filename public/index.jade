@@ -99,6 +99,11 @@ html
 
     br
 
+    h1 search for node by id:
+    form(method="post",action="/search")
+      input(type="text",name="nodeid")
+      input(type="submit",value="Submit")
+
     h1 add new node:
     form(method="post",action="/")
       input(type="text",name="name")
