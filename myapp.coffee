@@ -120,9 +120,9 @@ module.exports = class MyApp
       after a lookup.
     ###
     app.post('/search', (request,response)->
-      console.log "search query called"
+      console.log "Search Query Requested"
       searchid = request.body.nodeid
-      console.log "executing"+"start n=node("+searchid+") return n;"
+      console.log "Executing"+"start n=node("+searchid+") return n;"
       graphDb.cypher.execute("start n=node("+searchid+") return n;").then(
         (noderes)->
           console.log "Node ID Lookup Executed"
