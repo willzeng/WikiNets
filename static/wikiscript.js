@@ -81,5 +81,16 @@ $(document).ready(function(){
       window.location.reload();
     });
   });
+
+  $("#searchID").on("click", function(event){
+    var lookupID = $('#nodeID').val();
+    console.log(lookupID)
+    $.post('/search_id', lookupID, function(data) {
+      // this forces a reload of the entire page to return the data
+      // should be replaced by Erfan's stuff for updating only bits
+      // once he's got that working
+      window.location.reload();
+    });
+  });
  
 });

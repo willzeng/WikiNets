@@ -63,9 +63,9 @@ html
               a#toggle_sm_1(href="#")  Search
             ul#sm_1.submenu
               li Node ID:
-              form
-                input#node-id(type='text', size='27')
-                input#get-node(type='button', value='Get node')
+              form(method="post",action="/search_id")
+                input(type="text",name="nodeid", size=27)
+                input(type="submit",value="Get Node")
               #SearchOutput
       #middlebar
         ul.menu
@@ -99,10 +99,12 @@ html
 
     br
 
-    h1 search for node by id:
-    form(method="post",action="/search")
-      input(type="text",name="nodeid")
-      input(type="submit",value="Submit")
+    //This is now implemented in the main menu, but 
+    //is commented here just in case.
+    //h1 search for node by id:
+    //form(method="post",action="/search_id")
+    //  input(type="text",name="nodeid")
+    //  input(type="submit",value="Submit")
 
     //This is now inactive, but commented just in case.
     //h1 add new node:

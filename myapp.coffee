@@ -119,7 +119,7 @@ module.exports = class MyApp
       Will later want to use Erfan's code to load part of the page to update just the infobox 
       after a lookup.
     ###
-    app.post('/search', (request,response)->
+    app.post('/search_id', (request,response)->
       console.log "Search Query Requested"
       searchid = request.body.nodeid
       console.log "Executing"+"start n=node("+searchid+") return n;"
