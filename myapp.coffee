@@ -126,10 +126,8 @@ module.exports = class MyApp
       graphDb.cypher.execute("start n=node("+searchid+") return n;").then(
         (noderes)->
           console.log "Node ID Lookup Executed"
-          console.log noderes.data[0][0]["data"]
-          nodedata=noderes.data[0][0]["data"]
-          console.log  nodedata["Info"]
-          response.json nodedata["Info"]
+          selectedINFO=noderes.data[0][0]["data"]
+          response.json selectedINFO["Info"]
       )
     )
   
