@@ -14,6 +14,242 @@ graph.nodes.forEach( function(d) {
   }
   obj[d.group].push(d);
 });
+
+function neighboring(a, b) {
+    var links=graph.links;
+  return links.some(function(d) {
+    return (d.source === a && d.target === b)
+        || (d.source === b && d.target === a);
+  });
+}
+
+function setup_subgraph(d, i, th){
+svg.selectAll(".node").attr("r", function(d_1) {
+    if(d_1 === d){
+        return 20;
+    }
+    return 10;
+}).style("stroke", function(d_1) { 
+    if(d_1 === d){
+        return "red";
+    }
+    return "none";
+}).style("fill", function(d_1) { 
+     if(d_1 === d){
+        return "lightcoral";
+     }
+    return color(d_1.group); });
+
+
+              d3.select(th).attr('r', 25)
+                .style("fill","lightcoral")
+                .style("stroke","red");
+
+              d3.select("#subNet svg").remove();
+
+                var central_width=40;
+                var frame = d3.select("#subNet").append("svg:svg").attr("width", width).attr("height", height);
+                var nodelist=graph.nodes
+                var neighbors = nodelist.filter(function(d_2){ return neighboring(d_2, d); });
+               
+                frame.selectAll("line").data(neighbors).enter().append("line").attr("x1", width/2+central_width/2)
+                                                                              .attr("y1", height/2+central_width/2)
+                                                                              .attr("x2", function(d_2, i_2){
+                                                                                  return 150*Math.cos(2*i_2*Math.PI/neighbors.length)+width/2+central_width/2;
+                                                                              })
+                                                                              .attr("y2", function(d_2, i_2){
+                                                                                  return 150*Math.sin(2*i_2*Math.PI/neighbors.length)+height/2+central_width/2;
+                                     
+                                                                              })
+                                                                              .style("stroke", "lightgrey")
+                                                                              .style("stroke-width", 2);
+
+
+                frame.selectAll("rect").data([th]).enter().append("rect").attr("x", width/2).attr("y", height/2).attr("width", central_width).attr("height", central_width).attr("fill", "lightblue");
+                
+               
+
+                frame.selectAll(".node").data(neighbors).enter().append("circle").attr("class", "node")
+                                         .attr("r", function(d_2, i_2){ if(neighboring(d, d_2)) return 30; return 0;})
+                                         .attr("fill", "pink")
+                                         .attr("cx", function(d_2, i_2){
+                                            return 150*Math.cos(2*i_2*Math.PI/neighbors.length)+width/2+central_width/2;
+                                         })
+                                         .attr("cy", function(d_2, i_2){
+                                            return 150*Math.sin(2*i_2*Math.PI/neighbors.length)+height/2+central_width/2;
+                                         })
+                                          .on("click", function(d_2, i_2) { 
+ 
+                                                setup_subgraph(d_2, i_2, this);
+
+                                          });
+
+                
+                //window.alert(Math.random());
+                //frame.selectAll("circle").data([this]).enter().append("circle").attr("class", "node").attr("cx", width/2).attr("cy", height/2).attr("fill", "lightblue").attr("r", 25);
+
+                frame.selectAll("text").data(neighbors).enter().append("text")
+                                       .attr("fill", "black")
+                                       .attr("font-size", 10)
+                                       .attr("x", function(d_2, i_2){return 150*Math.cos(2*i_2*Math.PI/neighbors.length)+width/2+5;
+                                        })
+                                       .attr("y", function(d_2, i_2){return 150*Math.sin(2*i_2*Math.PI/neighbors.length)+height/2+central_width/2+5;
+                                      })
+                                       .text(function(d_2){ return d_2.name; })
+                                       .on("click", function(d_2, i_2) { 
+ 
+                                               
+                                                setup_subgraph(d_2, i_2, this);
+
+                                          });
+
+                frame.selectAll("text.label").data([th]).enter().append("text")
+                                       .attr("fill", "black")
+                                       .attr("font-size", 10)
+                                       .attr("x", function(d_2, i_2){return width/2+5;
+                                        })
+                                       .attr("y", function(d_2, i_2){return height/2-1+central_width/2;
+                                        })
+                                       .text(function(d_2){ return d.name; });
+                 //    .text(function(d){return d.name;});
+
+}
+
+
+
+
+//var button=d3.select("body").selectAll("button").data(obj).enter().append("button").attr("type", "button").text("button");
+
+var color = d3.scale.category20();
+
+var force = d3.layout.force()
+    .charge(-120)
+    .linkDistance(30)
+    .size([width, height]);
+
+var div0 = d3.select("body").append("div")
+             .attr("name", "options")
+             .attr("id", "options");
+
+var div1 = d3.select("body").append("div")
+             .attr("name", "mainNet")
+             .attr("id", "mainNet");
+
+var div2 = d3.select("body").append("div")
+             .attr("name", "subNet")
+             .attr("id", "subNet");
+
+var svg = d3.select("#mainNet").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+
+  force
+      .nodes(graph.nodes)
+      .links(graph.links)
+      .start();
+
+  var link = svg.selectAll(".link")
+      .data(graph.links)
+    .enter().append("line")
+      .attr("class", "link")
+      .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+  
+  var node = svg.selectAll(".node")
+      .data(graph.nodes)
+    .enter().append("circle")
+      .attr("class", "node")
+      .attr("r", 10)
+      .on("click", function(d, i) { 
+                  
+                  //Use data from existing JSON to put into InfoBar div
+                  var theinfo = "This node is called: "+ d.name + "\n\n Info: " + d.Info;
+                  $('#infobox').html(theinfo);
+
+
+                  setup_subgraph(d, i, this);
+
+                })
+      .style("fill", function(d) { return color(d.group); })
+      .call(force.drag);
+
+
+
+ var texts = svg.selectAll("text.label")
+                .data(graph.nodes)
+                .enter().append("text")
+                .attr("class", "label")
+                .attr("fill", "black")
+                .attr("font-size", 10)
+                .text(function(d) {  return d.name;  });
+
+  node.append("title")
+      .text(function(d) { return d.name; });
+
+  force.on("tick", function() {
+    link.attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
+    node.attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
+    
+    texts.attr("transform", function(d) {
+        return "translate(" + d.x + "," + d.y + ")";
+    });
+  });
+
+
+
+
+
+//for(var d in obj){
+var b=d3.select("#options")
+        .data(Object.keys(obj)).enter()
+        .append("button")
+        .attr("type", "button")
+        .text(function(d){return "see "+d;})
+    
+    .on("click", function(d) { 
+        svg.selectAll(".node").attr("r", function(d_1) {
+            if(d_1.group.toString() === d){
+               return 10;
+             }
+             return 5;
+         }).style("stroke", function(d_1) { 
+             if(d_1.group.toString() === d){
+               return "none";
+             } 
+             return "none";
+         }).style("fill", function(d_1) { 
+             if(d_1.group.toString() === d){
+                return color(d_1.group);
+             }
+             return "lightgrey"; });
+        
+
+    });
+     //          svg.selectAll(".node").attr("r", function(d_1) {
+    //if(d_1.group.toString() === button_map[this].toString()){
+      //  return 10;
+    //}
+    /*
+    return 5;
+}).style("stroke", function(d_1) { 
+    return "none";
+}).style("fill", function(d_1) { 
+     if(d_1.group.toString() == button_map[this].toString()){
+        return "red";
+     }
+    return "grey"; });
+        });
+    button_map[b]=d;
+//}
+*/
+});
+
+
 /*var graph={
   "nodes":[
     {"name":"Myriel","group":1},
@@ -351,240 +587,3 @@ graph.nodes.forEach( function(d) {
     {"source":76,"target":58,"value":1}
   ]
 };*/
-
-
-
-
-function neighboring(a, b) {
-    var links=graph.links;
-  return links.some(function(d) {
-    return (d.source === a && d.target === b)
-        || (d.source === b && d.target === a);
-  });
-}
-
-function setup_subgraph(d, i, th){
-svg.selectAll(".node").attr("r", function(d_1) {
-    if(d_1 === d){
-        return 20;
-    }
-    return 10;
-}).style("stroke", function(d_1) { 
-    if(d_1 === d){
-        return "red";
-    }
-    return "none";
-}).style("fill", function(d_1) { 
-     if(d_1 === d){
-        return "lightcoral";
-     }
-    return color(d_1.group); });
-
-
-              d3.select(th).attr('r', 25)
-                .style("fill","lightcoral")
-                .style("stroke","red");
-
-              d3.select("#subNet svg").remove();
-
-                var central_width=40;
-                var frame = d3.select("#subNet").append("svg:svg").attr("width", width).attr("height", height);
-                var nodelist=graph.nodes
-                var neighbors = nodelist.filter(function(d_2){ return neighboring(d_2, d); });
-               
-                frame.selectAll("line").data(neighbors).enter().append("line").attr("x1", width/2+central_width/2)
-                                                                              .attr("y1", height/2+central_width/2)
-                                                                              .attr("x2", function(d_2, i_2){
-                                                                                  return 150*Math.cos(2*i_2*Math.PI/neighbors.length)+width/2+central_width/2;
-                                                                              })
-                                                                              .attr("y2", function(d_2, i_2){
-                                                                                  return 150*Math.sin(2*i_2*Math.PI/neighbors.length)+height/2+central_width/2;
-                                     
-                                                                              })
-                                                                              .style("stroke", "lightgrey")
-                                                                              .style("stroke-width", 2);
-
-
-                frame.selectAll("rect").data([th]).enter().append("rect").attr("x", width/2).attr("y", height/2).attr("width", central_width).attr("height", central_width).attr("fill", "lightblue");
-                
-               
-
-                frame.selectAll(".node").data(neighbors).enter().append("circle").attr("class", "node")
-                                         .attr("r", function(d_2, i_2){ if(neighboring(d, d_2)) return 30; return 0;})
-                                         .attr("fill", "pink")
-                                         .attr("cx", function(d_2, i_2){
-                                            return 150*Math.cos(2*i_2*Math.PI/neighbors.length)+width/2+central_width/2;
-                                         })
-                                         .attr("cy", function(d_2, i_2){
-                                            return 150*Math.sin(2*i_2*Math.PI/neighbors.length)+height/2+central_width/2;
-                                         })
-                                          .on("click", function(d_2, i_2) { 
- 
-                                                setup_subgraph(d_2, i_2, this);
-
-                                          });
-
-                
-                //window.alert(Math.random());
-                //frame.selectAll("circle").data([this]).enter().append("circle").attr("class", "node").attr("cx", width/2).attr("cy", height/2).attr("fill", "lightblue").attr("r", 25);
-
-                frame.selectAll("text").data(neighbors).enter().append("text")
-                                       .attr("fill", "black")
-                                       .attr("font-size", 10)
-                                       .attr("x", function(d_2, i_2){return 150*Math.cos(2*i_2*Math.PI/neighbors.length)+width/2+5;
-                                        })
-                                       .attr("y", function(d_2, i_2){return 150*Math.sin(2*i_2*Math.PI/neighbors.length)+height/2+central_width/2+5;
-                                      })
-                                       .text(function(d_2){ return d_2.name; })
-                                       .on("click", function(d_2, i_2) { 
- 
-                                               
-                                                setup_subgraph(d_2, i_2, this);
-
-                                          });
-
-                frame.selectAll("text.label").data([th]).enter().append("text")
-                                       .attr("fill", "black")
-                                       .attr("font-size", 10)
-                                       .attr("x", function(d_2, i_2){return width/2+5;
-                                        })
-                                       .attr("y", function(d_2, i_2){return height/2-1+central_width/2;
-                                        })
-                                       .text(function(d_2){ return d.name; });
-                 //    .text(function(d){return d.name;});
-
-}
-
-
-
-
-//var button=d3.select("body").selectAll("button").data(obj).enter().append("button").attr("type", "button").text("button");
-
-var color = d3.scale.category20();
-
-var force = d3.layout.force()
-    .charge(-120)
-    .linkDistance(30)
-    .size([width, height]);
-
-var div0 = d3.select("body").append("div")
-             .attr("name", "options")
-             .attr("id", "options");
-
-var div1 = d3.select("body").append("div")
-             .attr("name", "mainNet")
-             .attr("id", "mainNet");
-
-var div2 = d3.select("body").append("div")
-             .attr("name", "subNet")
-             .attr("id", "subNet");
-
-var svg = d3.select("#mainNet").append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-
-  force
-      .nodes(graph.nodes)
-      .links(graph.links)
-      .start();
-
-  var link = svg.selectAll(".link")
-      .data(graph.links)
-    .enter().append("line")
-      .attr("class", "link")
-      .style("stroke-width", function(d) { return Math.sqrt(d.value); });
-  
-  var node = svg.selectAll(".node")
-      .data(graph.nodes)
-    .enter().append("circle")
-      .attr("class", "node")
-      .attr("r", 10)
-      .on("click", function(d, i) { 
-                  
-                  //Use data from existing JSON to put into InfoBar div
-                  var theinfo = "This node is called: "+ d.name + "\n\n Info: " + d.Info;
-                  $('#infobox').html(theinfo);
-
-
-                  setup_subgraph(d, i, this);
-
-                })
-      .style("fill", function(d) { return color(d.group); })
-      .call(force.drag);
-
-
-
- var texts = svg.selectAll("text.label")
-                .data(graph.nodes)
-                .enter().append("text")
-                .attr("class", "label")
-                .attr("fill", "black")
-                .attr("font-size", 10)
-                .text(function(d) {  return d.name;  });
-
-  node.append("title")
-      .text(function(d) { return d.name; });
-
-  force.on("tick", function() {
-    link.attr("x1", function(d) { return d.source.x; })
-        .attr("y1", function(d) { return d.source.y; })
-        .attr("x2", function(d) { return d.target.x; })
-        .attr("y2", function(d) { return d.target.y; });
-
-    node.attr("cx", function(d) { return d.x; })
-        .attr("cy", function(d) { return d.y; });
-    
-    texts.attr("transform", function(d) {
-        return "translate(" + d.x + "," + d.y + ")";
-    });
-  });
-
-
-
-
-
-//for(var d in obj){
-var b=d3.select("#options")
-        .data(Object.keys(obj)).enter()
-        .append("button")
-        .attr("type", "button")
-        .text(function(d){return "see "+d;})
-    
-    .on("click", function(d) { 
-        svg.selectAll(".node").attr("r", function(d_1) {
-            if(d_1.group.toString() === d){
-               return 10;
-             }
-             return 5;
-         }).style("stroke", function(d_1) { 
-             if(d_1.group.toString() === d){
-               return "none";
-             } 
-             return "none";
-         }).style("fill", function(d_1) { 
-             if(d_1.group.toString() === d){
-                return color(d_1.group);
-             }
-             return "lightgrey"; });
-        
-
-    });
-     //          svg.selectAll(".node").attr("r", function(d_1) {
-    //if(d_1.group.toString() === button_map[this].toString()){
-      //  return 10;
-    //}
-    /*
-    return 5;
-}).style("stroke", function(d_1) { 
-    return "none";
-}).style("fill", function(d_1) { 
-     if(d_1.group.toString() == button_map[this].toString()){
-        return "red";
-     }
-    return "grey"; });
-        });
-    button_map[b]=d;
-//}
-*/
-});
