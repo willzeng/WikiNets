@@ -130,7 +130,7 @@ module.exports = class MyApp
           response.json selectedINFO["Info"]
       )
     )
-  
+
 
     indexPromise = graphDb.index.createNodeIndex "myIndex"
     indexPromise.then((index)->
@@ -140,7 +140,7 @@ module.exports = class MyApp
 
         index.index(node, "name", request.body.name).then(()->
           console.log "Index updated with node " + request.body.name + "\n\n"
-          response.redirect "/"
+          response.redirect "/" 
         )
     )
 
