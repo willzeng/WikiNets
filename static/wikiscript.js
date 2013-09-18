@@ -69,7 +69,6 @@ $(document).ready(function(){
     $('.nodeProperty').each(function(i, obj) {
       var property = $(this).children(".propertyObj").val();
       var value = $(this).children(".valueObj").val();
-      console.log()
       if (/^.*[^a-zA-Z0-9_-].*$/.test(property)) {
         alert("Property name '" + property + "' illegal:\nproperty names must only contain alphanumeric characters,\nunderscore and dash.");
         submitOK = false;
