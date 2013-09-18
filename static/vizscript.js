@@ -420,7 +420,6 @@ svg.selectAll(".node").attr("r", function(d_1) {
                                          })
                                           .on("click", function(d_2, i_2) { 
  
-                                               
                                                 setup_subgraph(d_2, i_2, this);
 
                                           });
@@ -502,6 +501,12 @@ var svg = d3.select("#mainNet").append("svg")
       .attr("class", "node")
       .attr("r", 10)
       .on("click", function(d, i) { 
+                  
+                  //Use data from existing JSON to put into InfoBar div
+                  var theinfo = "This node is called: "+ d.name + "\n\n Info: " + d.Info;
+                  $('#infobox').html(theinfo);
+
+
                   setup_subgraph(d, i, this);
 
                 })
