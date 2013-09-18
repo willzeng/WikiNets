@@ -65,20 +65,35 @@ $(document).ready(function(){
 
   $("#createObj").on("click", function(event){
     var nodeObject = {};
+    var submitOK = true;
     $('.nodeProperty').each(function(i, obj) {
       var property = $(this).children(".propertyObj").val();
       var value = $(this).children(".valueObj").val();
-      // should really do some input validation here:
-      // currently, if the same property is assigned twice, the value is just overwritten
-      // also might want to look out for security issues -- but I don't know what to look out for
-      nodeObject[property] = value;
-      $(this)[0].parentNode.removeChild($(this)[0]);
+      console.log()
+      if (/^.*[^a-zA-Z0-9_-].*$/.test(property)) {
+        alert("Property name '" + property + "' illegal:\nproperty names must only contain alphanumeric characters,\nunderscore and dash.");
+        submitOK = false;
+        return false;
+      } else {
+        if (property in nodeObject) {
+          alert("Property '" + property + "' already assigned.\nFirst value: " + nodeObject[property] + "\nSecond value: " + value);
+          submitOK = false;
+          return false;
+        } else {
+          nodeObject[property] = value;
+        };
+      };
     });
-    console.log(JSON.stringify(nodeObject));
-    $.post('/create_node', nodeObject, function(data) {
-      alert("Created node with ID " + data);
-      // would now like to reload the visualisation here
-    });
+    if (submitOK) {
+      $('.nodeProperty').each(function(i, obj) {
+        $(this)[0].parentNode.removeChild($(this)[0]);
+      });
+      console.log(JSON.stringify(nodeObject));
+      $.post('/create_node', nodeObject, function(data) {
+        alert("Created node with ID " + data);
+        // would now like to reload the visualisation here
+      });
+    }
   });
  
 });
