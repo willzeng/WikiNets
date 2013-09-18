@@ -76,11 +76,8 @@ $(document).ready(function(){
     });
     console.log(JSON.stringify(nodeObject));
     $.post('/create_node', nodeObject, function(data) {
-      // this forces a reload of the entire page to update the data
-      // should be replaced by Erfan's stuff for updating only bits
-      // once he's got that working
-      //window.location.reload();
       alert("Created node with ID " + data);
+      // would now like to reload the visualisation here
     });
   });
  

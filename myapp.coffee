@@ -106,7 +106,7 @@ module.exports = class MyApp
     )
 
 
-    ###  Respondes with a JSON formatted for D3JS viz of the entire Neo4j database ###
+    ###  Responds with a JSON formatted for D3JS viz of the entire Neo4j database ###
     app.get('/json',(request,response)->
       inputer = (builder)->response.json builder
       getvizjson inputer, request, response
@@ -131,16 +131,20 @@ module.exports = class MyApp
       )
     )
 
-
+    ### Creates a node using a Cypher query ###
     app.post('/create_node', (request, response) ->
       console.log "Node Creation Requested"
-      nodeData = request.body
       nodeProperties = "{"
       for property, value of request.body
         nodeProperties += "#{property}:'#{value}', "
       nodeProperties = nodeProperties.substring(0,nodeProperties.length-2) + "}"
-      console.log nodeProperties
       console.log "Executing " + "create n=" + nodeProperties + " return n;"
+      ###
+      Problem: this does not allow properties to have spaces in them,
+      e.g. "firstname: 'Will'" works but "first name: 'Will'" does not
+      It seems like this problem could be avoided if Neo4js supported
+      parameters in Cypher, but it does not, as far as I can see.
+      ###
       graphDb.cypher.execute("create n=" + nodeProperties + " return n;").then(
         (noderes) ->
           nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
