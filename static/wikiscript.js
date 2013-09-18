@@ -68,17 +68,19 @@ $(document).ready(function(){
     $('.nodeProperty').each(function(i, obj) {
       var property = $(this).children(".propertyObj").val();
       var value = $(this).children(".valueObj").val();
-      // should probably do some input validation here:
+      // should really do some input validation here:
       // currently, if the same property is assigned twice, the value is just overwritten
       // also might want to look out for security issues -- but I don't know what to look out for
       nodeObject[property] = value;
       $(this)[0].parentNode.removeChild($(this)[0]);
     });
+    console.log(JSON.stringify(nodeObject));
     $.post('/create_node', nodeObject, function(data) {
       // this forces a reload of the entire page to update the data
       // should be replaced by Erfan's stuff for updating only bits
       // once he's got that working
-      window.location.reload();
+      //window.location.reload();
+      alert("Created node with ID " + data);
     });
   });
  

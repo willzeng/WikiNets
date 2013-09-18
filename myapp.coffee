@@ -122,7 +122,7 @@ module.exports = class MyApp
     app.post('/search_id', (request,response)->
       console.log "Search Query Requested"
       searchid = request.body.nodeid
-      console.log "Executing"+"start n=node("+searchid+") return n;"
+      console.log "Executing "+"start n=node("+searchid+") return n;"
       graphDb.cypher.execute("start n=node("+searchid+") return n;").then(
         (noderes)->
           console.log "Node ID Lookup Executed"
@@ -132,6 +132,25 @@ module.exports = class MyApp
     )
   
 
+    app.post('/create_node', (request, response) ->
+      console.log "Node Creation Requested"
+      nodeData = request.body
+      nodeProperties = "{"
+      for property, value of request.body
+        nodeProperties += "#{property}:'#{value}', "
+      nodeProperties = nodeProperties.substring(0,nodeProperties.length-2) + "}"
+      console.log nodeProperties
+      console.log "Executing " + "create n=" + nodeProperties + " return n;"
+      graphDb.cypher.execute("create n=" + nodeProperties + " return n;").then(
+        (noderes) ->
+          nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
+          nodeID = noderes.data[0][0]["self"].slice(nodeIDstart)
+          console.log "Node Creation Done, ID = " + nodeID
+          response.send nodeID
+      )
+    )
+  
+    ###
     indexPromise = graphDb.index.createNodeIndex "myIndex"
     indexPromise.then((index)->
       app.post '/create_node', (request, response)->
@@ -143,6 +162,7 @@ module.exports = class MyApp
           response.redirect "/"
         )
     )
+    ###
 
 
     port = process.env.PORT || 3000
