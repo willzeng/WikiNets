@@ -132,11 +132,10 @@ module.exports = class MyApp
     ### Creates a node using a Cypher query ###
     app.post('/create_node', (request, response) ->
       console.log "Node Creation Requested"
-      nodeProperties = "{"
+      cypherQuery = "create (n {"
       for property, value of request.body
-        nodeProperties += "#{property}:'#{value}', "
-      nodeProperties = nodeProperties.substring(0,nodeProperties.length-2) + "}"
-      cypherQuery = "create (n " + nodeProperties + ") return n;"
+        cypherQuery += "#{property}:'#{value}', "
+      cypherQuery = cypherQuery.substring(0,cypherQuery.length-2) + "}) return n;"
       console.log "Executing " + cypherQuery
       ###
       Problem: this does not allow properties to have spaces in them,
