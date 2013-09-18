@@ -122,8 +122,9 @@ module.exports = class MyApp
     app.post('/search_id', (request,response)->
       console.log "Search Query Requested"
       searchid = request.body.nodeid
-      console.log "Executing "+"start n=node("+searchid+") return n;"
-      graphDb.cypher.execute("start n=node("+searchid+") return n;").then(
+      cypherQuery = "start n=node("+searchid+") return n;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
         (noderes)->
           console.log "Node ID Lookup Executed"
           selectedINFO=noderes.data[0][0]["data"]
@@ -138,14 +139,15 @@ module.exports = class MyApp
       for property, value of request.body
         nodeProperties += "#{property}:'#{value}', "
       nodeProperties = nodeProperties.substring(0,nodeProperties.length-2) + "}"
-      console.log "Executing " + "create n=" + nodeProperties + " return n;"
+      cypherQuery = "create (n " + nodeProperties + ") return n;"
+      console.log "Executing " + cypherQuery
       ###
       Problem: this does not allow properties to have spaces in them,
       e.g. "firstname: 'Will'" works but "first name: 'Will'" does not
       It seems like this problem could be avoided if Neo4js supported
       parameters in Cypher, but it does not, as far as I can see.
       ###
-      graphDb.cypher.execute("create n=" + nodeProperties + " return n;").then(
+      graphDb.cypher.execute(cypherQuery).then(
         (noderes) ->
           nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
           nodeID = noderes.data[0][0]["self"].slice(nodeIDstart)
