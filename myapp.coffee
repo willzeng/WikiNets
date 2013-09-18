@@ -114,10 +114,7 @@ module.exports = class MyApp
 
 
     ###  Post function to test lookup by Node id that will return the value of the property 
-      "Info", which will eventuall go in the Infobox.  
-      Search for NodeID 312 to see an example.
-      Will later want to use Erfan's code to load part of the page to update just the infobox 
-      after a lookup.
+      "Info", which will eventually go in the Infobox.  
     ###
     app.post('/search_id', (request,response)->
       console.log "Search Query Requested"
