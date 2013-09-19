@@ -1,5 +1,11 @@
 <html>
 <body>
+  <style>
+    .link {
+      stroke: #999;
+      stroke-opacity: .6;
+    }
+  </style>
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <script>
 
@@ -46,7 +52,7 @@
         .data(links)
       .enter().append("line")
         .attr("class", "link")
-        .style("stroke-width", 4);  
+        .style("stroke-width", 1);  
 
     var node = svg.selectAll(".node")
         .data(nodes)
