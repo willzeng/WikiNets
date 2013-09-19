@@ -1,6 +1,6 @@
 Joe Henke's 6.UAP Code
 ===
-[An Interface to Understand Inference of Semantic Networks](https://docs.google.com/document/d/1qHmT7sZxFBPbUoCuT4uFr-SXM8bxyK-a0PUmbj7nVK0/edit#heading=h.76nesso7a1yo)
+[An Interface to Understand Inference of Semantic Networks](./PROPOSAL.md)
 
 # Setup
 
