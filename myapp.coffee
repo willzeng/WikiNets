@@ -151,6 +151,24 @@ module.exports = class MyApp
           response.send nodeID
       )
     )
+
+    ### Creates a relationship using a Cypher query ###
+    app.post('/create_rel', (request, response) ->
+      console.log "Relationship Creation Requested"
+      cypherQuery = "start n=node(" + request.body.from + "), m=node(" + request.body.to + ") create (n)-[r:" + request.body.type
+      if request.body.properties isnt undefined
+        cypherQuery += " {"
+        for property, value of request.body.properties
+          cypherQuery += "#{property}:'#{value}', "
+        cypherQuery = cypherQuery.substring(0,cypherQuery.length-2) + "}"
+      cypherQuery +="]->(m) return r;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (relres) ->
+          console.log relres.data[0][0]
+          response.send "done"
+      )
+    )
   
     ###
     indexPromise = graphDb.index.createNodeIndex "myIndex"

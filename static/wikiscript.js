@@ -69,8 +69,8 @@ $(document).ready(function(){
     $('.nodeProperty').each(function(i, obj) {
       var property = $(this).children(".propertyObj").val();
       var value = $(this).children(".valueObj").val();
-      if (/^.*[^a-zA-Z0-9_-].*$/.test(property)) {
-        alert("Property name '" + property + "' illegal:\nproperty names must only contain alphanumeric characters,\nunderscore and dash.");
+      if (/^.*[^a-zA-Z0-9_].*$/.test(property)) {
+        alert("Property name '" + property + "' illegal:\nproperty names must only contain alphanumeric characters\nand underscore.");
         submitOK = false;
         return false;
       } else {
@@ -90,6 +90,55 @@ $(document).ready(function(){
       console.log(JSON.stringify(nodeObject));
       $.post('/create_node', nodeObject, function(data) {
         alert("Created node with ID " + data);
+        // would now like to reload the visualisation here
+      });
+    }
+  });
+
+
+  $("#createArr").on("click", function(event){
+    if (!(/^[0-9]+$/.test($("#from").val()))) {
+      alert("'From: node ID' must be a number.")
+      return false;
+    };
+    if (!(/^[0-9]+$/.test($("#to").val()))) {
+      alert("'To: node ID' must be a number.")
+      return false;
+    };
+    if (/^.*[^a-zA-Z0-9_].*$/.test($("#rel-type").val())) {
+      alert("Relationship type '"+ $("#rel-type").val() + "' illegal: relationship types must only contain alphanumeric characters and underscore.")
+      return false;
+    };
+    var relObject = {from: $("#from").val(),
+                     to: $("#to").val(),
+                     type: $("#rel-type").val()};
+    var relProperties = {};
+    var submitOK = true;
+    $('.relProperty').each(function(i, obj) {
+      var property = $(this).children(".propertyArr").val();
+      var value = $(this).children(".valueArr").val();
+      if (/^.*[^a-zA-Z0-9_].*$/.test(property)) {
+        alert("Property name '" + property + "' illegal: property names must only contain alphanumeric characters and underscore.");
+        submitOK = false;
+        return false;
+      } else {
+        if (property in relProperties) {
+          alert("Property '" + property + "' already assigned.\nFirst value: " + relProperties[property] + "\nSecond value: " + value);
+          submitOK = false;
+          return false;
+        } else {
+          relProperties[property] = value;
+        };
+      };
+    });
+    relObject["properties"] = relProperties;
+    if (submitOK) {
+      $('.relProperty').each(function(i, obj) {
+        $(this)[0].parentNode.removeChild($(this)[0]);
+      });
+      console.log(JSON.stringify(relObject));
+      $.post('/create_rel', relObject, function(data) {
+        alert("Created relationship of type '" + relObject[type] + "' from node " + relObject[from] + " to node " + relObject[to] + ".");
         // would now like to reload the visualisation here
       });
     }
