@@ -170,7 +170,11 @@ module.exports = class MyApp
       graphDb.cypher.execute(cypherQuery).then(
         (relres) ->
           console.log relres.data[0][0]
-          response.send "done"
+          relIDstart = relres.data[0][0]["self"].lastIndexOf('/') + 1
+          response.send relres.data[0][0]["self"].slice(relIDstart)
+        (relres) ->
+          console.log relres
+          response.send "error"
       )
     )
   

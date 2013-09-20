@@ -133,13 +133,17 @@ $(document).ready(function(){
     });
     relObject["properties"] = relProperties;
     if (submitOK) {
-      $('.relProperty').each(function(i, obj) {
-        $(this)[0].parentNode.removeChild($(this)[0]);
-      });
       console.log(JSON.stringify(relObject));
       $.post('/create_rel', relObject, function(data) {
-        alert("Created relationship of type '" + relObject[type] + "' from node " + relObject[from] + " to node " + relObject[to] + ".");
-        // would now like to reload the visualisation here
+        if (data == "error") {
+          alert("An error occured. Please check whether nodes with the given IDs (" + $("#from").val() + ", " + $("#to").val() + ") exist.");
+        } else {
+          $('.relProperty').each(function(i, obj) {
+            $(this)[0].parentNode.removeChild($(this)[0]);
+          });
+          alert("Created relationship with ID " + data + ".");
+          // would now like to reload the visualisation here
+        };
       });
     }
   });
