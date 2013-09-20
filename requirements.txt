@@ -5,6 +5,6 @@ simplejson==3.3.0
 wsgiref==0.1.2
 # First commit and push to heroku with below commented out
 # Then uncomment, commit and push to heroku
-# Divisi2==2.2.5
-# csc-pysparse==1.1.1.4
-# csc-utils==0.6.7
+Divisi2==2.2.5
+csc-pysparse==1.1.1.4
+csc-utils==0.6.7
