@@ -1,6 +1,9 @@
-Joe Henke's 6.UAP Code
+Joe Henke's 6.UAP Repo
 ===
-[An Interface to Understand Inference of Semantic Networks](./PROPOSAL.md)
+
+[Homepage](http://jdhenke.github.io/uap/)
+
+[Proposal](./PROPOSAL.md)
 
 # Setup
 
