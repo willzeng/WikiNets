@@ -14,7 +14,8 @@ virtualenv env
 source env/bin/activate
 pip install numpy
 pip install divisi2 csc-pysparse
-pip install simplejson
+pip install simplejson # only needed for sample
+pip install cherrypy
 ```
 
 Test to see if it's working by running this in python.

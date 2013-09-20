@@ -1,0 +1,78 @@
+<html>
+<head>
+<script src="jquery-1.10.2.min.js"></script>
+<script src="d3.v3.min.js"></script>
+<script src="uap.js"></script>
+<link rel="stylesheet" href="bootstrap.min.css">
+<style>
+  #workspace {
+    border: 1px solid #CCC;
+  }
+  .navbar {
+    border-radius: 0px;
+  }
+
+  #input-search {
+    margin-bottom: 20px;
+    font-size: 18pt;
+  }
+
+  .link {
+    stroke: #999;
+    stroke-opacity: .6;
+  }
+
+  #workspace g text {
+    opacity: 0.25;
+  }
+
+  #workspace g:hover text {
+    opacity: 1;
+  }
+
+  #workspace g:hover text,
+  #workspace g:hover circle {
+    fill: orange;
+    font-size: 36;
+    z-index: 999;
+  }
+
+  #workspace g circle {
+    fill: steelblue;
+  }
+
+  #workspace {
+    border: 1px solid black;
+    background: white;
+  }
+
+</style>
+</head>
+<body>
+
+  <!-- navbar -->
+  <nav class="navbar navbar-inverse" role="navigation">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">UAP</a>
+    </div>
+    <!-- save for potential use later -->
+    <!--
+    <form class="navbar-form navbar-right" role="search">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Search">
+      </div>
+    </form>
+    -->
+  </nav>
+
+  <!-- content -->
+  <div class="container">
+    <div class="text-center">
+      <div><input id="input-search" type="text"></input></div>
+
+      <svg id="workspace"></svg>
+    </div>
+    
+  </div>
+</body>
+</html>
