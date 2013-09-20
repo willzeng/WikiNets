@@ -57,6 +57,7 @@ class Server(object):
   _cp_config = {'tools.staticdir.on' : True,
                 'tools.staticdir.dir' : os.path.join(os.getcwd(), "web"),
                 'tools.staticdir.index' : 'index.html',
+                'server.socket_port': 80,
   }
 
   def __init__(self):
