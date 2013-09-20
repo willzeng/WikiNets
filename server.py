@@ -1,6 +1,7 @@
 import os
 import divisi2
 import cherrypy
+import sys
 
 class ConceptProvider(object):
   
@@ -78,7 +79,7 @@ class Server(object):
     return self.provider.get_data(text)
 
 cherrypy.config.update({'server.socket_host': '0.0.0.0', 
-                         'server.socket_port': 8080, 
+                         'server.socket_port': int(sys.argv[1]), 
                         }) 
 
 cherrypy.quickstart(Server())
