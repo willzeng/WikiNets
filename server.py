@@ -57,8 +57,7 @@ class Server(object):
   _cp_config = {'tools.staticdir.on' : True,
                 'tools.staticdir.dir' : os.path.join(os.getcwd(), "web"),
                 'tools.staticdir.index' : 'index.html',
-                'server.socket_port': 80,
-  }
+                }
 
   def __init__(self):
     self.provider = ConceptProvider(100)
@@ -77,5 +76,9 @@ class Server(object):
   @cherrypy.tools.json_out()
   def get_data(self, text):
     return self.provider.get_data(text)
+
+cherrypy.config.update({'server.socket_host': '0.0.0.0', 
+                         'server.socket_port': 80, 
+                        }) 
 
 cherrypy.quickstart(Server())
