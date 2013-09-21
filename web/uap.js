@@ -1,5 +1,5 @@
 var width = 960,
-    height = 640;
+    height = 600;
 
 /* render the data using force layout */
 function render(svg, nodes, links) {
@@ -69,7 +69,11 @@ $(function() {
         success: function(response) {
           render(svg, response.nodes, response.links);
         },
+        error: function(response) {
+          alert(val + " was not found as a concept. Please try something else.");
+        }
       });
     }
   });
+
 });

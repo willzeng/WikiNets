@@ -15,6 +15,7 @@
   #input-search {
     margin-bottom: 20px;
     font-size: 18pt;
+    padding: 5px;
   }
 
   .link {
@@ -52,8 +53,11 @@
 
   <!-- navbar -->
   <nav class="navbar navbar-inverse" role="navigation">
+    <a class="navbar-brand" href="http://jdhenke.github.io/uap/">Flavor of the Week</a>
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">UAP</a>
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Concepts</a></li>
+      </ul>
     </div>
     <!-- save for potential use later -->
     <!--
@@ -68,8 +72,7 @@
   <!-- content -->
   <div class="container">
     <div class="text-center">
-      <div><input id="input-search" type="text"></input></div>
-
+      <div><input id="input-search" type="text" placeholder="Concept..."></input></div>
       <svg id="workspace"></svg>
     </div>
     

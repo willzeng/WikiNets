@@ -21,6 +21,7 @@ class ConceptProvider(object):
 
     # gather concepts and their relatedness as nodes and links
 
+    text = text.lower().strip()
     nodesSet = {text}
     currentLevel = [text]
     numLevels = 3
