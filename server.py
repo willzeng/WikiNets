@@ -2,6 +2,7 @@ import os
 import divisi2
 import cherrypy
 import sys
+import simplejson as json
 
 class ConceptProvider(object):
   
@@ -55,6 +56,15 @@ class ConceptProvider(object):
 
     return {"nodes": nodes, "links": links}
 
+  def get_link_strengths(self, node, otherNodes):
+    return [{"strength": self.sim.entry_named(node, otherNode)} for otherNode in otherNodes]
+
+  def get_top_items(self, node, limit):
+    output = []
+    for node, strength in self.sim.row_named(node).top_items(n=limit):
+      output.append({"text": node, "strength": strength})
+    return output
+
 class Server(object):
   _cp_config = {'tools.staticdir.on' : True,
                 'tools.staticdir.dir' : os.path.join(os.getcwd(), "web"),
@@ -72,12 +82,28 @@ class Server(object):
   @cherrypy.expose
   @cherrypy.tools.json_out()
   def get_related_concepts(self, text, limit=10):
-      return self.provider.get_related_concepts(text, limit)
+      return self.provider.get_related_concepts(text, int(limit))
 
   @cherrypy.expose
   @cherrypy.tools.json_out()
   def get_data(self, text):
     return self.provider.get_data(text)
+
+  @cherrypy.expose
+  @cherrypy.tools.json_out()
+  def get_link_strengths(self, nextNode, currentNodes):
+    return {"links": self.provider.get_link_strengths(nextNode, json.loads(currentNodes))}
+
+  @cherrypy.expose
+  @cherrypy.tools.json_out()
+  def test(self, a, b):
+    return json.loads(b)[0]
+
+  @cherrypy.expose
+  @cherrypy.tools.json_out()
+  def get_top_items(self, text, limit=10):
+    return {"related": self.provider.get_top_items(text, int(limit))}
+
 
 cherrypy.config.update({'server.socket_host': '0.0.0.0', 
                          'server.socket_port': int(sys.argv[1]), 
