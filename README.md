@@ -55,12 +55,12 @@ Commit the changes and push to heroku so it recognizes and installs the remainin
 git add requirements.txt
 git commit -m 'adding second set of requirements'
 git push heroku prod:master
-heroku logs --tail
 ```
 
-Check the logs and make sure things look normal then check it out.
+Check the logs to see when things are finally up, then check it out.
 
 ```bash
+heroku logs --tail
 heroku open
 ```
 
