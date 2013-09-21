@@ -40,13 +40,26 @@ I get a ~0.1261 and ~-0.1784 for the last two calls respectively, but I can't sa
 This will use the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-command).
 
 ```bash
+git checkout -b prod # do all these changes on a different branch
 heroku create
-git push heroku master
-heroku run pip install divisi2 csc-pysparse
+git push heroku prod:master
+```
+
+Now, edit `requirements.txt` to uncomment the bottom list of packages.
+
+This is necessary because those packages require numpy to be *fully* installed before even starting to install these packages. Hence the two stages.
+
+Commit the changes and check it out!
+
+```bash
+git add requirements.txt
+git commit -m 'adding second set of requirements'
+git push heroku prod:master
 heroku logs --tail
 ```
 
-Check the logs and make sure things look normal then look:
+Check the logs and make sure things look normal then check it out.
+
 ```bash
 heroku open
 ```
