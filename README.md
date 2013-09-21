@@ -47,9 +47,9 @@ git push heroku prod:master
 
 Now, edit `requirements.txt` to uncomment the bottom list of packages.
 
-This is necessary because those packages require numpy to be *fully* installed before even starting to install these packages. Hence the two stages.
+> This is necessary because those packages require numpy to be *fully* installed before even starting to install these packages. Hence the two stages.
 
-Commit the changes and check it out!
+Commit the changes and push to heroku so it recognizes and installs the remaining packages.
 
 ```bash
 git add requirements.txt
