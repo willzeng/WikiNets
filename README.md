@@ -5,17 +5,21 @@ Joe Henke's 6.UAP Repo
 
 [Proposal](./PROPOSAL.md)
 
-# Setup
+## Local Setup
 
 Install dependencies using [virtualenv](https://pypi.python.org/pypi/virtualenv).
 
 ```bash
+# setup virtual environment
 virtualenv env
 source env/bin/activate
-pip install numpy
+
+# install normal dependencies
+pip install -r requirements.txt
+
+# install these *special* dependencies
+# this is a result of them depending on numpy in their setup.py's
 pip install divisi2 csc-pysparse
-pip install simplejson # only needed for sample
-pip install cherrypy
 ```
 
 Test to see if it's working by running this in python.
@@ -31,6 +35,22 @@ predictions.entry_named('pig', ('right', 'CapableOf', 'fly'))
 
 I get a ~0.1261 and ~-0.1784 for the last two calls respectively, but I can't say if this is consisent across installs.
 
-# License
+## Deploying to [Heroku](https://www.heroku.com/)
+
+This will use the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-command).
+
+```bash
+heroku create
+git push heroku master
+heroku run pip install divisi2 csc-pysparse
+heroku logs --tail
+```
+
+Check the logs and make sure things look normal then look:
+```bash
+heroku open
+```
+
+## License
 
 See [LICENSE](./LICENSE)

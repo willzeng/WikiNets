@@ -1,10 +1,11 @@
+# standard dependencies
 numpy==1.7.1
 CherryPy==3.2.4
 networkx==1.8.1
 simplejson==3.3.0
 wsgiref==0.1.2
-# First commit and push to heroku with below commented out
-# Then uncomment, commit and push to heroku
-Divisi2==2.2.5
-csc-pysparse==1.1.1.4
-csc-utils==0.6.7
+
+# These need to be installed manually as their setup scripts require numpy
+# Divisi2==2.2.5
+# csc-pysparse==1.1.1.4
+# csc-utils==0.6.7
