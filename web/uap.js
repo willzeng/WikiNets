@@ -4,7 +4,7 @@ var width = 960,
 /* render the data using force layout */
 function render(svg, nodes, links) {
 
-  $("#workspace").empty();
+  $(".node, .link").remove();
 
   var force = d3.layout.force()
     .charge(-400)
@@ -35,7 +35,6 @@ function render(svg, nodes, links) {
     .text(function(d) {return d.text;});
 
   node.append("circle")
-    .attr("class", "node")
     .attr("r", 5)
     .attr("cx", 0)
     .attr("cy", 0);
@@ -56,9 +55,31 @@ function render(svg, nodes, links) {
 }
 
 $(function() {
-  var svg = d3.select('#workspace')
-    .attr("height", height)
-    .attr("width", width)
+  var svg = d3.select("#workspace")
+    .append("svg:svg")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("pointer-events", "all")
+
+  var zoom = d3.behavior.zoom();
+  var zoomCapture = svg.append('g')
+      .classed('zoom-capture', true)
+      .append('svg:rect')
+        .attr('width', width)
+        .attr('height', height)
+        .attr('fill', 'white')
+        .style('stroke', 'black');
+  
+  var vis = svg.append('svg:g');
+
+  zoomCapture.call(zoom.on("zoom", redraw))
+
+  function redraw() {
+    vis.attr("transform",
+        "translate(" + d3.event.translate + ")" + 
+        " scale(" + d3.event.scale + ")");
+  }
+
   $("#input-search").keypress(function(e) {
     var val = $("#input-search").val();
     if (e.which === 13 && val.length > 0) {
@@ -67,7 +88,7 @@ $(function() {
         type: "GET",
         data: {text: val},
         success: function(response) {
-          render(svg, response.nodes, response.links);
+          render(vis, response.nodes, response.links);
         },
         error: function(response) {
           alert(val + " was not found as a concept. Please try something else.");

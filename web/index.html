@@ -6,9 +6,7 @@
 <script src="uap.js"></script>
 <link rel="stylesheet" href="bootstrap.min.css">
 <style>
-  #workspace {
-    border: 1px solid #CCC;
-  }
+
   .navbar {
     border-radius: 0px;
   }
@@ -24,28 +22,23 @@
     stroke-opacity: .6;
   }
 
-  #workspace g text {
+  #workspace .node text {
     opacity: 0.25;
   }
 
-  #workspace g:hover text {
+  #workspace .node:hover text {
     opacity: 1;
   }
 
-  #workspace g:hover text,
-  #workspace g:hover circle {
+  #workspace .node:hover text,
+  #workspace .node:hover circle {
     fill: orange;
-    font-size: 36;
+    /*font-size: 36;*/
     z-index: 999;
   }
 
-  #workspace g circle {
+  #workspace .node circle {
     fill: steelblue;
-  }
-
-  #workspace {
-    border: 1px solid black;
-    background: white;
   }
 
 </style>
@@ -74,7 +67,7 @@
   <div class="container">
     <div class="text-center">
       <div><input id="input-search" type="text" placeholder="Concept..."></input></div>
-      <svg id="workspace"></svg>
+      <div id="workspace"></div>
     </div>
     
   </div>
