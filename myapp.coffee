@@ -134,7 +134,7 @@ module.exports = class MyApp
       console.log "Node Creation Requested"
       cypherQuery = "create (n"
       console.log request.body
-      unless request.body?
+      if JSON.stringify(request.body) isnt '{}'
         cypherQuery += " {"
         for property, value of request.body
           cypherQuery += "#{property}:'#{value}', "
