@@ -131,7 +131,7 @@ svg.selectAll(".node").attr("r", function(d_1) {
 var color = d3.scale.category20();
 
 var force = d3.layout.force()
-    .charge(-240)
+    .charge(-360)
     .linkDistance(50)
     .size([width, height]);
 
