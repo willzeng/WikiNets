@@ -18,6 +18,7 @@ var counter = 0;
 
 function moreFields(writediv, rootdiv, classNamediv) {
   counter++;
+  console.log("Counter is " + counter);
   var newFields = document.getElementById(rootdiv).cloneNode(true);
   newFields.id = '';
   newFields.className = classNamediv;
@@ -162,6 +163,12 @@ $(document).ready(function(){
           $('.EditProperty').each(function(i, obj) {
             $(this)[0].parentNode.removeChild($(this)[0]);
           });
+        };
+        for (property in data) {
+          moreFields("writerootEdit","readrootEdit","EditProperty");
+          $("input[name=propertyEdit"+counter+"]").val(property);
+          console.log("Setting propertyEdit" + counter);
+          $("input[name=valueEdit"+counter+"]").val(data[property]);
         };
       };
     });
