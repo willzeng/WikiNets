@@ -16,10 +16,10 @@ function showlayer(layer){
 // Code for adding more input fields modified from http://www.quirksmode.org/dom/domform.html
 var counter = 0;
 var selected_node;
+var reserved_keys = ["_id"];
 
 function moreFields(writediv, rootdiv, classNamediv) {
   counter++;
-  console.log("Counter is " + counter);
   var newFields = document.getElementById(rootdiv).cloneNode(true);
   newFields.id = '';
   newFields.className = classNamediv;
@@ -75,14 +75,16 @@ $(document).ready(function(){
         alert("Property name '" + property + "' illegal:\nproperty names must only contain alphanumeric characters\nand underscore.");
         submitOK = false;
         return false;
+      } else if (property in nodeObject) {
+        alert("Property '" + property + "' already assigned.\nFirst value: " + nodeObject[property] + "\nSecond value: " + value);
+        submitOK = false;
+        return false;
+      } else if (reserved_keys.indexOf(property) != -1) {
+        alert("Property name '" + property + "' illegal: '" + property + "' is a reserved term.");
+        submitOK = false;
+        return false;
       } else {
-        if (property in nodeObject) {
-          alert("Property '" + property + "' already assigned.\nFirst value: " + nodeObject[property] + "\nSecond value: " + value);
-          submitOK = false;
-          return false;
-        } else {
-          nodeObject[property] = value;
-        };
+        nodeObject[property] = value;
       };
     });
     if (submitOK) {
@@ -123,14 +125,16 @@ $(document).ready(function(){
         alert("Property name '" + property + "' illegal: property names must only contain alphanumeric characters and underscore.");
         submitOK = false;
         return false;
+      } else if (reserved_keys.indexOf(property) != -1) {
+        alert("Property name '" + property + "' illegal: '" + property + "' is a reserved term.");
+        submitOK = false;
+        return false;
+      } else if (property in relProperties) {
+        alert("Property '" + property + "' already assigned.\nFirst value: " + relProperties[property] + "\nSecond value: " + value);
+        submitOK = false;
+        return false;
       } else {
-        if (property in relProperties) {
-          alert("Property '" + property + "' already assigned.\nFirst value: " + relProperties[property] + "\nSecond value: " + value);
-          submitOK = false;
-          return false;
-        } else {
-          relProperties[property] = value;
-        };
+        relProperties[property] = value;
       };
     });
     relObject["properties"] = relProperties;
@@ -169,7 +173,6 @@ $(document).ready(function(){
         for (property in data) {
           moreFields("writerootEdit","readrootEdit","EditProperty");
           $("input[name=propertyEdit"+counter+"]").val(property);
-          console.log("Setting propertyEdit" + counter);
           $("input[name=valueEdit"+counter+"]").val(data[property]);
         };
       };
@@ -186,14 +189,16 @@ $(document).ready(function(){
         alert("Property name '" + property + "' illegal:\nproperty names must only contain alphanumeric characters\nand underscore.");
         submitOK = false;
         return false;
+      } else if (property in nodeObject) {
+        alert("Property '" + property + "' already assigned.\nFirst value: " + nodeObject[property] + "\nSecond value: " + value);
+        submitOK = false;
+        return false;
+      } else if (reserved_keys.indexOf(property) != -1) {
+        alert("Property name '" + property + "' illegal: '" + property + "' is a reserved term.");
+        submitOK = false;
+        return false;
       } else {
-        if (property in nodeObject) {
-          alert("Property '" + property + "' already assigned.\nFirst value: " + nodeObject[property] + "\nSecond value: " + value);
-          submitOK = false;
-          return false;
-        } else {
-          nodeObject[property] = value;
-        };
+        nodeObject[property] = value;
       };
     });
     if (submitOK) {

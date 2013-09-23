@@ -65,6 +65,9 @@ module.exports = class MyApp
             data: { propertyExample: 'valueExample' }
           ###
           nodedata=(ntmp[0]["data"] for ntmp in noderes.data).splice(1)
+          `for (i=0; i < nodeids.length; i++) {
+             nodedata[i]["_id"] = nodeids[i]+'';
+          }`
           graphDb.cypher.execute("start n=rel(*) return n;").then(
             (arrres)->
               console.log "Query Executed"
