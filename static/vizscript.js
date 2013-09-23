@@ -5,6 +5,7 @@ var width = 960,
 var graph= "";
 $.getJSON('/json', function(data){
     graph = data;
+    console.log("make call for json");
     //console.log(graph);
     var obj = {};
 graph.nodes.forEach( function(d) { 
