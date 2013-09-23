@@ -2,16 +2,108 @@
 var initialWindowWidth = $(window).width();
 var initialWindowHeight = $(window).height();
 
-/* render the data using force layout */
+var force = d3.layout.force()
+    .linkStrength(function(d) { return (d.strength  - 0.75) / (1 - 0.75); })
+    .size([initialWindowWidth, initialWindowHeight])
+
+function registerInput(workspace) {
+  $("#input-search").keypress(function(e) {
+
+    var val = $("#input-search").val();
+    if (e.which === 13 && val.length > 0) {
+      $.ajax({
+        url: "/get_data",
+        type: "GET",
+        data: {text: val},
+        success: function(response) {
+          render(workspace, response.nodes, response.links);
+        },
+        error: function(response) {
+          alert(val + " was not found as a concept. Please try something else.");
+        },
+      });
+    }
+  });
+}
+
+/* link d3 parameter controls so changes render in real time */
+function registerForceControls() {
+
+  var mappings = [
+    {
+      f: force.linkDistance,
+      selector: "#input-link-distance",
+      scale: d3.scale.linear()
+        .domain([0, 200])
+        .range([0, 100]),
+    },
+
+    {
+      f: force.friction,
+      selector: "#input-friction",
+      scale: d3.scale.linear()
+        .domain([.99, 0.5])
+        .range([0, 100]),
+    },
+
+    {
+      f: force.charge,
+      selector: "#input-charge",
+      scale: d3.scale.linear()
+        .domain([0, -2000])
+        .range([0, 100]),
+    },
+
+    {
+      f: force.gravity,
+      selector: "#input-gravity",
+      scale: d3.scale.linear()
+        .domain([0.01, 1])
+        .range([0, 100]),
+    },
+  ]
+
+  _.each(mappings, function(mapping) {
+    $(mapping.selector)
+      .val(mapping.scale(mapping.f()))
+      .change(function() {
+        mapping.f(mapping.scale.invert($(this).val()));
+        force.start();
+    });
+  });
+}
+
+/* create zoomable and return zoomable workspace */
+function createWorkspace() {
+  var svg = d3.select("#workspace")
+    .append("svg:svg")
+      .attr("pointer-events", "all")
+
+  var zoom = d3.behavior.zoom();
+  var zoomCapture = svg.append('g')
+      .classed('zoom-capture', true)
+      .append('svg:rect')
+        .attr('width', "100%")
+        .attr('height', "100%")
+        .attr('fill', 'white');
+  
+  var workspace = svg.append('svg:g');
+
+  zoomCapture.call(zoom.on("zoom", redraw))
+
+  function redraw() {
+    workspace.attr("transform",
+        "translate(" + d3.event.translate + ")" + 
+        " scale(" + d3.event.scale + ")");
+  }
+
+  return workspace;
+}
+
+/* establish how data is to be rendered - bind elements to force layout */
 function render(svg, nodes, links) {
 
   $(".node, .link").remove();
-
-  var force = d3.layout.force()
-    .charge(-400)
-    .linkDistance(30)
-    .linkStrength(function(d) { return d.strength; })
-    .size([initialWindowWidth, initialWindowHeight])
 
   force
     .nodes(nodes)
@@ -56,43 +148,9 @@ function render(svg, nodes, links) {
 }
 
 $(function() {
-  var svg = d3.select("#workspace")
-    .append("svg:svg")
-      .attr("pointer-events", "all")
 
-  var zoom = d3.behavior.zoom();
-  var zoomCapture = svg.append('g')
-      .classed('zoom-capture', true)
-      .append('svg:rect')
-        .attr('width', "100%")
-        .attr('height', "100%")
-        .attr('fill', 'white');
-  
-  var vis = svg.append('svg:g');
-
-  zoomCapture.call(zoom.on("zoom", redraw))
-
-  function redraw() {
-    vis.attr("transform",
-        "translate(" + d3.event.translate + ")" + 
-        " scale(" + d3.event.scale + ")");
-  }
-
-  $("#input-search").keypress(function(e) {
-    var val = $("#input-search").val();
-    if (e.which === 13 && val.length > 0) {
-      $.ajax({
-        url: "/get_data",
-        type: "GET",
-        data: {text: val},
-        success: function(response) {
-          render(vis, response.nodes, response.links);
-        },
-        error: function(response) {
-          alert(val + " was not found as a concept. Please try something else.");
-        }
-      });
-    }
-  });
+  var workspace = createWorkspace();
+  registerInput(workspace);
+  registerForceControls();
 
 });
