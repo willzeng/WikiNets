@@ -40,7 +40,7 @@ function select_node(nodeid) {
           alert("Node with ID " + nodeid + " could not be found.");
       } else {
         selected_node = nodeid;
-        console.log("Node data:\n" + JSON.stringify(data));
+        console.log("Node data: ID " + nodeid + "\n" + JSON.stringify(data));
         if ($("#edit-menu-inputs").css("display") == "none") {
           $("#edit-menu-inputs").css("display", "block");
         } else {
@@ -55,6 +55,22 @@ function select_node(nodeid) {
         };
       };
     });
+}
+
+function is_legal(property) {
+  // ensures that property names won't break the cypher queries
+  if (property == '') { 
+    alert("Property names must not be empty.");
+    return false;
+  } else if (/^.*[^a-zA-Z0-9_].*$/.test(property)) {
+    alert("Property name '" + property + "' illegal: property names must only contain alphanumeric characters and underscore.");
+    return false;
+  } else if (reserved_keys.indexOf(property) != -1) {
+    alert("Property name illegal: '" + property + "' is a reserved term.");
+    return false;
+  } else {
+    return true;
+  };
 }
 
 
@@ -94,20 +110,15 @@ $(document).ready(function(){
     $('.nodeProperty').each(function(i, obj) {
       var property = $(this).children(".propertyObj").val();
       var value = $(this).children(".valueObj").val();
-      if (/^.*[^a-zA-Z0-9_].*$/.test(property)) {
-        alert("Property name '" + property + "' illegal:\nproperty names must only contain alphanumeric characters\nand underscore.");
+      if (!(is_legal(property))) {
         submitOK = false;
         return false;
       } else if (property in nodeObject) {
         alert("Property '" + property + "' already assigned.\nFirst value: " + nodeObject[property] + "\nSecond value: " + value);
         submitOK = false;
         return false;
-      } else if (reserved_keys.indexOf(property) != -1) {
-        alert("Property name '" + property + "' illegal: '" + property + "' is a reserved term.");
-        submitOK = false;
-        return false;
       } else {
-        nodeObject[property] = value;
+        nodeObject[property] = value.replace(/'/g, "\\'");
       };
     });
     if (submitOK) {
@@ -144,12 +155,7 @@ $(document).ready(function(){
     $('.relProperty').each(function(i, obj) {
       var property = $(this).children(".propertyArr").val();
       var value = $(this).children(".valueArr").val();
-      if (/^.*[^a-zA-Z0-9_].*$/.test(property)) {
-        alert("Property name '" + property + "' illegal: property names must only contain alphanumeric characters and underscore.");
-        submitOK = false;
-        return false;
-      } else if (reserved_keys.indexOf(property) != -1) {
-        alert("Property name '" + property + "' illegal: '" + property + "' is a reserved term.");
+      if (!(is_legal(property))) {
         submitOK = false;
         return false;
       } else if (property in relProperties) {
@@ -157,7 +163,7 @@ $(document).ready(function(){
         submitOK = false;
         return false;
       } else {
-        relProperties[property] = value;
+        relProperties[property] = value.replace(/'/g, "\\'");
       };
     });
     relObject["properties"] = relProperties;
@@ -180,7 +186,11 @@ $(document).ready(function(){
 
 
   $("#SelectNode").on("click", function(event) {
-    select_node($("#SelectNodeID").val());
+    if (!(/^[0-9]+$/.test($("#SelectNodeID").val()))) {
+      alert("Node ID must be a number.");
+    } else {
+      select_node($("#SelectNodeID").val());
+    };
   });
 
   $("#EditNode").on("click", function(event){
@@ -189,20 +199,15 @@ $(document).ready(function(){
     $('.EditProperty').each(function(i, obj) {
       var property = $(this).children(".propertyEdit").val();
       var value = $(this).children(".valueEdit").val();
-      if (/^.*[^a-zA-Z0-9_].*$/.test(property)) {
-        alert("Property name '" + property + "' illegal:\nproperty names must only contain alphanumeric characters\nand underscore.");
+      if (!(is_legal(property))) {
         submitOK = false;
         return false;
       } else if (property in nodeObject) {
         alert("Property '" + property + "' already assigned.\nFirst value: " + nodeObject[property] + "\nSecond value: " + value);
         submitOK = false;
         return false;
-      } else if (reserved_keys.indexOf(property) != -1) {
-        alert("Property name '" + property + "' illegal: '" + property + "' is a reserved term.");
-        submitOK = false;
-        return false;
       } else {
-        nodeObject[property] = value;
+        nodeObject[property] = value.replace(/'/g, "\\'");
       };
     });
     if (submitOK) {
