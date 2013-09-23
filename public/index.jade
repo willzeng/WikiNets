@@ -93,12 +93,12 @@ html
 
     script(type='text/javascript', src='vizscript.js')
 
-    #footer(style='clear: both; text-align: center; font-size: 12px; font-weight: bold;')
-      a(href='http://thewikinetsproject.wordpress.com') About
-      | |
-      a(href='http://thewikinetsproject.wordpress.com/about/') Contact
+    //#footer(style='clear: both; text-align: center; font-size: 12px; font-weight: bold;')
+    //  a(href='http://thewikinetsproject.wordpress.com') About
+    //  | |
+    //  a(href='http://thewikinetsproject.wordpress.com/about/') Contact
 
-    br
+    //br
 
     //This is now implemented in the main menu, but 
     //is commented here just in case.
@@ -113,14 +113,14 @@ html
     //  input(type="text",name="name")
     //  input(type="submit",value="Submit")
 
-    h1 nodes in database:
-    ul
-      each node in displaydata["nodes"]
-       li= JSON.stringify(node)
+    //h1 nodes in database:
+    //ul
+    //  each node in displaydata["nodes"]
+    //   li= JSON.stringify(node)
 
-    h1 arrows in database:
-    ul
-      each node in displaydata["links"]
-       li= JSON.stringify(node)
+    //h1 arrows in database:
+    //ul
+    //  each node in displaydata["links"]
+    //   li= JSON.stringify(node)
 
 
