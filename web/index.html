@@ -1,75 +1,53 @@
 <html>
 <head>
-<title>Flavor of the Week</title>
+<title>6.UAP</title>
 <script src="js/jquery-1.10.2.min.js"></script>
 <script src="js/d3.v3.min.js"></script>
 <script src="js/uap.js"></script>
-<link rel="stylesheet" href="css/bootstrap.min.css">
 <style>
 
-  .navbar {
-    border-radius: 0px;
-  }
+  /** steelblue = #236B8E */
 
-  #input-search {
-    margin-bottom: 20px;
-    font-size: 18pt;
-    padding: 5px;
-  }
+  /* remove default chrome glow */
+  textarea, input { outline: none; }
+  
+  /* styles consistent across all fixed location helpers */
+  .helper-container { background: white; z-index: 10; background-color: #ccc; padding: 4px; font-size: 12pt; font-family: "Trebuchet MS"; }
 
-  .link {
-    stroke: #999;
-    stroke-opacity: .6;
-  }
+  /* top left helper-container */
+  #helper-container-top-left { position: absolute; top: 5; left: 5; z-index: 10; }
 
-  #workspace .node text {
-    opacity: 0.25;
-  }
+  /* top right helpers */
+  #helper-container-top-right { position: absolute; top: 5; right: 5; z-index: 10; }
 
-  #workspace .node:hover text {
-    opacity: 1;
-  }
+  #input-search { border: 0px; font-size: 12pt; font-family: "Trebuchet MS"; padding: 2px; margin: 0px;}
 
+  /* workspace helper-container */
+  #workspace > svg { position: absolute; left: 0; top: 0; width: "100%"; height: "100%"; z-index: 0;}
+
+  /* workspace links */
+  #workspace .link { stroke: #999; stroke-opacity: .6; }
+
+  /* workspace nodes */
+  #workspace .node text { opacity: 0.25; font-family: "Trebuchet MS"}
+  #workspace .node:hover text { opacity: 1; }
   #workspace .node:hover text,
-  #workspace .node:hover circle {
-    fill: orange;
-    /*font-size: 36;*/
-    z-index: 999;
-  }
-
-  #workspace .node circle {
-    fill: steelblue;
-  }
+  #workspace .node:hover circle { fill: orange; z-index: 999; }
+  #workspace .node circle { fill: steelblue; }
 
 </style>
 </head>
 <body>
 
-  <!-- navbar -->
-  <nav class="navbar navbar-inverse" role="navigation">
-    <a class="navbar-brand" href="http://jdhenke.github.io/uap/">Flavor of the Week</a>
-    <div class="navbar-header">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Concepts</a></li>
-      </ul>
-    </div>
-    <!-- save for potential use later -->
-    <!--
-    <form class="navbar-form navbar-right" role="search">
-      <div class="form-group">
-        <input type="text" class="form-control" placeholder="Search">
-      </div>
-    </form>
-    -->
-  </nav>
-
-  <!-- content -->
-  <div class="container">
-    <div class="text-center">
-      <div><input id="input-search" type="text" placeholder="Concept..."></input></div>
-      <div id="workspace"></div>
-    </div>
-    
+  <div id="helper-container-top-left" class="helper-container">
+    Joe Henke's 6.UAP Project
   </div>
+
+  <div id="helper-container-top-right" class="helper-container">
+    <input id="input-search" type="text" placeholder="Search..."></input>
+  </div>
+
+  <div id="workspace"></div>
+  
 </body>
 </html>

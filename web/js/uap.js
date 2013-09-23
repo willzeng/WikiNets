@@ -1,5 +1,6 @@
-var width = 960,
-    height = 600;
+/* get original dimensions to center first animation */
+var initialWindowWidth = $(window).width();
+var initialWindowHeight = $(window).height();
 
 /* render the data using force layout */
 function render(svg, nodes, links) {
@@ -10,7 +11,7 @@ function render(svg, nodes, links) {
     .charge(-400)
     .linkDistance(30)
     .linkStrength(function(d) { return d.strength; })
-    .size([width, height])
+    .size([initialWindowWidth, initialWindowHeight])
 
   force
     .nodes(nodes)
@@ -57,18 +58,15 @@ function render(svg, nodes, links) {
 $(function() {
   var svg = d3.select("#workspace")
     .append("svg:svg")
-      .attr("width", width)
-      .attr("height", height)
       .attr("pointer-events", "all")
 
   var zoom = d3.behavior.zoom();
   var zoomCapture = svg.append('g')
       .classed('zoom-capture', true)
       .append('svg:rect')
-        .attr('width', width)
-        .attr('height', height)
-        .attr('fill', 'white')
-        .style('stroke', 'black');
+        .attr('width', "100%")
+        .attr('height', "100%")
+        .attr('fill', 'white');
   
   var vis = svg.append('svg:g');
 
