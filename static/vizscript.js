@@ -131,8 +131,8 @@ svg.selectAll(".node").attr("r", function(d_1) {
 var color = d3.scale.category20();
 
 var force = d3.layout.force()
-    .charge(-120)
-    .linkDistance(30)
+    .charge(-240)
+    .linkDistance(50)
     .size([width, height]);
 
 var div0 = d3.select("body").append("div")
