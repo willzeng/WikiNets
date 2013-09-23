@@ -20,8 +20,21 @@ html
               a#toggle_en_1(href='#')  Edit Node/Arrow
             ul#en_1.submenu
               li
-                a(href='p1.html') Edit
+                Edit 
                 | Here is where you will go to input information to edit a node or morphism.
+                form
+                  input#SelectNodeID(name="SelectNodeID")
+                  input#SelectNode(type="button", value="Select Node")
+                #edit-menu-inputs(style='display: none;')
+                  #readrootEdit(style='display: none;')
+                    input.propertyEdit(name='propertyEdit', value='')
+                    input.valueEdit(name='valueEdit', value='')
+                    br
+                  form#edit-node
+                    span#writerootEdit
+                  input#moreFields(type='button', value='+', onclick='moreFields("writerootEdit","readrootEdit","EditProperty")')
+                  div(style='float: right;')
+                    input#EditNode(type='button', value='Save Changes')
         #infobar
           ul.menu
             li

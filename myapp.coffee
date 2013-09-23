@@ -177,6 +177,41 @@ module.exports = class MyApp
           response.send "error"
       )
     )
+
+
+    ###
+    Collects data from a node so it can be edited  
+    ###
+    app.post('/get_id', (request,response)->
+      console.log "Node Data Requested"
+      cypherQuery = "start n=node(" + request.body.nodeid + ") return n;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes) ->
+          console.log "Node ID Lookup Executed"
+          response.json noderes.data[0][0]["data"]
+        (noderes) ->
+          console.log "Node not found"
+          response.send "error"
+      )
+    )
+
+    ### Edits a node using a Cypher query ###
+    app.post('/edit_node', (request, response) ->
+      console.log "Node Edit Requested"
+      cypherQuery = "start n=node(" + request.body.nodeid + ") set n."
+      for property, value of request.body.properties
+        cypherQuery += "#{property}='#{value}', n."
+      cypherQuery = cypherQuery.substring(0,cypherQuery.length-4) + " return n;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes) ->
+          nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
+          nodeID = noderes.data[0][0]["self"].slice(nodeIDstart)
+          console.log "Node Edit Done, ID = " + nodeID
+          response.json noderes.data[0][0]["data"]
+      )
+    )
   
     ###
     indexPromise = graphDb.index.createNodeIndex "myIndex"
