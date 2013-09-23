@@ -67,7 +67,7 @@ class ConceptProvider(object):
 
 class Server(object):
   _cp_config = {'tools.staticdir.on' : True,
-                'tools.staticdir.dir' : os.path.join(os.getcwd(), "web"),
+                'tools.staticdir.dir' : os.path.abspath(os.path.join(os.getcwd(), "web")),
                 'tools.staticdir.index' : 'index.html',
                 }
 
