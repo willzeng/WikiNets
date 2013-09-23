@@ -80,6 +80,10 @@ svg.selectAll(".node").attr("r", function(d_1) {
                                          })
                                           .on("click", function(d_2, i_2) { 
  
+                                              //Use data from existing JSON to put into InfoBar div
+                                              var theinfo = "This node is called: "+ d_2.name + "\n\n Info: " + d_2.Info;
+                                              $('#infobox').html(theinfo);
+
                                                 setup_subgraph(d_2, i_2, this);
 
                                           });
@@ -98,6 +102,9 @@ svg.selectAll(".node").attr("r", function(d_1) {
                                        .text(function(d_2){ return d_2.name; })
                                        .on("click", function(d_2, i_2) { 
  
+                                               //Use data from existing JSON to put into InfoBar div
+                                              var theinfo = "This node is called: "+ d_2.name + "\n\n Info: " + d_2.Info;
+                                              $('#infobox').html(theinfo);
                                                
                                                 setup_subgraph(d_2, i_2, this);
 
