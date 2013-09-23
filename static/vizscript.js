@@ -84,6 +84,12 @@ svg.selectAll(".node").attr("r", function(d_1) {
                                               //Use data from existing JSON to put into InfoBar div
                                               var theinfo = "This node is called: "+ d_2.name + "\<p\> Info: " + d_2.Info;
                                               $('#infobox').html(theinfo);
+                                              // if "Edit Node" menu is visible, fill in data for selected node
+                                              if ($("#en_1").css("display") == "block") {
+                                                selected_node = d_2._id;
+                                                $("#SelectNodeID").val(selected_node);
+                                                select_node(selected_node);
+                                              };
 
                                                 setup_subgraph(d_2, i_2, this);
 
@@ -106,6 +112,12 @@ svg.selectAll(".node").attr("r", function(d_1) {
                                                //Use data from existing JSON to put into InfoBar div
                                               var theinfo = "This node is called: "+ d_2.name + "\<p\> Info: " + d_2.Info;
                                               $('#infobox').html(theinfo);
+                                              // if "Edit Node" menu is visible, fill in data for selected node
+                                              if ($("#en_1").css("display") == "block") {
+                                                selected_node = d_2._id;
+                                                $("#SelectNodeID").val(selected_node);
+                                                select_node(selected_node);
+                                              };
                                                
                                                 setup_subgraph(d_2, i_2, this);
 
@@ -173,6 +185,12 @@ var svg = d3.select("#mainNet").append("svg")
                   //Use data from existing JSON to put into InfoBar div
                   var theinfo = "This node is called: "+ d.name + "\<p\> Info: " + d.Info;
                   $('#infobox').html(theinfo);
+                  // if "Edit Node" menu is visible, fill in data for selected node
+                  if ($("#en_1").css("display") == "block") {
+                    selected_node = d._id;
+                    $("#SelectNodeID").val(selected_node);
+                    select_node(selected_node);
+                  };
 
 
                   setup_subgraph(d, i, this);

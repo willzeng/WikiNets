@@ -34,6 +34,29 @@ function moreFields(writediv, rootdiv, classNamediv) {
   insertHere.parentNode.insertBefore(newFields,insertHere);
 }
 
+function select_node(nodeid) {
+    $.post('/get_id', {nodeid: nodeid}, function(data) {
+      if (data == "error") {
+          alert("Node with ID " + nodeid + " could not be found.");
+      } else {
+        selected_node = nodeid;
+        console.log("Node data:\n" + JSON.stringify(data));
+        if ($("#edit-menu-inputs").css("display") == "none") {
+          $("#edit-menu-inputs").css("display", "block");
+        } else {
+          $('.EditProperty').each(function(i, obj) {
+            $(this)[0].parentNode.removeChild($(this)[0]);
+          });
+        };
+        for (property in data) {
+          moreFields("writerootEdit","readrootEdit","EditProperty");
+          $("input[name=propertyEdit"+counter+"]").val(property);
+          $("input[name=valueEdit"+counter+"]").val(data[property]);
+        };
+      };
+    });
+}
+
 
 $(document).ready(function(){
 
@@ -156,27 +179,8 @@ $(document).ready(function(){
 
 
 
-  $("#SelectNode").on("click", function(event){
-    $.post('/get_id', {nodeid: $("#SelectNodeID").val()}, function(data) {
-      if (data == "error") {
-          alert("Node with ID " + $("#SelectNodeID").val() + " could not be found.");
-      } else {
-        selected_node = $("#SelectNodeID").val();
-        console.log("Node data:\n" + JSON.stringify(data));
-        if ($("#edit-menu-inputs").css("display") == "none") {
-          $("#edit-menu-inputs").css("display", "block");
-        } else {
-          $('.EditProperty').each(function(i, obj) {
-            $(this)[0].parentNode.removeChild($(this)[0]);
-          });
-        };
-        for (property in data) {
-          moreFields("writerootEdit","readrootEdit","EditProperty");
-          $("input[name=propertyEdit"+counter+"]").val(property);
-          $("input[name=valueEdit"+counter+"]").val(data[property]);
-        };
-      };
-    });
+  $("#SelectNode").on("click", function(event) {
+    select_node($("#SelectNodeID").val());
   });
 
   $("#EditNode").on("click", function(event){

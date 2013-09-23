@@ -20,8 +20,7 @@ html
               a#toggle_en_1(href='#')  Edit Node/Arrow
             ul#en_1.submenu
               li
-                Edit 
-                | Here is where you will go to input information to edit a node or morphism.
+                | Please select a node.
                 form
                   input#SelectNodeID(name="SelectNodeID")
                   input#SelectNode(type="button", value="Select Node")
@@ -35,6 +34,8 @@ html
                   input#moreFields(type='button', value='+', onclick='moreFields("writerootEdit","readrootEdit","EditProperty")')
                   div(style='float: right;')
                     input#EditNode(type='button', value='Save Changes')
+              li
+                | Functionality for editing arrows will be found here.
         #infobar
           ul.menu
             li
