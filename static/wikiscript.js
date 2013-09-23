@@ -15,6 +15,7 @@ function showlayer(layer){
 // Not sure how to convert it all into jQuery though...
 // Code for adding more input fields modified from http://www.quirksmode.org/dom/domform.html
 var counter = 0;
+var selected_node;
 
 function moreFields(writediv, rootdiv, classNamediv) {
   counter++;
@@ -156,6 +157,7 @@ $(document).ready(function(){
       if (data == "error") {
           alert("Node with ID " + $("#SelectNodeID").val() + " could not be found.");
       } else {
+        selected_node = $("#SelectNodeID").val();
         console.log("Node data:\n" + JSON.stringify(data));
         if ($("#edit-menu-inputs").css("display") == "none") {
           $("#edit-menu-inputs").css("display", "block");
@@ -172,6 +174,41 @@ $(document).ready(function(){
         };
       };
     });
+  });
+
+  $("#EditNode").on("click", function(event){
+    var nodeObject = {};
+    var submitOK = true;
+    $('.EditProperty').each(function(i, obj) {
+      var property = $(this).children(".propertyEdit").val();
+      var value = $(this).children(".valueEdit").val();
+      if (/^.*[^a-zA-Z0-9_].*$/.test(property)) {
+        alert("Property name '" + property + "' illegal:\nproperty names must only contain alphanumeric characters\nand underscore.");
+        submitOK = false;
+        return false;
+      } else {
+        if (property in nodeObject) {
+          alert("Property '" + property + "' already assigned.\nFirst value: " + nodeObject[property] + "\nSecond value: " + value);
+          submitOK = false;
+          return false;
+        } else {
+          nodeObject[property] = value;
+        };
+      };
+    });
+    if (submitOK) {
+      $('.EditProperty').each(function(i, obj) {
+        $(this)[0].parentNode.removeChild($(this)[0]);
+      });
+      console.log(JSON.stringify(nodeObject));
+      if (JSON.stringify(nodeObject) == '{}') {
+        alert("No properties are being set for node " + selected_node + ".");
+      } else {
+        $.post('/edit_node', {nodeid: selected_node, properties: nodeObject}, function(data) {
+          alert("Saved changes to node " + selected_node + ".");
+        });
+      };
+    };
   });
  
 });
