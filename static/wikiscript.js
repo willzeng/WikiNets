@@ -147,5 +147,24 @@ $(document).ready(function(){
       });
     }
   });
+
+
+
+  $("#SelectNode").on("click", function(event){
+    $.post('/get_id', {nodeid: $("#SelectNodeID").val()}, function(data) {
+      if (data == "error") {
+          alert("Node with ID " + $("#SelectNodeID").val() + " could not be found.");
+      } else {
+        console.log("Node data:\n" + JSON.stringify(data));
+        if ($("#edit-menu-inputs").css("display") == "none") {
+          $("#edit-menu-inputs").css("display", "block");
+        } else {
+          $('.EditProperty').each(function(i, obj) {
+            $(this)[0].parentNode.removeChild($(this)[0]);
+          });
+        };
+      };
+    });
+  });
  
 });
