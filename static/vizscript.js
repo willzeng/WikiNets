@@ -81,7 +81,7 @@ svg.selectAll(".node").attr("r", function(d_1) {
                                           .on("click", function(d_2, i_2) { 
  
                                               //Use data from existing JSON to put into InfoBar div
-                                              var theinfo = "This node is called: "+ d_2.name + "\n\n Info: " + d_2.Info;
+                                              var theinfo = "This node is called: "+ d_2.name + "\<p\> Info: " + d_2.Info;
                                               $('#infobox').html(theinfo);
 
                                                 setup_subgraph(d_2, i_2, this);
@@ -94,7 +94,7 @@ svg.selectAll(".node").attr("r", function(d_1) {
 
                 frame.selectAll("text").data(neighbors).enter().append("text")
                                        .attr("fill", "black")
-                                       .attr("font-size", 10)
+                                       .attr("font-size", 18)
                                        .attr("x", function(d_2, i_2){return 150*Math.cos(2*i_2*Math.PI/neighbors.length)+width/2+5;
                                         })
                                        .attr("y", function(d_2, i_2){return 150*Math.sin(2*i_2*Math.PI/neighbors.length)+height/2+central_width/2+5;
@@ -103,7 +103,7 @@ svg.selectAll(".node").attr("r", function(d_1) {
                                        .on("click", function(d_2, i_2) { 
  
                                                //Use data from existing JSON to put into InfoBar div
-                                              var theinfo = "This node is called: "+ d_2.name + "\n\n Info: " + d_2.Info;
+                                              var theinfo = "This node is called: "+ d_2.name + "\<p\> Info: " + d_2.Info;
                                               $('#infobox').html(theinfo);
                                                
                                                 setup_subgraph(d_2, i_2, this);
@@ -112,7 +112,7 @@ svg.selectAll(".node").attr("r", function(d_1) {
 
                 frame.selectAll("text.label").data([th]).enter().append("text")
                                        .attr("fill", "black")
-                                       .attr("font-size", 10)
+                                       .attr("font-size", 18)
                                        .attr("x", function(d_2, i_2){return width/2+5;
                                         })
                                        .attr("y", function(d_2, i_2){return height/2-1+central_width/2;
@@ -170,7 +170,7 @@ var svg = d3.select("#mainNet").append("svg")
       .on("click", function(d, i) { 
                   
                   //Use data from existing JSON to put into InfoBar div
-                  var theinfo = "This node is called: "+ d.name + "\n\n Info: " + d.Info;
+                  var theinfo = "This node is called: "+ d.name + "\<p\> Info: " + d.Info;
                   $('#infobox').html(theinfo);
 
 
@@ -187,7 +187,7 @@ var svg = d3.select("#mainNet").append("svg")
                 .enter().append("text")
                 .attr("class", "label")
                 .attr("fill", "black")
-                .attr("font-size", 10)
+                .attr("font-size", 18)
                 .text(function(d) {  return d.name;  });
 
   node.append("title")
