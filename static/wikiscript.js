@@ -32,7 +32,7 @@ $(function() {
 // global variables
 // - "counter" is used to keep track of the input fields generated on-the-fly
 // - "selected_node" keeps track of which node is selected for editing
-// - "selected_node_properties" is a list of the properties of the selected node
+// - "selected_node_properties" contains the properties of the selected node
 // - "reserved_keys" is a global constant and keeps track of property names
 //   which are reserved for system use
 var counter = 0;
@@ -62,7 +62,7 @@ function moreFields(writediv, rootdiv, classNamediv) {
 // "edit node" menu is open or by entering a number into the "select node"
 // input field and then clicking the "select node" button
 function select_node(nodeid) {
-    selected_node_properties = []
+    selected_node_properties = {};
     $.post('/get_id', {nodeid: nodeid}, function(data) {
       if (data == "error") {
           alert("Node with ID " + nodeid + " could not be found.");
@@ -77,7 +77,7 @@ function select_node(nodeid) {
           });
         };
         for (property in data) {
-          selected_node_properties.push(property);
+          selected_node_properties[property] = data[property];
           moreFields("writerootEdit","readrootEdit","EditProperty");
           $("input[name=propertyEdit"+counter+"]").val(property);
           $("input[name=valueEdit"+counter+"]").val(data[property]);
@@ -249,13 +249,21 @@ $(document).ready(function(){
     [submitOK, nodeObject] = assign_properties("Edit");
     if (submitOK) {
       var deleted_props = [];
-      for (i=0; i<selected_node_properties.length; i++) {
-        if (!(selected_node_properties[i] in nodeObject)) {
-          deleted_props.push(selected_node_properties[i]);
+      for (var property in selected_node_properties) {
+        if (property in nodeObject) {
+          if (selected_node_properties[property] === nodeObject[property]) {
+            delete nodeObject[property];
+          };
+        } else {
+          deleted_props.push(property);
         };
       };
       if (((deleted_props.length == 1) && (!(confirm("Are you sure you want to delete the following property? " + deleted_props)))) || ((deleted_props.length > 1) && (!(confirm("Are you sure you want to delete the following properties? " + deleted_props))))) {
         alert("Cancelled saving of node " + selected_node + ".");
+        return false;
+      };
+      if (JSON.stringify(nodeObject) === "{}") {
+        alert("Node " + selected_node + " has not changed and does not need to be saved.");
         return false;
       };
       console.log(JSON.stringify(nodeObject));
