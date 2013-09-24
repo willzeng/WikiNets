@@ -8,6 +8,19 @@ function showlayer(layer){
 }
 
 
+//listen for cntrl-enter to refresh graph viz
+$(function() {
+   $(window).keypress(function(e) {
+      var key = e.which;
+      //do stuff with "key" here... Note: id 118 is the 'v'
+      if(key==118){
+        $('#outputer').html(key);
+        window.location.href = '/';
+      }
+   });
+});
+
+
 //-----------------------------------------
 
 
