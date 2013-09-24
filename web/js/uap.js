@@ -6,24 +6,29 @@ var force = d3.layout.force()
     .linkStrength(function(d) { return (d.strength  - 0.75) / (1 - 0.75); })
     .size([initialWindowWidth, initialWindowHeight])
 
+/* capture searches */
 function registerInput(workspace) {
-  $("#input-search").keypress(function(e) {
-
-    var val = $("#input-search").val();
-    if (e.which === 13 && val.length > 0) {
-      $.ajax({
-        url: "/get_data",
-        type: "GET",
-        data: {text: val},
-        success: function(response) {
-          render(workspace, response.nodes, response.links);
-        },
-        error: function(response) {
-          alert(val + " was not found as a concept. Please try something else.");
-        },
-      });
-    }
+  $("#input-search").typeahead({
+    prefetch: '/get_concepts',
+    name: "concepts",
+  }).on("typeahead:selected", function(e, datum) {
+    console.log(datum.value);
   });
+  
+  function doSearch(val) {
+    // $.ajax({
+    //   url: "/get_data",
+    //   type: "GET",
+    //   data: {text: val},
+    //   success: function(response) {
+    //     render(workspace, response.nodes, response.links);
+    //   },
+    //   error: function(response) {
+    //     alert(val + " was not found as a concept. Please try something else.");
+    //   },
+    // });
+  }
+  // doSearch("beer");
 }
 
 /* link d3 parameter controls so changes render in real time */
@@ -100,6 +105,20 @@ function createWorkspace() {
   return workspace;
 }
 
+function data() {
+  var allNodes = [];
+  var allLinks = [];
+
+  this.add = function(node, links) {
+
+  }
+
+  this.remove = function(node) {
+
+  }
+
+}
+
 /* establish how data is to be rendered - bind elements to force layout */
 function render(svg, nodes, links) {
 
@@ -110,7 +129,7 @@ function render(svg, nodes, links) {
     .links(links)
     .start()
 
-   var link = svg.selectAll(".link")
+  var link = svg.selectAll(".link")
       .data(links)
     .enter().append("line")
       .attr("class", "link")
@@ -120,12 +139,19 @@ function render(svg, nodes, links) {
       .data(nodes)
     .enter().append("g")
       .attr("class", "node")
-      .call(force.drag);
+      .call(force.drag)
+      .on('click', function(datum, index) {
+        
+        // `this` is current DOM element
+        if (d3.event.defaultPrevented) return; // ignore drag
+        datum.selected = !datum.selected;
+        d3.select(this).classed("selected", function(d) {return d.selected; });
+      });
     
   node.append("text")
     .attr("dx", 12)
     .attr("dy", ".35em")
-    .text(function(d) {return d.text;});
+    .text(function(d) { return d.text; });
 
   node.append("circle")
     .attr("r", 5)
@@ -143,7 +169,7 @@ function render(svg, nodes, links) {
       .attr("y2", function(d) { return d.target.y; });
 
     node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-
+    
   });
 }
 

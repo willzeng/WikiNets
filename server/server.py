@@ -9,10 +9,19 @@ class ConceptProvider(object):
   def __init__(self, num_axes):
     A = divisi2.network.conceptnet_matrix('en')
     concept_axes, axis_weights, feature_axes = A.svd(k=num_axes)
-    self.sim = divisi2.reconstruct_similarity(concept_axes, axis_weights, post_normalize=True)
+    self.sim = divisi2.reconstruct_similarity(concept_axes, axis_weights, post_normalize=True)  
+    self.concept_axes = concept_axes
 
+  def get_concepts(self):
+    '''returns list of strings of concepts'''
+    return [x for x in self.concept_axes.row_labels]
+
+  '''
   def get_related_concepts(self, text, limit):
     return self.sim.row_named(text).top_items(n=limit)
+
+  def get_concepts(self):
+    return self.sim.row_named
 
   def get_data(self, text):
 
@@ -64,6 +73,7 @@ class ConceptProvider(object):
     for node, strength in self.sim.row_named(node).top_items(n=limit):
       output.append({"text": node, "strength": strength})
     return output
+  '''
 
 class Server(object):
   _cp_config = {'tools.staticdir.on' : True,
@@ -74,10 +84,13 @@ class Server(object):
   def __init__(self):
     self.provider = ConceptProvider(100)
 
+
   @cherrypy.expose
   @cherrypy.tools.json_out()
-  def getrange(self, limit=10):
-    return list(range(int(limit)))
+  def get_concepts(self):
+    return self.provider.get_concepts();
+
+  '''
 
   @cherrypy.expose
   @cherrypy.tools.json_out()
@@ -103,6 +116,8 @@ class Server(object):
   @cherrypy.tools.json_out()
   def get_top_items(self, text, limit=10):
     return {"related": self.provider.get_top_items(text, int(limit))}
+
+  '''
 
 
 cherrypy.config.update({'server.socket_host': '0.0.0.0', 

@@ -4,6 +4,7 @@
 <script src="js/jquery-1.10.2.min.js"></script>
 <script src="js/d3.v3.min.js"></script>
 <script src="js/underscore-min.js"></script>
+<script src="js/typeahead.min.js"></script>
 <script src="js/uap.js"></script>
 <style>
 
@@ -25,7 +26,12 @@
   /* top right helpers */
   #helper-container-top-right { position: absolute; top: 5; right: 5; z-index: 10; }
 
-  #input-search { border: 0px; font-size: 12pt; font-family: "Trebuchet MS"; padding: 2px; margin: 0px;}
+  /* typeahead styling */
+  #input-search, .tt-hint { border: 0px; font-size: 12pt; font-family: "Trebuchet MS"; padding: 2px; margin: 0px;}
+  .tt-dropdown-menu {background-color: #ccc; width: 100%; }
+  .tt-is-under-cursor { color: white; }
+  .tt-suggestions { padding-left: 2px;}
+  .tt-suggestion { }
 
   /* workspace helper-container */
   #workspace > svg { position: absolute; left: 0; top: 0; width: "100%"; height: "100%"; z-index: 0;}
@@ -39,6 +45,7 @@
   #workspace .node:hover text,
   #workspace .node:hover circle { fill: orange; z-index: 999; }
   #workspace .node circle { fill: steelblue; }
+  #workspace .node.selected circle {fill: red;}
 
 </style>
 </head>
@@ -80,7 +87,7 @@
 
   <div id="helper-container-top-right" class="helper-container">
     <div class="helper">
-      <input id="input-search" type="text" placeholder="Search..."></input>
+      <input id="input-search" type="text" placeholder="Add Concept..."></input>
     </div>
   </div>
 
