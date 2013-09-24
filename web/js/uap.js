@@ -78,29 +78,58 @@ function registerForceControls() {
   });
 }
 
-/* create zoomable and return zoomable workspace */
+/* create and return zoomable workspace */
 function createWorkspace() {
+  
+  // svg element which houses everything
   var svg = d3.select("#workspace")
     .append("svg:svg")
       .attr("pointer-events", "all")
 
+  // zoom behavior which is used to scale and translate
   var zoom = d3.behavior.zoom();
+
+  // outermost wrapper - this is used to capture all zoom events
   var zoomCapture = svg.append('g')
-      .classed('zoom-capture', true)
-      .append('svg:rect')
-        .attr('width', "100%")
-        .attr('height', "100%")
-        .attr('fill', 'white');
+      .classed('zoom-capture', true);
+
+  // this is in the background to capture events not on any node  
+  // should be added first so appended nodes appear above this
+  var rect = zoomCapture.append('svg:rect')
+    .attr("width", "100%")
+    .attr("height", "100%")
+    .attr("fill", "red")
+    .style("fill-opacity", "0%");
+
+  // inner workspace which nodes and links go on
+  // scaling and transforming are abstracted away from this
+  var workspace = zoomCapture.append('svg:g');
   
-  var workspace = svg.append('svg:g');
+  // lock infstracture to ignore zoom changes that would
+  // typically occur when dragging a node
+  var translateLock = false;
+  var currentZoom;
+  force.drag()
+    .on('dragstart', function() {
+      translateLock = true;
+      currentZoom = zoom.translate();
+    })
+    .on('dragend', function() {
+      zoom.translate(currentZoom);
+      translateLock = false;
+    });
 
-  zoomCapture.call(zoom.on("zoom", redraw))
+  // add event listener to actually affect UI
+  zoomCapture.call(zoom.on("zoom", function() {
 
-  function redraw() {
+    // ignore zoom event if it's due to a node being dragged
+    if (translateLock) return;
+
+    // otherwise, translate and scale according to zoom
     workspace.attr("transform",
         "translate(" + d3.event.translate + ")" + 
         " scale(" + d3.event.scale + ")");
-  }
+  }));
 
   return workspace;
 }
@@ -162,6 +191,7 @@ function render(svg, nodes, links) {
     .text(function(d) {return d.text; });
 
   force.on("tick", function() {
+
     link
       .attr("x1", function(d) { return d.source.x; })
       .attr("y1", function(d) { return d.source.y; })
