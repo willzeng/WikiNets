@@ -21,7 +21,7 @@ html
             ul#en_1.submenu
               li
                 | Please select a node.
-                form
+                form#SelectNodeForm
                   input#SelectNodeID(name="SelectNodeID")
                   input#SelectNode(type="button", value="Select Node")
                 #edit-menu-inputs(style='display: none;')
@@ -43,13 +43,13 @@ html
             ul#enn_1.submenu
               li Create node:
               #readrootObj(style='display: none;')
-                input.propertyObj(name='propertyObj', value='propertyEx')
-                input.valueObj(name='valueObj', value='valueEx')
+                input.propertyNode(name='propertyNode', value='propertyEx')
+                input.valueNode(name='valueNode', value='valueEx')
                 input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
                 br
               form#create-node
                 span#writerootObj
-              input#moreFields(type='button', value='+', onclick='moreFields("writerootObj","readrootObj","nodeProperty")')
+              input#moreFields(type='button', value='+', onclick='moreFields("writerootObj","readrootObj","NodeProperty")')
               div(style='float: right;')
                 input#createObj(type='button', value='Create node')
               li  Create arrow:
@@ -64,7 +64,7 @@ html
                   input#to(name='to', value='to: node ID')
                   input#rel-type(name='rel-type', value='type')
                 span#writerootArr
-              input#moreFields(type='button', value='+', onclick='moreFields("writerootArr","readrootArr","relProperty")')
+              input#moreFields(type='button', value='+', onclick='moreFields("writerootArr","readrootArr","ArrProperty")')
               div(style='float: right;')
                 input#createArr(type='button', value='Create arrow')
         #spacer(style='width: 30px; height: 30px; float: left;')
@@ -79,7 +79,7 @@ html
             ul#sm_1.submenu
               li Node ID:
               form(method="post",action="/search_id")
-                input(type="text",name="nodeid", size=27)
+                input(type="text",name="nodeid")
                 input(type="submit",value="Get Node")
               #SearchOutput
       #middlebar
