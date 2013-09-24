@@ -254,16 +254,20 @@ $(document).ready(function(){
           deleted_props.push(selected_node_properties[i]);
         };
       };
-      if (((deleted_props.length == 1) && (!(confirm("Are you sure you want to delete the following property? " + deleted_props)))) || ((deleted_props.length != 0) && (!(confirm("Are you sure you want to delete the following properties? " + deleted_props))))) {
+      if (((deleted_props.length == 1) && (!(confirm("Are you sure you want to delete the following property? " + deleted_props)))) || ((deleted_props.length > 1) && (!(confirm("Are you sure you want to delete the following properties? " + deleted_props))))) {
         alert("Cancelled saving of node " + selected_node + ".");
         return false;
       };
-      $(".EditProperty").each(function(i, obj) {
-        $(this)[0].parentNode.removeChild($(this)[0]);
-      });
       console.log(JSON.stringify(nodeObject));
       $.post('/edit_node', {nodeid: selected_node, properties: nodeObject, remove: deleted_props}, function(data) {
-        alert("Saved changes to node " + selected_node + ".");
+        if (data === "error") {
+          alert("Failed to save changes to node " + selected_node + ".");
+        } else {
+          alert("Saved changes to node " + selected_node + ".");
+          $(".EditProperty").each(function(i, obj) {
+            $(this)[0].parentNode.removeChild($(this)[0]);
+          });
+        };
       });
     };
   });
