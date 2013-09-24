@@ -2,33 +2,145 @@
 var initialWindowWidth = $(window).width();
 var initialWindowHeight = $(window).height();
 
+/* instantiate global force object */
 var force = d3.layout.force()
     .linkStrength(function(d) { return (d.strength  - 0.75) / (1 - 0.75); })
     .size([initialWindowWidth, initialWindowHeight])
 
+/* every change should be channeled through here */
+function Controller(workspace) {
+  
+  var nodes = [];
+  var selectedNodes = [];
+  
+  // these links always reference object in nodes
+  var allLinks = [];
+  var renderedLinks = [];
+  
+
+  var minStrength = 0.75;
+
+  this.updateRendering = function() {
+    
+    // update force layout
+
+    force
+      .nodes(nodes)
+      .links(renderedLinks)
+      .start()
+
+    // update links
+
+    var link = workspace.selectAll(".link")
+        .data(renderedLinks)
+
+    link.enter().append("line")
+      .attr("class", "link")
+      .style("stroke-width", 1);  
+
+    link.exit().remove();
+
+    // update nodes
+
+    var node = workspace.selectAll(".node")
+      .data(nodes)
+
+    var controller = this;
+
+    var nodeEnter = node.enter().append("g")
+      .attr("class", "node")
+      .call(force.drag)
+      .on('click', function(datum, index) {
+        // `this` is current DOM element
+        if (d3.event.defaultPrevented) return; // ignore drag
+        controller.toggleSelected(datum);
+        d3.select(this).classed("selected", function(d) {return d.selected; });
+      })
+      
+    nodeEnter.append("text")
+      .attr("dx", 12)
+      .attr("dy", ".35em")
+      .text(function(d) { return d.text; });
+
+    nodeEnter.append("circle")
+      .attr("r", 5)
+      .attr("cx", 0)
+      .attr("cy", 0);
+
+    node.exit().remove();
+
+    // reaffirm how rendering is done
+
+    force.on("tick", function() {
+      link
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
+      node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+      
+    });
+  };
+
+  this.addConcept = function(text) {
+    
+    var presentNode = _.find(nodes, function(node) {
+      return node.text === text;
+    });
+
+    if (presentNode) {
+      return;
+    }
+
+    var otherConcepts = _.map(nodes, function(node) {
+      return node.text;
+    });
+    
+    $.ajax({
+      url: "get_links",
+      data: {text: text, allNodes: JSON.stringify(otherConcepts)},
+      success: function(response) {
+        // expects array of strengths
+        var node = {text: text};
+        nodes.push(node);
+        _.each(response, function(strength, i) {
+          var link = {source: node, target: nodes[i], strength: strength};
+          allLinks.push(link);
+          if (strength > minStrength) {
+            renderedLinks.push(link);
+          }
+        });
+        this.updateRendering();
+      }.bind(this),
+    });
+  };
+
+  this.select = function(d) {
+    d.selected = true;
+    selectedNodes.push(d);
+  };
+
+  this.toggleSelected = function(d) {
+    d.selected = !d.selected;
+    if (d.selected) {
+      nodes[d.text] = d;
+    } else {
+      delete nodes[d.text];
+    }
+  }
+
+}
+
 /* capture searches */
-function registerInput(workspace) {
+function registerInput(controller) {
   $("#input-search").typeahead({
     prefetch: '/get_concepts',
     name: "concepts",
   }).on("typeahead:selected", function(e, datum) {
-    console.log(datum.value);
+    $(this).val("");
+    controller.addConcept(datum.value);
   });
-  
-  function doSearch(val) {
-    // $.ajax({
-    //   url: "/get_data",
-    //   type: "GET",
-    //   data: {text: val},
-    //   success: function(response) {
-    //     render(workspace, response.nodes, response.links);
-    //   },
-    //   error: function(response) {
-    //     alert(val + " was not found as a concept. Please try something else.");
-    //   },
-    // });
-  }
-  // doSearch("beer");
 }
 
 /* link d3 parameter controls so changes render in real time */
@@ -134,79 +246,10 @@ function createWorkspace() {
   return workspace;
 }
 
-function data() {
-  var allNodes = [];
-  var allLinks = [];
-
-  this.add = function(node, links) {
-
-  }
-
-  this.remove = function(node) {
-
-  }
-
-}
-
-/* establish how data is to be rendered - bind elements to force layout */
-function render(svg, nodes, links) {
-
-  $(".node, .link").remove();
-
-  force
-    .nodes(nodes)
-    .links(links)
-    .start()
-
-  var link = svg.selectAll(".link")
-      .data(links)
-    .enter().append("line")
-      .attr("class", "link")
-      .style("stroke-width", 1);  
-
-  var node = svg.selectAll(".node")
-      .data(nodes)
-    .enter().append("g")
-      .attr("class", "node")
-      .call(force.drag)
-      .on('click', function(datum, index) {
-        
-        // `this` is current DOM element
-        if (d3.event.defaultPrevented) return; // ignore drag
-        datum.selected = !datum.selected;
-        d3.select(this).classed("selected", function(d) {return d.selected; });
-      });
-    
-  node.append("text")
-    .attr("dx", 12)
-    .attr("dy", ".35em")
-    .text(function(d) { return d.text; });
-
-  node.append("circle")
-    .attr("r", 5)
-    .attr("cx", 0)
-    .attr("cy", 0);
-
-  node.append('title')
-    .text(function(d) {return d.text; });
-
-  force.on("tick", function() {
-
-    link
-      .attr("x1", function(d) { return d.source.x; })
-      .attr("y1", function(d) { return d.source.y; })
-      .attr("x2", function(d) { return d.target.x; })
-      .attr("y2", function(d) { return d.target.y; });
-
-    node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-    
-  });
-}
-
+/* on page load */
 $(function() {
-
   var workspace = createWorkspace();
-  registerInput(workspace);
+  var controller = new Controller(workspace);
+  registerInput(controller);
   registerForceControls();
-
 });

@@ -16,6 +16,9 @@ class ConceptProvider(object):
     '''returns list of strings of concepts'''
     return [x for x in self.concept_axes.row_labels]
 
+  def get_links(self, concept, otherConcepts):
+    return [self.sim.entry_named(concept, c2) for c2 in otherConcepts]
+
   '''
   def get_related_concepts(self, text, limit):
     return self.sim.row_named(text).top_items(n=limit)
@@ -89,6 +92,11 @@ class Server(object):
   @cherrypy.tools.json_out()
   def get_concepts(self):
     return self.provider.get_concepts();
+
+  @cherrypy.expose
+  @cherrypy.tools.json_out()
+  def get_links(self, text, allNodes):
+    return self.provider.get_links(text, json.loads(allNodes))
 
   '''
 
