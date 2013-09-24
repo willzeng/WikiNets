@@ -13,6 +13,8 @@ html
       h1(style='margin-bottom: 5px; margin-left: 10px;')
         a(href='http://thewikinetsproject.wordpress.com/') WikiNets
 
+    p#outputer Press 'V' Key to refresh the page.
+
     #edit_menu(style='display: none;')
       #infobar
           ul.menu
@@ -34,6 +36,7 @@ html
                     span#writerootEdit
                   input#moreFields(type='button', value='+', onclick='moreFields("writerootEdit","readrootEdit","EditProperty")')
                   div(style='float: right;')
+                    input#delNode(type='button', value='Delete Node')
                     input#EditNode(type='button', value='Save Changes')
                   div(style='float: right;')
                     input#DeleteNode(type='button', value='Delete Node')
