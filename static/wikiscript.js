@@ -214,7 +214,8 @@ $(document).ready(function(){
 
 
   // selects a node for editing from the node ID input field
-  $("#SelectNode").on("click", function(event) {
+  $("#SelectNodeForm").on("submit",function(event) {
+    event.preventDefault();
     // check whether node ID is a number
     if (!(/^[0-9]+$/.test($("#SelectNodeID").val()))) {
       alert("Node ID must be a number.");
