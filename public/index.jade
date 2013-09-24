@@ -28,12 +28,15 @@ html
                   #readrootEdit(style='display: none;')
                     input.propertyEdit(name='propertyEdit', value='')
                     input.valueEdit(name='valueEdit', value='')
+                    input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
                     br
                   form#edit-node
                     span#writerootEdit
                   input#moreFields(type='button', value='+', onclick='moreFields("writerootEdit","readrootEdit","EditProperty")')
                   div(style='float: right;')
                     input#EditNode(type='button', value='Save Changes')
+                  div(style='float: right;')
+                    input#DeleteNode(type='button', value='Delete Node')
               li
                 | Functionality for editing arrows will be found here.
         #infobar

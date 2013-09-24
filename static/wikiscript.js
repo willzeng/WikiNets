@@ -19,10 +19,12 @@ function showlayer(layer){
 // global variables
 // - "counter" is used to keep track of the input fields generated on-the-fly
 // - "selected_node" keeps track of which node is selected for editing
+// - "selected_node_properties" is a list of the properties of the selected node
 // - "reserved_keys" is a global constant and keeps track of property names
 //   which are reserved for system use
 var counter = 0;
 var selected_node;
+var selected_node_properties;
 var reserved_keys = ["_id"];
 
 // adds pairs of input fields for properties and values
@@ -47,6 +49,7 @@ function moreFields(writediv, rootdiv, classNamediv) {
 // "edit node" menu is open or by entering a number into the "select node"
 // input field and then clicking the "select node" button
 function select_node(nodeid) {
+    selected_node_properties = []
     $.post('/get_id', {nodeid: nodeid}, function(data) {
       if (data == "error") {
           alert("Node with ID " + nodeid + " could not be found.");
@@ -61,6 +64,7 @@ function select_node(nodeid) {
           });
         };
         for (property in data) {
+          selected_node_properties.push(property);
           moreFields("writerootEdit","readrootEdit","EditProperty");
           $("input[name=propertyEdit"+counter+"]").val(property);
           $("input[name=valueEdit"+counter+"]").val(data[property]);
@@ -225,24 +229,44 @@ $(document).ready(function(){
   });
 
 
-  // saves new properties for a node
+  // Edits properties of a node
   $("#EditNode").on("click", function(event){
     var submitOK, nodeObject;
     // assign property-value pairs to nodeObject and check for legality
     [submitOK, nodeObject] = assign_properties("Edit");
     if (submitOK) {
-      if (JSON.stringify(nodeObject) == '{}') {
-        alert("No properties are being set for node " + selected_node + ".");
-      } else {
-        $(".EditProperty").each(function(i, obj) {
-          $(this)[0].parentNode.removeChild($(this)[0]);
-        });
-        console.log(JSON.stringify(nodeObject));
-        $.post('/edit_node', {nodeid: selected_node, properties: nodeObject}, function(data) {
-          alert("Saved changes to node " + selected_node + ".");
-        });
+      var deleted_props = [];
+      for (i=0; i<selected_node_properties.length; i++) {
+        if (!(selected_node_properties[i] in nodeObject)) {
+          deleted_props.push(selected_node_properties[i]);
+        };
       };
+      if (((deleted_props.length == 1) && (!(confirm("Are you sure you want to delete the following property? " + deleted_props)))) || ((deleted_props.length != 0) && (!(confirm("Are you sure you want to delete the following properties? " + deleted_props))))) {
+        alert("Cancelled saving of node " + selected_node + ".");
+        return false;
+      };
+      $(".EditProperty").each(function(i, obj) {
+        $(this)[0].parentNode.removeChild($(this)[0]);
+      });
+      console.log(JSON.stringify(nodeObject));
+      $.post('/edit_node', {nodeid: selected_node, properties: nodeObject, remove: deleted_props}, function(data) {
+        alert("Saved changes to node " + selected_node + ".");
+      });
     };
   });
- 
+
+
+  // Delets a node
+  $("#DeleteNode").on("click", function(event){
+    if (confirm("Are you sure you want to delete node " + selected_node + "?")) {
+      $.post('/delete_node', {nodeid: selected_node}, function(data) {
+        if (data === "error") {
+          alert("Could not delete node " + selected_node + ". Ensure you delete all relationships involving a node before deleting the node itself.");
+        } else {
+          alert("Deleted node " + selected_node + ".");
+        }
+      });
+    };
+  });
+
 });

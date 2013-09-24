@@ -202,10 +202,18 @@ module.exports = class MyApp
     ### Edits a node using a Cypher query ###
     app.post('/edit_node', (request, response) ->
       console.log "Node Edit Requested"
-      cypherQuery = "start n=node(" + request.body.nodeid + ") set n."
-      for property, value of request.body.properties
-        cypherQuery += "#{property}='#{value}', n."
-      cypherQuery = cypherQuery.substring(0,cypherQuery.length-4) + " return n;"
+      cypherQuery = "start n=node(" + request.body.nodeid + ") "
+      if request.body.properties isnt undefined
+        cypherQuery += "set n."
+        for property, value of request.body.properties
+          cypherQuery += "#{property}='#{value}', n."
+        cypherQuery = cypherQuery.substring(0,cypherQuery.length-4)
+      if request.body.remove isnt undefined
+        cypherQuery += " remove n."
+        for property in request.body.remove
+          cypherQuery += "#{property}, "
+        cypherQuery = cypherQuery.substring(0,cypherQuery.length-2)
+      cypherQuery += " return n;"
       console.log "Executing " + cypherQuery
       graphDb.cypher.execute(cypherQuery).then(
         (noderes) ->
@@ -215,6 +223,25 @@ module.exports = class MyApp
           response.json noderes.data[0][0]["data"]
       )
     )
+
+
+    ###
+    Deletes a node 
+    ###
+    app.post('/delete_node', (request,response)->
+      console.log "Node Deletion Requested"
+      cypherQuery = "start n=node(" + request.body.nodeid + ") delete n;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes) ->
+          console.log "Node Deleted"
+          response.send "success"
+        (noderes) ->
+          console.log "Could Not Delete Node"
+          response.send "error"
+      )
+    )
+
   
     ###
     indexPromise = graphDb.index.createNodeIndex "myIndex"
