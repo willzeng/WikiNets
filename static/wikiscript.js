@@ -248,20 +248,26 @@ $(document).ready(function(){
     // assign property-value pairs to nodeObject and check for legality
     [submitOK, nodeObject] = assign_properties("Edit");
     if (submitOK) {
+      // check which properties have changed and which ones are being deleted
       var deleted_props = [];
       for (var property in selected_node_properties) {
         if (property in nodeObject) {
           if (selected_node_properties[property] === nodeObject[property]) {
+            // don't have to re-set property value if it hasn't changed
             delete nodeObject[property];
           };
         } else {
+          // this is a list of properties that are being deleted
           deleted_props.push(property);
         };
       };
+      // ask for confirmation before deleting properties
+      // (two different messages in the interest of grammar)
       if (((deleted_props.length == 1) && (!(confirm("Are you sure you want to delete the following property? " + deleted_props)))) || ((deleted_props.length > 1) && (!(confirm("Are you sure you want to delete the following properties? " + deleted_props))))) {
         alert("Cancelled saving of node " + selected_node + ".");
         return false;
       };
+      // do not make a server request if the node hasn't changed
       if (JSON.stringify(nodeObject) === "{}") {
         alert("Node " + selected_node + " has not changed and does not need to be saved.");
         return false;
@@ -281,7 +287,8 @@ $(document).ready(function(){
   });
 
 
-  // Delets a node
+  // Deletes a node after checking for user confirmation
+  // (delete button is right next to save, after all)
   $("#DeleteNode").on("click", function(event){
     if (confirm("Are you sure you want to delete node " + selected_node + "?")) {
       $.post('/delete_node', {nodeid: selected_node}, function(data) {
