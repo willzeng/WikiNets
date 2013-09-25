@@ -11,11 +11,31 @@
   /* remove default chrome glow */
   textarea, input { outline: none; }
 
+  /*  */
+  .btn { color: white; 
+         margin-top: 10px; margin-bottom: 10px; 
+         margin-left: 4px; margin-right: 4px;
+         padding: 4px; border: 1px solid white; background-color: #AAA; cursor: pointer;
+    /* don't let user select the text */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none; 
+   }
+
+  .btn:hover {background-color: #999; }
+
+  .symbol { width: 20px; font-family: "Monospace"; }
+
+  .stat {color: white; }
+
   /* styles consistent across all fixed location helper containers */
-  .helper-container { background: white; z-index: 10;  font-size: 12pt; font-family: "Trebuchet MS"; }
+  .helper-container { z-index: 10;  font-size: 12pt; font-family: "Trebuchet MS"; }
 
   /* styles consistent across all individual helpers */
-  .helper {background-color: #ccc; margin: 5px;padding: 4px;}
+  .helper {background-color: #ccc; margin: 5px; padding: 4px;}
 
   /* top left helper-container */
   #helper-container-top-left { position: absolute; top: 5; left: 5; z-index: 10; }
@@ -28,7 +48,7 @@
 
   /* typeahead styling */
   #input-search, .tt-hint { border: 0px; font-size: 12pt; font-family: "Trebuchet MS"; padding: 2px; margin: 0px;}
-  .tt-dropdown-menu {background-color: #ccc; width: 100%; }
+  .tt-dropdown-menu {background-color: #ccc; width: 100%; max-height: 307; overflow-y: auto;}
   .tt-is-under-cursor { color: white; }
   .tt-suggestions { padding-left: 2px;}
   .tt-suggestion { }
@@ -42,11 +62,13 @@
   /* workspace nodes */
   #workspace .node {cursor: pointer; }
   #workspace .node text { opacity: 0.25; font-family: "Trebuchet MS"}
+  #workspace .node circle { fill: steelblue; stroke: white;}
   #workspace .node:hover text { opacity: 1; }
-  #workspace .node:hover text,
-  #workspace .node:hover circle { fill: orange; z-index: 999; }
-  #workspace .node circle { fill: steelblue; }
-  #workspace .node.selected circle {fill: red;}
+  #workspace .node.selected circle,
+  #workspace .node.selected text {fill: red; }
+
+  /* bottom left helpers */
+  #bottom-left-container {position: fixed; bottom: 5px; left: 5px;}
 
 </style>
 </head>
@@ -82,7 +104,21 @@
             <input id="input-gravity" type="range" name="link-distance" min="0" max="100">
           </td>
         </tr>
+        <tr>
+          <td>Edge Cutoff: </td>
+          <td>
+            <input id="input-min-edge-weight" type="range", name="edge-weight" min="0" max="100">
+          </td>
+        </tr>
       </table>
+    </div>
+
+    <div id="selection-helper" style="display: none; " class="helper">
+      <div id="btn-add-related-concepts" class="btn"><span class="symbol">+ </span>Add Related Concepts</div>
+      <div id="btn-remove-selected-concepts" class="btn"><span class="symbol">&minus; </span>Remove Selected Concepts</div>
+      <hr />
+      <div id="btn-select-neighbors" class="btn"><span class="symbol">&oplus; </span>Select Neighbors</div>
+      <div id="btn-invert-selection" class="btn"><span class="symbol">&notin; </span>Invert Selection</div>
     </div>
   </div>
 
@@ -93,6 +129,12 @@
   </div>
 
   <div id="workspace"></div>
+
+  <div id="bottom-left-container" class="helper-container">
+    <div id="stats-helper" class="helper">
+      Nodes: <span class="stat" id="stat-num-nodes">0</span>
+    </div>
+  </div>
   
 </body>
 </html>

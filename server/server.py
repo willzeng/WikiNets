@@ -19,6 +19,39 @@ class ConceptProvider(object):
   def get_links(self, concept, otherConcepts):
     return [self.sim.entry_named(concept, c2) for c2 in otherConcepts]
 
+  def get_related_concepts(self, selectedConcepts, allConcepts, minStrength):
+    existingConceptSet = set(allConcepts)
+    newNodesSet = set()
+    for selectedConcept in selectedConcepts:
+      limit = 100
+      relatedConcepts = self.sim.row_named(selectedConcept).top_items(n=limit)
+      i = 0
+      while i < len(relatedConcepts) and relatedConcepts[i][1] > minStrength:
+        relatedConcept, strength = relatedConcepts[i]
+        if relatedConcept not in existingConceptSet:
+          newNodesSet.add(relatedConcept)
+        i += 1
+    newNodesList = list(newNodesSet)
+    crossLinks = []
+    for i, existingNode in enumerate(allConcepts):
+      for j, newNode in enumerate(newNodesList):
+        crossLinks.append({
+          "source": i,
+          "target": j,
+          "strength": self.sim.entry_named(existingNode, newNode),
+        })
+    selfLinks = []
+    for i in xrange(len(newNodesList) - 1):
+      for j in xrange(i + 1, len(newNodesList)):
+        c1, c2 = newNodesList[i], newNodesList[j]
+        selfLinks.append({
+          "source": i,
+          "target": j,
+          "strength": self.sim.entry_named(c1, c2),
+        })
+    return newNodesList, crossLinks, selfLinks
+
+
   '''
   def get_related_concepts(self, text, limit):
     return self.sim.row_named(text).top_items(n=limit)
@@ -97,6 +130,19 @@ class Server(object):
   @cherrypy.tools.json_out()
   def get_links(self, text, allNodes):
     return self.provider.get_links(text, json.loads(allNodes))
+
+  @cherrypy.expose
+  @cherrypy.tools.json_out()
+  def get_related_concepts(self, selectedConcepts, allConcepts, minStrength):
+    newNodesList, crossLinks, selfLinks = self.provider.get_related_concepts(
+      json.loads(selectedConcepts), 
+      json.loads(allConcepts),
+      float(minStrength))
+    return {
+      "nodes": newNodesList,
+      "crossLinks": crossLinks,
+      "selfLinks": selfLinks,
+    }
 
   '''
 
