@@ -1,3 +1,4 @@
+
 /* get original dimensions to center first animation */
 var initialWindowWidth = $(window).width();
 var initialWindowHeight = $(window).height();
@@ -18,8 +19,7 @@ function Controller(selector) {
 
     $(window).keydown(function(e) {
 
-      // only except elements when body is the target
-      // this ignores keypresses from inputs, for example
+      // this ignores keypresses from inputs
       if (e.target !== document.querySelector("body")) return;
 
       if (e.which === altKey) { altDown = true; }
@@ -37,7 +37,7 @@ function Controller(selector) {
 
       // ENTER ==> remove unselected
       if (e.which === 13) {
-        this.removeCompliment();
+        this.removeSelectionCompliment();
       }
 
       // / ==> give search focus
@@ -54,14 +54,17 @@ function Controller(selector) {
 
       // + ==> add related nodes
       if (e.which === 187) {
-        this.addRelatedConcepts();
+        this.addRelatedNodes();
         e.preventDefault();
       }
 
     }.bind(this))
     .keyup(function(e) {
+
+      // this ignores keypresses from inputs
       if (e.target !== document.querySelector("body")) return;
 
+      // update state of combination keys
       if (e.which === altKey) { altDown = false; }
       if (e.which === ctrlKey) { ctrlDown = false; }
     }.bind(this));
@@ -93,35 +96,55 @@ function Controller(selector) {
   // inner workspace which nodes and links go on
   // scaling and transforming are abstracted away from this
   var workspace = zoomCapture.append('svg:g');
+
+  // containers to house nodes and edges
+  // so that nodes always appear above edges
   var edgeContainer = workspace.append('svg:g')
   var nodeContainer = workspace.append('svg:g')
   
   /* EVERYTHING SHOULD BE *LINKS* AND *NODES* */
 
+  // list of nodes which force layout mutates
   var nodes = [];
 
+  // list of all links
   var allLinks = [];
+
+  // links of shown links which force layout mutates
   var renderedLinks = [];
 
-  var minStrength = 0.75;
+  // current edge weight threshold for deciding if link should be shown
+  var minThreshold = this.minThreshold = 0.75;
+  var currentLinkStrengthThreshold = 1.0;
 
-  /* instantiate global force object */
+
+
+  // global force object
   var force = d3.layout.force()
-    .linkStrength(function(d) { return (d.strength  - minStrength) / (1 - minStrength); })
+    .linkStrength(function(d) { return (d.strength  - currentLinkStrengthThreshold) / (1 - currentLinkStrengthThreshold); })
     .size([initialWindowWidth, initialWindowHeight])
   this.force = force;
 
-  // define key functions
+  /******************************************************************
+   define key functions for data
+
+  this allows d3 to bind reordered data to the same DOM elements
+  ******************************************************************/
+
+  // define key functions for node data
   function getNodeKey(d) {
     return d.text;
   }
 
+  // define key funciton for link data
   function getLinkKey(l) {
     var sourceKey = getNodeKey(l.source);
     var targetKey = getNodeKey(l.target);
     return sourceKey + targetKey;
   }
 
+  // update which nodes and edges are displayed
+  // should be called after changes to those lists
   this.updateRendering = function() {
 
     // update force layout
@@ -161,17 +184,22 @@ function Controller(selector) {
     var link = edgeContainer.selectAll(".link")
         .data(renderedLinks, getLinkKey);
 
+    // add new links
     link.enter().append("line")
       .attr("class", "link");
 
+    // remove links which no longer exist
     link.exit().remove();
 
     // update nodes
     var node = nodeContainer.selectAll(".node")
       .data(nodes, getNodeKey);
 
-    var controller = this; // lame, but need default `this`
+    // differentiate between single and double click
     var clickSemaphore = 0;
+
+    // add new nodes as svg:g elements
+    // this allows housing arbitrary content within each node
     var nodeEnter = node.enter().append("g")
       .attr("class", "node")
       .call(force.drag)
@@ -182,36 +210,39 @@ function Controller(selector) {
         var savedClickSemaphore = clickSemaphore;
         setTimeout(function() {
           if (clickSemaphore === savedClickSemaphore) {
-            controller.toggleSelected(datum);
+            this.toggle(datum);
             datum.fixed = false;
           } else {
             // increment so second click isn't registered as a click
             clickSemaphore += 1;
             datum.fixed = false;
           }
-        }, 250);
+        }.bind(this), 250);
         
-      })
+      }.bind(this))
       .on('dblclick', function(datum, index) {
-        controller.selectConnectedComponent(datum);
-      });
+        this.selectConnectedComponent(datum);
+      }.bind(this));
       
+    // add label
     nodeEnter.append("text")
       .attr("dx", 12)
       .attr("dy", ".35em")
       .text(function(d) { return d.text; });
 
+    // add actual node
     nodeEnter.append("circle")
       .attr("r", 5)
       .attr("cx", 0)
       .attr("cy", 0);
 
-    node.classed('selected', function(d) {return d.selected; });
+    // render as selected or not
+    this.renderSelection();
 
+    // remove  nodes which no longer exist
     node.exit().remove();
 
-    // reaffirm how rendering is done
-
+    // update force event listener to handle updated element selections
     force.on("tick", function() {
       link
         .attr("x1", function(d) { return d.source.x; })
@@ -219,114 +250,129 @@ function Controller(selector) {
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; })
         .style("stroke-width", function(d) {
-          return 4 * (d.strength - minStrength) / (1 - minStrength)
+          // scale width based on strength, where
+          //   barely hitting Connectivity threshold ==> 0
+          //   1 ==> 1
+          // provides fluid entrance of new edges
+          return 4 * (d.strength - currentLinkStrengthThreshold) / (1 - currentLinkStrengthThreshold);
         });
-
-      node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-      
+      node.attr("transform", function(d) { 
+        return "translate(" + d.x + "," + d.y + ")"; 
+      });
     });
 
-    // show or hide helper
+    // update Stats Helper
+    $("#stat-num-nodes").text(nodes.length);
+    $("#stat-num-edges").text(renderedLinks.length);
+  };
+
+  // update only which nodes are selected
+  // does NOT restart force layout
+  this.renderSelection = function() {
+    // give nodes correct class based on selection
+    nodeContainer.selectAll(".node")
+      .classed('selected', function(d) {
+        return d.selected; 
+      });
+    // show or hide selection helper
     if (_.some(nodes, function(n) {return n.selected; })) {
       $("#selection-helper").fadeIn();
     } else {
       $("#selection-helper").fadeOut();
     }
-
-    // update stats
-    $("#stat-num-nodes").text(nodes.length);
-  };
-
-  this.renderSelection = function() {
-    nodeContainer.selectAll(".node").classed('selected', function(d) {return d.selected; });
   }
 
-  this.addConcept = function(text) {
+  // add node with text to graph
+  this.addNode = function(text) {
 
+    // if node already present, ignore
     var presentNode = _.find(nodes, function(node) {
       return node.text === text;
     });
+    if (presentNode) return;
 
-    if (presentNode) {
-      return;
-    }
-
-    var otherConcepts = _.map(nodes, function(node) {
+    // capture array of other node names
+    var otherNodes = _.map(nodes, function(node) {
       return node.text;
     });
+
+    var note = new Notification();
+    note.setText("Loading: " + text + "...");
+    note.show();
     
+    // make AJAX request
     $.ajax({
-      url: "get_links",
-      data: {text: text, allNodes: JSON.stringify(otherConcepts)},
-      success: function(response) {
-        // expects array of strengths
+      url: "get_edges",
+      data: {text: text, allNodes: JSON.stringify(otherNodes)},
+
+      // expects array of strengths
+      success: function(response) {  
+        // add new node to data
         var node = {text: text, selected: true};
         nodes.push(node);
+
+        // add new links to data
         _.each(response, function(strength, i) {
           var link = {source: node, target: nodes[i], strength: strength};
           allLinks.push(link);
-          if (strength > minStrength) {
+          if (strength > currentLinkStrengthThreshold) {
             renderedLinks.push(link);
           }
         });
+
+        // update UI
+        note.remove();
         this.updateRendering();
       }.bind(this),
+      error: function(response) {
+        console.log(response);
+        note.addText("Error Encountered.");
+        setTimeout(note.remove, 5000);
+      }
     });
   };
 
+  // removes currently selected nodes
   this.removeSelection = function() {
 
-    // remove any edges associated with those nodes
+    // filter to remove any edges associated with those nodes
     function shouldKeep(link) {
       return !link.source.selected && !link.target.selected;
     }
-
     allLinks = _.filter(allLinks, shouldKeep);
     renderedLinks = _.filter(renderedLinks, shouldKeep);
 
-    // remove all nodes
+    // remove all selected nodes
     nodes = _.filter(nodes, function(node) { return !node.selected; });
 
     // update ui
     this.updateRendering();
   }
 
-  this.removeCompliment = function() {
+  // removes all unselected nodes
+  this.removeSelectionCompliment = function() {
+
+    // filter to remove any edges to unselected nodes
     function shouldKeep(link) {
       return link.source.selected && link.target.selected;
     }
-
     allLinks = _.filter(allLinks, shouldKeep);
     renderedLinks = _.filter(renderedLinks, shouldKeep);
 
-    // remove all nodes
+    // remove all unselected nodes
     nodes = _.filter(nodes, function(node) { return node.selected; });
 
     // update ui
     this.updateRendering();
   }
 
-  this.toggleSelected = function(d) {
-    d.selected = !d.selected;
+  // toggles selection of node
+  this.toggle = function(node) {
+    node.selected = !node.selected;
     this.renderSelection();
   };
 
-  this.selectNeighbors = function() {
-    _.chain(nodes).filter(function(n) {
-      return n.selected;
-    }).each(function(n) {
-      _.each(renderedLinks, function(link) {
-        if (link.source === n) {
-          link.target.selected = true;
-        }
-        if (link.target === n) {
-          link.source.selected = true;
-        }
-      });
-    });
-    this.renderSelection();
-  }
-
+  // selects all nodes
   this.selectAll = function() {
     _.each(nodes, function(node) {
       node.selected = true;
@@ -334,6 +380,7 @@ function Controller(selector) {
     this.renderSelection();
   }
 
+  // deselects all nodes
   this.deselectAll = function() {
     _.each(nodes, function(node) {
       node.selected = false;
@@ -341,27 +388,38 @@ function Controller(selector) {
     this.renderSelection();
   }
 
-  this.addRelatedConcepts = function() {
-    var selectedConceptNames = _.chain(nodes)
+  // adds nodes related to currently selected nodes
+  // st. all new nodes have edge to currently selected 
+  // meeting current Connectivity threshold
+  this.addRelatedNodes = function() {
+    var selectedNodeNames = _.chain(nodes)
       .filter(function(n) { return n.selected; })
       .map(function(n) { return n.text; })
       .value();
 
-    var allConceptNames = _.map(nodes, function(n) {
+    // gather all node names
+    var allNodeNames = _.map(nodes, function(n) {
       return n.text;
     });
 
+    // create notification
+    var note = new Notification();
+    note.setText("Retreiving related nodes...");
+    note.show();
+
+    // request new data
     $.ajax({
-      url: "/get_related_concepts",
+      url: "/get_related_nodes",
       data: {
-        selectedConcepts: JSON.stringify(selectedConceptNames), 
-        allConcepts: JSON.stringify(allConceptNames),
-        minStrength: minStrength,
+        selectedNodes: JSON.stringify(selectedNodeNames), 
+        allNodes: JSON.stringify(allNodeNames),
+        minStrength: minThreshold,
       },
       success: function(response) {
-        /************************
+        
+        /************************************************************
         response.nodes
-          list of new concept names not already in graph
+          list of new node names not already in graph
         response.crossLinks
           list of link objects with
             strength: \in [0,1]
@@ -372,15 +430,18 @@ function Controller(selector) {
             strength: \in [0,1]
             source: index into response.nodes
             target: index into response.nodes
-        *************************/
+        ************************************************************/
+
         // create list of actual node objects which force will manipulate
-        var newNodes = _.map(response.nodes, function(newConcept) {
-          return {text: newConcept, selected: true};
+        var newNodes = _.map(response.nodes, function(newNode) {
+          return {text: newNode, selected: true};
         });
+
         // add new nodes to list of nodes
         _.each(newNodes, function(newNode) {
           nodes.push(newNode);
         });
+
         // add cross links
         _.each(response.crossLinks, function(crossLink) {
           var newLink = {
@@ -389,10 +450,11 @@ function Controller(selector) {
             target: newNodes[crossLink.target],
           }
           allLinks.push(newLink);
-          if (newLink.strength > minStrength) {
+          if (newLink.strength > currentLinkStrengthThreshold) {
             renderedLinks.push(newLink);
           }
         });
+
         // add self links
         _.each(response.selfLinks, function(selfLink) {
           var newLink = {
@@ -401,30 +463,46 @@ function Controller(selector) {
             target: newNodes[selfLink.target],
           };
           allLinks.push(newLink);
-          if (newLink.strength > minStrength) {
+          if (newLink.strength > currentLinkStrengthThreshold) {
             renderedLinks.push(newLink);
           }
         });
-        // show in ui
+
+        // show in UI
+        if (response.nodes.length === 0) {
+          note.addText("No nodes added.");
+          setTimeout(note.remove, 3000);
+        } else {
+          note.remove();
+        }
         this.updateRendering();
       }.bind(this),
+      error: function(response) {
+        note.addText("Error Encountered.");
+        setTimeout(note.remove, 5000);
+      }
     })
   }
 
-  this.setMinStrength = function(value) {
-    minStrength = value;
+  // set Connectivity minimum strength threshold
+  this.setCurrentLinkStrengthThreshold = function(value) {
+    currentLinkStrengthThreshold = value;
     renderedLinks = _.filter(allLinks, function(link) {
-      return link.strength > minStrength;
+      return link.strength > currentLinkStrengthThreshold;
     });
     this.updateRendering();
   }
 
-  this.getMinStrength = function() {
-    return minStrength;
+  // get Connectivity minimum strength threshold
+  this.getCurrentLinkStrengthThreshold = function() {
+    return currentLinkStrengthThreshold;
   }
 
+  // select all nodes which have a path to node
+  // using edges meeting current Connectivity criteria
   this.selectConnectedComponent = function(node) {
-    var queue = [node];
+
+    // create adjacency list version of graph
     var graph = {};
     var lookup = {};
     _.each(nodes, function(node) {
@@ -435,6 +513,8 @@ function Controller(selector) {
       graph[link.source.text][link.target.text] = 1;
       graph[link.target.text][link.source.text] = 1;
     });
+
+    // perform DFS to compile connected component
     var seen = {};
     function visit(text) {
       if (!_.has(seen, text)) {
@@ -445,6 +525,12 @@ function Controller(selector) {
       }
     }
     visit(node.text);
+
+    // toggle selection appropriately
+    // selection before ==> selection after
+    //             none ==> all
+    //             some ==> all
+    //             all  ==> none
     var allTrue = true;
     _.each(seen, function(ignore, text) {
       allTrue = allTrue && lookup[text].selected;
@@ -453,25 +539,28 @@ function Controller(selector) {
     _.each(seen, function(ignore, text) {
       lookup[text].selected = newSelected;
     });
+
+    // update UI
     this.renderSelection();
   }
 }
 
-/* capture searches */
-function registerConceptSearch(controller) {
+/* handle user input in node search helper */
+function registerNodeSearch(controller) {
   $("#input-search").typeahead({
-    prefetch: '/get_concepts',
-    name: "concepts",
+    prefetch: '/get_nodes',
+    name: "nodes",
     limit: 100,
   }).on("typeahead:selected", function(e, datum) {
-    controller.addConcept(datum.value);
+    controller.addNode(datum.value);
     $(this).blur();
   });
 }
 
-/* link d3 parameter controls so changes render in real time */
+/* handle user input in layout helper */
 function registerForceControls(controller) {
 
+  // define mappings between values in code and values in UI
   var mappings = [
 
     {
@@ -486,25 +575,26 @@ function registerForceControls(controller) {
       f: controller.force.gravity,
       selector: "#input-gravity",
       scale: d3.scale.linear()
-        .domain([0.01, 1])
+        .domain([0.01, 0.5])
         .range([0, 100]),
     },
 
     {
       f: function(value) {
         if (value) {
-          controller.setMinStrength(value);
+          controller.setCurrentLinkStrengthThreshold(value);
         } else {
-          return controller.getMinStrength();
+          return controller.getCurrentLinkStrengthThreshold();
         }
       },
       selector: "#input-min-edge-weight",
       scale: d3.scale.log()
-        .domain([0.75, 1])
+        .domain([controller.minThreshold, 1])
         .range([100, 0]),
     },
   ]
 
+  // hook mappings up to respond to user input
   _.each(mappings, function(mapping) {
     $(mapping.selector)
       .val(mapping.scale(mapping.f()))
@@ -515,13 +605,14 @@ function registerForceControls(controller) {
   });
 }
 
+/* handle user input for selection helper */
 function registerSelectionControls(controller) {
-  
-  $("#btn-add-related-concepts").click(function() {
-    controller.addRelatedConcepts();
+  $("#btn-add-related-nodes").click(function() {
+    controller.addRelatedNodes();
   });
 }
 
+/* make external links open in new tab */
 function forceLinksToNewTab() {
   $(".external-link").click(function(e) {
     window.open($(this).attr("href"));
@@ -529,11 +620,39 @@ function forceLinksToNewTab() {
   });
 }
 
+function Notification() {
+  
+  var $el = $('<div class="notification"></div>');
+  var removed = false;
+
+  this.setText = function(text) {
+    $el.text(text);
+  }
+
+  this.addText = function(text) {
+    $el.text($el.text() + " " + text);
+  }
+
+  this.show = function() {
+    setTimeout(function() {
+      if (!removed) {
+        $el.appendTo($("#notifications-container"))
+        .hide().fadeIn(100);  
+      }
+    }, 100);
+  }
+
+  this.remove = function() {
+    removed = true;
+    $el.slideUp(100, $el.remove);
+  }
+}
+
 /* on page load */
 $(function() {
   forceLinksToNewTab();
   var controller = new Controller("#workspace");
-  registerConceptSearch(controller);
+  registerNodeSearch(controller);
   registerForceControls(controller);
   registerSelectionControls(controller);
   $("#input-search").focus();
