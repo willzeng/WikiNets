@@ -5,14 +5,71 @@ var initialWindowHeight = $(window).height();
 /* every change should be channeled through here */
 function Controller(selector) {
 
-  $(window).keydown(function(e) {
-    if (e.which === 27) {
-      _.each(nodes, function(node) {
-        node.selected = false;
-      });
-      this.updateRendering();
-    }
-  }.bind(this));
+  (function() {
+
+    // handle combinations of keypresses
+    var altKey = 18,
+        ctrlKey = 17,
+        altDown = false,
+        ctrlDown = false;
+
+    var ctrlDown, altDown;
+
+    $(window).keydown(function(e) {
+
+      // only except elements when body is the target
+      // this ignores keypresses from inputs, for example
+      if (e.target !== document.querySelector("body")) return;
+
+      if (e.which === altKey) { altDown = true; }
+      if (e.which === ctrlKey) { ctrlDown = true; }
+
+      // ESC ==> deselect all
+      if (e.which === 27) {
+        _.each(nodes, function(node) {
+          node.selected = false;
+        });
+        this.updateRendering();
+      }
+
+      // DELETE ==> remove selection
+      if (e.which === 46) {
+        this.removeSelection();
+      }
+
+      // ENTER ==> remove unselected
+      if (e.which === 13) { // enters
+        this.removeCompliment();
+      }
+
+      // / ==> give search focus
+      if (e.which === 191) {
+        $("#input-search").focus();
+        e.preventDefault();
+      }
+
+      // Ctrl + A ==> select all nodes
+      if (ctrlDown && e.which === 65) {
+        this.selectAll();
+        e.preventDefault();
+      }
+
+      // + ==> add related nodes
+      if (e.which === 187) {
+        this.addRelatedConcepts();
+        e.preventDefault();
+      }
+
+    }.bind(this))
+    .keyup(function(e) {
+      if (e.target !== document.querySelector("body")) return;
+
+      if (e.which === altKey) { altDown = false; }
+      if (e.which === ctrlKey) { ctrlDown = false; }
+    }.bind(this));
+  }.bind(this))();
+
+  $(window).on("contextmenu",function(e) {e.preventDefault(); });
 
   // svg element which houses everything
   var svg = d3.select("#workspace")
@@ -136,14 +193,6 @@ function Controller(selector) {
       })
       .on('dblclick', function(datum, index) {
         controller.selectConnectedComponent(datum);
-      })
-      .on("contextmenu", function(datum, index) {
-        
-        // cancel original context menu
-        d3.event.preventDefault();
-
-        // show custom context menu
-        
       });
       
     nodeEnter.append("text")
@@ -237,6 +286,21 @@ function Controller(selector) {
     this.updateRendering();
   }
 
+  this.removeCompliment = function() {
+    function shouldKeep(link) {
+      return link.source.selected && link.target.selected;
+    }
+
+    allLinks = _.filter(allLinks, shouldKeep);
+    renderedLinks = _.filter(renderedLinks, shouldKeep);
+
+    // remove all nodes
+    nodes = _.filter(nodes, function(node) { return node.selected; });
+
+    // update ui
+    this.updateRendering();
+  }
+
   this.toggleSelected = function(d) {
     d.selected = !d.selected;
     this.updateRendering();
@@ -259,6 +323,13 @@ function Controller(selector) {
           link.source.selected = true;
         }
       });
+    });
+    this.updateRendering();
+  }
+
+  this.selectAll = function() {
+    _.each(nodes, function(node) {
+      node.selected = true;
     });
     this.updateRendering();
   }
@@ -386,8 +457,8 @@ function registerConceptSearch(controller) {
     name: "concepts",
     limit: 100,
   }).on("typeahead:selected", function(e, datum) {
-    $(this).val("");
     controller.addConcept(datum.value);
+    $(this).blur();
   });
 }
 
@@ -443,17 +514,6 @@ function registerSelectionControls(controller) {
     controller.addRelatedConcepts();
   });
 
-  $("#btn-remove-selected-concepts").click(function() {
-    controller.removeSelection();
-  });
-
-  $("#btn-select-neighbors").click(function() {
-    controller.selectNeighbors();
-  });
-
-  $("#btn-invert-selection").click(function() {
-    controller.invertSelection();
-  });
 }
 
 /* on page load */
@@ -462,4 +522,5 @@ $(function() {
   registerConceptSearch(controller);
   registerForceControls(controller);
   registerSelectionControls(controller);
+  $("#input-search").focus();
 });
