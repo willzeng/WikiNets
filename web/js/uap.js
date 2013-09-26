@@ -395,21 +395,6 @@ function registerConceptSearch(controller) {
 function registerForceControls(controller) {
 
   var mappings = [
-    {
-      f: controller.force.linkDistance,
-      selector: "#input-link-distance",
-      scale: d3.scale.linear()
-        .domain([0, 200])
-        .range([0, 100]),
-    },
-
-    {
-      f: controller.force.friction,
-      selector: "#input-friction",
-      scale: d3.scale.linear()
-        .domain([.99, 0.5])
-        .range([0, 100]),
-    },
 
     {
       f: controller.force.charge,
@@ -438,7 +423,7 @@ function registerForceControls(controller) {
       selector: "#input-min-edge-weight",
       scale: d3.scale.log()
         .domain([0.75, 1])
-        .range([0, 100]),
+        .range([100, 0]),
     },
   ]
 
