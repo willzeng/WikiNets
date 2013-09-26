@@ -1,9 +1,7 @@
-Joe Henke's 6.UAP Repo
+Celestrium
 ===
 
-[Homepage](http://jdhenke.github.io/uap/)
-
-[Proposal](./PROPOSAL.md)
+A tool to understand your [graph](http://en.wikipedia.org/wiki/Graph_(mathematics)ical data.
 
 ## Local Setup
 
