@@ -219,7 +219,7 @@ function Controller(selector) {
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; })
         .style("stroke-width", function(d) {
-          return 5 * (d.strength - minStrength) / (1 - minStrength)
+          return 4 * (d.strength - minStrength) / (1 - minStrength)
         });
 
       node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
@@ -520,11 +520,18 @@ function registerSelectionControls(controller) {
   $("#btn-add-related-concepts").click(function() {
     controller.addRelatedConcepts();
   });
+}
 
+function forceLinksToNewTab() {
+  $(".external-link").click(function(e) {
+    window.open($(this).attr("href"));
+    e.preventDefault();
+  });
 }
 
 /* on page load */
 $(function() {
+  forceLinksToNewTab();
   var controller = new Controller("#workspace");
   registerConceptSearch(controller);
   registerForceControls(controller);

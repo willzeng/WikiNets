@@ -12,7 +12,12 @@
   /* remove default chrome glow */
   textarea, input { outline: none; }
 
-  /*  */
+  /* link styling */
+  a { text-decoration: none; font-style: italic; color: white; }
+  a:hover { text-decoration: underline;}
+  .link-separator {color: white;}
+
+  /* custom button styling */
   .btn { color: white; 
          margin-top: 10px; margin-bottom: 10px; 
          margin-left: 4px; margin-right: 4px;
@@ -27,6 +32,8 @@
    }
 
   .btn:hover {background-color: #999; }
+
+  #title { font-size: 18pt; }
 
   .symbol { width: 20px; font-family: "Monospace"; }
 
@@ -71,13 +78,16 @@
   /* bottom left helpers */
   #bottom-left-container {position: fixed; bottom: 5px; left: 5px;}
 
+  /* bottom right helpers */
+  #bottom-right-container {position: fixed; bottom: 5px; right: 5px;}
+
 </style>
 </head>
 <body>
 
   <div id="helper-container-top-left" class="helper-container">
     <div id="title" class="helper">
-      Joe Henke's 6.UAP Project
+      Celestrium
     </div>
     
     <div class="helper">
@@ -121,6 +131,16 @@
       Nodes: <span class="stat" id="stat-num-nodes">0</span>
     </div>
   </div>
-  
+
+  <div id="bottom-right-container" class="helper-container">
+    <div id="docs-helper" class="helper">
+      <a id="link-tutorial" class="internal-link" href="#">Tutorial</a>
+      <span class="link-separator"> | </span>
+      <a class="external-link" href="https://github.com/jdhenke/uap/wiki/User-Guide">Docs</a>
+      <span class="link-separator"> | </span>
+      <a class="external-link" href="https://github.com/jdhenke/uap">Code</a>
+    </div>
+  </div>
+
 </body>
 </html>
