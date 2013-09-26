@@ -5,6 +5,7 @@ var initialWindowHeight = $(window).height();
 /* every change should be channeled through here */
 function Controller(selector) {
 
+  // handle keypresses
   (function() {
 
     // handle combinations of keypresses
@@ -26,10 +27,7 @@ function Controller(selector) {
 
       // ESC ==> deselect all
       if (e.which === 27) {
-        _.each(nodes, function(node) {
-          node.selected = false;
-        });
-        this.updateRendering();
+        this.deselectAll();
       }
 
       // DELETE ==> remove selection
@@ -38,7 +36,7 @@ function Controller(selector) {
       }
 
       // ENTER ==> remove unselected
-      if (e.which === 13) { // enters
+      if (e.which === 13) {
         this.removeCompliment();
       }
 
@@ -69,6 +67,7 @@ function Controller(selector) {
     }.bind(this));
   }.bind(this))();
 
+  // block normal contextmenus so custom one works
   $(window).on("contextmenu",function(e) {e.preventDefault(); });
 
   // svg element which houses everything
@@ -110,6 +109,17 @@ function Controller(selector) {
     .size([initialWindowWidth, initialWindowHeight])
   this.force = force;
 
+  // define key functions
+  function getNodeKey(d) {
+    return d.text;
+  }
+
+  function getLinkKey(l) {
+    var sourceKey = getNodeKey(l.source);
+    var targetKey = getNodeKey(l.target);
+    return sourceKey + targetKey;
+  }
+
   this.updateRendering = function() {
 
     // update force layout
@@ -131,6 +141,7 @@ function Controller(selector) {
         zoom.translate(currentZoom);
         translateLock = false;
       });
+
     // add event listener to actually affect UI
     zoomCapture.call(zoom.on("zoom", function() {
 
@@ -143,17 +154,6 @@ function Controller(selector) {
           " scale(" + d3.event.scale + ")");
     }))
     .on("dblclick.zoom", null); // ignore double click to zoom
-
-    // define key functions
-    function getNodeKey(d) {
-      return d.text;
-    }
-
-    function getLinkKey(l) {
-      var sourceKey = getNodeKey(l.source);
-      var targetKey = getNodeKey(l.target);
-      return sourceKey + targetKey;
-    }
 
     // update links
     var link = workspace.selectAll(".link")
@@ -236,6 +236,12 @@ function Controller(selector) {
     $("#stat-num-nodes").text(nodes.length);
   };
 
+  this.renderSelection = function() {
+    var node = workspace.selectAll(".node")
+      .data(nodes, getNodeKey);
+    node.classed('selected', function(d) {return d.selected; });
+  }
+
   this.addConcept = function(text) {
 
     var presentNode = _.find(nodes, function(node) {
@@ -303,13 +309,8 @@ function Controller(selector) {
 
   this.toggleSelected = function(d) {
     d.selected = !d.selected;
-    this.updateRendering();
+    this.renderSelection();
   };
-
-  this.invertSelection = function() {
-    _.each(nodes, function(n) { n.selected = !n.selected;});
-    this.updateRendering();
-  }
 
   this.selectNeighbors = function() {
     _.chain(nodes).filter(function(n) {
@@ -324,14 +325,21 @@ function Controller(selector) {
         }
       });
     });
-    this.updateRendering();
+    this.renderSelection();
   }
 
   this.selectAll = function() {
     _.each(nodes, function(node) {
       node.selected = true;
     });
-    this.updateRendering();
+    this.renderSelection();
+  }
+
+  this.deselectAll = function() {
+    _.each(nodes, function(node) {
+      node.selected = false;
+    });
+    this.renderSelection();
   }
 
   this.addRelatedConcepts = function() {
@@ -446,7 +454,7 @@ function Controller(selector) {
     _.each(seen, function(ignore, text) {
       lookup[text].selected = newSelected;
     });
-    this.updateRendering();
+    this.renderSelection();
   }
 }
 
