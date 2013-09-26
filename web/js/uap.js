@@ -118,15 +118,18 @@ function Controller(selector) {
       .call(force.drag)
       .on('click', function(datum, index) {
         if (d3.event.defaultPrevented) return; // ignore drag
+        datum.fixed = true;
         clickSemaphore += 1;
         var savedClickSemaphore = clickSemaphore;
         setTimeout(function() {
           if (clickSemaphore === savedClickSemaphore) {
             console.log("single click");
             controller.toggleSelected(datum);
+            datum.fixed = false;
           } else {
             // increment so second click isn't registered as a click
             clickSemaphore += 1;
+            datum.fixed = false;
           }
         }, 250);
         
