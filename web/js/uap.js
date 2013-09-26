@@ -93,6 +93,8 @@ function Controller(selector) {
   // inner workspace which nodes and links go on
   // scaling and transforming are abstracted away from this
   var workspace = zoomCapture.append('svg:g');
+  var edgeContainer = workspace.append('svg:g')
+  var nodeContainer = workspace.append('svg:g')
   
   /* EVERYTHING SHOULD BE *LINKS* AND *NODES* */
 
@@ -156,7 +158,7 @@ function Controller(selector) {
     .on("dblclick.zoom", null); // ignore double click to zoom
 
     // update links
-    var link = workspace.selectAll(".link")
+    var link = edgeContainer.selectAll(".link")
         .data(renderedLinks, getLinkKey);
 
     link.enter().append("line")
@@ -165,7 +167,7 @@ function Controller(selector) {
     link.exit().remove();
 
     // update nodes
-    var node = workspace.selectAll(".node")
+    var node = nodeContainer.selectAll(".node")
       .data(nodes, getNodeKey);
 
     var controller = this; // lame, but need default `this`
@@ -180,7 +182,6 @@ function Controller(selector) {
         var savedClickSemaphore = clickSemaphore;
         setTimeout(function() {
           if (clickSemaphore === savedClickSemaphore) {
-            console.log("single click");
             controller.toggleSelected(datum);
             datum.fixed = false;
           } else {
@@ -237,9 +238,7 @@ function Controller(selector) {
   };
 
   this.renderSelection = function() {
-    var node = workspace.selectAll(".node")
-      .data(nodes, getNodeKey);
-    node.classed('selected', function(d) {return d.selected; });
+    nodeContainer.selectAll(".node").classed('selected', function(d) {return d.selected; });
   }
 
   this.addConcept = function(text) {
