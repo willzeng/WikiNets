@@ -1,7 +1,7 @@
 Celestrium
 ===
 
-A tool to understand your [graph](http://en.wikipedia.org/wiki/Graph_(mathematics)ical data.
+A tool to understand your graph based data.
 
 ## Local Setup
 
