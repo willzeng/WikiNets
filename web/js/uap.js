@@ -84,7 +84,8 @@ function Controller(selector) {
       workspace.attr("transform",
           "translate(" + d3.event.translate + ")" + 
           " scale(" + d3.event.scale + ")");
-    }));
+    }))
+    .on("dblclick.zoom", null); // ignore double click to zoom
 
     // define key functions
     function getNodeKey(d) {
@@ -111,13 +112,35 @@ function Controller(selector) {
       .data(nodes, getNodeKey);
 
     var controller = this; // lame, but need default `this`
+    var clickSemaphore = 0;
     var nodeEnter = node.enter().append("g")
       .attr("class", "node")
       .call(force.drag)
       .on('click', function(datum, index) {
-        // `this` is current DOM element
         if (d3.event.defaultPrevented) return; // ignore drag
-        controller.toggleSelected(datum);
+        clickSemaphore += 1;
+        var savedClickSemaphore = clickSemaphore;
+        setTimeout(function() {
+          if (clickSemaphore === savedClickSemaphore) {
+            console.log("single click");
+            controller.toggleSelected(datum);
+          } else {
+            // increment so second click isn't registered as a click
+            clickSemaphore += 1;
+          }
+        }, 250);
+        
+      })
+      .on('dblclick', function(datum, index) {
+        controller.selectConnectedComponent(datum);
+      })
+      .on("contextmenu", function(datum, index) {
+        
+        // cancel original context menu
+        d3.event.preventDefault();
+
+        // show custom context menu
+        
       });
       
     nodeEnter.append("text")
@@ -317,6 +340,39 @@ function Controller(selector) {
 
   this.getMinStrength = function() {
     return minStrength;
+  }
+
+  this.selectConnectedComponent = function(node) {
+    var queue = [node];
+    var graph = {};
+    var lookup = {};
+    _.each(nodes, function(node) {
+      graph[node.text] = {};
+      lookup[node.text] = node;
+    });
+    _.each(renderedLinks, function(link) {
+      graph[link.source.text][link.target.text] = 1;
+      graph[link.target.text][link.source.text] = 1;
+    });
+    var seen = {};
+    function visit(text) {
+      if (!_.has(seen, text)) {
+        seen[text] = 1;
+        _.each(graph[text], function(ignore, neighborText) {
+          visit(neighborText);
+        }); 
+      }
+    }
+    visit(node.text);
+    var allTrue = true;
+    _.each(seen, function(ignore, text) {
+      allTrue = allTrue && lookup[text].selected;
+    });
+    var newSelected = !allTrue;
+    _.each(seen, function(ignore, text) {
+      lookup[text].selected = newSelected;
+    });
+    this.updateRendering();
   }
 }
 
