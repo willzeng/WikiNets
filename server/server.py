@@ -43,6 +43,7 @@ class ConceptProvider(object):
     for i in xrange(len(newNodesList) - 1):
       for j in xrange(i + 1, len(newNodesList)):
         c1, c2 = newNodesList[i], newNodesList[j]
+        # is this efficient?
         selfLinks.append({
           "source": i,
           "target": j,
