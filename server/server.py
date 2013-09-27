@@ -46,7 +46,7 @@ class ConceptProvider(object):
       for j in xrange(i + 1, len(newNodesList)):
         c1, c2 = newNodesList[i], newNodesList[j]
         strength = self.sim.entry_named(c1, c2)
-        if True or strength > minStrength:
+        if strength > minStrength:
           selfLinks.append({
             "source": i,
             "target": j,
