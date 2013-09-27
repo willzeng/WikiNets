@@ -34,21 +34,24 @@ class ConceptProvider(object):
     crossLinks = []
     for i, existingNode in enumerate(allConcepts):
       for j, newNode in enumerate(newNodesList):
-        crossLinks.append({
-          "source": i,
-          "target": j,
-          "strength": self.sim.entry_named(existingNode, newNode),
-        })
+        strength = self.sim.entry_named(existingNode, newNode)
+        if strength > minStrength:
+          crossLinks.append({
+            "source": i,
+            "target": j,
+            "strength": strength,
+          })
     selfLinks = []
     for i in xrange(len(newNodesList) - 1):
       for j in xrange(i + 1, len(newNodesList)):
         c1, c2 = newNodesList[i], newNodesList[j]
-        # is this efficient?
-        selfLinks.append({
-          "source": i,
-          "target": j,
-          "strength": self.sim.entry_named(c1, c2),
-        })
+        strength = self.sim.entry_named(c1, c2)
+        if strength > minStrength:
+          selfLinks.append({
+            "source": i,
+            "target": j,
+            "strength": strength,
+          })
     return newNodesList, crossLinks, selfLinks
 
 class Server(object):
