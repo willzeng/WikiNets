@@ -9,63 +9,49 @@ class ConceptProvider(object):
   def __init__(self, num_axes):
     A = divisi2.network.conceptnet_matrix('en')
     concept_axes, axis_weights, feature_axes = A.svd(k=num_axes)
-    self.sim = divisi2.reconstruct_similarity(concept_axes, axis_weights, post_normalize=True)
+    self.sim = divisi2.reconstruct_similarity(concept_axes, axis_weights, post_normalize=True)  
+    self.concept_axes = concept_axes
 
-  def get_related_concepts(self, text, limit):
-    return self.sim.row_named(text).top_items(n=limit)
+  def get_nodes(self):
+    return [x for x in self.concept_axes.row_labels]
 
-  def get_data(self, text):
+  def get_edges(self, concept, otherConcepts):
+    return [self.sim.entry_named(concept, c2) for c2 in otherConcepts]
 
-    # helper function
-    def get_related_nodes(node):
-      return [n for (n, x) in self.sim.row_named(node).top_items()]
-
-    # gather concepts and their relatedness as nodes and links
-
-    text = text.lower().strip()
-    nodesSet = {text}
-    currentLevel = [text]
-    numLevels = 3
-
-    for i in xrange(numLevels):
-      nextLevel = []
-      for node in currentLevel:
-        relatedNodes = get_related_nodes(node)
-        for relatedNode in relatedNodes:
-          if relatedNode not in nodesSet:
-            nodesSet.add(relatedNode)
-            nextLevel.append(relatedNode)
-      currentLevel = nextLevel
-
-    nodesList = list(nodesSet)
-    links = []
-
-    for i in xrange(len(nodesList) - 1):
-      for j in xrange(i + 1, len(nodesList)):
-        n1 = nodesList[i]
-        n2 = nodesList[j]
-        strength = self.sim.entry_named(n1, n2)
-        strength = max(0, strength)
-        strength = min(1, strength)
-        if strength > .75:
-          links.append({'source': i, 
-                        'target': j, 
-                        'strength': strength})
-
-    nodes = [{'text': node} for node in nodesList]
-
-    return {"nodes": nodes, "links": links}
-
-  def get_link_strengths(self, node, otherNodes):
-    return [{"strength": self.sim.entry_named(node, otherNode)} for otherNode in otherNodes]
-
-  def get_top_items(self, node, limit):
-    output = []
-    for node, strength in self.sim.row_named(node).top_items(n=limit):
-      output.append({"text": node, "strength": strength})
-    return output
+  def get_related_nodes(self, selectedConcepts, allConcepts, minStrength):
+    existingConceptSet = set(allConcepts)
+    newNodesSet = set()
+    for selectedConcept in selectedConcepts:
+      limit = 100
+      relatedConcepts = self.sim.row_named(selectedConcept).top_items(n=limit)
+      i = 0
+      while i < len(relatedConcepts) and relatedConcepts[i][1] > minStrength:
+        relatedConcept, strength = relatedConcepts[i]
+        if relatedConcept not in existingConceptSet:
+          newNodesSet.add(relatedConcept)
+        i += 1
+    newNodesList = list(newNodesSet)
+    crossLinks = []
+    for i, existingNode in enumerate(allConcepts):
+      for j, newNode in enumerate(newNodesList):
+        crossLinks.append({
+          "source": i,
+          "target": j,
+          "strength": self.sim.entry_named(existingNode, newNode),
+        })
+    selfLinks = []
+    for i in xrange(len(newNodesList) - 1):
+      for j in xrange(i + 1, len(newNodesList)):
+        c1, c2 = newNodesList[i], newNodesList[j]
+        selfLinks.append({
+          "source": i,
+          "target": j,
+          "strength": self.sim.entry_named(c1, c2),
+        })
+    return newNodesList, crossLinks, selfLinks
 
 class Server(object):
+
   _cp_config = {'tools.staticdir.on' : True,
                 'tools.staticdir.dir' : os.path.abspath(os.path.join(os.getcwd(), "web")),
                 'tools.staticdir.index' : 'index.html',
@@ -76,34 +62,26 @@ class Server(object):
 
   @cherrypy.expose
   @cherrypy.tools.json_out()
-  def getrange(self, limit=10):
-    return list(range(int(limit)))
+  def get_nodes(self):
+    return self.provider.get_nodes();
 
   @cherrypy.expose
   @cherrypy.tools.json_out()
-  def get_related_concepts(self, text, limit=10):
-      return self.provider.get_related_concepts(text, int(limit))
+  def get_edges(self, text, allNodes):
+    return self.provider.get_edges(text, json.loads(allNodes))
 
   @cherrypy.expose
   @cherrypy.tools.json_out()
-  def get_data(self, text):
-    return self.provider.get_data(text)
-
-  @cherrypy.expose
-  @cherrypy.tools.json_out()
-  def get_link_strengths(self, nextNode, currentNodes):
-    return {"links": self.provider.get_link_strengths(nextNode, json.loads(currentNodes))}
-
-  @cherrypy.expose
-  @cherrypy.tools.json_out()
-  def test(self, a, b):
-    return json.loads(b)[0]
-
-  @cherrypy.expose
-  @cherrypy.tools.json_out()
-  def get_top_items(self, text, limit=10):
-    return {"related": self.provider.get_top_items(text, int(limit))}
-
+  def get_related_nodes(self, selectedNodes, allNodes, minStrength):
+    newNodesList, crossLinks, selfLinks = self.provider.get_related_nodes(
+      json.loads(selectedNodes), 
+      json.loads(allNodes),
+      float(minStrength))
+    return {
+      "nodes": newNodesList,
+      "crossLinks": crossLinks,
+      "selfLinks": selfLinks,
+    }
 
 cherrypy.config.update({'server.socket_host': '0.0.0.0', 
                          'server.socket_port': int(sys.argv[1]), 
