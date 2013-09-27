@@ -20,22 +20,15 @@ pip install -r requirements.txt
 pip install divisi2 csc-pysparse
 ```
 
-Test to see if it's working by running this in python.
+Install the [Heroku Toolbelt](https://toolbelt.heroku.com/).
 
-```python
-import divisi2
-A = divisi2.network.conceptnet_matrix('en')
-concept_axes, axis_weights, feature_axes = A.svd(k=100)
-predictions = divisi2.reconstruct(concept_axes, axis_weights, feature_axes)
-predictions.entry_named('pig', ('right', 'HasA', 'leg'))
-predictions.entry_named('pig', ('right', 'CapableOf', 'fly'))
+## Running Locally
+
+```bash
+foreman start
 ```
 
-I get a ~0.1261 and ~-0.1784 for the last two calls respectively, but I can't say if this is consisent across installs.
-
 ## Deploying to [Heroku](https://www.heroku.com/)
-
-This will use the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-command).
 
 ```bash
 git checkout -b prod # do all these changes on a different branch
