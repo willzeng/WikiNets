@@ -57,7 +57,7 @@ module.exports = class MyApp
 
           ### Generate reindexing array ###
           `var nodeconvert = {};
-          for (i = 0; i < nodeids.length-1; i++) {
+          for (i = 0; i < nodeids.length; i++) {
             nodeconvert[nodeids[i]+'']=i;            
           }`
 
