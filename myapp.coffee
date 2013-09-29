@@ -211,8 +211,8 @@ module.exports = class MyApp
       if request.body.remove isnt undefined
         cypherQuery += " remove n."
         for property in request.body.remove
-          cypherQuery += "#{property}, "
-        cypherQuery = cypherQuery.substring(0,cypherQuery.length-2)
+          cypherQuery += "#{property}, n."
+        cypherQuery = cypherQuery.substring(0,cypherQuery.length-4)
       cypherQuery += " return n;"
       console.log "Executing " + cypherQuery
       graphDb.cypher.execute(cypherQuery).then(
