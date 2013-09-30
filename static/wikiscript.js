@@ -338,4 +338,19 @@ $(document).ready(function(){
     };
   });
 
+
+  // Deletes an arrow after checking for user confirmation
+  // (delete button is right next to save, after all)
+  $("#DeleteArrow").on("click", function(event){
+    if (confirm("Are you sure you want to delete arrow " + selected_arrow + "?")) {
+      $.post('/delete_arrow', {id: selected_arrow}, function(data) {
+        if (data === "error") {
+          alert("Could not delete arrow " + selected_node + ".");
+        } else {
+          alert("Deleted arrow " + selected_arrow + ".");
+        }
+      });
+    };
+  });
+
 });

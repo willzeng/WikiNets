@@ -264,6 +264,24 @@ module.exports = class MyApp
       )
     )
 
+
+    ###
+    Deletes an arrow 
+    ###
+    app.post('/delete_arrow', (request,response)->
+      console.log "Arrow Deletion Requested"
+      cypherQuery = "start r=rel(" + request.body.id + ") delete r;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes) ->
+          console.log "Arrow Deleted"
+          response.send "success"
+        (noderes) ->
+          console.log "Could Not Delete Arrow"
+          response.send "error"
+      )
+    )
+
   
     ###
     indexPromise = graphDb.index.createNodeIndex "myIndex"
