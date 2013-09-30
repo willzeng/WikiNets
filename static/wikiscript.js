@@ -36,6 +36,8 @@ function showlayer(layer){
 // - "reserved_keys" is a global constant and keeps track of property names
 //   which are reserved for system use
 var counter = 0;
+var selected_arrow;
+var selected_arrow_properties;
 var selected_node;
 var selected_node_properties;
 var reserved_keys = ["_id"];
@@ -298,6 +300,41 @@ $(document).ready(function(){
           alert("Deleted node " + selected_node + ".");
         }
       });
+    };
+  });
+
+  // selects an arrow for editing from the arrow ID input field
+  $("#SelectArrowForm").on("submit",function(event) {
+    event.preventDefault();
+    // check whether arrow ID is a number
+    if (!(/^[0-9]+$/.test($("#SelectArrowID").val()))) {
+      alert("Arrow ID must be a number.");
+    } else {
+    selected_arrow_properties = {};
+    $.post('/get_arrow', {id: $("#SelectArrowID").val()}, function(data) {
+      if (data == "error") {
+          alert("Arrow with ID " + $("#SelectArrowID").val() + " could not be found.");
+      } else {
+        selected_arrow = $("#SelectArrowID").val();
+        console.log("Arrow data: ID " + $("#SelectArrowID").val() + "\n" + JSON.stringify(data));
+        if ($("#edit-arrow-menu-inputs").css("display") == "none") {
+          $("#edit-arrow-menu-inputs").css("display", "block");
+        } else {
+          $('.EditArrowProperty').each(function(i, obj) {
+            $(this)[0].parentNode.removeChild($(this)[0]);
+          });
+        };
+        $("input[name=edit-from]").val(data.from);
+        $("input[name=edit-to]").val(data.to);
+        $("input[name=edit-rel-type]").val(data.type);
+        for (property in data.properties) {
+          selected_arrow_properties[property] = data.properties[property];
+          moreFields("writerootEditArrow","readrootEditArrow","EditArrowProperty");
+          $("input[name=propertyEditArrow"+counter+"]").val(property);
+          $("input[name=valueEditArrow"+counter+"]").val(data.properties[property]);
+        };
+      };
+    });
     };
   });
 

@@ -37,9 +37,28 @@ html
                   input#moreFields(type='button', value='+', onclick='moreFields("writerootEdit","readrootEdit","EditProperty")')
                   div(style='float: right;')
                     input#DeleteNode(type='button', value='Delete Node')
-                    input#EditNode(type='button', value='Save Changes')
+                    input#EditNode(type='button', value='Save Node')
               li
-                | Functionality for editing arrows will be found here.
+                | Please select an arrow.
+                form#SelectArrowForm
+                  input#SelectArrowID(name="SelectArrowID")
+                  input#SelectArrow(type="submit", value="Select Arrow")
+                #edit-arrow-menu-inputs(style='display: none;')
+                  #readrootEditArrow(style='display: none;')
+                    input.propertyEditArrow(name='propertyEditArrow', value='')
+                    input.valueEditArrow(name='valueEditArrow', value='')
+                    input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
+                    br
+                  form#edit-arrow
+                    div
+                      input#edit-from(name='edit-from', value='from: node ID')
+                      input#edit-to(name='edit-to', value='to: node ID')
+                      input#edit-rel-type(name='edit-rel-type', value='type')
+                    span#writerootEditArrow
+                  input#moreFields(type='button', value='+', onclick='moreFields("writerootEditArrow","readrootEditArrow","EditArrowProperty")')
+                  div(style='float: right;')
+                    input#DeleteArrow(type='button', value='Delete Arrow')
+                    input#EditArrow(type='button', value='Save Arrow')
         #infobar
           ul.menu
             li

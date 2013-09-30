@@ -245,6 +245,25 @@ module.exports = class MyApp
       )
     )
 
+
+    ###
+    Collects data from an arrow so it can be edited  
+    ###
+    app.post('/get_arrow', (request,response)->
+      console.log "Arrow Data Requested"
+      cypherQuery = "start r=rel(" + request.body.id + ") return r;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (relres) ->
+          console.log "Arrow ID Lookup Executed"
+          console.log relres.data[0][0]
+          response.json {from: trim(relres.data[0][0]["start"])[0], to: trim(relres.data[0][0]["end"])[0], type:relres.data[0][0]["type"], properties: relres.data[0][0]["data"]}
+        (relres) ->
+          console.log "Arrow not found"
+          response.send "error"
+      )
+    )
+
   
     ###
     indexPromise = graphDb.index.createNodeIndex "myIndex"
