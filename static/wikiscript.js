@@ -172,7 +172,7 @@ $(document).ready(function(){
     // if all property names were fine, remove the on-the-fly created input
     // fields and submit the data to the server to actually create the node
     if (submitOK) {
-      $('.nodeProperty').each(function(i, obj) {
+      $('.NodeProperty').each(function(i, obj) {
         $(this)[0].parentNode.removeChild($(this)[0]);
       });
       console.log(JSON.stringify(nodeObject));
@@ -219,7 +219,7 @@ $(document).ready(function(){
         } else {
           // if relationship has been created successfully, remove the on-the-
           // fly generated input fields
-          $('.relProperty').each(function(i, obj) {
+          $('.ArrProperty').each(function(i, obj) {
             $(this)[0].parentNode.removeChild($(this)[0]);
           });
           alert("Created relationship with ID " + data + ".");
