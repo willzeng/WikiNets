@@ -34,8 +34,5 @@ nosetests.xml
 .project
 .pydevproject
 
-# Virtualenv
-env
-
-# Mac Lameness
+# Ignore Mac Finder
 .DS_Store

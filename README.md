@@ -1,60 +1,34 @@
 Celestrium
-===
 
-A tool to understand your graph based data.
+> Require.js modules to create data driven interfaces.
 
-## Local Setup
+## Using
 
-Install dependencies using [virtualenv](https://pypi.python.org/pypi/virtualenv).
-
-```bash
-# setup virtual environment
-virtualenv env
-source env/bin/activate
-
-# install normal dependencies
-pip install -r requirements.txt
-
-# install these *special* dependencies
-# this is a result of them depending on numpy in their setup.py's
-pip install divisi2 csc-pysparse
-```
-
-Install the [Heroku Toolbelt](https://toolbelt.heroku.com/).
-
-## Running Locally
+Add this repo as a [git submodule](http://git-scm.com/book/en/Git-Tools-Submodules) to your Require.js application.
 
 ```bash
-foreman start
+git submodule add git@github.com:jdhenke/celestrium.git www/scripts/celestrium
 ```
 
-## Deploying to [Heroku](https://www.heroku.com/)
+Ensure these dependencies are in `scripts`
 
-```bash
-git checkout -b prod # do all these changes on a different branch
-heroku create
-git push heroku prod:master
+  - jquery
+  - jquery.typeahead
+  - underscore
+  - d3
+
+Use these modules in your `main.js`.
+
+```javascript
+requirejs(["celestrium/TODO"], function(TODO) {
+  // do awesome stuff with TODO
+});
 ```
 
-Now, edit `requirements.txt` to uncomment the bottom list of packages.
+## Contributing
 
-> This is necessary because those packages require numpy to be *fully* installed before even starting to install these packages. Hence the two stages.
+Branch from `master` to a topic branch, then make a pull request to `master`.
 
-Commit the changes and push to heroku so it recognizes and installs the remaining packages.
-
-```bash
-git add requirements.txt
-git commit -m 'adding second set of requirements'
-git push heroku prod:master
-```
-
-Check the logs to see when things are finally up, then check it out.
-
-```bash
-heroku logs --tail
-heroku open
-```
-
-## License
+## Copying
 
 See [LICENSE](./LICENSE)
