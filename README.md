@@ -8,8 +8,10 @@ Celestrium
 Add this repo as a [git submodule](http://git-scm.com/book/en/Git-Tools-Submodules) to your Require.js application.
 
 ```bash
-git submodule add git@github.com:jdhenke/celestrium.git www/scripts/celestrium
+git submodule add https://github.com/jdhenke/celestrium.git www/scripts/celestrium
 ```
+
+> If you wish to contibute changes, fork the repo, use yours and make a pull request!
 
 Ensure these dependencies are in `scripts`
 
