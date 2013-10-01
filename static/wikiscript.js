@@ -270,7 +270,7 @@ $(document).ready(function(){
         return false;
       };
       // do not make a server request if the node hasn't changed
-      if (JSON.stringify(nodeObject) === "{}") {
+      if ((JSON.stringify(nodeObject) === "{}") && (deleted_props.length == 0)) {
         alert("Node " + selected_node + " has not changed and does not need to be saved.");
         return false;
       };
@@ -280,6 +280,7 @@ $(document).ready(function(){
           alert("Failed to save changes to node " + selected_node + ".");
         } else {
           alert("Saved changes to node " + selected_node + ".");
+          $("#edit-menu-inputs").css("display", "none");
           $(".EditProperty").each(function(i, obj) {
             $(this)[0].parentNode.removeChild($(this)[0]);
           });
@@ -298,6 +299,10 @@ $(document).ready(function(){
           alert("Could not delete node " + selected_node + ". Ensure you delete all relationships involving a node before deleting the node itself.");
         } else {
           alert("Deleted node " + selected_node + ".");
+          $("#edit-menu-inputs").css("display", "none");
+          $(".EditProperty").each(function(i, obj) {
+            $(this)[0].parentNode.removeChild($(this)[0]);
+          });
         }
       });
     };
@@ -324,9 +329,9 @@ $(document).ready(function(){
             $(this)[0].parentNode.removeChild($(this)[0]);
           });
         };
-        $("input[name=edit-from]").val(data.from);
-        $("input[name=edit-to]").val(data.to);
-        $("input[name=edit-rel-type]").val(data.type);
+        $("#edit-from").html("from: " + data.from);
+        $("#edit-to").html("to: " +data.to);
+        $("#edit-rel-type").html("type: " + data.type);
         for (property in data.properties) {
           selected_arrow_properties[property] = data.properties[property];
           moreFields("writerootEditArrow","readrootEditArrow","EditArrowProperty");
@@ -335,6 +340,52 @@ $(document).ready(function(){
         };
       };
     });
+    };
+  });
+
+
+  // Edits properties of an arrow
+  $("#EditArrow").on("click", function(event){
+    var submitOK, relObject;
+    // assign property-value pairs to relObject and check for legality
+    [submitOK, relObject] = assign_properties("EditArrow");
+    if (submitOK) {
+      // check which properties have changed and which ones are being deleted
+      var deleted_props = [];
+      for (var property in selected_arrow_properties) {
+        if (property in relObject) {
+          if (selected_arrow_properties[property] === relObject[property]) {
+            // don't have to re-set property value if it hasn't changed
+            delete relObject[property];
+          };
+        } else {
+          // this is a list of properties that are being deleted
+          deleted_props.push(property);
+        };
+      };
+      // ask for confirmation before deleting properties
+      // (two different messages in the interest of grammar)
+      if (((deleted_props.length == 1) && (!(confirm("Are you sure you want to delete the following property? " + deleted_props)))) || ((deleted_props.length > 1) && (!(confirm("Are you sure you want to delete the following properties? " + deleted_props))))) {
+        alert("Cancelled saving of arrow " + selected_arrow + ".");
+        return false;
+      };
+      // do not make a server request if the arrow hasn't changed
+      if ((JSON.stringify(relObject) === "{}") && (deleted_props.length == 0)) {
+        alert("Arrow " + selected_arrow + " has not changed and does not need to be saved.");
+        return false;
+      };
+      console.log(JSON.stringify(relObject));
+      $.post('/edit_arrow', {id: selected_arrow, properties: relObject, remove: deleted_props}, function(data) {
+        if (data === "error") {
+          alert("Failed to save changes to arrow " + selected_arrow + ".");
+        } else {
+          alert("Saved changes to arrow " + selected_arrow + ".");
+          $("#edit-arrow-menu-inputs").css("display", "none");
+          $(".EditArrowProperty").each(function(i, obj) {
+            $(this)[0].parentNode.removeChild($(this)[0]);
+          });
+        };
+      });
     };
   });
 
@@ -348,6 +399,10 @@ $(document).ready(function(){
           alert("Could not delete arrow " + selected_node + ".");
         } else {
           alert("Deleted arrow " + selected_arrow + ".");
+          $("#edit-arrow-menu-inputs").css("display", "none");
+          $(".EditArrowProperty").each(function(i, obj) {
+            $(this)[0].parentNode.removeChild($(this)[0]);
+          });
         }
       });
     };

@@ -264,6 +264,34 @@ module.exports = class MyApp
       )
     )
 
+    ### Edits an arrow using a Cypher query ###
+    app.post('/edit_arrow', (request, response) ->
+      console.log "Arrow Edit Requested"
+      cypherQuery = "start r=rel(" + request.body.id + ") "
+      if request.body.properties isnt undefined
+        cypherQuery += "set r."
+        for property, value of request.body.properties
+          cypherQuery += "#{property}='#{value}', r."
+        cypherQuery = cypherQuery.substring(0,cypherQuery.length-4)
+      if request.body.remove isnt undefined
+        cypherQuery += " remove r."
+        for property in request.body.remove
+          cypherQuery += "#{property}, r."
+        cypherQuery = cypherQuery.substring(0,cypherQuery.length-4)
+      cypherQuery += " return r;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes) ->
+          nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
+          nodeID = noderes.data[0][0]["self"].slice(nodeIDstart)
+          console.log "Arrow Edit Done, ID = " + nodeID
+          response.json noderes.data[0][0]["data"]
+        (noderes) ->
+          console.log "Arrow Edit Failed"
+          response.send "error"
+      )
+    )
+
 
     ###
     Deletes an arrow 
