@@ -1,4 +1,4 @@
-define(["jquery", "underscore", "d3.v3.min", "jquery.typeahead"], 
+define(["jquery", "underscore", "d3", "jquery.typeahead"], 
 function($, _, d3) {
 
   /* get original dimensions to center first animation */
