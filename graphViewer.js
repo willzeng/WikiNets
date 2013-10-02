@@ -76,7 +76,7 @@ function($, _, d3) {
     $(window).on("contextmenu",function(e) {e.preventDefault(); });
 
     // svg element which houses everything
-    var svg = d3.select("#workspace")
+    var svg = d3.select(selector)
       .append("svg:svg")
         .attr("pointer-events", "all")
 
@@ -650,11 +650,11 @@ function($, _, d3) {
     }
   }
 
-  function GraphViewer() {
+  function GraphViewer(container) {
     this.init = function() {
       $(function() {
         forceLinksToNewTab();
-        var controller = new Controller("#workspace");
+        var controller = new Controller(container);
         registerNodeSearch(controller);
         registerForceControls(controller);
         registerSelectionControls(controller);
