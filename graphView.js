@@ -79,11 +79,11 @@ define(['jquery', 'underscore', 'backbone', 'd3'], function($, _, Backbone, d3) 
                 .links(links)
                 .start();
 
-      this.force.linkStrength(function(link) { return link.strength; });
+      this.force.linkStrength(function(link) { return (link.strength - 0.95) / (1.0 - 0.95); });
 
       var link = d3.select(".linkContainer").selectAll(".link")
           .data(links, this.model.get("linkHash"));
-      link.enter().append("line").attr("class", "link");
+      link.enter().append("line").attr("class", "link").attr("stroke-width", function(link) { return 5 * (link.strength - 0.95) / (1.0 - 0.95); });
       link.exit().remove();
 
       var node = this.nodeSelection = d3.select(".nodeContainer").selectAll(".node")

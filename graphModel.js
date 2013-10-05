@@ -5,6 +5,7 @@ define(["underscore", "backbone"], function(_, Backbone) {
     initialize: function() {
       this.set("nodes", []);
       this.set("links", []);
+      this.set("nodeSet", {});
     },
 
     getNodes: function() {
@@ -16,6 +17,10 @@ define(["underscore", "backbone"], function(_, Backbone) {
     },
 
     putNode: function(node) {
+      if (this.get("nodeSet")[this.get("nodeHash")(node)]) {
+        return;
+      }
+      this.get("nodeSet")[this.get("nodeHash")(node)] = true;
       this.trigger("add:node", node);
       this.pushDatum("nodes", node);
     },
@@ -44,6 +49,7 @@ define(["underscore", "backbone"], function(_, Backbone) {
         var decision = filter(d);
         if (!decision) {
           removed.push(d);
+          delete this.get("nodeSet")[this.get("nodeHash")(d)];
         }
         return decision;
       }
