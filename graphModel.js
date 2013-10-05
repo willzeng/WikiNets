@@ -37,7 +37,7 @@ define(["underscore", "backbone"], function(_, Backbone) {
       this.trigger("change");
     },
 
-    /* also removes edges incident to any node which is removed */
+    /* also removes links incident to any node which is removed */
     filterNodes: function(filter) {
       var removed = [];
       function wrappedFilter(d) {
