@@ -1,37 +1,37 @@
 Celestrium
 ==========
 
-> Require.js modules to create data driven interfaces.
+> [Require.js](http://requirejs.org/) modules to create a completey customizable graph explorer.
 
-## Using
+## Introduction
 
-Add this repo as a [git submodule](http://git-scm.com/book/en/Git-Tools-Submodules) to your Require.js application.
+### Recommended Reading
+[require.js](http://requirejs.org/) and [git submodules](http://git-scm.com/book/en/Git-Tools-Submodules).
 
-```bash
-git submodule add https://github.com/jdhenke/celestrium.git www/scripts/celestrium
-```
+### Overview
 
-> If you wish to contibute changes, fork the repo, use yours and make a pull request!
+Here's the general setup.
 
-Ensure these dependencies are in `scripts`
+  - This repo is just a collection of require.js modules.
+  - It should be embedded as a submodule in the scripts folder of a website.
+  - The require.js main script can then require the modules defined in celestrium.
 
-  - jquery
-  - jquery.typeahead
-  - underscore
-  - d3
+### Example Repo Structure
+Here's an example repo layout for a static site being served out of `www`
 
-Use these modules in your `main.js`.
+      repo-root/
+        run-server.sh <== whatever you want
+        www/
+          index.html <== html of page being served; should only pull in require.js, referencing main.js
+          scripts/
+            require.js <== standard library
+            ...global libraries... <== jquery, jquery.typeahead, underscore, Backbone, d3
+            main.js  <== require.js main
+            celestrium/  <== this repo added as a git submodule
+              ...celestrium modules...
+              README.md <== this file (so meta)
+### Example Implementation
 
-```javascript
-requirejs(["celestrium/TODO"], function(TODO) {
-  // do awesome stuff with TODO
-});
-```
+Checkout my [6.UAP repo](https://github.com/jdhenke/uap).
 
-## Contributing
-
-Branch from `master` to a topic branch, then make a pull request to `master`.
-
-## Copying
-
-See [LICENSE](./LICENSE)
+## [Contributing](./CONTRIBUTING.md) && [License](./LICENSE)
