@@ -17,8 +17,6 @@ var margin = {top: 10, right: 30, bottom: 30, left: 30},
 
     update: function() {
 
-      console.log("updating");
-
       this.$el.empty();
       this.$el.append($("<div class='histogram-header'>Link Strength</div>"));
       var svg = d3.select(this.el).append("svg")
@@ -53,8 +51,6 @@ var margin = {top: 10, right: 30, bottom: 30, left: 30},
       var data = d3.layout.histogram()
           .bins(ticks)
           (values);
-
-      console.log(min, max, ticks, data);
 
       var y = d3.scale.linear()
           .domain([0, d3.max(data, function(d) { return d.y; })])

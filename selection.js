@@ -81,7 +81,7 @@ define(['jquery', 'backbone', 'd3'], function($, Backbone, d3) {
     };
 
     // select all nodes which have a path to node
-    // using edges meeting current Connectivity criteria
+    // using links meeting current Connectivity criteria
     this.selectConnectedComponent = function(node) {
 
       // create adjacency list version of graph
