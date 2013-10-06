@@ -79,12 +79,12 @@ define(['jquery', 'underscore', 'backbone', 'd3'], function($, _, Backbone, d3) 
                 .links(links)
                 .start();
 
-      var link = this.linkSelection = d3.select(".linkContainer").selectAll(".link")
+      var link = this.linkSelection = d3.select(this.el).select(".linkContainer").selectAll(".link")
           .data(links, this.model.get("linkHash"));
       var linkEnter = link.enter().append("line").attr("class", "link");
       link.exit().remove();
 
-      var node = this.nodeSelection = d3.select(".nodeContainer").selectAll(".node")
+      var node = this.nodeSelection = d3.select(this.el).select(".nodeContainer").selectAll(".node")
         .data(nodes, this.model.get("nodeHash"));
 
       var nodeEnter = node.enter().append("g")
