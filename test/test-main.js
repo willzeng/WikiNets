@@ -11,13 +11,24 @@ requirejs.config({
 
     paths: {
         'jquery': '../lib/jquery',
+        'jquery.typeahead': '../lib/jquery.typeahead',
         'underscore': '../lib/underscore',
+        'backbone': '../lib/backbone',
+        'd3': '../lib/d3',
     },
 
     shim: {
+        'jquery.typeahead': ['jquery'],
+        'd3': {
+          exports: "d3",
+        },
         'underscore': {
-            exports: '_'
-        }
+          exports: '_',
+        },
+        'backbone': {
+          deps: ['underscore'],
+          exports: 'Backbone',
+        },
     },
 
     // ask Require.js to load these files (all our tests)
