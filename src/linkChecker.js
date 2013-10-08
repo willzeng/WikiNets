@@ -3,8 +3,16 @@ define(['jquery'], function($) {
 
   return function(graphModel, dataProvider) {
     graphModel.on("add:node", function(node) {
-      dataProvider.addLinks(node)
+      var nodes = graphModel.getNodes();
+      dataProvider.getLinks(node, nodes, function(links) {
+        _.each(links, function(strength, i) {
+          var link = {source:node, target: nodes[i], strength: strength};
+          if (link.strength > dataProvider.threshold) {
+            graphModel.putLink(link);
+          }
+        });
+      });
     });
-  }
+  };
 
 });

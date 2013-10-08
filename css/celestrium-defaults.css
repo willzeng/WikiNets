@@ -1,0 +1,38 @@
+/* overall font */
+body, .node-search-container input {font-family: "Trebuchet MS";}
+
+/* container positioning */
+.container {position: fixed; z-index: 10; background-color: #ccc;  padding: 2px;}
+#top-left-container { top: 5px; left: 5px; }
+#top-right-container { top: 5px; right: 5px; }
+#bottom-left-container { bottom: 5px; left: 5px;}
+#bottom-right-container {bottom: 5px; right: 5px;}
+
+/* graph workspace */
+.node circle {}
+.node.selected circle {fill: lime;}
+.node text {opacity: 0.5; }
+.node:hover text {opacity: 1; }
+.link {stroke: gray; opacity: 0.5;}
+
+/* node search */
+.node-search-container input {font-size: 12pt; outline: none;}
+.tt-dropdown-menu {background-color: #ccc; width: 100%; max-height: 307; overflow-y: auto;}
+.tt-is-under-cursor { color: white; }
+.tt-suggestions { padding-left: 2px;}
+.tt-suggestion { margin-left: 2px;}
+
+/* stats */
+.graph-stat {color: white;}
+
+/* histogram */
+.histogram text {font-size: 6pt;}
+.histogram .bar rect {fill: steelblue;}
+.histogram .bar text {fill: white;}
+.histogram .axis path,
+.histogram .axis line {fill: none; stroke: #000; shape-rendering: crispEdges; }
+.histogram-header {text-align: center; }
+
+/* links */
+#bottom-right-container a { text-decoration: none; font-style: italic; color: black;}
+#bottom-right-container a:hover {color: white;}
