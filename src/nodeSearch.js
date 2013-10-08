@@ -16,7 +16,7 @@ define(['jquery', 'jquery.typeahead', 'backbone'], function($, ignore, Backbone)
       this.$el.append($container);
 
       $input.typeahead({
-        prefetch: dataProvider.getNodesPath(),
+        prefetch: this.options.prefetch,
         name: "nodes",
         limit: 100,
       });

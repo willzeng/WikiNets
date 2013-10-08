@@ -7,7 +7,7 @@ define(['jquery'], function($) {
       dataProvider.getLinks(node, nodes, function(links) {
         _.each(links, function(strength, i) {
           var link = {source:node, target: nodes[i], strength: strength};
-          if (link.strength > dataProvider.threshold) {
+          if (link.strength > dataProvider.minThreshold) {
             graphModel.putLink(link);
           }
         });
