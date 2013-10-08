@@ -3,7 +3,7 @@ Celestrium
 
 > [Require.js](http://requirejs.org/) modules to create a completey customizable graph explorer.
 
-<img src="https://travis-ci.org/jdhenke/celestrium.png">
+status of `master`: <img src="https://travis-ci.org/jdhenke/celestrium.png?branch=master">
 
 ## Introduction
 
