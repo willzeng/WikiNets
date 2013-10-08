@@ -39,25 +39,20 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
 
       // PLUS
       keyListener.on("down:16:187", function() {
-        dataProvider.getRelatedNodes(sel.getSelectedNodes(), function(nodes) {
+        dataProvider.getLinkedNodes(sel.getSelectedNodes(), function(nodes) {
           _.each(nodes, function(node) {
             graphModel.putNode(node);
           });
         });
       });
 
-      // /
+      // FORWARD_SLASH
       keyListener.on("down:191", function(e) {
         $(".node-search-input").focus();
         e.preventDefault();
       });
 
       this.$el.append(graphView.el);
-
-      var nodeSearch = new NodeSearch({
-        dataProvider: dataProvider,
-        graphModel: graphModel,
-      }).render();
 
       var graphStatsView = new GraphStatsView({
         model: graphModel,
@@ -75,21 +70,28 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
       tl.append(forceSlidersView.el);
       tl.append(linkHistogramView.el);
 
-      var tr = $('<div id="top-right-container" class="container"/>');
-      tr.append(nodeSearch.el);
-
       var bl = $('<div id="bottom-left-container" class="container"/>');
       bl.append(graphStatsView.el);
 
       this.$el
         .append(tl)
-        .append(tr)
         .append(bl);
+
+      if (this.options.nodePrefetch) {
+        var nodeSearch = new NodeSearch({
+          graphModel: graphModel,
+          prefetch: this.options.nodePrefetch,
+        }).render();
+        var tr = $('<div id="top-right-container" class="container"/>');
+        tr.append(nodeSearch.el);    
+        this.$el.append(tr);
+      }
+      
 
       // adjust link strength and width based on threshold
       (function() {
         function linkStrength(link) {
-          return (link.strength - dataProvider.threshold) / (1.0 - dataProvider.threshold);
+          return (link.strength - dataProvider.minThreshold) / (1.0 - dataProvider.minThreshold);
         }
         graphView.getForceLayout().linkStrength(linkStrength);
         graphView.on("enter:link", function(enterSelection) {
