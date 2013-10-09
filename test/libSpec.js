@@ -1,4 +1,3 @@
-
 define(['jquery', 'jquery.typeahead', 'underscore', 'backbone', 'd3'], 
 function($, ignore, _, Backbone, d3) {
 

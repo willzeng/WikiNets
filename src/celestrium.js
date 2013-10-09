@@ -1,5 +1,5 @@
 /* main javascript for page */
-define(["jquery", "celestrium/graphModel", "celestrium/graphView", "celestrium/nodeSearch", "celestrium/selection", "celestrium/graphStats", "celestrium/forceSliders", "celestrium/linkChecker", "celestrium/keyListener", "celestrium/linkHistogram"], 
+define(["jquery", "src/graphModel", "src/graphView", "src/nodeSearch", "src/selection", "src/graphStats", "src/forceSliders", "src/linkChecker", "src/keyListener", "src/linkHistogram"], 
 function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceSlidersView, LinkChecker, KeyListener, LinkHistogramView) {
 
   var Celestrium = Backbone.View.extend({
