@@ -1,11 +1,19 @@
-## Mechanics
+How to Contribute
+=================
 
-Make pull requests to `master`. They're awesome.
+Fork the repo and make a pull request to Celestrium's `master` branch.
 
-If you want to propose higher level design decisions or infrastructure changes, create an Issue. They're prety cool too.
+### Checklist for issuing a pull request
 
-## Content
-
-Celestrium shoud be as independent of data-sets and styling choices as possible.
-
-If you make changes to how a module is used, please include documentation on how to use it. Include an example.
+  * merge Celestrium's current `master` into your branch to make it as current as possible
+  * ensure your repo passes CI by running `npm install && npm test`
+  * new code should have:
+    * at least one test for it
+    * documentation on how to use it
+    * a code snippet showing an example use case
+  * bug fixes should have:
+    * a description of the current behavior and the desired behavior
+    * a new test catching this bug
+    * an implemented solution
+  * your changes should be data-set agnostic
+  * styling should be avoided if possible, but if not, make it simple and easy to override
