@@ -13,7 +13,7 @@ Thanks!
 - [underscore](https://github.com/jashkenas/underscore) for correcting many javascript fails
 - [backbone](https://github.com/jashkenas/backbone) for it's simple and effective Event, Model and View paradigms
 - [d3](https://github.com/mbostock/d3) for it's awesome data manipulation paradigm
-- [requirejs](https://github.com/jrburke/requirejs) for it's awesome modularity in javascript paradigm
+- [requirejs](https://github.com/jrburke/requirejs) for modularizing javascript
 
 ### Testing
 - [karma](https://github.com/karma-runner/karma) for blowing my mind on how to test require.js modules
