@@ -1,6 +1,6 @@
 define(["underscore", "backbone"], function(_, Backbone) {
 
-  var Model = Backbone.Model.extend({
+  var GraphModel = Backbone.Model.extend({
 
     initialize: function() {
       this.set("nodes", []);
@@ -77,5 +77,5 @@ define(["underscore", "backbone"], function(_, Backbone) {
 
   });
 
-  return Model
+  return GraphModel
 });
