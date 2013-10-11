@@ -7,8 +7,11 @@ define(['jquery', 'jquery.typeahead', 'backbone'], function($, ignore, Backbone)
     },
 
     initialize: function(options) {
-
       this.graphModel = options.graphModel;
+      this.prefetch = options.prefetch;
+    },
+
+    render: function() {
 
       var $container = $("<div />").addClass("node-search-container");
       var $input = $('<input type="text" placeholder="Node Search...">').addClass("node-search-input");
@@ -16,7 +19,7 @@ define(['jquery', 'jquery.typeahead', 'backbone'], function($, ignore, Backbone)
       this.$el.append($container);
 
       $input.typeahead({
-        prefetch: options.prefetch,
+        prefetch: this.prefetch,
         name: "nodes",
         limit: 100,
       });

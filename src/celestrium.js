@@ -6,9 +6,10 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
 
     initialize: function(options) {
 
-      var dataProvider = options.dataProvider;
+      var nodePrefetch = this.nodePrefetch = options.nodePrefetch;
+      var dataProvider = this.dataProvider = options.dataProvider;
 
-      var graphModel = new GraphModel({
+      var graphModel = this.graphModel = new GraphModel({
         nodeHash: function(node) {
           return node.text;
         },
@@ -17,15 +18,32 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
         },
       });
 
-      var graphView = new GraphView({
+      new LinkChecker(graphModel, dataProvider);
+
+      var graphView = this.graphView = new GraphView({
         model: graphModel,
       }).render();
 
-      new LinkChecker(graphModel, dataProvider);
+      this.sel = new Selection(graphModel, graphView);
 
-      var sel = new Selection(graphModel, graphView);
+      // adjust link strength and width based on threshold
+      (function() {
+        function linkStrength(link) {
+          return (link.strength - dataProvider.minThreshold) / (1.0 - options.dataProvider.minThreshold);
+        }
+        graphView.getForceLayout().linkStrength(linkStrength);
+        graphView.on("enter:link", function(enterSelection) {
+          enterSelection.attr("stroke-width", function(link) { return 5 * linkStrength(link); });
+        });
+      })();
+
+    },
+
+    render: function() {
 
       var keyListener = new KeyListener(document.querySelector("body"));
+
+      var sel = this.sel;
 
       // CTRL + A
       keyListener.on("down:17:65", sel.selectAll, sel);
@@ -38,13 +56,17 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
       keyListener.on("down:13", sel.removeSelectionCompliment, sel);
 
       // PLUS
-      keyListener.on("down:16:187", function() {
-        dataProvider.getLinkedNodes(sel.getSelectedNodes(), function(nodes) {
-          _.each(nodes, function(node) {
-            graphModel.putNode(node);
+      (function() {
+        var graphModel = this.graphModel;
+        var dataProvider = this.dataProvider;
+        keyListener.on("down:16:187", function() {
+          dataProvider.getLinkedNodes(sel.getSelectedNodes(), function(nodes) {
+            _.each(nodes, function(node) {
+              graphModel.putNode(node);
+            });
           });
         });
-      });
+      }.bind(this))();
 
       // FORWARD_SLASH
       keyListener.on("down:191", function(e) {
@@ -52,18 +74,18 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
         e.preventDefault();
       });
 
-      this.$el.append(graphView.el);
+      this.$el.append(this.graphView.el);
 
       var graphStatsView = new GraphStatsView({
-        model: graphModel,
+        model: this.graphModel,
       }).render();
 
       var forceSlidersView = new ForceSlidersView({
-        graphView: graphView,
+        graphView: this.graphView,
       }).render();
 
       var linkHistogramView = new LinkHistogramView({
-        model: graphModel,
+        model: this.graphModel,
       }).render();
 
       var tl = $('<div id="top-left-container" class="container"/>');
@@ -77,27 +99,15 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
         .append(tl)
         .append(bl);
 
-      if (options.nodePrefetch) {
+      if (this.nodePrefetch) {
         var nodeSearch = new NodeSearch({
-          graphModel: graphModel,
-          prefetch: options.nodePrefetch,
+          graphModel: this.graphModel,
+          prefetch: this.nodePrefetch,
         }).render();
         var tr = $('<div id="top-right-container" class="container"/>');
-        tr.append(nodeSearch.el);    
+        tr.append(nodeSearch.el);
         this.$el.append(tr);
       }
-      
-
-      // adjust link strength and width based on threshold
-      (function() {
-        function linkStrength(link) {
-          return (link.strength - dataProvider.minThreshold) / (1.0 - dataProvider.minThreshold);
-        }
-        graphView.getForceLayout().linkStrength(linkStrength);
-        graphView.on("enter:link", function(enterSelection) {
-          enterSelection.attr("stroke-width", function(link) { return 5 * linkStrength(link); });
-        });
-      })();
 
     },
 

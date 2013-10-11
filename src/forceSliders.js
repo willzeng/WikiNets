@@ -3,8 +3,10 @@ define(["jquery", "underscore", "backbone"], function($, _, Backbone) {
   return Backbone.View.extend({
 
     initialize: function(options) {
+      this.force = options.graphView.getForceLayout();
+    },
 
-      var force = options.graphView.getForceLayout();
+    render: function() {
       
       var $container = $('<div class="force-sliders-container" />').appendTo(this.$el);
       var $table = $('<table border="0" />').appendTo($container);
@@ -14,7 +16,7 @@ define(["jquery", "underscore", "backbone"], function($, _, Backbone) {
       // define mappings between values in code and values in UI
       var mappings = [
         {
-          f: force.charge,
+          f: this.force.charge,
           selector: "#input-charge",
           scale: d3.scale.linear()
             .domain([-20, -2000])
@@ -22,23 +24,26 @@ define(["jquery", "underscore", "backbone"], function($, _, Backbone) {
         },
 
         {
-          f: force.gravity,
+          f: this.force.gravity,
           selector: "#input-gravity",
           scale: d3.scale.linear()
             .domain([0.01, 0.5])
             .range([0, 100]),
         },
-      ]
+      ];
 
       // hook mappings up to respond to user input
-      _.each(mappings, function(mapping) {
-        this.$(mapping.selector)
-          .val(mapping.scale(mapping.f()))
-          .change(function() {
-            mapping.f(mapping.scale.invert($(this).val()));
-            force.start(); // TODO: too much rep-exposure?
-        });
-      }.bind(this));
+      (function() {
+        var force = this.force;
+        _.each(mappings, function(mapping) {
+          this.$(mapping.selector)
+            .val(mapping.scale(mapping.f()))
+            .change(function() {
+              mapping.f(mapping.scale.invert($(this).val()));
+              force.start();
+            });
+        }.bind(this));
+      }.bind(this))();
 
       return this;
 
