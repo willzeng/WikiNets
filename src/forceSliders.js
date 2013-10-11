@@ -2,9 +2,9 @@ define(["jquery", "underscore", "backbone"], function($, _, Backbone) {
 
   return Backbone.View.extend({
 
-    render: function() {
-      
-      var force = this.options.graphView.getForceLayout();
+    initialize: function(options) {
+
+      var force = options.graphView.getForceLayout();
       
       var $container = $('<div class="force-sliders-container" />').appendTo(this.$el);
       var $table = $('<table border="0" />').appendTo($container);

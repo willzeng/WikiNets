@@ -4,9 +4,9 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
 
   var Celestrium = Backbone.View.extend({
 
-    initialize: function() {
+    initialize: function(options) {
 
-      var dataProvider = this.options.dataProvider;
+      var dataProvider = options.dataProvider;
 
       var graphModel = new GraphModel({
         nodeHash: function(node) {
@@ -77,10 +77,10 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
         .append(tl)
         .append(bl);
 
-      if (this.options.nodePrefetch) {
+      if (options.nodePrefetch) {
         var nodeSearch = new NodeSearch({
           graphModel: graphModel,
-          prefetch: this.options.nodePrefetch,
+          prefetch: options.nodePrefetch,
         }).render();
         var tr = $('<div id="top-right-container" class="container"/>');
         tr.append(nodeSearch.el);    
