@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "karma": "*"
+    "karma": ">= 0.10.2"
   },
   "scripts": {
     "test": "./node_modules/.bin/karma start --single-run"
