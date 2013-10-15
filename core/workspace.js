@@ -1,8 +1,8 @@
-/* main javascript for page */
+n/* main javascript for page */
 define(["jquery", "src/graphModel", "src/graphView", "src/nodeSearch", "src/selection", "src/graphStats", "src/forceSliders", "src/linkChecker", "src/keyListener", "src/linkHistogram"], 
 function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceSlidersView, LinkChecker, KeyListener, LinkHistogramView) {
 
-  var Celestrium = Backbone.View.extend({
+  var Workspace = Backbone.View.extend({
 
     initialize: function(options) {
 
@@ -113,6 +113,6 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
 
   });
 
-  return Celestrium;
+  return Workspace;
 
 });
