@@ -1,4 +1,4 @@
-define(["src/forceSliders"], function(forceSliders) {
+define(["core/forceSliders"], function(forceSliders) {
     describe("forceSliders module definition", function() {
       it("is defined", function() {
         expect(forceSliders).toBeDefined();

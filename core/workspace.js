@@ -1,5 +1,5 @@
-n/* main javascript for page */
-define(["jquery", "src/graphModel", "src/graphView", "src/nodeSearch", "src/selection", "src/graphStats", "src/forceSliders", "src/linkChecker", "src/keyListener", "src/linkHistogram"], 
+/* main javascript for page */
+define(["jquery", "core/graphModel", "core/graphView", "core/nodeSearch", "core/selection", "core/graphStats", "core/forceSliders", "core/linkChecker", "core/keyListener", "core/linkHistogram"], 
 function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceSlidersView, LinkChecker, KeyListener, LinkHistogramView) {
 
   var Workspace = Backbone.View.extend({

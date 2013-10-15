@@ -1,4 +1,4 @@
-define(['src/graphModel'], function(GraphModel) {
+define(['core/graphModel'], function(GraphModel) {
 
   describe('graph model', function() {
 
