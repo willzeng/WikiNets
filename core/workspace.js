@@ -16,6 +16,8 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
         linkHash: function(link) {
           return link.source.text + link.target.text;
         },
+        nodeAttributes: options.nodeAttributes || {},
+        linkAttributes: options.linkAttributes || {},
       });
 
       new LinkChecker(graphModel, dataProvider);

@@ -17,9 +17,19 @@ define(["underscore", "backbone"], function(_, Backbone) {
     },
 
     putNode: function(node) {
+
+      // ignore if node is already in this graph
       if (this.get("nodeSet")[this.get("nodeHash")(node)]) {
         return;
       }
+
+      // modify node to have attribute accessor functions
+      var nodeAttributes = this.get("nodeAttributes");
+      node.getAttributeValue = function(attr) {
+        return nodeAttributes[attr].getValue(node);
+      };
+
+      // commit this node to this graph
       this.get("nodeSet")[this.get("nodeHash")(node)] = true;
       this.trigger("add:node", node);
       this.pushDatum("nodes", node);
@@ -77,5 +87,6 @@ define(["underscore", "backbone"], function(_, Backbone) {
 
   });
 
-  return GraphModel
+  return GraphModel;
+
 });
