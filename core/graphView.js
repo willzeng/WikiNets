@@ -23,7 +23,7 @@ define(['jquery', 'underscore', 'backbone', 'd3'], function($, _, Backbone, d3) 
       // outermost wrapper - this is used to capture all zoom events
       var zoomCapture = svg.append('g');
 
-      // this is in the background to capture events not on any node  
+      // this is in the background to capture events not on any node
       // should be added first so appended nodes appear above this
       zoomCapture.append('svg:rect')
         .attr("width", "100%")
@@ -52,7 +52,7 @@ define(['jquery', 'underscore', 'backbone', 'd3'], function($, _, Backbone, d3) 
 
         // otherwise, translate and scale according to zoom
         workspace.attr("transform",
-            "translate(" + d3.event.translate + ")" + 
+            "translate(" + d3.event.translate + ")" +
             " scale(" + d3.event.scale + ")");
       }))
       .on("dblclick.zoom", null); // ignore double click to zoom
@@ -112,8 +112,8 @@ define(['jquery', 'underscore', 'backbone', 'd3'], function($, _, Backbone, d3) 
             .attr("x2", function(d) { return d.target.x; })
             .attr("y2", function(d) { return d.target.y; });
 
-        node.attr("transform", function(d) { 
-          return "translate(" + d.x + "," + d.y + ")"; 
+        node.attr("transform", function(d) {
+          return "translate(" + d.x + "," + d.y + ")";
         });
       });
     },

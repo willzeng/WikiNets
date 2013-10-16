@@ -34,7 +34,7 @@ define(["underscore", "backbone"], function(_, Backbone) {
       data.push(datum);
       this.set(attr, data);
       // QA: this is not already fired because of the rep-exposure of get.
-      //     `data` is the actual underlying object so even though set 
+      //     `data` is the actual underlying object so even though set
       //     performs a deep search to detect changes, it will not detect any
       //     because it's literally comparing the same object
       // Note: at least we know this will never be a redundant trigger

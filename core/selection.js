@@ -32,7 +32,7 @@ define(['jquery', 'backbone', 'd3'], function($, Backbone, d3) {
       if (nodeSelection) {
         nodeSelection.call(function(selection) {
           selection.classed('selected', function(d) {
-            return d.selected; 
+            return d.selected;
           });
         });
       }
@@ -56,7 +56,7 @@ define(['jquery', 'backbone', 'd3'], function($, Backbone, d3) {
         return false;
       });
     };
-    
+
     this.toggleSelection = function(node) {
       node.selected = !node.selected;
       this.renderSelection();
@@ -103,7 +103,7 @@ define(['jquery', 'backbone', 'd3'], function($, Backbone, d3) {
           seen[text] = 1;
           _.each(graph[text], function(ignore, neighborText) {
             visit(neighborText);
-          }); 
+          });
         }
       }
       visit(node.text);
