@@ -1,6 +1,6 @@
 /* main javascript for page */
-define(["jquery", "src/graphModel", "src/graphView", "src/nodeSearch", "src/selection", "src/graphStats", "src/forceSliders", "src/linkChecker", "src/keyListener", "src/linkHistogram"], 
-function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceSlidersView, LinkChecker, KeyListener, LinkHistogramView) {
+define(["jquery", "src/graphModel", "src/graphView", "src/nodeSearch", "src/selection", "src/graphStats", "src/forceSliders", "src/linkChecker", "src/keyListener", "src/linkHistogram", "src/nodeProfile"], 
+function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceSlidersView, LinkChecker, KeyListener, LinkHistogramView, NodeProfile) {
 
   var Celestrium = Backbone.View.extend({
 
@@ -21,9 +21,15 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
         model: graphModel,
       }).render();
 
+
       new LinkChecker(graphModel, dataProvider);
 
       var sel = new Selection(graphModel, graphView);
+
+
+      var nodeProfile = new NodeProfile({
+        selection: sel
+      }).render();
 
       var keyListener = new KeyListener(document.querySelector("body"));
 

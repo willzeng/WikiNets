@@ -21,6 +21,11 @@ define(['jquery', 'backbone', 'd3'], function($, Backbone, d3) {
               datum.fixed = false;
             }
           }, 250);
+
+         var a =  _.filter(graphModel.getNodes(), function(node) {
+        return node.selected;
+      });
+         console.log(a);
         }).on('dblclick', function(datum, index) {
           selection.selectConnectedComponent(datum);
         });
