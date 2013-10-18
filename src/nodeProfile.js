@@ -2,8 +2,8 @@ define(["jquery", "underscore", "backbone"], function($, _, Backbone) {
 
   return Backbone.View.extend({
 
-    initialize: function() {
-      this.selection = this.options.selection;
+    initialize: function(options) {
+      this.selection = options.selection;
       this.selection.on("select", this.update.bind(this));
     },
 
