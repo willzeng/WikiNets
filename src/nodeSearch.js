@@ -6,9 +6,12 @@ define(['jquery', 'jquery.typeahead', 'backbone'], function($, ignore, Backbone)
       'typeahead:selected input': "addNode",
     },
 
+    initialize: function(options) {
+      this.graphModel = options.graphModel;
+      this.prefetch = options.prefetch;
+    },
+
     render: function() {
-      
-      var dataProvider = this.options.dataProvider;
 
       var $container = $("<div />").addClass("node-search-container");
       var $input = $('<input type="text" placeholder="Node Search...">').addClass("node-search-input");
@@ -16,7 +19,7 @@ define(['jquery', 'jquery.typeahead', 'backbone'], function($, ignore, Backbone)
       this.$el.append($container);
 
       $input.typeahead({
-        prefetch: this.options.prefetch,
+        prefetch: this.prefetch,
         name: "nodes",
         limit: 100,
       });
@@ -26,7 +29,7 @@ define(['jquery', 'jquery.typeahead', 'backbone'], function($, ignore, Backbone)
     },
 
     addNode: function(e, datum) {
-      var graphModel = this.options.graphModel;
+      var graphModel = this.graphModel;
       var newNode = {text: datum.value};
       var h = graphModel.get("nodeHash");
       var newNodeHash = h(newNode);

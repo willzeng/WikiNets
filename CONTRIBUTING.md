@@ -1,7 +1,7 @@
 How to Contribute
 =================
 
-Fork the repo and make a pull request to Celestrium's `master` branch.
+[Fork](https://github.com/jdhenke/celestrium/fork) the repo and make a pull request to Celestrium's `master` branch.
 
 ### Checklist for issuing a pull request
 

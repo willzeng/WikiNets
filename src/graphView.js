@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'backbone', 'd3'], function($, _, Backbone, d3) {
+define(['jquery', 'underscore', 'backbone', 'd3', 'src/selectionLayer'], function($, _, Backbone, d3, SelectionLayer) {
 
   var GraphView = Backbone.View.extend({
 
@@ -65,6 +65,8 @@ define(['jquery', 'underscore', 'backbone', 'd3'], function($, _, Backbone, d3) 
       // so that nodes always appear above links
       var linkContainer = workspace.append('svg:g').classed("linkContainer", true);
       var nodeContainer = workspace.append('svg:g').classed("nodeContainer", true);
+
+      var selectionLayer = new SelectionLayer({'parent': this.el});
 
       return this;
 
