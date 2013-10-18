@@ -6,7 +6,7 @@ body, .node-search-container input {font-family: "Trebuchet MS";}
 #top-left-container { top: 5px; left: 5px; }
 #top-right-container { top: 5px; right: 5px; }
 #bottom-left-container { bottom: 5px; left: 5px;}
-#bottom-right-container {bottom: 5px; right: 5px;}
+#bottom-right-container {bottom: 5px; right: 5px; background-color: white}
 
 /* graph workspace */
 .node circle {}
@@ -36,3 +36,10 @@ body, .node-search-container input {font-family: "Trebuchet MS";}
 /* links */
 #bottom-right-container a { text-decoration: none; font-style: italic; color: black;}
 #bottom-right-container a:hover {color: white;}
+
+
+/* node profiles */
+.node-profile-section {}
+.node-profile {background-color:#DDD;margin-bottom:20px;padding:10px;border-radius: 8px; border: 1px solid lime;}
+.node-profile-title {font-size: 18px; margin-bottom: 10px}
+.node-profile-properties {font-size: 14px}

@@ -38,6 +38,9 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
       // ESC
       keyListener.on("down:27", sel.deselectAll, sel);
 
+      // p
+      keyListener.on("down:112", nodeProfile.toggle, nodeProfile);
+
       // DEL
       keyListener.on("down:46", sel.removeSelection, sel);
       // ENTER
@@ -49,6 +52,7 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
           _.each(nodes, function(node) {
             graphModel.putNode(node);
           });
+          nodeProfile.update();
         });
       });
 
@@ -79,9 +83,13 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
       var bl = $('<div id="bottom-left-container" class="container"/>');
       bl.append(graphStatsView.el);
 
+      var br = $('<div id="bottom-right-container" class="container"/>');
+      br.append(nodeProfile.el);
+
       this.$el
         .append(tl)
-        .append(bl);
+        .append(bl)
+        .append(br);
 
       if (this.options.nodePrefetch) {
         var nodeSearch = new NodeSearch({

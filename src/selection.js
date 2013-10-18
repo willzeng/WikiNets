@@ -1,6 +1,8 @@
 define(['jquery', 'backbone', 'd3'], function($, Backbone, d3) {
 
   function Selection(graphModel, graphView) {
+    var self = this;
+    _.extend(this, Backbone.Events);
 
     // handle selecting and deselecting nodes
     (function(selection) {
@@ -20,12 +22,8 @@ define(['jquery', 'backbone', 'd3'], function($, Backbone, d3) {
               clickSemaphore += 1;
               datum.fixed = false;
             }
-          }, 250);
+          }, 250);         
 
-         var a =  _.filter(graphModel.getNodes(), function(node) {
-        return node.selected;
-      });
-         console.log(a);
         }).on('dblclick', function(datum, index) {
           selection.selectConnectedComponent(datum);
         });
@@ -50,20 +48,23 @@ define(['jquery', 'backbone', 'd3'], function($, Backbone, d3) {
       this.renderSelection();
     };
 
-    this.selectAll = function() {
+    this.selectAll = function() {      
       this.filterSelection(function(n) {
         return true;
       });
+      self.trigger("select");
     };
 
-    this.deselectAll = function() {
+    this.deselectAll = function() {      
       this.filterSelection(function(n) {
         return false;
       });
+      self.trigger("select");
     };
     
     this.toggleSelection = function(node) {
       node.selected = !node.selected;
+      self.trigger("select");
       this.renderSelection();
     }
 
