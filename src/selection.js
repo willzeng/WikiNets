@@ -1,7 +1,6 @@
 define(['jquery', 'backbone', 'd3'], function($, Backbone, d3) {
 
   function Selection(graphModel, graphView) {
-    var self = this;
     _.extend(this, Backbone.Events);
 
     // handle selecting and deselecting nodes
@@ -48,23 +47,23 @@ define(['jquery', 'backbone', 'd3'], function($, Backbone, d3) {
       this.renderSelection();
     };
 
-    this.selectAll = function() {      
+    this.selectAll = function() {
       this.filterSelection(function(n) {
         return true;
       });
-      self.trigger("select");
+      this.trigger("change");
     };
 
-    this.deselectAll = function() {      
+    this.deselectAll = function() {
       this.filterSelection(function(n) {
         return false;
       });
-      self.trigger("select");
+      this.trigger("change");
     };
     
     this.toggleSelection = function(node) {
       node.selected = !node.selected;
-      self.trigger("select");
+      this.trigger("change");
       this.renderSelection();
     }
 

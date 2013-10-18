@@ -4,7 +4,7 @@ define(["jquery", "underscore", "backbone"], function($, _, Backbone) {
 
     initialize: function(options) {
       this.selection = options.selection;
-      this.selection.on("select", this.update.bind(this));
+      this.selection.on("change", this.update.bind(this));
     },
 
     render: function() {    
@@ -25,7 +25,7 @@ define(["jquery", "underscore", "backbone"], function($, _, Backbone) {
         {
           var blacklist = ["text",'index','x','y','px','py','fixed','selected','weight'];
           if (blacklist.indexOf(prop) == -1) {
-            $('<span class="node-profile-properties">' + prop + ':  ' + node[prop] + '</span><br>').appendTo($nodeDiv);
+            $('<span class="node-profile-properties">' + prop + ':  ' + node[prop] + '</span>').appendTo($nodeDiv);
           }
         }
       }
@@ -33,13 +33,7 @@ define(["jquery", "underscore", "backbone"], function($, _, Backbone) {
     },
 
     toggle: function() {
-      if (this.$el.css("display") == "none")
-      {
-        this.$el.css("display","block");
-      }
-      else {
-        this.$el.css("display","none");
-      }      
+        this.$el.toggle();
     },
 
   });

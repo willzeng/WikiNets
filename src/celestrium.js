@@ -24,9 +24,6 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
         model: graphModel,
       }).render();
 
-
-      new LinkChecker(graphModel, dataProvider);
-
       this.sel = new Selection(graphModel, graphView);
 
       // adjust link strength and width based on threshold
@@ -44,10 +41,6 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
 
 
     render: function() {
-
-
-      
-
       var keyListener = new KeyListener(document.querySelector("body"));
 
       var sel = this.sel;
@@ -109,7 +102,7 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
       var bl = $('<div id="bottom-left-container" class="container"/>');
       bl.append(graphStatsView.el);
 
-      var br = $('<div id="bottom-right-container" class="container"/>');
+      var br = $('<div id="node-profile-section" class="container"/>');
       br.append(nodeProfile.el);
 
       this.$el
