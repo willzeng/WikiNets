@@ -5,7 +5,7 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
     _.extend(this, Backbone.Events);
 
     var state = {};
-    var watch = [17, 65, 27, 46, 13, 16, 112, 187, 191];
+    var watch = [17, 65, 27, 46, 13, 16, 80, 187, 191];
 
     $(window).keydown(function(e) {
 

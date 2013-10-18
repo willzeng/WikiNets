@@ -62,7 +62,7 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
       keyListener.on("down:27", sel.deselectAll, sel);
 
       // p
-      keyListener.on("down:112", nodeProfile.toggle, nodeProfile);
+      keyListener.on("down:80", nodeProfile.toggle, nodeProfile);
 
       // DEL
       keyListener.on("down:46", sel.removeSelection, sel);
@@ -79,7 +79,6 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
               graphModel.putNode(node);
             });
           });
-          nodeProfile.update();
         });
       }.bind(this))();
 

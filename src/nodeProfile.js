@@ -23,7 +23,7 @@ define(["jquery", "underscore", "backbone"], function($, _, Backbone) {
         $('<span class="node-profile-title">' + node['text'] + '</span><br>').appendTo($nodeDiv);
         for (var prop in node)
         {
-          var blacklist = ["text",'index','x','y','px','py','fixed','selected'];
+          var blacklist = ["text",'index','x','y','px','py','fixed','selected','weight'];
           if (blacklist.indexOf(prop) == -1) {
             $('<span class="node-profile-properties">' + prop + ':  ' + node[prop] + '</span><br>').appendTo($nodeDiv);
           }
