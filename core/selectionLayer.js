@@ -88,7 +88,7 @@
               TODO
               Another option is to zoom to rect on release
               Should this rectangle persist on mouse release? depends...
-          
+
               what's the best option in terms of usability?
           */
 

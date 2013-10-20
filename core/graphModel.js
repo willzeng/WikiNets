@@ -17,9 +17,19 @@ define(["underscore", "backbone"], function(_, Backbone) {
     },
 
     putNode: function(node) {
+
+      // ignore if node is already in this graph
       if (this.get("nodeSet")[this.get("nodeHash")(node)]) {
         return;
       }
+
+      // modify node to have attribute accessor functions
+      var nodeAttributes = this.get("nodeAttributes");
+      node.getAttributeValue = function(attr) {
+        return nodeAttributes[attr].getValue(node);
+      };
+
+      // commit this node to this graph
       this.get("nodeSet")[this.get("nodeHash")(node)] = true;
       this.trigger("add:node", node);
       this.pushDatum("nodes", node);
@@ -34,7 +44,7 @@ define(["underscore", "backbone"], function(_, Backbone) {
       data.push(datum);
       this.set(attr, data);
       // QA: this is not already fired because of the rep-exposure of get.
-      //     `data` is the actual underlying object so even though set 
+      //     `data` is the actual underlying object so even though set
       //     performs a deep search to detect changes, it will not detect any
       //     because it's literally comparing the same object
       // Note: at least we know this will never be a redundant trigger
@@ -77,5 +87,6 @@ define(["underscore", "backbone"], function(_, Backbone) {
 
   });
 
-  return GraphModel
+  return GraphModel;
+
 });

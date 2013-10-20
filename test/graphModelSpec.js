@@ -1,4 +1,4 @@
-define(['src/graphModel'], function(GraphModel) {
+define(['core/graphModel'], function(GraphModel) {
 
   describe('graph model', function() {
 
@@ -14,7 +14,7 @@ define(['src/graphModel'], function(GraphModel) {
       });
 
       var node = {text: "testing text"};
-      
+
       var changeListener = jasmine.createSpy('changeListener');
       var changeNodesListener = jasmine.createSpy("changeNodesListener");
       var addNodeListener = jasmine.createSpy("addNodeListener");
@@ -26,7 +26,7 @@ define(['src/graphModel'], function(GraphModel) {
       it('can add node', function() {
         g.putNode(node);
       });
-        
+
       it('triggers change, chagne:nodes and add:node', function() {
         expect(changeListener).toHaveBeenCalled();
         expect(changeNodesListener).toHaveBeenCalled();

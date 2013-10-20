@@ -1,8 +1,8 @@
 /* main javascript for page */
-define(["jquery", "src/graphModel", "src/graphView", "src/nodeSearch", "src/selection", "src/graphStats", "src/forceSliders", "src/linkChecker", "src/keyListener", "src/linkHistogram", "src/nodeProfile"],
+define(["jquery", "core/graphModel", "core/graphView", "core/nodeSearch", "core/selection", "core/graphStats", "core/forceSliders", "core/linkChecker", "core/keyListener", "core/linkHistogram", "core/nodeProfile"],
 function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceSlidersView, LinkChecker, KeyListener, LinkHistogramView, NodeProfile) {
 
-  var Celestrium = Backbone.View.extend({
+  var Workspace = Backbone.View.extend({
 
     initialize: function(options) {
 
@@ -16,6 +16,8 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
         linkHash: function(link) {
           return link.source.text + link.target.text;
         },
+        nodeAttributes: options.nodeAttributes || {},
+        linkAttributes: options.linkAttributes || {},
       });
 
       new LinkChecker(graphModel, dataProvider);
@@ -124,6 +126,6 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
 
   });
 
-  return Celestrium;
+  return Workspace;
 
 });

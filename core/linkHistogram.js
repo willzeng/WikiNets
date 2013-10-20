@@ -26,7 +26,7 @@ var margin = {top: 10, right: 30, bottom: 30, left: 30},
         .append("g")
           .classed("workspace", true)
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-     
+
       var values = _.pluck(this.model.getLinks(), "strength");
 
       // A formatter for counts.
