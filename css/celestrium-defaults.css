@@ -38,7 +38,7 @@ body, .node-search-container input {font-family: "Trebuchet MS";}
 #bottom-right-container a:hover {color: white;}
 
 /* node profiles */
-#node-profile-section {background-color: white; bottom: 5px; right: 5px;}
-.node-profile {background-color:#DDD;margin-bottom:20px;padding:10px;border-radius: 8px; border: 1px solid lime;}
-.node-profile-title {font-size: 18px; margin-bottom: 10px}
-.node-profile-properties {font-size: 14px; clear: both;}
+.node-profile-helper {max-height: 50%; overflow: scroll; }
+.node-profile {background-color: #ccc; border: 1px solid white; padding: 2px; margin: 2px;}
+.node-profile-title {}
+.node-profile-property {font-size: 12px; }

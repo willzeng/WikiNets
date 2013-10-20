@@ -1,5 +1,5 @@
 /* main javascript for page */
-define(["jquery", "src/graphModel", "src/graphView", "src/nodeSearch", "src/selection", "src/graphStats", "src/forceSliders", "src/linkChecker", "src/keyListener", "src/linkHistogram", "src/nodeProfile"], 
+define(["jquery", "src/graphModel", "src/graphView", "src/nodeSearch", "src/selection", "src/graphStats", "src/forceSliders", "src/linkChecker", "src/keyListener", "src/linkHistogram", "src/nodeProfile"],
 function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceSlidersView, LinkChecker, KeyListener, LinkHistogramView, NodeProfile) {
 
   var Celestrium = Backbone.View.extend({
@@ -102,7 +102,7 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
       var bl = $('<div id="bottom-left-container" class="container"/>');
       bl.append(graphStatsView.el);
 
-      var br = $('<div id="node-profile-section" class="container"/>');
+      var br = $('<div id="bottom-right-container" class="container"/>');
       br.append(nodeProfile.el);
 
       this.$el
