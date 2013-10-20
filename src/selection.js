@@ -1,6 +1,7 @@
 define(['jquery', 'backbone', 'd3'], function($, Backbone, d3) {
 
   function Selection(graphModel, graphView) {
+    _.extend(this, Backbone.Events);
 
     // handle selecting and deselecting nodes
     (function(selection) {
@@ -21,6 +22,7 @@ define(['jquery', 'backbone', 'd3'], function($, Backbone, d3) {
               datum.fixed = false;
             }
           }, 250);
+
         }).on('dblclick', function(datum, index) {
           selection.selectConnectedComponent(datum);
         });
@@ -32,7 +34,7 @@ define(['jquery', 'backbone', 'd3'], function($, Backbone, d3) {
       if (nodeSelection) {
         nodeSelection.call(function(selection) {
           selection.classed('selected', function(d) {
-            return d.selected; 
+            return d.selected;
           });
         });
       }
@@ -49,16 +51,19 @@ define(['jquery', 'backbone', 'd3'], function($, Backbone, d3) {
       this.filterSelection(function(n) {
         return true;
       });
+      this.trigger("change");
     };
 
     this.deselectAll = function() {
       this.filterSelection(function(n) {
         return false;
       });
+      this.trigger("change");
     };
-    
+
     this.toggleSelection = function(node) {
       node.selected = !node.selected;
+      this.trigger("change");
       this.renderSelection();
     }
 
@@ -103,7 +108,7 @@ define(['jquery', 'backbone', 'd3'], function($, Backbone, d3) {
           seen[text] = 1;
           _.each(graph[text], function(ignore, neighborText) {
             visit(neighborText);
-          }); 
+          });
         }
       }
       visit(node.text);

@@ -36,3 +36,9 @@ body, .node-search-container input {font-family: "Trebuchet MS";}
 /* links */
 #bottom-right-container a { text-decoration: none; font-style: italic; color: black;}
 #bottom-right-container a:hover {color: white;}
+
+/* node profiles */
+.node-profile-helper {max-height: 50%; overflow: scroll; }
+.node-profile {background-color: #ccc; border: 1px solid white; padding: 2px; margin: 2px;}
+.node-profile-title {}
+.node-profile-property {font-size: 12px; }

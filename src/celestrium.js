@@ -1,6 +1,6 @@
 /* main javascript for page */
-define(["jquery", "src/graphModel", "src/graphView", "src/nodeSearch", "src/selection", "src/graphStats", "src/forceSliders", "src/linkChecker", "src/keyListener", "src/linkHistogram"], 
-function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceSlidersView, LinkChecker, KeyListener, LinkHistogramView) {
+define(["jquery", "src/graphModel", "src/graphView", "src/nodeSearch", "src/selection", "src/graphStats", "src/forceSliders", "src/linkChecker", "src/keyListener", "src/linkHistogram", "src/nodeProfile"],
+function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceSlidersView, LinkChecker, KeyListener, LinkHistogramView, NodeProfile) {
 
   var Celestrium = Backbone.View.extend({
 
@@ -39,16 +39,23 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
 
     },
 
-    render: function() {
 
+    render: function() {
       var keyListener = new KeyListener(document.querySelector("body"));
 
       var sel = this.sel;
+
+      var nodeProfile = new NodeProfile({
+        selection: sel
+      }).render();
 
       // CTRL + A
       keyListener.on("down:17:65", sel.selectAll, sel);
       // ESC
       keyListener.on("down:27", sel.deselectAll, sel);
+
+      // p
+      keyListener.on("down:80", nodeProfile.toggle, nodeProfile);
 
       // DEL
       keyListener.on("down:46", sel.removeSelection, sel);
@@ -95,9 +102,13 @@ function($, GraphModel, GraphView, NodeSearch, Selection, GraphStatsView, ForceS
       var bl = $('<div id="bottom-left-container" class="container"/>');
       bl.append(graphStatsView.el);
 
+      var br = $('<div id="bottom-right-container" class="container"/>');
+      br.append(nodeProfile.el);
+
       this.$el
         .append(tl)
-        .append(bl);
+        .append(bl)
+        .append(br);
 
       if (this.nodePrefetch) {
         var nodeSearch = new NodeSearch({
