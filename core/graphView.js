@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'backbone', 'd3', 'src/selectionLayer'], function($, _, Backbone, d3, SelectionLayer) {
+define(['jquery', 'underscore', 'backbone', 'd3', 'core/selectionLayer'], function($, _, Backbone, d3, SelectionLayer) {
 
   var GraphView = Backbone.View.extend({
 
