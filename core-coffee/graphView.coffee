@@ -1,7 +1,10 @@
 define ["jquery", "underscore", "backbone", "d3", "core/selectionLayer"], ($, _, Backbone, d3, SelectionLayer) ->
     GraphView = Backbone.View.extend(
-        initialize: ->
+        initialize: (options) ->
             @model.on "change", @update.bind(this)
+            # filter between model and visible graph
+            # use identify function if not defined
+            @linkFilter = options.linkFilter
             _.extend this, Backbone.Events
 
         render: ->
@@ -58,8 +61,9 @@ define ["jquery", "underscore", "backbone", "d3", "core/selectionLayer"], ($, _,
         update: ->
             nodes = @model.get("nodes")
             links = @model.get("links")
-            @force.nodes(nodes).links(links).start()
-            link = @linkSelection = d3.select(@el).select(".linkContainer").selectAll(".link").data(links, @model.get("linkHash"))
+            filteredLinks = if @linkFilter then @linkFilter.filter(links) else links
+            @force.nodes(nodes).links(filteredLinks).start()
+            link = @linkSelection = d3.select(@el).select(".linkContainer").selectAll(".link").data(filteredLinks, @model.get("linkHash"))
             linkEnter = link.enter().append("line").attr("class", "link")
             link.exit().remove()
             node = @nodeSelection = d3.select(@el).select(".nodeContainer").selectAll(".node").data(nodes, @model.get("nodeHash"))

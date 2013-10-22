@@ -18,29 +18,41 @@ define ["jquery", "core/graphModel", "core/graphView", "core/nodeSearch", "core/
 
             new LinkChecker(graphModel, dataProvider)
 
+            LinkFilter = Backbone.Model.extend(
+                initialize: ->
+                    @set "threshold", 1
+                    @set "minThreshold", 0.75
+                filter: (links) ->
+                    return _.filter links, (link) =>
+                        return link.strength > @get("threshold")
+                connectivity: (value) ->
+                    if value
+                        @set("threshold", value)
+                    else
+                        @get("threshold")
+            )
+            @linkFilter = new LinkFilter()
+
+
             graphView = @graphView = new GraphView(
                 model: graphModel
+                linkFilter: @linkFilter
             ).render()
+
+            @graphView.listenTo(@linkFilter, "change:threshold", graphView.update)
 
             @sel = new Selection(graphModel, graphView)
 
-            # linkStrength: (link) =>
-            #     return (link.strength - dataProvider.minThreshold) / (1.0 - options.dataProvider.minThreshold)
-
-            # graphView.getForceLayout().linkStrength(linkStrength)
-            # graphView.on 'enter: link', (enterSelection) ->
-            #     enterSelection.attr 'stroke-width', (link) ->
-            #         return 5 * linkStrength( link)
-
-
-              # adjust link strength and width based on threshold
-
-            linkStrength = (link) ->
-                return (link.strength - dataProvider.minThreshold) / (1.0 - options.dataProvider.minThreshold)
+            # adjust link strength and width based on threshold
+            linkStrength = (link) =>
+                return (link.strength - @linkFilter.get("threshold")) / (1.0 - @linkFilter.get("threshold"))
             graphView.getForceLayout().linkStrength linkStrength
-            graphView.on "enter:link", (enterSelection) ->
+            updateStrokeWidth = (enterSelection) ->
                 enterSelection.attr "stroke-width", (link) ->
                     return 5 * linkStrength(link)
+            graphView.on "enter:link", updateStrokeWidth
+            @linkFilter.on "change:threshold", ->
+                updateStrokeWidth graphView.getLinkSelection()
 
 
         render: ->
@@ -84,6 +96,7 @@ define ["jquery", "core/graphModel", "core/graphView", "core/nodeSearch", "core/
 
             forceSlidersView = new ForceSlidersView(
                 graphView: @graphView
+                linkFilter: @linkFilter
             ).render()
 
             linkHistogramView = new LinkHistogramView(
