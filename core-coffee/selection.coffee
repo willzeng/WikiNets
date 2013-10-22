@@ -6,10 +6,9 @@ define ["jquery", "backbone", "d3"], ($, Backbone, d3) ->
         ((selection) ->
             clickSemaphore = 0
             graphView.on "enter:node", (nodeEnterSelection) ->
-                # ignore drag
 
-                # increment so second click isn't registered as a click
                 nodeEnterSelection.on("click", (datum, index) ->
+                    # ignore drag
                     return  if d3.event.defaultPrevented
                     datum.fixed = true
                     clickSemaphore += 1
@@ -19,14 +18,14 @@ define ["jquery", "backbone", "d3"], ($, Backbone, d3) ->
                             selection.toggleSelection datum
                             datum.fixed = false
                         else
+                            # increment so second click isn't registered as a click
                             clickSemaphore += 1
                             datum.fixed = false
                     ), 250
                 ).on "dblclick", (datum, index) ->
                     selection.selectConnectedComponent datum
-
-
         ) this
+
         @renderSelection = ->
             nodeSelection = graphView.getNodeSelection()
             if nodeSelection
@@ -79,15 +78,13 @@ define ["jquery", "backbone", "d3"], ($, Backbone, d3) ->
         # using links meeting current Connectivity criteria
         @selectConnectedComponent = (node) ->
 
-            # create adjacency list version of graph
-
-            # perform DFS to compile connected component
             visit = (text) ->
                 unless _.has(seen, text)
                     seen[text] = 1
                     _.each graph[text], (ignore, neighborText) ->
                         visit neighborText
 
+            # create adjacency list version of graph
             graph = {}
             lookup = {}
             _.each graphModel.getNodes(), (node) ->
@@ -98,6 +95,7 @@ define ["jquery", "backbone", "d3"], ($, Backbone, d3) ->
                 graph[link.source.text][link.target.text] = 1
                 graph[link.target.text][link.source.text] = 1
 
+            # perform DFS to compile connected component
             seen = {}
             visit node.text
 
