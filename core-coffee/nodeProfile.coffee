@@ -5,7 +5,7 @@ define ["jquery", "underscore", "backbone"], ($, _, Backbone) ->
             @selection.on "change", @update.bind(this)
 
         render: ->
-            this
+            return this
 
         update: ->
             @$el.empty()

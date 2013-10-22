@@ -8,7 +8,7 @@ define ["jquery", "backbone"], ($, Backbone) ->
             table = $("<table border=\"0\"/>").appendTo(container)
             $("<tr><td class=\"graph-stat-label\">Nodes: </td><td id=\"graph-stat-num-nodes\" class=\"graph-stat\">0</td></tr>").appendTo table
             $("<tr><td class=\"graph-stat-label\">Links: </td><td id=\"graph-stat-num-links\" class=\"graph-stat\">0</td></tr>").appendTo table
-            this
+            return this
 
         update: ->
             @$("#graph-stat-num-nodes").text @model.getNodes().length

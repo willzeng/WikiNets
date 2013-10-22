@@ -13,7 +13,7 @@ define ["backbone", "d3"], (Backbone, d3) ->
 
     render: ->
       @update()
-      this
+      return this
 
     update: ->
       @$el.empty()

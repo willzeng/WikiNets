@@ -6,10 +6,10 @@ define ["underscore", "backbone"], (_, Backbone) ->
             @set "nodeSet", {}
 
         getNodes: ->
-            @get "nodes"
+            return @get "nodes"
 
         getLinks: ->
-            @get "links"
+            return @get "links"
 
         putNode: (node) ->
             # ignore if node is already in this graph
