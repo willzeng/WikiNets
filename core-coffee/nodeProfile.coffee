@@ -22,4 +22,3 @@ define ["jquery", "underscore", "backbone"], ($, _, Backbone) ->
 
         toggle: ->
             @$el.toggle()
-

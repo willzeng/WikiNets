@@ -11,6 +11,3 @@ define ["jquery"], ($) ->
             strength: strength
 
           graphModel.putLink link  if link.strength > dataProvider.minThreshold
-
-
-

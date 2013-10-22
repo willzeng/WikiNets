@@ -97,4 +97,3 @@ define ['jquery', 'underscore', 'backbone', 'd3'], ($, _, Backbone, d3) ->
             dim = @rectDim startPoint, endPoint
             ctx = @canvas.getContext '2d'
             ctx.clearRect dim.x, dim.y, dim.width, dim.height
-

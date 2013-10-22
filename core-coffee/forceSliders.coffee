@@ -33,5 +33,3 @@ define ["jquery", "underscore", "backbone"], ($, _, Backbone) ->
                         force.start()
             )()
             return this
-
-
