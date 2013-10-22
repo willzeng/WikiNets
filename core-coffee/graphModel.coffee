@@ -38,7 +38,7 @@ define ["underscore", "backbone"], (_, Backbone) ->
             #     performs a deep search to detect changes, it will not detect any
             #     because it's literally comparing the same object
             # Note: at least we know this will never be a redundant trigger
-            @trigger "change:" + attr
+            @trigger "change:#{attr}"
             @trigger "change"
 
 

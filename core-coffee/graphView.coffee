@@ -41,7 +41,7 @@ define ["jquery", "underscore", "backbone", "d3", "core/selectionLayer"], ($, _,
             # otherwise, translate and scale according to zoom
             zoomCapture.call(zoom.on("zoom", -> # ignore double click to zoom
                 return  if translateLock
-                workspace.attr "transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")"
+                workspace.attr "transform", "translate(#{d3.event.translate}) scale(#{d3.event.scale})"
             )).on("dblclick.zoom", null)
 
             # inner workspace which nodes and links go on
@@ -91,7 +91,7 @@ define ["jquery", "underscore", "backbone", "d3", "core/selectionLayer"], ($, _,
                 )
 
                 node.attr "transform", (d) ->
-                    "translate(" + d.x + "," + d.y + ")"
+                    "translate(#{d.x},#{d.y})"
 
 
 

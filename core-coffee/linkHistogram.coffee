@@ -18,7 +18,14 @@ define ["backbone", "d3"], (Backbone, d3) ->
     update: ->
       @$el.empty()
       @$el.append $("<div class='histogram-header'>Link Strength</div>")
-      svg = d3.select(@el).append("svg").classed("histogram", true).attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").classed("workspace", true).attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      svg = d3.select(@el)
+              .append("svg")
+              .classed("histogram", true)
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
+              .append("g")
+              .classed("workspace", true)
+              .attr("transform", "translate(#{margin.left},#{margin.top})")
       values = _.pluck(@model.getLinks(), "strength")
 
       # A formatter for counts.
@@ -49,7 +56,7 @@ define ["backbone", "d3"], (Backbone, d3) ->
                .append("g")
                .attr("class", "bar")
                .attr("transform", (d) ->
-                    "translate(" + x(d.x) + "," + y(d.y) + ")"
+                    "translate(#{x(d.x)},#{y(d.y)})"
                   )
 
       bar.append("rect")
@@ -74,7 +81,7 @@ define ["backbone", "d3"], (Backbone, d3) ->
 
       svg.append("g")
          .attr("class", "x axis")
-         .attr("transform", "translate(0," + height + ")")
+         .attr("transform", "translate(0,#{height})")
          .call(xAxis)
   )
   LinkHistogramView

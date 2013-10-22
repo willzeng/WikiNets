@@ -13,7 +13,7 @@ define ["jquery", "underscore", "backbone"], ($, _, Backbone) ->
             ).sortBy((which) ->
                 which
             ).value()
-            eventName = "down:" + keysDown.join(":")
+            eventName = "down:#{keysDown.join(':')}"
             @trigger eventName, e
             delete state[e.which] if e.isDefaultPrevented()
 
