@@ -1,8 +1,9 @@
 {
   "devDependencies": {
-    "karma": ">= 0.10.2"
+    "karma": ">= 0.10.2",
+    "coffee-script": "*"
   },
   "scripts": {
-    "test": "./node_modules/.bin/karma start --single-run"
+    "test": "./node_modules/.bin/coffee --compile -o test/ test-coffee/ && ./node_modules/.bin/coffee --compile -o core/ core-coffee/ && ./node_modules/.bin/karma start --single-run"
   }
 }
