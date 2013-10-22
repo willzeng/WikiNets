@@ -4,14 +4,14 @@ define ["jquery", "backbone", "d3"], ($, Backbone, d3) ->
 
         # handle selecting and deselecting nodes
         clickSemaphore = 0
-        graphView.on "enter:node", (nodeEnterSelection) ->
-            nodeEnterSelection.on("click", (datum, index) ->
+        graphView.on "enter:node", (nodeEnterSelection) =>
+            nodeEnterSelection.on("click", (datum, index) =>
                 # ignore drag
                 return  if d3.event.defaultPrevented
                 datum.fixed = true
                 clickSemaphore += 1
                 savedClickSemaphore = clickSemaphore
-                setTimeout (->
+                setTimeout (=>
                     if clickSemaphore is savedClickSemaphore
                         @toggleSelection datum
                         datum.fixed = false
@@ -20,7 +20,7 @@ define ["jquery", "backbone", "d3"], ($, Backbone, d3) ->
                         clickSemaphore += 1
                         datum.fixed = false
                 ), 250
-            ).on "dblclick", (datum, index) ->
+            ).on "dblclick", (datum, index) =>
                 @selectConnectedComponent datum
 
         @renderSelection = ->
