@@ -98,7 +98,7 @@ $.getJSON('/json', function(data){
            return 150*Math.sin(2*i_2*Math.PI/neighbors.length)+height/2+central_width/2;
          })
          .style("stroke", "lightgrey")
-         .style("stroke-width", 2);
+         .style("stroke-width", "2");
 
     frame.selectAll("rect").data([th]).enter().append("rect")
          .attr("x", width/2).attr("y", height/2).attr("width", central_width)
@@ -185,6 +185,20 @@ $.getJSON('/json', function(data){
               .attr("width", width)
               .attr("height", height);
 
+  /* add data for markers -- might have to fiddle a bit if node sizes change 
+     -- really this should all be relative to some global variables */
+  d3.select("svg").append("defs").append("marker")
+    .attr("id", "Triangle")
+    .attr("viewBox", "0 0 10 10")
+    .attr("refX", "25")
+    .attr("refY", "5")
+    .attr("markerUnits", "strokeWidth")
+    .attr("markerWidth", "8")
+    .attr("markerHeight", "6")
+    .attr("orient", "auto");
+  d3.select("marker").append("path")
+    .attr("d", "M 0 0 L 10 5 L 0 10 z");
+
 
   force
       .nodes(graph.nodes)
@@ -195,7 +209,9 @@ $.getJSON('/json', function(data){
       .data(graph.links)
       .enter().append("line")
       .attr("class", "link")
-      .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+      .attr("marker-end", "url(#Triangle)");
+      // not sure what this is supposed to do?
+      //.style("stroke-width", function(d) { return Math.sqrt(d.value); });
   
   var node = svg.selectAll(".node")
       .data(graph.nodes)
@@ -236,7 +252,9 @@ $.getJSON('/json', function(data){
 
 
   /* Generates buttons that grey out all nodes not belonging to the chosen
-     group, putting them in the "options" container */
+     group, putting them in the "options" container.
+     The selectAll("div") is a bit of a hack; the function specifically expects
+     the "options" container not to contain any "div"s. */
   var b=d3.select("#options").selectAll("div")
           .data(Object.keys(obj)).enter()
           .append("button")
@@ -246,18 +264,20 @@ $.getJSON('/json', function(data){
           })
           .on("click", function(d) { 
             svg.selectAll(".node").attr("r", function(d_1) {
+              // set node radius
               if(d_1.group.toString() === d){
                 return 10;
               }
               return 5;
             })
-            .style("stroke", function(d_1) { 
+            .style("stroke", function(d_1) {
               if(d_1.group.toString() === d){
                 return "none";
               } 
               return "none";
             })
             .style("fill", function(d_1) {
+              // set node colour
               if(d_1.group.toString() === d){
                 return color(d_1.group);
               }
