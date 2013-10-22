@@ -54,6 +54,23 @@ $.getJSON('/json', function(data){
   };
 
 
+  /* add data for markers -- might have to fiddle a bit if node sizes change 
+     -- really this should all be relative to some global variables */
+  function set_marker_data(section, scale) {
+    d3.select("#" + section + " svg").append("defs").append("marker")
+      .attr("id", section+"Triangle")
+      .attr("viewBox", "0 0 10 10")
+      .attr("refX", 25*scale)
+      .attr("refY", 5)
+      .attr("markerUnits", "strokeWidth")
+      .attr("markerWidth", 8)
+      .attr("markerHeight", 6)
+      .attr("orient", "auto");
+    d3.select("#" + section + " marker").append("path")
+      .attr("d", "M 0 0 L 10 5 L 0 10 z");
+  };
+
+
   /* Sets up the small circular graph at the bottom. Don't understand details
      yet */
   function setup_subgraph(d, i, th){
@@ -83,6 +100,8 @@ $.getJSON('/json', function(data){
     var central_width=40;
     var frame = d3.select("#subNet").append("svg:svg").attr("width", width)
                   .attr("height", height);
+    set_marker_data("subNet", 1.5);
+
     var nodelist=graph.nodes
     var neighbors = nodelist.filter(function(d_2){
           return neighboring(d_2, d);
@@ -97,6 +116,10 @@ $.getJSON('/json', function(data){
          .attr("y2", function(d_2, i_2){
            return 150*Math.sin(2*i_2*Math.PI/neighbors.length)+height/2+central_width/2;
          })
+         /* all lines in subgraph currently go from centre to neighbours
+            so arrow directions are meaningless -- will have to change this
+            before implementing arrowheads in subgraph */
+         //.attr("marker-end", "url(#subNetTriangle)")
          .style("stroke", "lightgrey")
          .style("stroke-width", "2");
 
@@ -184,21 +207,7 @@ $.getJSON('/json', function(data){
   var svg = d3.select("#mainNet").append("svg")
               .attr("width", width)
               .attr("height", height);
-
-  /* add data for markers -- might have to fiddle a bit if node sizes change 
-     -- really this should all be relative to some global variables */
-  d3.select("svg").append("defs").append("marker")
-    .attr("id", "Triangle")
-    .attr("viewBox", "0 0 10 10")
-    .attr("refX", "25")
-    .attr("refY", "5")
-    .attr("markerUnits", "strokeWidth")
-    .attr("markerWidth", "8")
-    .attr("markerHeight", "6")
-    .attr("orient", "auto");
-  d3.select("marker").append("path")
-    .attr("d", "M 0 0 L 10 5 L 0 10 z");
-
+  set_marker_data("mainNet", 1);
 
   force
       .nodes(graph.nodes)
@@ -209,8 +218,8 @@ $.getJSON('/json', function(data){
       .data(graph.links)
       .enter().append("line")
       .attr("class", "link")
-      .attr("marker-end", "url(#Triangle)");
-      // not sure what this is supposed to do?
+      .attr("marker-end", "url(#mainNetTriangle)");
+      // not sure what this is supposed to do:
       //.style("stroke-width", function(d) { return Math.sqrt(d.value); });
   
   var node = svg.selectAll(".node")
