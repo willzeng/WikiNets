@@ -3,28 +3,25 @@ define ["jquery", "backbone", "d3"], ($, Backbone, d3) ->
         _.extend this, Backbone.Events
 
         # handle selecting and deselecting nodes
-        ((selection) ->
-            clickSemaphore = 0
-            graphView.on "enter:node", (nodeEnterSelection) ->
-
-                nodeEnterSelection.on("click", (datum, index) ->
-                    # ignore drag
-                    return  if d3.event.defaultPrevented
-                    datum.fixed = true
-                    clickSemaphore += 1
-                    savedClickSemaphore = clickSemaphore
-                    setTimeout (->
-                        if clickSemaphore is savedClickSemaphore
-                            selection.toggleSelection datum
-                            datum.fixed = false
-                        else
-                            # increment so second click isn't registered as a click
-                            clickSemaphore += 1
-                            datum.fixed = false
-                    ), 250
-                ).on "dblclick", (datum, index) ->
-                    selection.selectConnectedComponent datum
-        ) this
+        clickSemaphore = 0
+        graphView.on "enter:node", (nodeEnterSelection) ->
+            nodeEnterSelection.on("click", (datum, index) ->
+                # ignore drag
+                return  if d3.event.defaultPrevented
+                datum.fixed = true
+                clickSemaphore += 1
+                savedClickSemaphore = clickSemaphore
+                setTimeout (->
+                    if clickSemaphore is savedClickSemaphore
+                        @toggleSelection datum
+                        datum.fixed = false
+                    else
+                        # increment so second click isn't registered as a click
+                        clickSemaphore += 1
+                        datum.fixed = false
+                ), 250
+            ).on "dblclick", (datum, index) ->
+                @selectConnectedComponent datum
 
         @renderSelection = ->
             nodeSelection = graphView.getNodeSelection()

@@ -25,11 +25,9 @@ define ["jquery", "underscore", "backbone"], ($, _, Backbone) ->
             ]
 
             # hook mappings up to respond to user input
-            (=>
-                force = @force
-                _.each mappings, (mapping) =>
-                    @$(mapping.selector).val(mapping.scale(mapping.f())).change =>
-                        mapping.f mapping.scale.invert($(this).val())
-                        force.start()
-            )()
+            _.each mappings, (mapping) =>
+                @$(mapping.selector).val(mapping.scale(mapping.f())).change =>
+                    mapping.f mapping.scale.invert($(this).val())
+                    @force.start()
+
             return this
