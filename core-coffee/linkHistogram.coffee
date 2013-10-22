@@ -51,7 +51,7 @@ define ["backbone", "d3"], (Backbone, d3) ->
                .attr("transform", (d) ->
                     "translate(" + x(d.x) + "," + y(d.y) + ")"
                   )
-      #x(data[0].dx) - 1)
+
       bar.append("rect")
          .attr("x", 1)
          .attr("width", (d) ->
