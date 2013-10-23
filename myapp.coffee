@@ -48,12 +48,12 @@ module.exports = class MyApp
 
           ###
           console.log noderes.data[0]
-          
+           
           ### Extract the ID's off all the nodes.  These are then reindexed for the d3js viz format.
-          We also ignore the root node of database. E.g.
+          E.g.
             self: 'http://localhost:7474/db/data/node/312'
           ###
-          nodeids=(trim(num[0]["self"]) for num in noderes.data).splice(1)
+          nodeids=(trim(num[0]["self"]) for num in noderes.data)
 
           ### Generate reindexing array ###
           `var nodeconvert = {};
@@ -64,7 +64,7 @@ module.exports = class MyApp
           ### Get all the data for all the nodes, i.e. all the properties and values, e.g
             data: { propertyExample: 'valueExample' }
           ###
-          nodedata=(ntmp[0]["data"] for ntmp in noderes.data).splice(1)
+          nodedata=(ntmp[0]["data"] for ntmp in noderes.data)
           `for (i=0; i < nodeids.length; i++) {
              nodedata[i]["_id"] = nodeids[i]+'';
           }`
