@@ -41,7 +41,7 @@ define ["jquery", "core/graphModel", "core/graphView", "core/nodeSearch", "core/
 
       @graphView.listenTo(@linkFilter, "change:threshold", graphView.update)
 
-      @sel = new Selection(graphModel, graphView)
+      @sel = new Selection(graphModel, graphView, @linkFilter)
 
       # adjust link strength and width based on threshold
       linkStrength = (link) =>

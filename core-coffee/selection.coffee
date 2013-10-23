@@ -1,5 +1,5 @@
 define ["jquery", "backbone", "d3"], ($, Backbone, d3) ->
-  Selection = (graphModel, graphView) ->
+  Selection = (graphModel, graphView, linkFilter) ->
     _.extend this, Backbone.Events
 
     # handle selecting and deselecting nodes
@@ -88,7 +88,7 @@ define ["jquery", "backbone", "d3"], ($, Backbone, d3) ->
         graph[node.text] = {}
         lookup[node.text] = node
 
-      _.each graphModel.getLinks(), (link) ->
+      _.each linkFilter.filter(graphModel.getLinks()), (link) ->
         graph[link.source.text][link.target.text] = 1
         graph[link.target.text][link.source.text] = 1
 
