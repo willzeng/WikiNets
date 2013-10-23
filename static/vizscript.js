@@ -189,7 +189,7 @@ $.getJSON('/json', function(data){
                 .size([width, height]);
 
   // creates a place for the grey-out buttons to go at bottom of body
-  var div0 = d3.select("body").append("div")
+  var div0 = d3.select("#togglebox").append("div")
                .attr("name", "options")
                .attr("id", "options");
 
