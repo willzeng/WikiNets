@@ -37,6 +37,7 @@ define ["jquery", "underscore", "backbone"], ($, _, Backbone) ->
         force = @force # sorry - need this to be a DOM element below
         @$(mapping.selector).val(mapping.scale(mapping.f())).change ->
           mapping.f mapping.scale.invert($(this).val()) # <== here
+          $(this).blur()
           force.start()
 
       return this
