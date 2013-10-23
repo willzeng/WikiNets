@@ -1,6 +1,8 @@
 /* the size of the graph and subgraph; also used as scaling factors */
 var width = 960,
     height = 500;
+    subwidth=760;
+    subheight=400;
 
 /* This variable holds the graph data: an array of links and an array of nodes
    as provided by the server upon an AJAX call to "/json" -- see below */
@@ -98,8 +100,8 @@ $.getJSON('/json', function(data){
     d3.select("#subNet svg").remove();
 
     var central_width=40;
-    var frame = d3.select("#subNet").append("svg:svg").attr("width", width)
-                  .attr("height", height);
+    var frame = d3.select("#subNet").append("svg:svg").attr("width", subwidth)
+                  .attr("height", subheight);
     set_marker_data("subNet", 1.5);
 
     var nodelist=graph.nodes
@@ -202,6 +204,7 @@ $.getJSON('/json', function(data){
   var div2 = d3.select("body").append("div")
                .attr("name", "subNet")
                .attr("id", "subNet");
+
 
   // creates a vector graphics environment in the section for the main graph
   var svg = d3.select("#mainNet").append("svg")
