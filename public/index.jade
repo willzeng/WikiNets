@@ -7,6 +7,8 @@ html
     script(type='text/javascript', src='jquery-1.10.2.js')
     script(type='text/javascript', src='wikiscript.js')
     script(type='text/javascript', src='d3.v3.min.js')
+    script(type='text/javascript', src='vizscript.js')
+
 
   body
     #header(style='background-color: white;')
@@ -84,7 +86,6 @@ html
                               input#DeleteArrow(type='button', value='Delete Arrow')
                               input#EditArrow(type='button', value='Save Arrow')
 
-    #browse_menu(style='display: block;')
       #middlebar
         ul.menu
           li
@@ -124,10 +125,6 @@ html
               input#moreFields(type='button', value='+', onclick='moreFields("writerootArr","readrootArr","ArrProperty")')
               div(style='float: right;')
                 input#createArr(type='button', value='Create arrow')
-        #spacer(style='width: 30px; height: 30px; float: left;')
-      
-
-    script(type='text/javascript', src='vizscript.js')
 
     //#footer(style='clear: both; text-align: center; font-size: 12px; font-weight: bold;')
     //  a(href='http://thewikinetsproject.wordpress.com') About

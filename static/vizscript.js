@@ -1,6 +1,32 @@
+var viewportwidth;
+var viewportheight;
+
+    //Standards compliant browsers (mozilla/netscape/opera/IE7)
+    if (typeof window.innerWidth != 'undefined')
+    {
+      viewportwidth = window.innerWidth,
+      viewportheight = window.innerHeight
+    }
+
+    // IE6
+    else if (typeof document.documentElement != 'undefined'
+    && typeof document.documentElement.clientWidth !=
+    'undefined' && document.documentElement.clientWidth != 0)
+    {
+      viewportwidth = document.documentElement.clientWidth,
+      viewportheight = document.documentElement.clientHeight
+    }
+
+    //Older IE
+    else
+    {
+      viewportwidth = document.getElementsByTagName('body')[0].clientWidth,
+      viewportheight = document.getElementsByTagName('body')[0].clientHeight
+    }
+
 /* the size of the graph and subgraph; also used as scaling factors */
-var width = 960,
-    height = 500;
+var width = viewportwidth-380,
+    height = viewportheight-160;
     subwidth=300;
     subheight=300;
 
@@ -216,7 +242,7 @@ $.getJSON('/json', function(data){
   // creates place for the main graph
   var div1 = d3.select("body").append("div")
                .attr("name", "mainNet")
-               .attr("id", "mainNet");
+               .attr("id", "mainNet")
 
   // creates place for the subgraph
   var div2 = d3.select("#subgraphcontainer").append("div")

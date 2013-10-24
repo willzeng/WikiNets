@@ -21,6 +21,12 @@
     stroke-opacity: .6;
   }
 
+  div#mainNet{
+    position: absolute;
+    left: 380px;
+    top: 160px;
+  }
+
   ul, li{
     margin:0;
     border:0;
@@ -35,7 +41,7 @@
     font-weight:bold;
     padding:4px;
     height:30px;
-    width: 180px;
+    width: 160px;
     float:left;
     margin-left: 40px;
   }
@@ -65,7 +71,7 @@
   background:#FFFFFF;
   position:relative;
   top:4px;
-  width:200px;
+  width:160px;
   padding:6px 0;
   clear:both;
   z-index:2;
@@ -171,9 +177,9 @@
   font-weight:bold;
   padding:4px;
   height:30px;
-  width: 380px;
+  width: 300px;
   float:left;
-  margin-left: 40px;
+  margin-left: 4px;
   }
   #infobar .menu li {
   height:30px;
@@ -200,7 +206,7 @@
   background:#FFFFFF;
   position:relative;
   top:4px;
-  width:380px;
+  width:300px;
   padding:6px 0;
   clear:both;
   z-index:2;
