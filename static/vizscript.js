@@ -1,29 +1,22 @@
-//get size of viewport on load
+// get size of viewport on load
+// might want to make this dynamic at some point?
 var viewportwidth;
 var viewportheight;
-
-    //Standards compliant browsers (mozilla/netscape/opera/IE7)
-    if (typeof window.innerWidth != 'undefined')
-    {
-      viewportwidth = window.innerWidth,
-      viewportheight = window.innerHeight
-    }
-
-    // IE6
-    else if (typeof document.documentElement != 'undefined'
-    && typeof document.documentElement.clientWidth !=
-    'undefined' && document.documentElement.clientWidth != 0)
-    {
-      viewportwidth = document.documentElement.clientWidth,
-      viewportheight = document.documentElement.clientHeight
-    }
-
-    //Older IE
-    else
-    {
-      viewportwidth = document.getElementsByTagName('body')[0].clientWidth,
-      viewportheight = document.getElementsByTagName('body')[0].clientHeight
-    }
+if (typeof window.innerWidth != 'undefined') {
+  // Standards compliant browsers (mozilla/netscape/opera/IE7)
+  viewportwidth = window.innerWidth,
+  viewportheight = window.innerHeight
+} else if (typeof document.documentElement != 'undefined'
+           && typeof document.documentElement.clientWidth !=
+           'undefined' && document.documentElement.clientWidth != 0) {
+  // IE6
+  viewportwidth = document.documentElement.clientWidth,
+  viewportheight = document.documentElement.clientHeight
+} else {
+  // Older IE
+  viewportwidth = document.getElementsByTagName('body')[0].clientWidth,
+  viewportheight = document.getElementsByTagName('body')[0].clientHeight
+}
 
 /* the size of the graph and subgraph; also used as scaling factors */
 var width = viewportwidth-380,
