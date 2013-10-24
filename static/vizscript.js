@@ -221,12 +221,9 @@ $.getJSON('/json', function(data){
            return subheight/2-1+central_width/2;
          })
          .text(function(d_2){ return d.name; });
-         //    .text(function(d){return d.name;});
   };
   // end of "setup_subgraph"
 
-
-  //var button=d3.select("body").selectAll("button").data(obj).enter().append("button").attr("type", "button").text("button");
 
   var color = d3.scale.category20();
 
@@ -274,8 +271,6 @@ $.getJSON('/json', function(data){
         console.log(d);
         console.log(i);
       });
-      // not sure what this is supposed to do:
-      //.style("stroke-width", function(d) { return Math.sqrt(d.value); });
   
   var node = svg.selectAll(".node")
       .data(graph.nodes)
@@ -352,26 +347,6 @@ $.getJSON('/json', function(data){
               return "lightgrey";
             });
           });
-
-  /*
-  for(var d in obj){
-    svg.selectAll(".node").attr("r", function(d_1) {
-      if(d_1.group.toString() === button_map[this].toString()){
-        return 10;
-      }
-      return 5;
-    }).style("stroke", function(d_1) { 
-      return "none";
-    }).style("fill", function(d_1) { 
-      if(d_1.group.toString() == button_map[this].toString()){
-        return "red";
-      }
-      return "grey";
-    });
-  });
-  button_map[b]=d;
-}
-*/
 
 });
 
