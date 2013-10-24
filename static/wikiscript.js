@@ -168,17 +168,20 @@ $(document).ready(function(){
 
   // create a new node from the data in the create node input form
   $("#createObj").on("click", function(event){
-    var submitOK, nodeObject;
+    var nodeObject;
     // check property names and assign property-value pairs to nodeObject
-    [submitOK, nodeObject] = assign_properties("Node");
+    // first component of nodeObject is boolean result of whether all
+    // properties are legal; second component is dictionary of properties to
+    // be assigned
+    nodeObject = assign_properties("Node");
     // if all property names were fine, remove the on-the-fly created input
     // fields and submit the data to the server to actually create the node
-    if (submitOK) {
+    if (nodeObject[0]) {
       $('.NodeProperty').each(function(i, obj) {
         $(this)[0].parentNode.removeChild($(this)[0]);
       });
-      console.log(JSON.stringify(nodeObject));
-      $.post('/create_node', nodeObject, function(data) {
+      console.log(JSON.stringify(nodeObject[1]));
+      $.post('/create_node', nodeObject[1], function(data) {
         alert("Created node with ID " + data);
         // would now like to have option of reloading the visualisation here
       });
@@ -206,12 +209,15 @@ $(document).ready(function(){
     var relObject = {from: $("#from").val(),
                      to: $("#to").val(),
                      type: $("#rel-type").val()};
-    var submitOK, relProperties;
-    // check property names and assign property-value pairs to relProperties
-    [submitOK, relProperties] = assign_properties("Arr");
+    var relProperties;
+    // check property names and assign property-value pairs
+    // first component of relProperties is boolean result of whether all
+    // properties are legal; second component is dictionary of properties to
+    // be assigned
+    relProperties = assign_properties("Arr");
     // if all is well, send data to server
-    if (submitOK) {
-      relObject["properties"] = relProperties;
+    if (relProperties[0]) {
+      relObject["properties"] = relProperties[1];
       console.log(JSON.stringify(relObject));
       $.post('/create_rel', relObject, function(data) {
         if (data == "error") {
@@ -246,17 +252,20 @@ $(document).ready(function(){
 
   // Edits properties of a node
   $("#EditNode").on("click", function(event){
-    var submitOK, nodeObject;
+    var nodeObject;
     // assign property-value pairs to nodeObject and check for legality
-    [submitOK, nodeObject] = assign_properties("Edit");
-    if (submitOK) {
+    // first component of nodeObject is boolean result of whether all
+    // properties are legal; second component is dictionary of properties to
+    // be assigned
+    nodeObject = assign_properties("Edit");
+    if (nodeObject[0]) {
       // check which properties have changed and which ones are being deleted
       var deleted_props = [];
       for (var property in selected_node_properties) {
-        if (property in nodeObject) {
-          if (selected_node_properties[property] === nodeObject[property]) {
+        if (property in nodeObject[1]) {
+          if (selected_node_properties[property] === nodeObject[1][property]) {
             // don't have to re-set property value if it hasn't changed
-            delete nodeObject[property];
+            delete nodeObject[1][property];
           };
         } else {
           // this is a list of properties that are being deleted
@@ -270,12 +279,12 @@ $(document).ready(function(){
         return false;
       };
       // do not make a server request if the node hasn't changed
-      if ((JSON.stringify(nodeObject) === "{}") && (deleted_props.length == 0)) {
+      if ((JSON.stringify(nodeObject[1]) === "{}") && (deleted_props.length == 0)) {
         alert("Node " + selected_node + " has not changed and does not need to be saved.");
         return false;
       };
-      console.log(JSON.stringify(nodeObject));
-      $.post('/edit_node', {nodeid: selected_node, properties: nodeObject, remove: deleted_props}, function(data) {
+      console.log(JSON.stringify(nodeObject[1]));
+      $.post('/edit_node', {nodeid: selected_node, properties: nodeObject[1], remove: deleted_props}, function(data) {
         if (data === "error") {
           alert("Failed to save changes to node " + selected_node + ".");
         } else {
@@ -346,17 +355,20 @@ $(document).ready(function(){
 
   // Edits properties of an arrow
   $("#EditArrow").on("click", function(event){
-    var submitOK, relObject;
+    var relObject;
     // assign property-value pairs to relObject and check for legality
-    [submitOK, relObject] = assign_properties("EditArrow");
-    if (submitOK) {
+    // first component of relProperties is boolean result of whether all
+    // properties are legal; second component is dictionary of properties to
+    // be assigned
+    relObject = assign_properties("EditArrow");
+    if (relObject[0]) {
       // check which properties have changed and which ones are being deleted
       var deleted_props = [];
       for (var property in selected_arrow_properties) {
-        if (property in relObject) {
-          if (selected_arrow_properties[property] === relObject[property]) {
+        if (property in relObject[1]) {
+          if (selected_arrow_properties[property] === relObject[1][property]) {
             // don't have to re-set property value if it hasn't changed
-            delete relObject[property];
+            delete relObject[1][property];
           };
         } else {
           // this is a list of properties that are being deleted
@@ -370,12 +382,12 @@ $(document).ready(function(){
         return false;
       };
       // do not make a server request if the arrow hasn't changed
-      if ((JSON.stringify(relObject) === "{}") && (deleted_props.length == 0)) {
+      if ((JSON.stringify(relObject[1]) === "{}") && (deleted_props.length == 0)) {
         alert("Arrow " + selected_arrow + " has not changed and does not need to be saved.");
         return false;
       };
-      console.log(JSON.stringify(relObject));
-      $.post('/edit_arrow', {id: selected_arrow, properties: relObject, remove: deleted_props}, function(data) {
+      console.log(JSON.stringify(relObject[1]));
+      $.post('/edit_arrow', {id: selected_arrow, properties: relObject[1], remove: deleted_props}, function(data) {
         if (data === "error") {
           alert("Failed to save changes to arrow " + selected_arrow + ".");
         } else {
