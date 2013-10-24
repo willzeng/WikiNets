@@ -45,12 +45,16 @@ $.getJSON('/json', function(data){
     // Should replace this with something more versatile
     var theinfo = "This node is called: "+ d.name + "\<br\> Info: " + d.Info;
     $('#infobox').html(theinfo);
+
+    //changes the selected name at the top of the sidebar
+    $('#selectednamebox').html("Info: "+d.name);
+
     // if "Edit Node" menu is visible, fill in data for selected node
-    if ($("#en_1").css("display") == "block") {
-      selected_node = d._id;
-      $("#SelectNodeID").val(selected_node);
-      select_node(selected_node);
-    };
+    //if ($("#en_1").css("display") == "block") {
+    selected_node = d._id;
+    $("#SelectNodeID").val(selected_node);
+    select_node(selected_node);
+    //};
     // update subgraph to centre on newly-selected node
     setup_subgraph(d, i, th);
   };
@@ -215,7 +219,7 @@ $.getJSON('/json', function(data){
                .attr("id", "mainNet");
 
   // creates place for the subgraph
-  var div2 = d3.select("#sidebar").append("div")
+  var div2 = d3.select("#subgraphcontainer").append("div")
                .attr("name", "subNet")
                .attr("id", "subNet");
 

@@ -142,7 +142,12 @@ $(document).ready(function(){
 
   // showing or hiding various menus and submenus
   $("img.choose_menu").click(function() {
-    showlayer('browse_menu');
+    //showlayer('browse_menu');
+    showlayer('edit_menu');
+  });
+  $("#choose_menu").click(function(a) {
+    a.preventDefault();
+    //showlayer('browse_menu');
     showlayer('edit_menu');
   });
   $("#toggle_en_1").click(function(a) {

@@ -13,9 +13,7 @@ html
       h1(style='margin-bottom: 5px; margin-left: 10px;')
         a(href='http://thewikinetsproject.wordpress.com/') WikiNets
 
-    //p#outputer Press 'V' Key to refresh the page.
-
-    
+   
     #searchbar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;height:40px;width: 100%;float:left;margin-left: 40px;')
       form(method="post",action="/search_id")
       input(type="text",name="nodeid") 
@@ -25,7 +23,7 @@ html
     #sidebar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;height:100%;width: 300px;float:left;margin-left: 40px;')
         ul.menu
           li
-            a(href="#")  Info2: ExampleNode
+            p#selectednamebox Info: ExampleNode
           ul#sm_3.submenu
             li
               a(href='p1.html') Information
@@ -35,6 +33,9 @@ html
             li
               a(href='p2.hmtl') Bibliography 
               | 1. Will et. al. "Some Example Paper", Phys. Rev. Letters. 11-2229.
+            li
+              | test
+              #subgraphcontainer
 
     #edit_menu(style='display: none;')
       #infobar
