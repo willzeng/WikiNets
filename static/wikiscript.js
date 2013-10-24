@@ -170,6 +170,9 @@ $(document).ready(function(){
   $("#createObj").on("click", function(event){
     var nodeObject;
     // check property names and assign property-value pairs to nodeObject
+    // first component of nodeObject is boolean result of whether all
+    // properties are legal; second component is dictionary of properties to
+    // be assigned
     nodeObject = assign_properties("Node");
     // if all property names were fine, remove the on-the-fly created input
     // fields and submit the data to the server to actually create the node
@@ -207,8 +210,10 @@ $(document).ready(function(){
                      to: $("#to").val(),
                      type: $("#rel-type").val()};
     var relProperties;
-    // check property names and assign property-value pairs to relProperties
-    // this does not work in Chrome
+    // check property names and assign property-value pairs
+    // first component of relProperties is boolean result of whether all
+    // properties are legal; second component is dictionary of properties to
+    // be assigned
     relProperties = assign_properties("Arr");
     // if all is well, send data to server
     if (relProperties[0]) {
@@ -249,6 +254,9 @@ $(document).ready(function(){
   $("#EditNode").on("click", function(event){
     var nodeObject;
     // assign property-value pairs to nodeObject and check for legality
+    // first component of nodeObject is boolean result of whether all
+    // properties are legal; second component is dictionary of properties to
+    // be assigned
     nodeObject = assign_properties("Edit");
     if (nodeObject[0]) {
       // check which properties have changed and which ones are being deleted
@@ -349,6 +357,9 @@ $(document).ready(function(){
   $("#EditArrow").on("click", function(event){
     var relObject;
     // assign property-value pairs to relObject and check for legality
+    // first component of relProperties is boolean result of whether all
+    // properties are legal; second component is dictionary of properties to
+    // be assigned
     relObject = assign_properties("EditArrow");
     if (relObject[0]) {
       // check which properties have changed and which ones are being deleted
