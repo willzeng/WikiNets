@@ -26,6 +26,9 @@ html
             p#selectednamebox Info: ExampleNode
           ul#sm_3.submenu
             li
+              //img.choose_menu(src='plus.png', alt='Open the Edit Network menu.')
+              a#show_edit(href='#') Edit
+            li
               a(href='p1.html') Information
               p#infobox Here there is plenty of room to put all sorts of example information about some particular node.  There could be citations too
                 sup 1
@@ -34,57 +37,51 @@ html
               a(href='p2.hmtl') Bibliography 
               | 1. Will et. al. "Some Example Paper", Phys. Rev. Letters. 11-2229.
             li
-              | test
               #subgraphcontainer
-
-    #edit_menu(style='display: none;')
-      #infobar
-          ul.menu
             li
-              a#toggle_en_1(href='#')  Edit Node/Arrow
-            ul#en_1.submenu
-              li
-                | Please select a node.
-                form#SelectNodeForm
-                  input#SelectNodeID(name="SelectNodeID")
-                  input#SelectNode(type="submit", value="Select Node")
-                #edit-menu-inputs(style='display: none;')
-                  #readrootEdit(style='display: none;')
-                    input.propertyEdit(name='propertyEdit', value='')
-                    input.valueEdit(name='valueEdit', value='')
-                    input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
-                    br
-                  form#edit-node
-                    span#writerootEdit
-                  input#moreFields(type='button', value='+', onclick='moreFields("writerootEdit","readrootEdit","EditProperty")')
-                  div(style='float: right;')
-                    input#DeleteNode(type='button', value='Delete Node')
-                    input#EditNode(type='button', value='Save Node')
-              li
-                | Please select an arrow.
-                form#SelectArrowForm
-                  input#SelectArrowID(name="SelectArrowID")
-                  input#SelectArrow(type="submit", value="Select Arrow")
-                #edit-arrow-menu-inputs(style='display: none;')
-                  #readrootEditArrow(style='display: none;')
-                    input.propertyEditArrow(name='propertyEditArrow', value='')
-                    input.valueEditArrow(name='valueEditArrow', value='')
-                    input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
-                    br
-                  form#edit-arrow
-                    div
-                      #edit-from from: node ID
-                      #edit-to to: node ID
-                      #edit-rel-type type
-                    span#writerootEditArrow
-                  input#moreFields(type='button', value='+', onclick='moreFields("writerootEditArrow","readrootEditArrow","EditArrowProperty")')
-                  div(style='float: right;')
-                    input#DeleteArrow(type='button', value='Delete Arrow')
-                    input#EditArrow(type='button', value='Save Arrow')
-       
-
-        img.choose_menu(src='search.png', alt='Open the Explore Network menu.') 
-
+              #edit_menu(style='display: none;')
+                    ul.menu
+                      li
+                        a#toggle_en_1(href='#')  Edit Node/Arrow
+                      ul#en_1.submenu
+                        li
+                          | Please select a node.
+                          form#SelectNodeForm
+                            input#SelectNodeID(name="SelectNodeID")
+                            input#SelectNode(type="submit", value="Select Node")
+                          #edit-menu-inputs(style='display: none;')
+                            #readrootEdit(style='display: none;')
+                              input.propertyEdit(name='propertyEdit', value='')
+                              input.valueEdit(name='valueEdit', value='')
+                              input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
+                              br
+                            form#edit-node
+                              span#writerootEdit
+                            input#moreFields(type='button', value='+', onclick='moreFields("writerootEdit","readrootEdit","EditProperty")')
+                            div(style='float: right;')
+                              input#DeleteNode(type='button', value='Delete Node')
+                              input#EditNode(type='button', value='Save Node')
+                        li
+                          | Please select an arrow.
+                          form#SelectArrowForm
+                            input#SelectArrowID(name="SelectArrowID")
+                            input#SelectArrow(type="submit", value="Select Arrow")
+                          #edit-arrow-menu-inputs(style='display: none;')
+                            #readrootEditArrow(style='display: none;')
+                              input.propertyEditArrow(name='propertyEditArrow', value='')
+                              input.valueEditArrow(name='valueEditArrow', value='')
+                              input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
+                              br
+                            form#edit-arrow
+                              div
+                                #edit-from from: node ID
+                                #edit-to to: node ID
+                                #edit-rel-type type
+                              span#writerootEditArrow
+                            input#moreFields(type='button', value='+', onclick='moreFields("writerootEditArrow","readrootEditArrow","EditArrowProperty")')
+                            div(style='float: right;')
+                              input#DeleteArrow(type='button', value='Delete Arrow')
+                              input#EditArrow(type='button', value='Save Arrow')
 
     #browse_menu(style='display: block;')
       #middlebar
@@ -127,7 +124,7 @@ html
               div(style='float: right;')
                 input#createArr(type='button', value='Create arrow')
         #spacer(style='width: 30px; height: 30px; float: left;')
-      img.choose_menu(src='plus.png', alt='Open the Edit Network menu.')
+      
 
     script(type='text/javascript', src='vizscript.js')
 

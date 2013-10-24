@@ -145,8 +145,9 @@ $(document).ready(function(){
     //showlayer('browse_menu');
     showlayer('edit_menu');
   });
-  $("#choose_menu").click(function(a) {
+  $("#show_edit").click(function(a) {
     a.preventDefault();
+    //console.log("open edit menu");
     //showlayer('browse_menu');
     showlayer('edit_menu');
   });
