@@ -1,3 +1,4 @@
+//get size of viewport on load
 var viewportwidth;
 var viewportheight;
 
@@ -73,7 +74,7 @@ $.getJSON('/json', function(data){
     $('#infobox').html(theinfo);
 
     //changes the selected name at the top of the sidebar
-    $('#selectednamebox').html("Info: "+d.name);
+    $('#selectednamebox').html(d.name);
 
     // if "Edit Node" menu is visible, fill in data for selected node
     //if ($("#en_1").css("display") == "block") {
