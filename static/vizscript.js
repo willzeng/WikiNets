@@ -100,6 +100,10 @@ $.getJSON('/json', function(data){
   /* Sets up the small circular graph at the bottom. Don't understand details
      yet */
   function setup_subgraph(d, i, th){
+
+    /* This bit of code turns the selected node in the main graph into a
+       large pink circle with red edge and returns any other node to its
+       default radius and colour */
     svg.selectAll(".node").attr("r", function(d_1) {
       if(d_1 === d){
         return 20;
@@ -117,26 +121,29 @@ $.getJSON('/json', function(data){
       return color(d_1.group);
     });
 
-    d3.select(th).attr('r', 25)
-      .style("fill","lightcoral")
-      .style("stroke","red");
-
+    /* remove previous subgraph and prepare a new one */
     d3.select("#subNet svg").remove();
-
-    var central_width=20;//This is the width of the center node of the subgraph
-    var circle_sizer=20;//The radius of the circle for each neighbor
-
     var frame = d3.select("#subNet").append("svg:svg").attr("width", subwidth)
                   .attr("height", subheight);
+
+    // this bit doesn't help very much at the moment as we aren't using
+    // arrowheads in the subgraph
     set_marker_data("subNet", 1.5);
 
+    // make a list of the neighbours of the selected node
     var nodelist=graph.nodes
     var neighbors = nodelist.filter(function(d_2){
           return neighboring(d_2, d);
         });
-    
-    var subgraph_padding = 30; //padding around the drawn subgraph
-    var subgraph_scalar = subwidth/2-central_width/2-circle_sizer-subgraph_padding;//scales the size of the subgraph to match the framesize
+
+    // This is the width of the center node of the subgraph
+    var central_width=20;
+    // The radius of the circle for each neighbor
+    var circle_sizer=20;
+    // padding around the drawn subgraph
+    var subgraph_padding = 30;
+    // scales the size of the subgraph to match the framesize
+    var subgraph_scalar = subwidth/2-central_width/2-circle_sizer-subgraph_padding;
 
     //This code draws the spokes out from the central node in the subgraph  
     frame.selectAll("line").data(neighbors).enter().append("line")
