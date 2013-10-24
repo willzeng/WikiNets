@@ -156,10 +156,12 @@
   color:#105cbe;
   line-height:normal;
   }
-  #sidebar .submenu li a:hover{
-  background:#e3edef;
+  #sidebar .submenu li a#show_edit:hover{
+  background:#738678;
   }
-
+  #sidebar .submenu li a#show_edit{
+  color:#000000;
+  }
 
   ul, li{margin:0; border:0; padding:0; list-style:none;}
   #infobar{
