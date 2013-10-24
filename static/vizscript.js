@@ -62,11 +62,11 @@ $.getJSON('/json', function(data){
     d3.select("#" + section + " svg").append("defs").append("marker")
       .attr("id", section+"Triangle")
       .attr("viewBox", "0 0 10 10")
-      .attr("refX", 25*scale)
+      .attr("refX", 30*scale)
       .attr("refY", 5)
       .attr("markerUnits", "strokeWidth")
-      .attr("markerWidth", 8)
-      .attr("markerHeight", 6)
+      .attr("markerWidth", 8*scale)
+      .attr("markerHeight", 6*scale)
       .attr("orient", "auto");
     d3.select("#" + section + " marker").append("path")
       .attr("d", "M 0 0 L 10 5 L 0 10 z");
@@ -123,7 +123,13 @@ $.getJSON('/json', function(data){
             before implementing arrowheads in subgraph */
          //.attr("marker-end", "url(#subNetTriangle)")
          .style("stroke", "lightgrey")
-         .style("stroke-width", "2");
+         .style("stroke-width", "2")
+         .on("click", function(d_2, i_2) {
+           // will need to add actual functionality here once it's available
+           alert("You clicked a link!");
+           console.log(d_2);
+           console.log(i_2);
+         });
 
     frame.selectAll("rect").data([th]).enter().append("rect")
          .attr("x", width/2).attr("y", height/2).attr("width", central_width)
@@ -177,7 +183,7 @@ $.getJSON('/json', function(data){
          })
          .text(function(d_2){ return d.name; });
          //    .text(function(d){return d.name;});
-  }
+  };
   // end of "setup_subgraph"
 
 
@@ -210,7 +216,7 @@ $.getJSON('/json', function(data){
   var svg = d3.select("#mainNet").append("svg")
               .attr("width", width)
               .attr("height", height);
-  set_marker_data("mainNet", 1);
+  set_marker_data("mainNet", 0.75);
 
   force
       .nodes(graph.nodes)
@@ -221,7 +227,14 @@ $.getJSON('/json', function(data){
       .data(graph.links)
       .enter().append("line")
       .attr("class", "link")
-      .attr("marker-end", "url(#mainNetTriangle)");
+      .attr("marker-end", "url(#mainNetTriangle)")
+      .style("stroke-width", 2)
+      .on("click", function(d, i) {
+        // will need to add actual functionality here once it's available
+        alert("You clicked a link!");
+        console.log(d);
+        console.log(i);
+      });
       // not sure what this is supposed to do:
       //.style("stroke-width", function(d) { return Math.sqrt(d.value); });
   
@@ -243,7 +256,11 @@ $.getJSON('/json', function(data){
                  .attr("class", "label")
                  .attr("fill", "black")
                  .attr("font-size", 18)
-                 .text(function(d) {  return d.name;  });
+                 .text(function(d) {  return d.name;  })
+                 .on("click", function(d, i) {
+                   // update node info if text is clicked in main graph
+                   node_info(d, i, this.parent);
+                 });
 
   node.append("title")
       .text(function(d) { return d.name; });
