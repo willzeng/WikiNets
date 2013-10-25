@@ -14,6 +14,7 @@ Thanks!
 - [backbone](https://github.com/jashkenas/backbone) for it's simple and effective Event, Model and View paradigms
 - [d3](https://github.com/mbostock/d3) for it's awesome data manipulation paradigm
 - [requirejs](https://github.com/jrburke/requirejs) for modularizing javascript
+- [coffeescript](https://github.com/jashkenas/coffee-script) for hiding the ugliness of real javascript
 
 ### Testing
 - [karma](https://github.com/karma-runner/karma) for blowing my mind on how to test require.js modules
