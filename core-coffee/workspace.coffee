@@ -123,5 +123,7 @@ define ["jquery", "core/graphModel", "core/graphView", "core/nodeSearch", "core/
         tr = $("<div id=\"top-right-container\" class=\"container\"/>")
         tr.append nodeSearch.el
         @$el.append tr
+
+      return this
     )
   return Workspace
