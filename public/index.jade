@@ -16,11 +16,48 @@ html
         a(href='http://thewikinetsproject.wordpress.com/') WikiNets
 
    
-    #searchbar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;height:40px;width: 100%;float:left;margin-left: 40px;')
+    #searchbar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;width: 100%;float:left;margin-left: 40px;')
       form(method="post",action="/search_id")
       input(type="text",name="nodeid") 
       input(type="submit",value="Get Node")
       #SearchOutput
+
+    #addbar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;margin-left: 40px;')
+      ul.menu
+        ul#enn_1.submenu
+          li Create node:
+          #readrootObj(style='display: none;')
+            input.propertyNode(name='propertyNode', value='propertyEx')
+            input.valueNode(name='valueNode', value='valueEx')
+            input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
+            br
+          form#create-node
+            span#writerootObj
+          input#moreFields(type='button', value='+', onclick='moreFields("writerootObj","readrootObj","NodeProperty")')
+          input#createObj(type='button', value='Create node')
+          li  Create arrow:
+          #readrootArr(style='display: none;')
+            input.propertyArr(name='propertyArr', value='property')
+            input.valueArr(name='valueArr', value='value')
+            input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
+            br
+          form#create-rel
+            div
+              input#from(name='from', value='from: node ID')
+              input#to(name='to', value='to: node ID')
+              input#rel-type(name='rel-type', value='type')
+            span#writerootArr
+          input#moreFields(type='button', value='+', onclick='moreFields("writerootArr","readrootArr","ArrProperty")')
+          input#createArr(type='button', value='Create arrow')
+
+    #togglebar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;margin-left: 40px;')
+      ul.menu
+          li Toggle
+          ul#sm_2.submenu
+            li
+              div#togglebox
+
+    #spacerbar(style='background:white;height:10px;width: 100%;float:left;margin-left: 40px;')  
 
     #sidebar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;height:100%;width: 300px;float:left;margin-left: 40px;')
         ul.menu
@@ -88,44 +125,11 @@ html
                               input#EditArrow(type='button', value='Save Arrow')
 
       #middlebar
-        ul.menu
-          li
-            a#toggle_sm_2(href="#") Toggle 
-          ul#sm_2.submenu
-            li
-              a(href='p1.html') Toggle
-              div#togglebox
-      #infobar
-          ul.menu
-            li
-              a#toggle_enn_1(href="#")  Add Node/Arrow 
-            ul#enn_1.submenu
-              li Create node:
-              #readrootObj(style='display: none;')
-                input.propertyNode(name='propertyNode', value='propertyEx')
-                input.valueNode(name='valueNode', value='valueEx')
-                input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
-                br
-              form#create-node
-                span#writerootObj
-              input#moreFields(type='button', value='+', onclick='moreFields("writerootObj","readrootObj","NodeProperty")')
-              div(style='float: right;')
-                input#createObj(type='button', value='Create node')
-              li  Create arrow:
-              #readrootArr(style='display: none;')
-                input.propertyArr(name='propertyArr', value='property')
-                input.valueArr(name='valueArr', value='value')
-                input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
-                br
-              form#create-rel
-                div
-                  input#from(name='from', value='from: node ID')
-                  input#to(name='to', value='to: node ID')
-                  input#rel-type(name='rel-type', value='type')
-                span#writerootArr
-              input#moreFields(type='button', value='+', onclick='moreFields("writerootArr","readrootArr","ArrProperty")')
-              div(style='float: right;')
-                input#createArr(type='button', value='Create arrow')
+
+
+
+
+
 
     //#footer(style='clear: both; text-align: center; font-size: 12px; font-weight: bold;')
     //  a(href='http://thewikinetsproject.wordpress.com') About
