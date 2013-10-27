@@ -192,6 +192,8 @@ $(document).ready(function(){
         // would now like to have option of reloading the visualisation here
       });
     }
+    console.log("updategraph() called.")
+    updategraph();
   });
 
   // creates a relationship from the data in the create-relationship input form
