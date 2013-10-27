@@ -26,7 +26,7 @@ var viewportheight;
     }
 
 /* the size of the graph and subgraph; also used as scaling factors */
-var width = viewportwidth-380,
+var width = viewportwidth-480,
     height = viewportheight-160;
     subwidth=300;
     subheight=300;
