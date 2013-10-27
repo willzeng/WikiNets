@@ -22,44 +22,43 @@ html
       input(type="submit",value="Get Node")
       #SearchOutput
 
-    #addbar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;margin-left: 40px;')
-      ul.menu
-        ul#enn_1.submenu
-          li Create node:
-          #readrootObj(style='display: none;')
-            input.propertyNode(name='propertyNode', value='propertyEx')
-            input.valueNode(name='valueNode', value='valueEx')
-            input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
-            br
-          form#create-node
-            span#writerootObj
-          input#moreFields(type='button', value='+', onclick='moreFields("writerootObj","readrootObj","NodeProperty")')
-          input#createObj(type='button', value='Create node')
-          li  Create arrow:
-          #readrootArr(style='display: none;')
-            input.propertyArr(name='propertyArr', value='property')
-            input.valueArr(name='valueArr', value='value')
-            input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
-            br
-          form#create-rel
-            div
-              input#from(name='from', value='from: node ID')
-              input#to(name='to', value='to: node ID')
-              input#rel-type(name='rel-type', value='type')
-            span#writerootArr
-          input#moreFields(type='button', value='+', onclick='moreFields("writerootArr","readrootArr","ArrProperty")')
-          input#createArr(type='button', value='Create arrow')
+    #buildbar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;height:100%;width: 300px;float:left;margin-left: 40px;')
+      #addbar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
+        ul.menu
+          ul#enn_1.submenu
+            li Create node:
+            #readrootObj(style='display: block;')
+              input.propertyNode(style='width:80px', name='propertyNode', value='propertyEx')
+              input.valueNode(style='width:80px', name='valueNode', value='valueEx')
+              input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
+              br
+            form#create-node
+              span#writerootObj
+            input#moreFields(type='button', value='+', onclick='moreFields("writerootObj","readrootObj","NodeProperty")')
+            input#createObj(type='button', value='Create node')
+            li  Create arrow:
+            form#create-rel
+              div
+                input#from(style='width:80px', name='from', value='from: node ID')
+                input#to(style='width:80px', name='to', value='to: node ID')
+                input#rel-type(style='width:80px', name='rel-type', value='type')
+              span#writerootArr
+            #readrootArr(style='display: block;')
+              input.propertyArr(style='width:80px', name='propertyArr', value='property')
+              input.valueArr(style='width:80px', name='valueArr', value='value')
+              input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
+              br
+            input#moreFields(type='button', value='+', onclick='moreFields("writerootArr","readrootArr","ArrProperty")')
+            input#createArr(type='button', value='Create arrow')
 
-    #togglebar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;margin-left: 40px;')
-      ul.menu
-          li Toggle
-          ul#sm_2.submenu
-            li
-              div#togglebox
+      #togglebar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
+        ul.menu
+            li Toggle
+            ul#sm_2.submenu
+              li
+                div#togglebox
 
-    #spacerbar(style='background:white;height:10px;width: 100%;float:left;margin-left: 40px;')  
-
-    #sidebar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;height:100%;width: 300px;float:left;margin-left: 40px;')
+    #sidebar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;height:100%;width: 300px;float:right;margin-right: 40px;')
         ul.menu
           li
             #titler(style="background:#FFFFFF;font-size:18px;color:#000000;text-align:center;width:303px;height:30")
