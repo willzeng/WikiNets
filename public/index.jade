@@ -5,7 +5,6 @@ html
     title WikiNets
     link(rel='stylesheet', type='text/css', href='style.css')
     script(type='text/javascript', src='jquery-1.10.2.js')
-    script(type='text/javascript', src='wikiscript.js')
     script(type='text/javascript', src='d3.v3.min.js')
     script(type='text/javascript', src='vizscript.js')
 
@@ -28,7 +27,7 @@ html
         ul.menu
           ul#enn_1.submenu
             li Create node:
-            #readrootObj(style='display: block;')
+            #readrootObj(style='display: none;')
               input.propertyNode(style='width:80px', name='propertyNode', value='propertyEx')
               input.valueNode(style='width:80px', name='valueNode', value='valueEx')
               input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
@@ -44,7 +43,7 @@ html
                 input#to(style='width:80px', name='to', value='to: node ID')
                 input#rel-type(style='width:80px', name='rel-type', value='type')
               span#writerootArr
-            #readrootArr(style='display: block;')
+            #readrootArr(style='display: none;')
               input.propertyArr(style='width:80px', name='propertyArr', value='property')
               input.valueArr(style='width:80px', name='valueArr', value='value')
               input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
@@ -115,7 +114,7 @@ html
                               input#EditArrow(type='button', value='Save Arrow')
               #subgraphcontainer
 
-
+    script(type='text/javascript', src='wikiscript.js')
 
     //            li
     //              a(href='#') Information

@@ -59,6 +59,9 @@ function moreFields(writediv, rootdiv, classNamediv) {
   insertHere.parentNode.insertBefore(newFields,insertHere);
 }
 
+moreFields("writerootObj","readrootObj","NodeProperty");
+moreFields("writerootArr","readrootArr","ArrProperty");
+
 // selects a node for editing
 // called either by clicking on a node in the visualisation while the
 // "edit node" menu is open or by entering a number into the "select node"
