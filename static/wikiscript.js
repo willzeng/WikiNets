@@ -437,6 +437,7 @@ $(document).ready(function(){
   //Parses Textin Query
   $("#queryform").on("click", function(event){
     console.log("Textin click made");
+    console.log($("#querytext").val());
       $.post('/submit', {"text":$("#querytext").val()}, function(data) {
         console.log(data);
       });

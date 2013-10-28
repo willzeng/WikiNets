@@ -318,18 +318,46 @@ module.exports = class MyApp
       console.log request.body
       console.log request.body.text
 
-      ###
-      cypherQuery = "start r=rel(" + request.body.id + ") delete r;"
+      ###Parse the input query into key value pairs###
+      strsplit=request.body.text.split("#");
+      strsplit[0]=strsplit[0].replace(/:/," #description ");### The : is shorthand for #description ###
+      text=strsplit.join("#")
+
+      pattern = new RegExp(/#([a-zA-Z0-9]+) ([^#]+)/g)
+      dict = {}
+      match = {}
+      dict[match[1].trim()]=match[2].trim() while match = pattern.exec(text)
+
+      console.log "This is the dictionary", dict
+
+      ###The first entry becomes the name###
+      dict["name"]=text.split("#")[0].trim()
+      console.log "This is the title", text.split("#")[0].trim()
+      console.log dict
+
+      console.log "Node Creation Requested"
+      cypherQuery = "create (n"
+      console.log dict
+      if JSON.stringify(dict) isnt '{}'
+        cypherQuery += " {"
+        for property, value of dict
+          cypherQuery += "#{property}:'#{value}', "
+        cypherQuery = cypherQuery.substring(0,cypherQuery.length-2) + "}"
+      cypherQuery += ") return n;"
       console.log "Executing " + cypherQuery
+      ###
+      Problem: this does not allow properties to have spaces in them,
+      e.g. "firstname: 'Will'" works but "first name: 'Will'" does not
+      It seems like this problem could be avoided if Neo4js supported
+      parameters in Cypher, but it does not, as far as I can see.
+      ###
       graphDb.cypher.execute(cypherQuery).then(
         (noderes) ->
-          console.log "Arrow Deleted"
-          response.send "success"
-        (noderes) ->
-          console.log "Could Not Delete Arrow"
-          response.send "error"
+          nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
+          nodeID = noderes.data[0][0]["self"].slice(nodeIDstart)
+          console.log "Node Creation Done, ID = " + nodeID
+          response.send nodeID
       )
-      ###
     )
 
   
