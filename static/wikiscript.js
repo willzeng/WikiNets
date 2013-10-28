@@ -59,6 +59,11 @@ function moreFields(writediv, rootdiv, classNamediv) {
   insertHere.parentNode.insertBefore(newFields,insertHere);
 }
 
+function intialFields(){
+  moreFields("writerootObj","readrootObj","NodeProperty");
+  moreFields("writerootArr","readrootArr","ArrProperty");
+}
+
 // selects a node for editing
 // called either by clicking on a node in the visualisation while the
 // "edit node" menu is open or by entering a number into the "select node"
@@ -140,6 +145,9 @@ function assign_properties(form_name) {
 // this is the interactive stuff that happens after the document has loaded
 $(document).ready(function(){
 
+  //open initial prop/value fields for creating new nodes/arrows
+  intialFields();
+
   // showing or hiding various menus and submenus
   $("img.choose_menu").click(function() {
     //showlayer('browse_menu');
@@ -192,6 +200,9 @@ $(document).ready(function(){
         // would now like to have option of reloading the visualisation here
       });
     }
+    console.log("updategraph() called.")
+    updategraph();
+    intialFields();
   });
 
   // creates a relationship from the data in the create-relationship input form
@@ -241,6 +252,7 @@ $(document).ready(function(){
         };
       });
     }
+    intialFields();
   });
 
 

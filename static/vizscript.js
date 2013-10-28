@@ -19,19 +19,44 @@ if (typeof window.innerWidth != 'undefined') {
 }
 
 /* the size of the graph and subgraph; also used as scaling factors */
-var width = viewportwidth-380,
+var width = viewportwidth-480,
     height = viewportheight-160;
     subwidth=300;
     subheight=300;
 
 /* This variable holds the graph data: an array of links and an array of nodes
    as provided by the server upon an AJAX call to "/json" -- see below */
+
 var graph;
+
+function updategraph()
+{
+  console.log(graph);
+  /* Make AJAX query to get JSON data for visualization */
+  $.getJSON('/json', function(data){
+  graph = data;
+  console.log("update viz called");
+  console.log(graph);
+  });
+}
+
+/* Make AJAX query to get JSON data for visualization */
+//function loadviz()
+//{
+//$.getJSON('/json', function(data){
+//  graph = data;
+//  console.log("make call for json");
+//  console.log(graph);
+//});
+//}
+
 
 /* Make AJAX query to get JSON data for visualization */
 $.getJSON('/json', function(data){
   graph = data;
   console.log("make call for json");
+  console.log(graph);
+
   // for debugging:
   //console.log(graph);
 
@@ -238,7 +263,7 @@ $.getJSON('/json', function(data){
                .attr("id", "options");
 
   // creates place for the main graph
-  var div1 = d3.select("body").append("div")
+  var div1 = d3.select("#maingraph").append("div")
                .attr("name", "mainNet")
                .attr("id", "mainNet")
 
@@ -349,4 +374,3 @@ $.getJSON('/json', function(data){
           });
 
 });
-

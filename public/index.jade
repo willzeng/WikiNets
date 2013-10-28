@@ -5,24 +5,62 @@ html
     title WikiNets
     link(rel='stylesheet', type='text/css', href='style.css')
     script(type='text/javascript', src='jquery-1.10.2.js')
-    script(type='text/javascript', src='wikiscript.js')
     script(type='text/javascript', src='d3.v3.min.js')
     script(type='text/javascript', src='vizscript.js')
 
 
   body
-    #header(style='background-color: white;')
+
+    #buildbar(style='color:#3b5d14;background:white;font-weight:bold;padding:4px;height:100%;width: 300px;float:left;margin-left: 10px;')
+
+      #header(style='background-color: white;')
       h1(style='margin-bottom: 5px; margin-left: 10px;')
         a(href='http://thewikinetsproject.wordpress.com/') WikiNets
 
-   
-    #searchbar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;height:40px;width: 100%;float:left;margin-left: 40px;')
-      form(method="post",action="/search_id")
-      input(type="text",name="nodeid") 
-      input(type="submit",value="Get Node")
-      #SearchOutput
+      #searchbar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
+        form(method="post",action="/search_id")
+        input(type="text",name="nodeid") 
+        input(type="submit",value="Get Node")
+        #SearchOutput
 
-    #sidebar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;height:100%;width: 300px;float:left;margin-left: 40px;')
+      #addbar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
+        ul.menu
+          ul#enn_1.submenu
+            li Create node:
+            #readrootObj(style='display: none;')
+              input.propertyNode(style='width:80px', name='propertyNode', value='propertyEx')
+              input.valueNode(style='width:80px', name='valueNode', value='valueEx')
+              input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
+              br
+            form#create-node
+              span#writerootObj
+            input#moreFields(type='button', value='+', onclick='moreFields("writerootObj","readrootObj","NodeProperty")')
+            input#createObj(type='button', value='Create node')
+            li  Create arrow:
+            form#create-rel
+              div
+                input#from(style='width:80px', name='from', value='from: node ID')
+                input#to(style='width:80px', name='to', value='to: node ID')
+                input#rel-type(style='width:80px', name='rel-type', value='type')
+              span#writerootArr
+            #readrootArr(style='display: none;')
+              input.propertyArr(style='width:80px', name='propertyArr', value='property')
+              input.valueArr(style='width:80px', name='valueArr', value='value')
+              input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
+              br
+            input#moreFields(type='button', value='+', onclick='moreFields("writerootArr","readrootArr","ArrProperty")')
+            input#createArr(type='button', value='Create arrow')
+
+      #togglebar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
+        ul.menu
+            li Toggle
+            ul#sm_2.submenu
+              li
+                div#togglebox
+
+    #maingraph
+
+    #sidebar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;height:100%;width: 300px;float:right;margin-right: 10px;')
         ul.menu
           li
             #titler(style="background:#FFFFFF;font-size:18px;color:#000000;text-align:center;width:303px;height:30")
@@ -31,22 +69,10 @@ html
             li
               //img.choose_menu(src='plus.png', alt='Open the Edit Network menu.')
               #editbutton(style="background:#e3edef;text-align:center")
-                a#show_edit(href='#') Click to Edit Node/Arrow
+                a#show_edit(href='#') Click to Hide/Unhide Info
             li
-              a(href='#') Information
-              p#infobox Here there is plenty of room to put all sorts of example information about some particular node.  There could be citations too
-                sup 1
-                | perhaps.
-            li
-              a(href='#') Bibliography 
-              | 1. Will et. al. "Some Example Paper", Phys. Rev. Letters. 11-2229.
-            li(style='padding:0;')
-              #subgraphcontainer
-            li
-              #edit_menu(style='display: none;')
+              #edit_menu(style='display: block;')
                     ul.menu
-                      li
-                        a#toggle_en_1(href='#')  Edit Node/Arrow
                       ul#en_1.submenu
                         li
                           | Please select a node.
@@ -55,8 +81,8 @@ html
                             input#SelectNode(type="submit", value="Select Node")
                           #edit-menu-inputs(style='display: none;')
                             #readrootEdit(style='display: none;')
-                              input.propertyEdit(name='propertyEdit', value='')
-                              input.valueEdit(name='valueEdit', value='')
+                              input.propertyEdit(style='width:80px', name='propertyEdit', value='')
+                              input.valueEdit(style='width:80px', name='valueEdit', value='')
                               input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
                               br
                             form#edit-node
@@ -72,8 +98,8 @@ html
                             input#SelectArrow(type="submit", value="Select Arrow")
                           #edit-arrow-menu-inputs(style='display: none;')
                             #readrootEditArrow(style='display: none;')
-                              input.propertyEditArrow(name='propertyEditArrow', value='')
-                              input.valueEditArrow(name='valueEditArrow', value='')
+                              input.propertyEditArrow(style='width:80px', name='propertyEditArrow', value='')
+                              input.valueEditArrow(style='width:80px', name='valueEditArrow', value='')
                               input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
                               br
                             form#edit-arrow
@@ -86,46 +112,19 @@ html
                             div(style='float: right;')
                               input#DeleteArrow(type='button', value='Delete Arrow')
                               input#EditArrow(type='button', value='Save Arrow')
+              #subgraphcontainer
 
-      #middlebar
-        ul.menu
-          li
-            a#toggle_sm_2(href="#") Toggle 
-          ul#sm_2.submenu
-            li
-              a(href='p1.html') Toggle
-              div#togglebox
-      #infobar
-          ul.menu
-            li
-              a#toggle_enn_1(href="#")  Add Node/Arrow 
-            ul#enn_1.submenu
-              li Create node:
-              #readrootObj(style='display: none;')
-                input.propertyNode(name='propertyNode', value='propertyEx')
-                input.valueNode(name='valueNode', value='valueEx')
-                input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
-                br
-              form#create-node
-                span#writerootObj
-              input#moreFields(type='button', value='+', onclick='moreFields("writerootObj","readrootObj","NodeProperty")')
-              div(style='float: right;')
-                input#createObj(type='button', value='Create node')
-              li  Create arrow:
-              #readrootArr(style='display: none;')
-                input.propertyArr(name='propertyArr', value='property')
-                input.valueArr(name='valueArr', value='value')
-                input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
-                br
-              form#create-rel
-                div
-                  input#from(name='from', value='from: node ID')
-                  input#to(name='to', value='to: node ID')
-                  input#rel-type(name='rel-type', value='type')
-                span#writerootArr
-              input#moreFields(type='button', value='+', onclick='moreFields("writerootArr","readrootArr","ArrProperty")')
-              div(style='float: right;')
-                input#createArr(type='button', value='Create arrow')
+    script(type='text/javascript', src='wikiscript.js')
+
+    //            li
+    //              a(href='#') Information
+    //              p#infobox Here there is plenty of room to put all sorts of example information about some particular node.  There could be citations too
+    //                sup 1
+    //                | perhaps.
+    //            li
+    //              a(href='#') Bibliography 
+    //              | 1. Will et. al. "Some Example Paper", Phys. Rev. Letters. 11-2229.
+    //            li(style='padding:0;')
 
     //#footer(style='clear: both; text-align: center; font-size: 12px; font-weight: bold;')
     //  a(href='http://thewikinetsproject.wordpress.com') About
