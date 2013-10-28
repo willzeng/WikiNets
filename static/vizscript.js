@@ -1,29 +1,22 @@
-//get size of viewport on load
+// get size of viewport on load
+// might want to make this dynamic at some point?
 var viewportwidth;
 var viewportheight;
-
-    //Standards compliant browsers (mozilla/netscape/opera/IE7)
-    if (typeof window.innerWidth != 'undefined')
-    {
-      viewportwidth = window.innerWidth,
-      viewportheight = window.innerHeight
-    }
-
-    // IE6
-    else if (typeof document.documentElement != 'undefined'
-    && typeof document.documentElement.clientWidth !=
-    'undefined' && document.documentElement.clientWidth != 0)
-    {
-      viewportwidth = document.documentElement.clientWidth,
-      viewportheight = document.documentElement.clientHeight
-    }
-
-    //Older IE
-    else
-    {
-      viewportwidth = document.getElementsByTagName('body')[0].clientWidth,
-      viewportheight = document.getElementsByTagName('body')[0].clientHeight
-    }
+if (typeof window.innerWidth != 'undefined') {
+  // Standards compliant browsers (mozilla/netscape/opera/IE7)
+  viewportwidth = window.innerWidth,
+  viewportheight = window.innerHeight
+} else if (typeof document.documentElement != 'undefined'
+           && typeof document.documentElement.clientWidth !=
+           'undefined' && document.documentElement.clientWidth != 0) {
+  // IE6
+  viewportwidth = document.documentElement.clientWidth,
+  viewportheight = document.documentElement.clientHeight
+} else {
+  // Older IE
+  viewportwidth = document.getElementsByTagName('body')[0].clientWidth,
+  viewportheight = document.getElementsByTagName('body')[0].clientHeight
+}
 
 /* the size of the graph and subgraph; also used as scaling factors */
 var width = viewportwidth-480,
@@ -132,6 +125,10 @@ $.getJSON('/json', function(data){
   /* Sets up the small circular graph at the bottom. Don't understand details
      yet */
   function setup_subgraph(d, i, th){
+
+    /* This bit of code turns the selected node in the main graph into a
+       large pink circle with red edge and returns any other node to its
+       default radius and colour */
     svg.selectAll(".node").attr("r", function(d_1) {
       if(d_1 === d){
         return 20;
@@ -149,26 +146,29 @@ $.getJSON('/json', function(data){
       return color(d_1.group);
     });
 
-    d3.select(th).attr('r', 25)
-      .style("fill","lightcoral")
-      .style("stroke","red");
-
+    /* remove previous subgraph and prepare a new one */
     d3.select("#subNet svg").remove();
-
-    var central_width=20;//This is the width of the center node of the subgraph
-    var circle_sizer=20;//The radius of the circle for each neighbor
-
     var frame = d3.select("#subNet").append("svg:svg").attr("width", subwidth)
                   .attr("height", subheight);
+
+    // this bit doesn't help very much at the moment as we aren't using
+    // arrowheads in the subgraph
     set_marker_data("subNet", 1.5);
 
+    // make a list of the neighbours of the selected node
     var nodelist=graph.nodes
     var neighbors = nodelist.filter(function(d_2){
           return neighboring(d_2, d);
         });
-    
-    var subgraph_padding = 30; //padding around the drawn subgraph
-    var subgraph_scalar = subwidth/2-central_width/2-circle_sizer-subgraph_padding;//scales the size of the subgraph to match the framesize
+
+    // This is the width of the center node of the subgraph
+    var central_width=20;
+    // The radius of the circle for each neighbor
+    var circle_sizer=20;
+    // padding around the drawn subgraph
+    var subgraph_padding = 30;
+    // scales the size of the subgraph to match the framesize
+    var subgraph_scalar = subwidth/2-central_width/2-circle_sizer-subgraph_padding;
 
     //This code draws the spokes out from the central node in the subgraph  
     frame.selectAll("line").data(neighbors).enter().append("line")
@@ -246,12 +246,9 @@ $.getJSON('/json', function(data){
            return subheight/2-1+central_width/2;
          })
          .text(function(d_2){ return d.name; });
-         //    .text(function(d){return d.name;});
   };
   // end of "setup_subgraph"
 
-
-  //var button=d3.select("body").selectAll("button").data(obj).enter().append("button").attr("type", "button").text("button");
 
   var color = d3.scale.category20();
 
@@ -299,8 +296,6 @@ $.getJSON('/json', function(data){
         console.log(d);
         console.log(i);
       });
-      // not sure what this is supposed to do:
-      //.style("stroke-width", function(d) { return Math.sqrt(d.value); });
   
   var node = svg.selectAll(".node")
       .data(graph.nodes)
@@ -377,25 +372,5 @@ $.getJSON('/json', function(data){
               return "lightgrey";
             });
           });
-
-  /*
-  for(var d in obj){
-    svg.selectAll(".node").attr("r", function(d_1) {
-      if(d_1.group.toString() === button_map[this].toString()){
-        return 10;
-      }
-      return 5;
-    }).style("stroke", function(d_1) { 
-      return "none";
-    }).style("fill", function(d_1) { 
-      if(d_1.group.toString() == button_map[this].toString()){
-        return "red";
-      }
-      return "grey";
-    });
-  });
-  button_map[b]=d;
-}
-*/
 
 });

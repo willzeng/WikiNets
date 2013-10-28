@@ -59,11 +59,6 @@ function moreFields(writediv, rootdiv, classNamediv) {
   insertHere.parentNode.insertBefore(newFields,insertHere);
 }
 
-function intialFields(){
-  moreFields("writerootObj","readrootObj","NodeProperty");
-  moreFields("writerootArr","readrootArr","ArrProperty");
-}
-
 // selects a node for editing
 // called either by clicking on a node in the visualisation while the
 // "edit node" menu is open or by entering a number into the "select node"
@@ -146,7 +141,8 @@ function assign_properties(form_name) {
 $(document).ready(function(){
 
   //open initial prop/value fields for creating new nodes/arrows
-  intialFields();
+  moreFields("writerootObj","readrootObj","NodeProperty");
+  moreFields("writerootArr","readrootArr","ArrProperty");
 
   // showing or hiding various menus and submenus
   $("img.choose_menu").click(function() {
@@ -202,7 +198,7 @@ $(document).ready(function(){
     }
     console.log("updategraph() called.")
     updategraph();
-    intialFields();
+    moreFields("writerootObj","readrootObj","NodeProperty");
   });
 
   // creates a relationship from the data in the create-relationship input form
@@ -252,7 +248,7 @@ $(document).ready(function(){
         };
       });
     }
-    intialFields();
+    moreFields("writerootArr","readrootArr","ArrProperty");
   });
 
 
