@@ -59,9 +59,16 @@ html
                 div#togglebox
 
       #textinto(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
-        p(style='width:100%') Query
-        textarea#querytext(name="textin", rows="6", cols="27")
+        ul#querybox
+        p(style='width:100%', id='searchAddNodeFieldLabel') (Source) Node
+        textarea#searchAddNodeField(name="textin", rows="6", cols="27")
         input#queryform(type="submit",value="Submit")
+
+      #arrowinto(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
+        ul#arrowquerybox
+        p(style='width:100%') Arrow
+        textarea#arrowsearchAddNodeField(name="textin", rows="6", cols="27")
+        input#arrowqueryform(type="submit",value="Submit")
 
     #maingraph
 

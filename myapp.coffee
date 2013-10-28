@@ -311,7 +311,7 @@ module.exports = class MyApp
     )
 
     ###
-    Parses a textin query
+    Parses a textin query to create a node
     ###
     app.post('/submit', (request,response)->
       console.log "Textin Query Requested"
@@ -360,6 +360,51 @@ module.exports = class MyApp
       )
     )
 
+    ###
+    Parses a textin query to create an arrow
+    ###
+    app.post('/submitarrow', (request,response)->
+      console.log "Arrow create query Requested"
+      console.log request.body
+      console.log request.body.text
+
+      ###Parse the input query into key value pairs###
+      strsplit=request.body.text.split("#");
+      strsplit[0]=strsplit[0].replace(/:/," #description ");### The : is shorthand for #description ###
+      text=strsplit.join("#")
+
+      pattern = new RegExp(/#([a-zA-Z0-9]+) ([^#]+)/g)
+      dict = {}
+      match = {}
+      dict[match[1].trim()]=match[2].trim() while match = pattern.exec(text)
+
+      console.log "This is the dictionary", dict
+
+      ###The first entry becomes the name###
+      dict["name"]=text.split("#")[0].trim()
+      console.log "This is the title", text.split("#")[0].trim()
+      console.log dict
+
+      console.log "Relationship Creation Requested"
+      cypherQuery = "start n=node(" + request.body.from + "), m=node(" + request.body.to + ") create (n)-[r:" + request.body.type
+      if request.body.properties isnt undefined
+        cypherQuery += " {"
+        for property, value of request.body.properties
+          cypherQuery += "#{property}:'#{value}', "
+        cypherQuery = cypherQuery.substring(0,cypherQuery.length-2) + "}"
+      cypherQuery +="]->(m) return r;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (relres) ->
+          console.log relres.data[0][0]
+          relIDstart = relres.data[0][0]["self"].lastIndexOf('/') + 1
+          response.send relres.data[0][0]["self"].slice(relIDstart)
+        (relres) ->
+          console.log relres
+          response.send "error"
+      )
+      
+    )
   
     ###
     indexPromise = graphDb.index.createNodeIndex "myIndex"

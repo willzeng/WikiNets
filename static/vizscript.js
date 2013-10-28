@@ -96,9 +96,9 @@ $.getJSON('/json', function(data){
 
     // if "Edit Node" menu is visible, fill in data for selected node
     //if ($("#en_1").css("display") == "block") {
-    selected_node = d._id;
-    $("#SelectNodeID").val(selected_node);
-    select_node(selected_node);
+    window.selected_node = d._id;
+    $("#SelectNodeID").val(window.selected_node);
+    select_node(window.selected_node);
     //};
     // update subgraph to centre on newly-selected node
     setup_subgraph(d, i, th);

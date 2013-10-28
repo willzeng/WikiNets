@@ -8,6 +8,7 @@ function showlayer(layer){
   }
 }
 
+window.buildingarrow = false;
 
 //listen for cntrl-enter to refresh graph viz
 //$(function() {
@@ -63,9 +64,15 @@ function moreFields(writediv, rootdiv, classNamediv) {
 // called either by clicking on a node in the visualisation while the
 // "edit node" menu is open or by entering a number into the "select node"
 // input field and then clicking the "select node" button
+//This method should update the visual display of the selected node. #BUG
 function select_node(nodeid) {
     selected_node_properties = {};
     $.post('/get_id', {nodeid: nodeid}, function(data) {
+      //Displays the selected node in the Node Info Box
+      //Sets selected_node to nodeid;
+      //TODO: Highlight the selected node in the mainGraph
+      //TODO: Highlight the selected node in the subGraph
+
       if (data == "error") {
           alert("Node with ID " + nodeid + " could not be found.");
       } else {
@@ -434,13 +441,77 @@ $(document).ready(function(){
     };
   });
 
-  //Parses Textin Query
+  //Parses Textin Query to create a node on click
   $("#queryform").on("click", function(event){
     console.log("Textin click made");
-    console.log($("#querytext").val());
-      $.post('/submit', {"text":$("#querytext").val()}, function(data) {
+    console.log($("#searchAddNodeField").val());
+      $.post('/submit', {"text":$("#searchAddNodeField").val()}, function(data) {
         console.log(data);
+        $("#querybox").append('<li>'+$("#searchAddNodeField").val()+'</li>');
+        $('#searchAddNodeField').val("");
       });
+  });
+
+  //Parses searchAddNodeField input into a dictionary of properties
+  $('#searchAddNodeField').keydown(function(e) {
+    var code = e.keyCode || e.which;
+    targeter = {};
+    console.log(code);
+    
+    //If ENTER then queries the server to create a node
+    //TODO: Should also Select the node
+    if(code == 13 || code == 9) { //Enter keycode
+      e.preventDefault();  
+      console.log("Node creation query made");
+      console.log($("#searchAddNodeField").val());
+      $.post('/submit', {"text":$("#searchAddNodeField").val()}, function(data) {
+        console.log("Set targeter", data);
+        targeter=data;
+        $("#querybox").append('<li>'+$("#searchAddNodeField").val()+'</li>');
+        $('#searchAddNodeField').val("");
+      });
+
+      //If TAB & buildingarrow then also queries the server to create an arrow
+      //TODO: This doesn't work. (figuring out targeter global variable.)
+      console.log("building arrow ", buildingarrow);
+      if(buildingarrow){
+        $.post('/submitarrow', {"text":arrowquery, "from":window.selected_node, "to":targeter}, function(data) { //NOTES! selected_node is variable in vizscript.js... #BAD
+        console.log(data);
+        $("#arrowquerybox").append('<li>'+arrowquery+'</li>');
+        $('#arrowsearchAddNodeField').val("");
+        });
+      }
+
+      if(code == 9){
+        //$("#arrowsearchAddNodeField").show();
+        $("#arrowsearchAddNodeField").focus();    
+      }
+    }
+  });
+
+  //COMMENT THIS UP 
+  //SETUP STORED VARIABLE
+
+  //Parses Textin Query to create a arrow on enter or tab
+  $('#arrowsearchAddNodeField').keydown(function(e){
+    var code = e.keyCode || e.which;
+    console.log(code);
+    if(code == 13 || code == 9) {
+      e.preventDefault();  //Enter keycode
+      console.log("Arrow create click made");
+      console.log($("#arrowsearchAddNodeField").val());
+      window.arrowquery = $("#arrowsearchAddNodeField").val();
+      $('#arrowsearchAddNodeField').val("");
+      $("#searchAddNodeField").focus();
+      $('#searchAddNodeFieldLabel').text("(Target) Node");   
+      buildingarrow=!buildingarrow;     
+      /*$.post('/submitarrow', {"text":$("#arrowsearchAddNodeField").val(), "from":window.selected_node, "to":}, function(data) { //NOTES! selected_node is variable in vizscript.js... #BAD
+        console.log(data);
+        $("#arrowquerybox").append('<li>'+$("#arrowsearchAddNodeField").val()+'</li>');
+        $('#arrowsearchAddNodeField').val("");
+      });
+      $("#arrowsearchAddNodeField").focus();*/
+    }
   });
 
 });
