@@ -11,7 +11,7 @@ html
 
   body
 
-    #buildbar(style='color:#3b5d14;background:white;font-weight:bold;padding:4px;height:100%;width: 300px;float:left;margin-left: 10px;')
+    #buildbar(style='color:#3b5d14;background:white;font-weight:bold;padding:4px;height:100%;width:300px;float:left;margin-left: 10px;')
 
       #header(style='background-color: white;')
       h1(style='margin-bottom: 5px; margin-left: 10px;')
@@ -57,6 +57,11 @@ html
             ul#sm_2.submenu
               li
                 div#togglebox
+
+      #textinto(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
+        p(style='width:100%') Query
+        textarea#querytext(name="textin", rows="6", cols="27")
+        input#queryform(type="submit",value="Submit")
 
     #maingraph
 

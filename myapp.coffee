@@ -310,6 +310,28 @@ module.exports = class MyApp
       )
     )
 
+    ###
+    Parses a textin query
+    ###
+    app.post('/submit', (request,response)->
+      console.log "Textin Query Requested"
+      console.log request.body
+      console.log request.body.text
+
+      ###
+      cypherQuery = "start r=rel(" + request.body.id + ") delete r;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes) ->
+          console.log "Arrow Deleted"
+          response.send "success"
+        (noderes) ->
+          console.log "Could Not Delete Arrow"
+          response.send "error"
+      )
+      ###
+    )
+
   
     ###
     indexPromise = graphDb.index.createNodeIndex "myIndex"

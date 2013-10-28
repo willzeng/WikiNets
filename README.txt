@@ -2,4 +2,4 @@ This is the code for WikiNets. Feel free to contribute. It's available under a G
 
 wikinets.herokuapp.com
 
-thewikinetsproject.blogspot.com
+thewikinetsproject.wordpress.com

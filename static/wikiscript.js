@@ -426,7 +426,7 @@ $(document).ready(function(){
     if (confirm("Are you sure you want to delete arrow " + selected_arrow + "?")) {
       $.post('/delete_arrow', {id: selected_arrow}, function(data) {
         if (data === "error") {
-          alert("Could not delete arrow " + selected_node + ".");
+          alert("Could not delete arrow " + selected_arrow + ".");
         } else {
           alert("Deleted arrow " + selected_arrow + ".");
           $("#edit-arrow-menu-inputs").css("display", "none");
@@ -436,6 +436,14 @@ $(document).ready(function(){
         }
       });
     };
+  });
+
+  //Parses Textin Query
+  $("#queryform").on("click", function(event){
+    console.log("Textin click made");
+      $.post('/submit', {"text":$("#querytext").val()}, function(data) {
+        console.log(data);
+      });
   });
 
 });
