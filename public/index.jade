@@ -23,19 +23,21 @@ html
         input(type="submit",value="Get Node")
         #SearchOutput
 
-      #buildNodeArea(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
-        ul#querybox
-        p(style='width:100%', id='searchAddNodeFieldLabel') (Source) Node
-        textarea#searchAddNodeField(name="textin", rows="6", cols="27")
-        input#queryform(type="submit",value="Submit")
+      input#syntaxMenuShowButton(type="submit",value="Menu 1")
+      input#fullMenuShowButton(type="submit",value="Menu 2")
 
-      #buildArrowArea(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
-        ul#arrowquerybox
-        p(style='width:100%') Arrow
-        textarea#searchAddArrowField(name="textin", rows="6", cols="27")
-        input#arrowqueryform(type="submit",value="Submit")
+      #syntaxAddMenu
+        #buildNodeArea(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
+          ul#querybox
+          p(style='width:100%', id='searchAddNodeFieldLabel') (Source) Node
+          textarea#searchAddNodeField(name="textin", rows="6", cols="27")
+          input#queryform(type="submit",value="Submit")
 
-      input#fullMenuShowButton(type="submit",value="Show Full Menu")
+        #buildArrowArea(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
+          ul#arrowquerybox
+          p(style='width:100%') Arrow
+          textarea#searchAddArrowField(name="textin", rows="6", cols="27")
+          input#arrowqueryform(type="submit",value="Submit")
 
       #fullAddMenu(style="display:none")
         #addbar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')

@@ -199,19 +199,32 @@ $(document).ready(function(){
   moreFields("writerootArr","readrootArr","ArrProperty");
 
   // showing or hiding various menus and submenus
+  $("#syntaxMenuShowButton").on("click", function(event){
+    $("#fullAddMenu").hide();
+    $("#syntaxAddMenu").show();
+  });
+
   $("#fullMenuShowButton").on("click", function(event){
+    $("#fullAddMenu").show();
+    $("#syntaxAddMenu").hide();
+  });
+
+  /*$("#fullMenuShowButton").on("click", function(event){
     if(!fullmenu){
       //console.log("hide menu");
       $("#fullAddMenu").show();
-      $("#fullMenuShowButton").val("Hide Full Menu");
+      $("#syntaxAddMenu").hide();
+      //$("#fullMenuShowButton").val("Hide Full Menu");
     }
     else {
       //console.log("show menu");
       $("#fullAddMenu").hide();
-      $("#fullMenuShowButton").val("Show Full Menu");
+      $("#syntaxAddMenu").show();
+      //$("#fullMenuShowButton").val("Show Full Menu");
     }
     fullmenu=!fullmenu;
-  });
+  });*/
+
   /*$("img.choose_menu").click(function() {
     //showlayer('browse_menu');
     showlayer('edit_menu');
