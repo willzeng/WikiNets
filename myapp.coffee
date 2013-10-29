@@ -381,15 +381,15 @@ module.exports = class MyApp
       console.log "This is the dictionary", dict
 
       ###The first entry becomes the name###
-      dict["name"]=text.split("#")[0].trim()
+      dict["type"]=text.split("#")[0].trim()
       console.log "This is the title", text.split("#")[0].trim()
       console.log dict
 
       console.log "Relationship Creation Requested"
-      cypherQuery = "start n=node(" + request.body.from + "), m=node(" + request.body.to + ") create (n)-[r:" + request.body.type
-      if request.body.properties isnt undefined
+      cypherQuery = "start n=node(" + request.body.from + "), m=node(" + request.body.to + ") create (n)-[r:" + dict.type
+      if dict isnt undefined
         cypherQuery += " {"
-        for property, value of request.body.properties
+        for property, value of dict
           cypherQuery += "#{property}:'#{value}', "
         cypherQuery = cypherQuery.substring(0,cypherQuery.length-2) + "}"
       cypherQuery +="]->(m) return r;"
@@ -403,7 +403,7 @@ module.exports = class MyApp
           console.log relres
           response.send "error"
       )
-      
+
     )
   
     ###

@@ -8,8 +8,6 @@ function showlayer(layer){
   }
 }
 
-window.buildingarrow = false;
-
 //listen for cntrl-enter to refresh graph viz
 //$(function() {
 //   $(window).keypress(function(e) {
@@ -36,12 +34,20 @@ window.buildingarrow = false;
 // - "selected_node_properties" contains the properties of the selected node
 // - "reserved_keys" is a global constant and keeps track of property names
 //   which are reserved for system use
+// - "window.buildingarrow" is a boolean that stores if an arrow is currently being created by source and target
+// - "window.arrowquery" is used to store the key:value dictionary for a new arrow when buildingarrow
+// - "source" is used to store the nodeid of the source node when buildingarrow
+// - "target" is used to store the nodeid of the target node when buildingarrow
 var counter = 0;
 var selected_arrow;
 var selected_arrow_properties;
 var selected_node;
 var selected_node_properties;
 var reserved_keys = ["_id"];
+window.arrowquery;
+window.buildingarrow = false;
+var source = 0;
+var target = 0;
 
 // adds pairs of input fields for properties and values
 function moreFields(writediv, rootdiv, classNamediv) {
@@ -66,6 +72,7 @@ function moreFields(writediv, rootdiv, classNamediv) {
 // input field and then clicking the "select node" button
 //This method should update the visual display of the selected node. #BUG
 function select_node(nodeid) {
+    console.log("Selection of nodeid: ", nodeid, " called.")
     selected_node_properties = {};
     $.post('/get_id', {nodeid: nodeid}, function(data) {
       //Displays the selected node in the Node Info Box
@@ -77,6 +84,7 @@ function select_node(nodeid) {
           alert("Node with ID " + nodeid + " could not be found.");
       } else {
         selected_node = nodeid;
+        $('#SelectNodeID').val(selected_node);
         console.log("Node data: ID " + nodeid + "\n" + JSON.stringify(data));
         if ($("#edit-menu-inputs").css("display") == "none") {
           $("#edit-menu-inputs").css("display", "block");
@@ -441,46 +449,59 @@ $(document).ready(function(){
     };
   });
 
+  //Queries the server to create a node using the data from the searchAddNodeField (SANField)
+  //Selects the newly created node
+  //Resets the SANFields
+  //returns the nodeid of the newly created node
+  function SANcreateNode(witharrow){
+    console.log("SANcreateNode called for query text",$("#searchAddNodeField").val());
+    $.post('/submit', {"text":$("#searchAddNodeField").val()}, function(data) {
+      console.log("Selecting Node:", data);
+      select_node(data);
+      $("#querybox").append('<li>'+$("#searchAddNodeField").val()+'</li>');
+      $('#searchAddNodeField').val("");
+      if(buildingarrow) {
+        console.log("Set target to: ", data);
+        target=data;
+        SANcreateArrow();
+      }
+      else{
+        console.log("Set source to: ", data);
+        source=data;
+      }
+    });
+  }
+
+  function SANcreateArrow(){
+    console.log("Creating an arrow with source: ", source, " and target: ", target);
+    $.post('/submitarrow', {"text":arrowquery, "from":source, "to":target}, function(data) { //NOTES! selected_node is variable in vizscript.js... #BAD
+      console.log(data);
+      $("#arrowquerybox").append('<li>'+arrowquery+'</li>');
+      $('#searchAddArrowField').val("");
+      buildingarrow=false;
+    });
+  }
+
   //Parses searchAddNodeField input into a dictionary of properties to create a node on click
   $("#queryform").on("click", function(event){
-    console.log("searchAddNodeField click made");
-    console.log($("#searchAddNodeField").val());
-      $.post('/submit', {"text":$("#searchAddNodeField").val()}, function(data) {
-        console.log(data);
-        $("#querybox").append('<li>'+$("#searchAddNodeField").val()+'</li>');
-        $('#searchAddNodeField').val("");
-      });
+    SANcreateNode(buildingarrow);
+    console.log("building arrow ", buildingarrow);
   });
 
   //Parses searchAddNodeField input into a dictionary of properties
   $('#searchAddNodeField').keydown(function(e) {
     var code = e.keyCode || e.which;
-    targeter = {};
-    console.log(code);
+    //console.log(code);
     
-    //If ENTER then queries the server to create a node
+    //If ENTER or TAB then queries the server to create a node
     //TODO: Should also Select the node
     if(code == 13 || code == 9) { //Enter keycode
       e.preventDefault();  
-      console.log("searchAddNodeField creation query made");
-      console.log($("#searchAddNodeField").val());
-      $.post('/submit', {"text":$("#searchAddNodeField").val()}, function(data) {
-        console.log("Set targeter", data);
-        targeter=data;
-        $("#querybox").append('<li>'+$("#searchAddNodeField").val()+'</li>');
-        $('#searchAddNodeField').val("");
-      });
 
-      //If TAB & buildingarrow then also queries the server to create an arrow
+      SANcreateNode(buildingarrow);
+
+      //If TAB or ENTER & buildingarrow then also queries the server to create an arrow
       //TODO: This doesn't work. (figuring out targeter global variable.)
-      console.log("building arrow ", buildingarrow);
-      if(buildingarrow){
-        $.post('/submitarrow', {"text":arrowquery, "from":window.selected_node, "to":targeter}, function(data) { //NOTES! selected_node is variable in vizscript.js... #BAD
-        console.log(data);
-        $("#arrowquerybox").append('<li>'+arrowquery+'</li>');
-        $('#searchAddArrowField').val("");
-        });
-      }
 
       if(code == 9){
         //$("#searchAddArrowField").show();
@@ -489,22 +510,19 @@ $(document).ready(function(){
     }
   });
 
-  //COMMENT THIS UP 
-  //SETUP STORED VARIABLE
-
-  //Parses searchAddArrowField Query to create a arrow on ENTER or TAB
+  //Parses searchAddArrowField Query 
+  //ENTER or TAB stores the input properties for an arrow in variable arrowquery and marks buildingarrow=true
   $('#searchAddArrowField').keydown(function(e){
     var code = e.keyCode || e.which;
-    console.log(code);
+    //console.log(code);
     if(code == 13 || code == 9) {
-      e.preventDefault();  //Enter keycode
-      console.log("Arrow create click made");
-      console.log($("#searchAddArrowField").val());
+      e.preventDefault(); 
+      console.log("searchAddArrowField query made with text: ", $("#searchAddArrowField").val());
       window.arrowquery = $("#searchAddArrowField").val();
       $('#searchAddArrowField').val("");
       $("#searchAddNodeField").focus();
       $('#searchAddNodeFieldLabel').text("(Target) Node");   
-      buildingarrow=!buildingarrow;     
+      buildingarrow=true;     
     }
   });
 
