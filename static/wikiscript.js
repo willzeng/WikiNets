@@ -450,9 +450,10 @@ $(document).ready(function(){
   });
 
   //Queries the server to create a node using the data from the searchAddNodeField (SANField)
+  //If witharrow is TRUE then also creates an arrow from global variables source --> target
   //Selects the newly created node
   //Resets the SANFields
-  //returns the nodeid of the newly created node
+  //Sets source to the id of the newly created node.
   function SANcreateNode(witharrow){
     console.log("SANcreateNode called for query text",$("#searchAddNodeField").val());
     $.post('/submit', {"text":$("#searchAddNodeField").val()}, function(data) {
@@ -472,9 +473,11 @@ $(document).ready(function(){
     });
   }
 
+  //Queries the server to create an arrow from global variables source --> target
+  //Resets the arrowquery text fields and resets building arrow to false.
   function SANcreateArrow(){
     console.log("Creating an arrow with source: ", source, " and target: ", target);
-    $.post('/submitarrow', {"text":arrowquery, "from":source, "to":target}, function(data) { //NOTES! selected_node is variable in vizscript.js... #BAD
+    $.post('/submitarrow', {"text":arrowquery, "from":source, "to":target}, function(data) { 
       console.log(data);
       $("#arrowquerybox").append('<li>'+arrowquery+'</li>');
       $('#searchAddArrowField').val("");
@@ -494,15 +497,12 @@ $(document).ready(function(){
     //console.log(code);
     
     //If ENTER or TAB then queries the server to create a node
-    //TODO: Should also Select the node
     if(code == 13 || code == 9) { //Enter keycode
       e.preventDefault();  
 
       SANcreateNode(buildingarrow);
 
-      //If TAB or ENTER & buildingarrow then also queries the server to create an arrow
-      //TODO: This doesn't work. (figuring out targeter global variable.)
-
+      //If TAB or switches focus to searchAddArrowField
       if(code == 9){
         //$("#searchAddArrowField").show();
         $("#searchAddArrowField").focus();    
@@ -516,7 +516,7 @@ $(document).ready(function(){
     var code = e.keyCode || e.which;
     //console.log(code);
     if(code == 13 || code == 9) {
-      e.preventDefault(); 
+      e.preventDefault();  
       console.log("searchAddArrowField query made with text: ", $("#searchAddArrowField").val());
       window.arrowquery = $("#searchAddArrowField").val();
       $('#searchAddArrowField').val("");
