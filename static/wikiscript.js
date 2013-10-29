@@ -441,9 +441,9 @@ $(document).ready(function(){
     };
   });
 
-  //Parses Textin Query to create a node on click
+  //Parses searchAddNodeField input into a dictionary of properties to create a node on click
   $("#queryform").on("click", function(event){
-    console.log("Textin click made");
+    console.log("searchAddNodeField click made");
     console.log($("#searchAddNodeField").val());
       $.post('/submit', {"text":$("#searchAddNodeField").val()}, function(data) {
         console.log(data);
@@ -462,7 +462,7 @@ $(document).ready(function(){
     //TODO: Should also Select the node
     if(code == 13 || code == 9) { //Enter keycode
       e.preventDefault();  
-      console.log("Node creation query made");
+      console.log("searchAddNodeField creation query made");
       console.log($("#searchAddNodeField").val());
       $.post('/submit', {"text":$("#searchAddNodeField").val()}, function(data) {
         console.log("Set targeter", data);
@@ -478,13 +478,13 @@ $(document).ready(function(){
         $.post('/submitarrow', {"text":arrowquery, "from":window.selected_node, "to":targeter}, function(data) { //NOTES! selected_node is variable in vizscript.js... #BAD
         console.log(data);
         $("#arrowquerybox").append('<li>'+arrowquery+'</li>');
-        $('#arrowsearchAddNodeField').val("");
+        $('#searchAddArrowField').val("");
         });
       }
 
       if(code == 9){
-        //$("#arrowsearchAddNodeField").show();
-        $("#arrowsearchAddNodeField").focus();    
+        //$("#searchAddArrowField").show();
+        $("#searchAddArrowField").focus();    
       }
     }
   });
@@ -492,25 +492,19 @@ $(document).ready(function(){
   //COMMENT THIS UP 
   //SETUP STORED VARIABLE
 
-  //Parses Textin Query to create a arrow on enter or tab
-  $('#arrowsearchAddNodeField').keydown(function(e){
+  //Parses searchAddArrowField Query to create a arrow on ENTER or TAB
+  $('#searchAddArrowField').keydown(function(e){
     var code = e.keyCode || e.which;
     console.log(code);
     if(code == 13 || code == 9) {
       e.preventDefault();  //Enter keycode
       console.log("Arrow create click made");
-      console.log($("#arrowsearchAddNodeField").val());
-      window.arrowquery = $("#arrowsearchAddNodeField").val();
-      $('#arrowsearchAddNodeField').val("");
+      console.log($("#searchAddArrowField").val());
+      window.arrowquery = $("#searchAddArrowField").val();
+      $('#searchAddArrowField').val("");
       $("#searchAddNodeField").focus();
       $('#searchAddNodeFieldLabel').text("(Target) Node");   
       buildingarrow=!buildingarrow;     
-      /*$.post('/submitarrow', {"text":$("#arrowsearchAddNodeField").val(), "from":window.selected_node, "to":}, function(data) { //NOTES! selected_node is variable in vizscript.js... #BAD
-        console.log(data);
-        $("#arrowquerybox").append('<li>'+$("#arrowsearchAddNodeField").val()+'</li>');
-        $('#arrowsearchAddNodeField').val("");
-      });
-      $("#arrowsearchAddNodeField").focus();*/
     }
   });
 
