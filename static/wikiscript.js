@@ -38,6 +38,7 @@ function showlayer(layer){
 // - "window.arrowquery" is used to store the key:value dictionary for a new arrow when buildingarrow
 // - "source" is used to store the nodeid of the source node when buildingarrow
 // - "target" is used to store the nodeid of the target node when buildingarrow
+// - "fullmenu" is the boolean that stores if the full menu is toggled open
 var counter = 0;
 var selected_arrow;
 var selected_arrow_properties;
@@ -46,8 +47,9 @@ var selected_node_properties;
 var reserved_keys = ["_id"];
 window.arrowquery;
 window.buildingarrow = false;
-var source = 0;
-var target = 0;
+var source = "0";
+var target = "0";
+var fullmenu = false;
 
 // adds pairs of input fields for properties and values
 function moreFields(writediv, rootdiv, classNamediv) {
@@ -152,6 +154,43 @@ function assign_properties(form_name) {
     return [submitOK, propertyObject];
 }
 
+//Queries the server to create a node using the data from the searchAddNodeField (SANField)
+//If witharrow is TRUE then also creates an arrow from global variables source --> target
+//Selects the newly created node
+//Resets the SANFields
+//Sets source to the id of the newly created node.
+function SANcreateNode(witharrow){
+  console.log("SANcreateNode called for query text",$("#searchAddNodeField").val());
+  $.post('/submit', {"text":$("#searchAddNodeField").val()}, function(data) {
+    console.log("Selecting Node:", data);
+    select_node(data);
+    $("#querybox").append('<li>'+$("#searchAddNodeField").val()+'</li>');
+    $('#searchAddNodeField').val("");
+    if(buildingarrow) {
+      console.log("Set target to: ", data);
+      target=data;
+      SANcreateArrow();
+    }
+    else{
+      console.log("Set source to: ", data);
+      source=data;
+    }
+  });
+}
+
+//Queries the server to create an arrow from global variables source --> target
+//Resets the arrowquery text fields and resets building arrow to false.
+function SANcreateArrow(){
+  console.log("Creating an arrow with source: ", source, " and target: ", target);
+  $.post('/submitarrow', {"text":arrowquery, "from":source, "to":target}, function(data) { 
+    console.log(data);
+    $("#arrowquerybox").append('<li>'+arrowquery+'</li>');
+    $('#searchAddArrowField').val("");
+    buildingarrow=false;
+  });
+}
+
+
 // this is the interactive stuff that happens after the document has loaded
 $(document).ready(function(){
 
@@ -160,7 +199,20 @@ $(document).ready(function(){
   moreFields("writerootArr","readrootArr","ArrProperty");
 
   // showing or hiding various menus and submenus
-  $("img.choose_menu").click(function() {
+  $("#fullMenuShowButton").on("click", function(event){
+    if(!fullmenu){
+      //console.log("hide menu");
+      $("#fullAddMenu").show();
+      $("#fullMenuShowButton").val("Hide Full Menu");
+    }
+    else {
+      //console.log("show menu");
+      $("#fullAddMenu").hide();
+      $("#fullMenuShowButton").val("Show Full Menu");
+    }
+    fullmenu=!fullmenu;
+  });
+  /*$("img.choose_menu").click(function() {
     //showlayer('browse_menu');
     showlayer('edit_menu');
   });
@@ -189,7 +241,7 @@ $(document).ready(function(){
   $("#toggle_sm_3").click(function(a) {
     a.preventDefault();
     showlayer('sm_3');
-  });
+  });*/
 
   // create a new node from the data in the create node input form
   $("#createObj").on("click", function(event){
@@ -448,42 +500,6 @@ $(document).ready(function(){
       });
     };
   });
-
-  //Queries the server to create a node using the data from the searchAddNodeField (SANField)
-  //If witharrow is TRUE then also creates an arrow from global variables source --> target
-  //Selects the newly created node
-  //Resets the SANFields
-  //Sets source to the id of the newly created node.
-  function SANcreateNode(witharrow){
-    console.log("SANcreateNode called for query text",$("#searchAddNodeField").val());
-    $.post('/submit', {"text":$("#searchAddNodeField").val()}, function(data) {
-      console.log("Selecting Node:", data);
-      select_node(data);
-      $("#querybox").append('<li>'+$("#searchAddNodeField").val()+'</li>');
-      $('#searchAddNodeField').val("");
-      if(buildingarrow) {
-        console.log("Set target to: ", data);
-        target=data;
-        SANcreateArrow();
-      }
-      else{
-        console.log("Set source to: ", data);
-        source=data;
-      }
-    });
-  }
-
-  //Queries the server to create an arrow from global variables source --> target
-  //Resets the arrowquery text fields and resets building arrow to false.
-  function SANcreateArrow(){
-    console.log("Creating an arrow with source: ", source, " and target: ", target);
-    $.post('/submitarrow', {"text":arrowquery, "from":source, "to":target}, function(data) { 
-      console.log(data);
-      $("#arrowquerybox").append('<li>'+arrowquery+'</li>');
-      $('#searchAddArrowField').val("");
-      buildingarrow=false;
-    });
-  }
 
   //Parses searchAddNodeField input into a dictionary of properties to create a node on click
   $("#queryform").on("click", function(event){
