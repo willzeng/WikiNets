@@ -81,6 +81,9 @@ function select_node(nodeid) {
       //Sets selected_node to nodeid;
       //TODO: Highlight the selected node in the mainGraph
       //TODO: Highlight the selected node in the subGraph
+      // Sets source to selected nodeid
+
+      source=nodeid;
 
       if (data == "error") {
           alert("Node with ID " + nodeid + " could not be found.");
@@ -553,6 +556,11 @@ $(document).ready(function(){
       $('#searchAddNodeFieldLabel').text("(Target) Node");   
       buildingarrow=true;     
     }
+  });
+
+  //On click of createNodeButton focuses on searchAddNodeField
+  $("#createNodeButton").on("click", function(event){
+    $("#searchAddNodeField").focus();
   });
 
 });
