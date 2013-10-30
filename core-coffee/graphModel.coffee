@@ -27,6 +27,7 @@ define ["underscore", "backbone"], (_, Backbone) ->
 
     putLink: (link) ->
       @pushDatum "links", link
+      @trigger "add:link", link
 
     pushDatum: (attr, datum) ->
       data = @get(attr)
