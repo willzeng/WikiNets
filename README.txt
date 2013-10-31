@@ -1,6 +1,6 @@
 This is the code for WikiNets. Feel free to contribute. It's available under a GNU GPL v3 license, the text of which is bundled, but in short: you're free to take this code and modify it as you wish, on the condition that you declare any changes you make, and pass on this freedom and responsibility in any release of your altered code. Also you should generally be nice.
 
-Stable Version
+Stable Version:
 wikinets.herokuapp.com
 
 Edge:
@@ -9,7 +9,7 @@ wikinets-edge.herokuapp.com
 thewikinetsproject.wordpress.com
 
 
-To Run:
+To Run Locally:
   Install neo4j http://www.neo4j.org/download
 
     Linux http://www.neo4j.org/download/linux:
@@ -36,3 +36,7 @@ Important Code Files
   static/vizscript.js D3 Graph
   static/wikiscript.js Frontend JS, imports vizscript.js (assumes it will be there)
   public/index.jade HTML template
+
+
+
+To setup on Heroku [todo]
