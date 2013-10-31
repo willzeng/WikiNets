@@ -380,9 +380,13 @@ module.exports = class MyApp
 
       console.log "This is the dictionary", dict
 
-      ###The first entry becomes the name###
-      dict["type"]=text.split("#")[0].trim()
-      console.log "This is the title", text.split("#")[0].trim()
+      ###The first entry becomes the arrow's type###
+      console.log "This is the arrow type", text.split("#")[0].trim()
+      if text.split("#")[0].trim() is ''
+        dict["type"]="none";
+      else
+        dict["type"]=text.split("#")[0].trim()
+      console.log "This is the arrow type", dict["type"]
       console.log dict
 
       console.log "Relationship Creation Requested"

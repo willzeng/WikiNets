@@ -42,7 +42,7 @@ function showlayer(layer){
 var counter = 0;
 var selected_arrow;
 var selected_arrow_properties;
-var selected_node;
+var selected_node = -1;
 var selected_node_properties;
 var reserved_keys = ["_id"];
 window.arrowquery;
@@ -72,9 +72,12 @@ function moreFields(writediv, rootdiv, classNamediv) {
 // called either by clicking on a node in the visualisation while the
 // "edit node" menu is open or by entering a number into the "select node"
 // input field and then clicking the "select node" button
-//This method should update the visual display of the selected node. #BUG
 function select_node(nodeid) {
-    console.log("Selection of nodeid: ", nodeid, " called.")
+    console.log("Selection of nodeid: ", nodeid, " called.");
+    //console.log("Building arrow is: ", buildingarrow);
+    
+    //console.log("#searchAddNodeField focus is: ", $("#searchAddNodeField").is(":focus"));
+
     selected_node_properties = {};
     $.post('/get_id', {nodeid: nodeid}, function(data) {
       //Displays the selected node in the Node Info Box
@@ -83,7 +86,7 @@ function select_node(nodeid) {
       //TODO: Highlight the selected node in the subGraph
       // Sets source to selected nodeid
 
-      source=nodeid;
+      
 
       if (data == "error") {
           alert("Node with ID " + nodeid + " could not be found.");
@@ -104,6 +107,16 @@ function select_node(nodeid) {
           $("input[name=propertyEdit"+counter+"]").val(property);
           $("input[name=valueEdit"+counter+"]").val(data[property]);
         };
+
+        if(buildingarrow){
+          target=nodeid;
+          console.log("Creating an arrow from: ", source, " to ", target);
+          SANcreateArrow();
+        }
+        else{
+          source=nodeid;
+        }
+
       };
     });
 }
@@ -561,6 +574,31 @@ $(document).ready(function(){
   //On click of createNodeButton focuses on searchAddNodeField
   $("#createNodeButton").on("click", function(event){
     $("#searchAddNodeField").focus();
+  });
+
+  //On click of createArrowButton focuses on searchAddNodeField
+  $("#createArrowButton").on("click", function(event){
+    if(selected_node==-1){
+      alert("First select a Node to be your new arrow's source.")
+    }
+    else{
+      $("#searchAddArrowField").focus();
+    }
+  });
+
+  //TAB focuses on searchAddArrowField unless buildingarrow
+  $(function() {
+     $(window).keydown(function(e) {
+        var code = e.keyCode || e.which;
+        console.log(code, buildingarrow);
+        if(code==9) {
+          e.preventDefault(); 
+          if(!buildingarrow){
+            console.log("focused");
+            $("#searchAddArrowField").focus();
+          }
+        }
+     });
   });
 
 });
