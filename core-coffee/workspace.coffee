@@ -16,8 +16,6 @@ define ["jquery", "core/graphModel", "core/graphView", "core/nodeSearch", "core/
         linkAttributes: options.linkAttributes or {}
       )
 
-      new LinkChecker(graphModel, dataProvider)
-
       LinkFilter = Backbone.Model.extend(
         initialize: ->
           @set "threshold", 1
