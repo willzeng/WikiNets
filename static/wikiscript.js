@@ -191,6 +191,7 @@ function SANcreateNode(witharrow){
       console.log("Set source to: ", data);
       source=data;
     }
+    alert("You have created Node: " + source);
   });
 }
 
@@ -203,6 +204,7 @@ function SANcreateArrow(){
     $("#arrowquerybox").append('<li>'+arrowquery+'</li>');
     $('#searchAddArrowField').val("");
     buildingarrow=false;
+    alert("You have created an arrow from source: " + source + " to target: " + target);
   });
 }
 
@@ -590,11 +592,10 @@ $(document).ready(function(){
   $(function() {
      $(window).keydown(function(e) {
         var code = e.keyCode || e.which;
-        console.log(code, buildingarrow);
+        //console.log(code, buildingarrow);
         if(code==9) {
           e.preventDefault(); 
           if(!buildingarrow){
-            console.log("focused");
             $("#searchAddArrowField").focus();
           }
         }
