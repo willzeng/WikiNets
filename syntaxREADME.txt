@@ -1,7 +1,14 @@
+To create an arrow between two existing nodes:
+  Click to select the source Node.
+  TAB [you can then enter a type and key:values for the arrow or leave it blank]
+  TAB
+  Click to select the target Node. 
+  Congrats you've created a new link!
+
 Here's the syntax to create an arrow from the one you have selected (by clicking or searching) to a new node.
 
 (i) Click a node.
-(ii) Focus on the Arrow textbox.
+(ii) TAB to Focus on the Arrow textbox.
 (iii) Type:  
 relatesto : This arrow relates an old node to a new one #color red
 This syntax gives a new arrow of type relatesto with the key-value dictionary:
