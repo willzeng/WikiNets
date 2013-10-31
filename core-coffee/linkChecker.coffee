@@ -4,10 +4,10 @@ define ["jquery"], ($) ->
     graphModel.on "add:node", (node) ->
       nodes = graphModel.getNodes()
       dataProvider.getLinks node, nodes, (links) ->
-        _.each links, (coeffs, i) ->
+        _.each links, (strength, i) ->
           link =
             source: node
             target: nodes[i]
-            coeffs: coeffs
+            strength: strength
 
-          graphModel.putLink link if !dataProvider.filter? or dataProvider.filter(link)
+          graphModel.putLink link  if link.strength > dataProvider.minThreshold
