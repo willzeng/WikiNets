@@ -30,8 +30,8 @@ define ["backbone", "d3"], (Backbone, d3) ->
 
       # A formatter for counts.
       formatCount = d3.format(",.0f")
-      min = d3.min(values) or 0
-      max = d3.max(values) or 1
+      min = 0 # d3.min(values) or 0
+      max = 1 # d3.max(values) or 1
       max += .001  if min is max
       x = d3.scale.linear()
                   .domain([min, max])
