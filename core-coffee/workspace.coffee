@@ -54,7 +54,6 @@ define ["jquery", "core/graphModel", "core/graphView", "core/nodeSearch", "core/
       @linkFilter.on "change:threshold", ->
         updateStrokeWidth graphView.getLinkSelection()
 
-
     render: ->
       keyListener = new KeyListener(document.querySelector("body"))
       sel = @sel
@@ -103,17 +102,19 @@ define ["jquery", "core/graphModel", "core/graphView", "core/nodeSearch", "core/
         model: @graphModel
       ).render()
 
-      tl = $("<div id=\"top-left-container\" class=\"container\"/>")
+      tl = @tl = $("<div id=\"top-left-container\" class=\"container\"/>")
       tl.append forceSlidersView.el
       tl.append linkHistogramView.el
 
-      bl = $("<div id=\"bottom-left-container\" class=\"container\"/>")
+      bl = @bl = $("<div id=\"bottom-left-container\" class=\"container\"/>")
       bl.append graphStatsView.el
 
-      br = $("<div id=\"bottom-right-container\" class=\"container\"/>")
+      br = @br = $("<div id=\"bottom-right-container\" class=\"container\"/>")
       br.append nodeProfile.el
 
-      @$el.append(tl).append(bl).append br
+      tr = @tr = $("<div id=\"top-right-container\" class=\"container\"/>")
+
+      @$el.append(tl).append(bl).append(br).append(tr)
 
       if @nodePrefetch
         nodeSearch = new NodeSearch(
@@ -125,5 +126,5 @@ define ["jquery", "core/graphModel", "core/graphView", "core/nodeSearch", "core/
         @$el.append tr
 
       return this
-    )
+  )
   return Workspace
