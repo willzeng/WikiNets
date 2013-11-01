@@ -35,6 +35,8 @@ html
         #buildNodeArea(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
           ul#querybox
           p(style='width:100%', id='searchAddNodeFieldLabel') (Source) Node
+          br
+          #nodeKeyValues(style='width:300px; display:none')
           #edit-menu-inputs(style='display: none;')
             #readrootEdit(style='display: none;')
               input.propertyEdit(style='width:80px', name='propertyEdit', value='')
@@ -49,6 +51,8 @@ html
               input#EditNode(type='button', value='Save Node')
           textarea#searchAddNodeField(name="textin", rows="6", cols="27")
           input#queryform(type="submit",value="Submit")
+          #editButtonHolder(style="display:none")
+            input#editNodeButton(type="submit",value="Edit This Node")
 
         #buildArrowArea(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
           ul#arrowquerybox

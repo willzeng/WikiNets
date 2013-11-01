@@ -86,12 +86,59 @@ function select_node(nodeid) {
       //TODO: Highlight the selected node in the subGraph
       // Sets source to selected nodeid
 
-      
-
       if (data == "error") {
           alert("Node with ID " + nodeid + " could not be found.");
       } else {
         selected_node = nodeid;
+
+        //Switches out menus
+        $("#nodeKeyValues").show();
+        $('#nodeKeyValues').text(JSON.stringify(data));
+        console.log(JSON.stringify(data));
+        $('#SelectNodeID').val(selected_node);
+        $("#editButtonHolder").show();
+        cleanup_editable_menu();
+
+        //Creates an arrow if buildingarrow
+        if(buildingarrow){
+          target=nodeid;
+          console.log("Creating an arrow from: ", source, " to ", target);
+          SANcreateArrow();
+        }
+        else{
+          source=nodeid;
+        }
+
+        //Hide the create node box
+         $("#searchAddNodeField").hide();
+
+      };
+    });
+}
+
+  function cleanup_editable_menu(){
+    $("#edit-menu-inputs").hide();
+    $(".EditProperty").each(function(i, obj) {
+      $(this)[0].parentNode.removeChild($(this)[0]);
+    });
+  }
+
+
+          //$("#edit-menu-inputs").css("display", "none");
+          /*$(".EditProperty").each(function(i, obj) {
+            $(this)[0].parentNode.removeChild($(this)[0]);
+          });*/
+
+//Turns selected node data into editable
+function edit_node(nodeid){
+  console.log("Edit of nodeid: ", nodeid, " called.");
+
+    selected_node_properties = {};
+    $.post('/get_id', {nodeid: nodeid}, function(data) {
+
+      if (data == "error") {
+          alert("Node with ID " + nodeid + " could not be found.");
+      } else {
         $('#SelectNodeID').val(selected_node);
         console.log("Node data: ID " + nodeid + "\n" + JSON.stringify(data));
         if ($("#edit-menu-inputs").css("display") == "none") {
@@ -107,20 +154,6 @@ function select_node(nodeid) {
           $("input[name=propertyEdit"+counter+"]").val(property);
           $("input[name=valueEdit"+counter+"]").val(data[property]);
         };
-
-        //Creates an arrow if buildingarrow
-        if(buildingarrow){
-          target=nodeid;
-          console.log("Creating an arrow from: ", source, " to ", target);
-          SANcreateArrow();
-        }
-        else{
-          source=nodeid;
-        }
-
-        //Hide the create node box
-         $("#searchAddNodeField").hide();
-
       };
     });
 }
@@ -607,6 +640,13 @@ $(document).ready(function(){
           }
         }
      });
+  });
+
+  //On click of editNodeButton changes selected node data to make fields editable
+  $("#editNodeButton").on("click", function(event){
+    $("#nodeKeyValues").hide();
+    $("#editButtonHolder").hide();
+    edit_node(selected_node);
   });
 
 });
