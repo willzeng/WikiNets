@@ -1,71 +1,81 @@
-define ["underscore", "backbone"], (_, Backbone) ->
-  GraphModel = Backbone.Model.extend(
-    initialize: ->
-      @set "nodes", []
-      @set "links", []
-      @set "nodeSet", {}
+## API
 
-    getNodes: ->
-      return @get "nodes"
+TODO - sorry
 
-    getLinks: ->
-      return @get "links"
+## Code
 
-    putNode: (node) ->
-      # ignore if node is already in this graph
-      return  if @get("nodeSet")[@get("nodeHash")(node)]
+    define ["core/singleton"], (Singleton) ->
 
-      # modify node to have attribute accessor functions
-      nodeAttributes = @get("nodeAttributes")
-      node.getAttributeValue = (attr) ->
-        nodeAttributes[attr].getValue node
+      class GraphModel extends Backbone.Model
 
-      # commit this node to this graph
-      @get("nodeSet")[@get("nodeHash")(node)] = true
-      @trigger "add:node", node
-      @pushDatum "nodes", node
+        initialize: ->
+          @set "nodes", []
+          @set "links", []
+          @set "nodeSet", {}
 
-    putLink: (link) ->
-      @pushDatum "links", link
-      @trigger "add:link", link
+        getNodes: ->
+          return @get "nodes"
 
-    pushDatum: (attr, datum) ->
-      data = @get(attr)
-      data.push datum
-      @set attr, data
+        getLinks: ->
+          return @get "links"
 
-      # QA: this is not already fired because of the rep-exposure of get.
-      #   `data` is the actual underlying object so even though set
-      #   performs a deep search to detect changes, it will not detect any
-      #   because it's literally comparing the same object
-      # Note: at least we know this will never be a redundant trigger
-      @trigger "change:#{attr}"
-      @trigger "change"
+        putNode: (node) ->
+          # ignore if node is already in this graph
+          return  if @get("nodeSet")[@get("nodeHash")(node)]
 
+          # modify node to have attribute accessor functions
+          nodeAttributes = @get("nodeAttributes")
+          node.getAttributeValue = (attr) ->
+            nodeAttributes[attr].getValue node
 
-    # also removes links incident to any node which is removed
-    filterNodes: (filter) ->
-      nodeWasRemoved = (node) ->
-        _.some removed, (n) ->
-          _.isEqual n, node
+          # commit this node to this graph
+          @get("nodeSet")[@get("nodeHash")(node)] = true
+          @trigger "add:node", node
+          @pushDatum "nodes", node
 
-      linkFilter = (link) ->
-        not nodeWasRemoved(link.source) and not nodeWasRemoved(link.target)
-      removed = []
-      wrappedFilter = (d) =>
-        decision = filter(d)
-        unless decision
-          removed.push d
-          delete @get("nodeSet")[@get("nodeHash")(d)]
-        decision
-      @filterAttribute "nodes", wrappedFilter
-      @filterLinks linkFilter
+        putLink: (link) ->
+          @pushDatum "links", link
+          @trigger "add:link", link
 
-    filterLinks: (filter) ->
-      @filterAttribute "links", filter
+        pushDatum: (attr, datum) ->
+          data = @get(attr)
+          data.push datum
+          @set attr, data
 
-    filterAttribute: (attr, filter) ->
-      filteredData = _.filter(@get(attr), filter)
-      @set attr, filteredData
-  )
-  return GraphModel
+QA: this is not already fired because of the rep-exposure of get.
+`data` is the actual underlying object
+so even though set performs a deep search to detect changes,
+it will not detect any because it's literally comparing the same object.
+
+Note: at least we know this will never be a redundant trigger
+
+          @trigger "change:#{attr}"
+          @trigger "change"
+
+        # also removes links incident to any node which is removed
+        filterNodes: (filter) ->
+          nodeWasRemoved = (node) ->
+            _.some removed, (n) ->
+              _.isEqual n, node
+
+          linkFilter = (link) ->
+            not nodeWasRemoved(link.source) and not nodeWasRemoved(link.target)
+          removed = []
+          wrappedFilter = (d) =>
+            decision = filter(d)
+            unless decision
+              removed.push d
+              delete @get("nodeSet")[@get("nodeHash")(d)]
+            decision
+          @filterAttribute "nodes", wrappedFilter
+          @filterLinks linkFilter
+
+        filterLinks: (filter) ->
+          @filterAttribute "links", filter
+
+        filterAttribute: (attr, filter) ->
+          filteredData = _.filter(@get(attr), filter)
+          @set attr, filteredData
+
+      class GraphModelAPI extends GraphModel
+      _.extends GraphModelAPI, Singleton

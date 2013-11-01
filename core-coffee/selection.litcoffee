@@ -1,116 +1,129 @@
-define ["jquery", "backbone", "d3"], ($, Backbone, d3) ->
-  Selection = (graphModel, graphView, linkFilter) ->
-    _.extend this, Backbone.Events
+## API
 
-    # handle selecting and deselecting nodes
-    clickSemaphore = 0
-    graphView.on "enter:node", (nodeEnterSelection) =>
-      nodeEnterSelection.on("click", (datum, index) =>
-        # ignore drag
-        return  if d3.event.defaultPrevented
-        datum.fixed = true
-        clickSemaphore += 1
-        savedClickSemaphore = clickSemaphore
-        setTimeout (=>
-          if clickSemaphore is savedClickSemaphore
-            @toggleSelection datum
-            datum.fixed = false
-          else
-            # increment so second click isn't registered as a click
-            clickSemaphore += 1
-            datum.fixed = false
-        ), 250
-      ).on "dblclick", (datum, index) =>
-        @selectConnectedComponent datum
+## Code
 
-    @renderSelection = ->
-      nodeSelection = graphView.getNodeSelection()
-      if nodeSelection
-        nodeSelection.call (selection) ->
-          selection.classed "selected", (d) ->
-            d.selected
+    define ["core/graphModel", "core/graphView", "core/singleton"], (GraphModel, GraphView, Singleton) ->
 
+      class Selection
 
+        constructor: (@graphModel, @graphView, @linkFilter) ->
 
-    @filterSelection = (filter) ->
-      _.each graphModel.getNodes(), (node) ->
-        node.selected = filter(node)
+          _.extend this, Backbone.Events
 
-      @renderSelection()
+          # handle selecting and deselecting nodes
+          clickSemaphore = 0
+          @graphView.on "enter:node", (nodeEnterSelection) =>
+            nodeEnterSelection.on("click", (datum, index) =>
+              # ignore drag
+              return  if d3.event.defaultPrevented
+              datum.fixed = true
+              clickSemaphore += 1
+              savedClickSemaphore = clickSemaphore
+              setTimeout (=>
+                if clickSemaphore is savedClickSemaphore
+                  @toggleSelection datum
+                  datum.fixed = false
+                else
+                  # increment so second click isn't registered as a click
+                  clickSemaphore += 1
+                  datum.fixed = false
+              ), 250
+            ).on "dblclick", (datum, index) =>
+              @selectConnectedComponent datum
 
-    @selectAll = ->
-      @filterSelection (n) ->
-        true
+        renderSelection: () ->
+          nodeSelection = @graphView.getNodeSelection()
+          if nodeSelection
+            nodeSelection.call (selection) ->
+              selection.classed "selected", (d) ->
+                d.selected
 
-      @trigger "change"
+        filterSelection: (filter) ->
+          _.each @graphModel.getNodes(), (node) ->
+            node.selected = filter(node)
 
-    @deselectAll = ->
-      @filterSelection (n) ->
-        false
+          @renderSelection()
 
-      @trigger "change"
+        selectAll: () ->
+          @filterSelection (n) ->
+            true
 
-    @toggleSelection = (node) ->
-      node.selected = not node.selected
-      @trigger "change"
-      @renderSelection()
+          @trigger "change"
 
-    @removeSelection = ->
-      graphModel.filterNodes (node) ->
-        not node.selected
+        deselectAll: () ->
+          @filterSelection (n) ->
+            false
 
+          @trigger "change"
 
-    @removeSelectionCompliment = ->
-      graphModel.filterNodes (node) ->
-        node.selected
+        toggleSelection: (node) ->
+          node.selected = not node.selected
+          @trigger "change"
+          @renderSelection()
 
-
-    @getSelectedNodes = ->
-      _.filter graphModel.getNodes(), (node) ->
-        node.selected
+        removeSelection: () ->
+          @graphModel.filterNodes (node) ->
+            not node.selected
 
 
-
-    # select all nodes which have a path to node
-    # using links meeting current Connectivity criteria
-    @selectConnectedComponent = (node) ->
-
-      visit = (text) ->
-        unless _.has(seen, text)
-          seen[text] = 1
-          _.each graph[text], (ignore, neighborText) ->
-            visit neighborText
-
-      # create adjacency list version of graph
-      graph = {}
-      lookup = {}
-      _.each graphModel.getNodes(), (node) ->
-        graph[node.text] = {}
-        lookup[node.text] = node
-
-      _.each linkFilter.filter(graphModel.getLinks()), (link) ->
-        graph[link.source.text][link.target.text] = 1
-        graph[link.target.text][link.source.text] = 1
-
-      # perform DFS to compile connected component
-      seen = {}
-      visit node.text
-
-      # toggle selection appropriately
-      # selection before ==> selection after
-      #       none ==> all
-      #       some ==> all
-      #       all  ==> none
-      allTrue = true
-      _.each seen, (ignore, text) ->
-        allTrue = allTrue and lookup[text].selected
-
-      newSelected = not allTrue
-      _.each seen, (ignore, text) ->
-        lookup[text].selected = newSelected
+        removeSelectionCompliment: () ->
+          @graphModel.filterNodes (node) ->
+            node.selected
 
 
-      # update UI
-      @renderSelection()
-    return
-  Selection
+        getSelectedNodes: ->
+          _.filter @graphModel.getNodes(), (node) ->
+            node.selected
+
+
+
+        # select all nodes which have a path to node
+        # using links meeting current Connectivity criteria
+        @selectConnectedComponent = (node) ->
+
+          visit = (text) ->
+            unless _.has(seen, text)
+              seen[text] = 1
+              _.each graph[text], (ignore, neighborText) ->
+                visit neighborText
+
+          # create adjacency list version of graph
+          graph = {}
+          lookup = {}
+          _.each @graphModel.getNodes(), (node) ->
+            graph[node.text] = {}
+            lookup[node.text] = node
+
+          _.each @linkFilter.filter(@graphModel.getLinks()), (link) ->
+            graph[link.source.text][link.target.text] = 1
+            graph[link.target.text][link.source.text] = 1
+
+          # perform DFS to compile connected component
+          seen = {}
+          visit node.text
+
+          # toggle selection appropriately
+          # selection before ==> selection after
+          #       none ==> all
+          #       some ==> all
+          #       all  ==> none
+          allTrue = true
+          _.each seen, (ignore, text) ->
+            allTrue = allTrue and lookup[text].selected
+
+          newSelected = not allTrue
+          _.each seen, (ignore, text) ->
+            lookup[text].selected = newSelected
+
+
+          # update UI
+          @renderSelection()
+
+      class SelectionAPI extends Backbone.Model
+        constructor: () ->
+          graphModel = graphModel.getInstance()
+          graphView = graphView.getInstance()
+          linkFilter = graphView.getLinkFilter()
+          selection = new Selection(graphModel, graphView, linkFilter)
+
+      _.extends SelectionAPI, Singleton
