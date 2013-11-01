@@ -29,8 +29,5 @@
             return if e.target isnt target
             delete state[e.which]
 
-      class KeyListenerAPI extends Backbone.Model
-        constructor: (target) ->
-          keyListener = new KeyListener target
-
-      _.extends KeyListenerAPI, Singleton
+      class KeyListenerAPI extends KeyListener
+      _.extend KeyListenerAPI, Singleton
