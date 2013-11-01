@@ -462,6 +462,7 @@ $(document).ready(function(){
           $(".EditProperty").each(function(i, obj) {
             $(this)[0].parentNode.removeChild($(this)[0]);
           });
+          $("#stopeEditButtonHolder").hide();
         }
       });
     };
