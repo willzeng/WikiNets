@@ -25,12 +25,36 @@ only plugins which instantiate the `singleton` class should be used with `init`
 
 ## Code
 
+Load the global libraries contained within celestrium here.
+This offloads this responsibility from the user.
+
+    globalLibs = [
+      'lib/jquery',
+      'lib/jquery.typeahead',
+      'lib/underscore',
+      'lib/backbone',
+      'lib/d3',
+    ]
+
+The actual module returns only an object with an init method.
+
     define [], () -> init: (singletonPlugins, callback) ->
-      pluginPaths = _.keys(singletonPlugins)
-      require pluginPaths, (plugins...) ->
-        i = 0
-        for plugin in plugins
-          args = singletonPlugins[pluginPaths[i]]
-          plugin.init args
-          i += 1
-        callback()
+
+Include this nested require call so as to load the above libraries.
+Now, these libraries are available globally per the norm.
+
+This is probably bad practice and less modular, but is practical.
+
+      require globalLibs, () ->
+
+Now actually require the different plugins.
+Note that, they should all be required at once and the callback called within the require callback so as to ensure the callback is only call onced these plugin instances have been initialized.
+
+        pluginPaths = _.keys(singletonPlugins)
+        require pluginPaths, (plugins...) ->
+          i = 0
+          for plugin in plugins
+            args = singletonPlugins[pluginPaths[i]]
+            plugin.init args
+            i += 1
+          callback()
