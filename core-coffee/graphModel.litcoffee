@@ -78,4 +78,4 @@ Note: at least we know this will never be a redundant trigger
           @set attr, filteredData
 
       class GraphModelAPI extends GraphModel
-      _.extends GraphModelAPI, Singleton
+      _.extend GraphModelAPI, Singleton

@@ -10,7 +10,7 @@
           @bl = $("<div id=\"bottom-left-container\" class=\"container\"/>")
           @br = $("<div id=\"bottom-right-container\" class=\"container\"/>")
           @tr = $("<div id=\"top-right-container\" class=\"container\"/>")
-          @$el.append(tl).append(bl).append(br).append(tr)
+          @$el.append(@tl).append(@bl).append(@br).append(@tr)
           return this
 
       class WorkspaceAPI extends Backbone.Model
@@ -27,4 +27,4 @@
         addBottomRight: (el) ->
           @workspace.br.append el
 
-      _.extends WorkspaceAPI, Singleton
+      _.extend WorkspaceAPI, Singleton

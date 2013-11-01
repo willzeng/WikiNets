@@ -6,12 +6,13 @@ Currently, nothing is exposed.
 
 ## Code
 
-    define ["core/singleton", "core/workspace"], (Singleton, Workspace) ->
+    define ["core/singleton", "core/graphModel", "core/workspace"], (Singleton, GraphModel, Workspace) ->
 
       class GraphStatsView extends Backbone.View
 
         constructor: (@model) ->
           @model.on "change", @update.bind(this)
+          super()
 
         render: ->
           container = $("<div />").addClass("graph-stats-container").appendTo(@$el)
@@ -26,7 +27,9 @@ Currently, nothing is exposed.
 
       class GraphStatsAPI extends Backbone.Model
         constructor: () ->
-          model = Workspace.getInstance().getGraphModel()
-          graphStatsView = new GraphStatsView(model)
+          model = GraphModel.getInstance()
+          graphStatsView = new GraphStatsView(model).render()
+          workspace = Workspace.getInstance()
+          workspace.addBottomLeft graphStatsView.el
 
-      _.extends GraphStatusAPI, Singleton
+      _.extend GraphStatsAPI, Singleton

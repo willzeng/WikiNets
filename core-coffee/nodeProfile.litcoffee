@@ -8,6 +8,7 @@
 
         constructor: (@selection) ->
           @selection.on "change", @update.bind(this)
+          super()
 
         render: ->
           return this
@@ -33,4 +34,4 @@
           workspace = Workspace.getInstance()
           workspace.addBottomRight view.el
 
-      _.extends NodeProfileAPI, Singleton
+      _.extend NodeProfileAPI, Singleton

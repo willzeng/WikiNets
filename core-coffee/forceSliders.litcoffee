@@ -13,6 +13,7 @@ Currently, nothing is exposed.
 Constructor accepts instances of the force layout of the view.
 
         constructor: (@force) ->
+          super()
 
 View is a simple table layout of sliders
 
@@ -61,8 +62,9 @@ So define these mappings for each parameter then hook 'em up to the DOM.
 
       class ForceSlidersAPI extends Backbone.Model
         constructor: () ->
-          force = GraphView.getInstance().getForce
+          force = GraphView.getInstance().getForceLayout()
+          linkFilter = GraphView.getInstance().getLinkFilter()
           view = new ForceSlidersView(force, linkFilter).render()
-          Workspace.getInstance().tl.append(view.el);
+          Workspace.getInstance().addTopLeft(view.el);
 
-      _.extends ForceSlidersAPI, Singleton
+      _.extend ForceSlidersAPI, Singleton

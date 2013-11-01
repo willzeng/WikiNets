@@ -79,7 +79,7 @@
 
         # select all nodes which have a path to node
         # using links meeting current Connectivity criteria
-        @selectConnectedComponent = (node) ->
+        selectConnectedComponent: (node) ->
 
           visit = (text) ->
             unless _.has(seen, text)
@@ -115,15 +115,17 @@
           _.each seen, (ignore, text) ->
             lookup[text].selected = newSelected
 
+          # notify listeners of change
+          @trigger "change"
 
           # update UI
           @renderSelection()
 
-      class SelectionAPI extends Backbone.Model
+      class SelectionAPI extends Selection
         constructor: () ->
-          graphModel = graphModel.getInstance()
-          graphView = graphView.getInstance()
+          graphModel = GraphModel.getInstance()
+          graphView = GraphView.getInstance()
           linkFilter = graphView.getLinkFilter()
-          selection = new Selection(graphModel, graphView, linkFilter)
+          super(graphModel, graphView, linkFilter)
 
-      _.extends SelectionAPI, Singleton
+      _.extend SelectionAPI, Singleton

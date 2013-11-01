@@ -25,7 +25,12 @@ only plugins which instantiate the `singleton` class should be used with `init`
 
 ## Code
 
-    define [], -> init: (singletonPlugins) ->
-      for pluginPath, args of singletonPlugins
-        define [pluginPath], (singletonPlugin) ->
-          singletonPlugin.init args
+    define [], () -> init: (singletonPlugins, callback) ->
+      pluginPaths = _.keys(singletonPlugins)
+      require pluginPaths, (plugins...) ->
+        i = 0
+        for plugin in plugins
+          args = singletonPlugins[pluginPaths[i]]
+          plugin.init args
+          i += 1
+        callback()

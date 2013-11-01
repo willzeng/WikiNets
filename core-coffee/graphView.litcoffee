@@ -4,15 +4,16 @@ TODO - sorry
 
 ## Code
 
-    define ["core/graphModel", "core/workspace", "core/singleton"], (GraphModel, Workspace, Singleton) ->
+    define ["core/graphModel", "core/workspace", "core/singleton", "core/linkFilter", "core/selectionLayer"],
+    (GraphModel, Workspace, Singleton, LinkFilter, SelectionLayer) ->
 
       class GraphView extends Backbone.View
 
-        constructor: (@model) ->
+        initialize: (options) ->
           @model.on "change", @update.bind(this)
           # filter between model and visible graph
           # use identify function if not defined
-          @linkFilter = new LinkFilter();
+          @linkFilter = new LinkFilter(this);
 
         render: ->
           initialWindowWidth = $(window).width()
@@ -111,12 +112,17 @@ TODO - sorry
         getForceLayout: ->
           return @force
 
+        getLinkFilter: ->
+          return @linkFilter
+
       class GraphViewAPI extends GraphView
         constructor: () ->
-          graphModel = GraphModel.getInstance()
-          super graphModel
+          @model = GraphModel.getInstance()
+          super()
+        initialize: () ->
           @render()
           workspace = Workspace.getInstance()
           workspace.addCenter @el
+          super()
 
-      _.extends GraphViewAPI, Singleton
+      _.extend GraphViewAPI, Singleton

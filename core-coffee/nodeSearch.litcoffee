@@ -9,7 +9,8 @@
         events:
           "typeahead:selected input": "addNode"
 
-        initialize: (@graphModel, @prefetch) ->
+        constructor: (@graphModel, @prefetch) ->
+          super()
 
         render: ->
           $container = $("<div />").addClass("node-search-container")
@@ -35,6 +36,6 @@
           graphModel = GraphModel.getInstance()
           nodeSearch = new NodeSearch(graphModel, prefetch).render()
           workspace = Workspace.getInstance()
-          workspace.addTopRight(workspace)
+          workspace.addTopRight(nodeSearch.el)
 
-      _.extends NodeSearchAPI, Singleton
+      _.extend NodeSearchAPI, Singleton

@@ -2,7 +2,7 @@
 
 ## Code
 
-    define ["core/graphModel", "core/Workspace", "core/Singleton"], (GraphModel, Workspace, Singleton) ->
+    define ["core/graphModel", "core/workspace", "core/singleton"], (GraphModel, Workspace, Singleton) ->
       margin =
         top: 10
         right: 30
@@ -16,6 +16,7 @@
 
         constructor: (@model) ->
           @listenTo model, "change:links", @update
+          super()
 
         render: ->
           @update()
@@ -97,4 +98,4 @@
           workspace = Workspace.getInstance()
           workspace.addTopLeft view.el
 
-      _.extends LinkHistogramAPI, Singleton
+      _.extend LinkHistogramAPI, Singleton
