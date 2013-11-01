@@ -38,14 +38,11 @@ This offloads this responsibility from the user.
 
 The actual module returns only an object with an init method.
 
-    define [], () -> init: (singletonPlugins, callback) ->
-
-Include this nested require call so as to load the above libraries.
-Now, these libraries are available globally per the norm.
+Load the above libraries so they are now available globally.
 
 This is probably bad practice and less modular, but is practical.
 
-      require globalLibs, () ->
+    define globalLibs, () -> init: (singletonPlugins, callback) ->
 
 Now actually require the different plugins.
 Note that, they should all be required at once and the callback called within the require callback so as to ensure the callback is only call onced these plugin instances have been initialized.
