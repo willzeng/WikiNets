@@ -35,6 +35,18 @@ html
         #buildNodeArea(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
           ul#querybox
           p(style='width:100%', id='searchAddNodeFieldLabel') (Source) Node
+          #edit-menu-inputs(style='display: none;')
+            #readrootEdit(style='display: none;')
+              input.propertyEdit(style='width:80px', name='propertyEdit', value='')
+              input.valueEdit(style='width:80px', name='valueEdit', value='')
+              input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
+              br
+            form#edit-node
+              span#writerootEdit
+            input#moreFields(type='button', value='+', onclick='moreFields("writerootEdit","readrootEdit","EditProperty")')
+            div(style='float: right;')
+              input#DeleteNode(type='button', value='Delete Node')
+              input#EditNode(type='button', value='Save Node')
           textarea#searchAddNodeField(name="textin", rows="6", cols="27")
           input#queryform(type="submit",value="Submit")
 
@@ -101,18 +113,6 @@ html
                           form#SelectNodeForm
                             input#SelectNodeID(name="SelectNodeID")
                             input#SelectNode(type="submit", value="Select Node")
-                          #edit-menu-inputs(style='display: none;')
-                            #readrootEdit(style='display: none;')
-                              input.propertyEdit(style='width:80px', name='propertyEdit', value='')
-                              input.valueEdit(style='width:80px', name='valueEdit', value='')
-                              input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
-                              br
-                            form#edit-node
-                              span#writerootEdit
-                            input#moreFields(type='button', value='+', onclick='moreFields("writerootEdit","readrootEdit","EditProperty")')
-                            div(style='float: right;')
-                              input#DeleteNode(type='button', value='Delete Node')
-                              input#EditNode(type='button', value='Save Node')
                         li
                           | Please select an arrow.
                           form#SelectArrowForm

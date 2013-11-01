@@ -108,6 +108,7 @@ function select_node(nodeid) {
           $("input[name=valueEdit"+counter+"]").val(data[property]);
         };
 
+        //Creates an arrow if buildingarrow
         if(buildingarrow){
           target=nodeid;
           console.log("Creating an arrow from: ", source, " to ", target);
@@ -116,6 +117,9 @@ function select_node(nodeid) {
         else{
           source=nodeid;
         }
+
+        //Hide the create node box
+         $("#searchAddNodeField").hide();
 
       };
     });
@@ -204,6 +208,7 @@ function SANcreateArrow(){
     $("#arrowquerybox").append('<li>'+arrowquery+'</li>');
     $('#searchAddArrowField').val("");
     buildingarrow=false;
+    $('#searchAddNodeFieldLabel').text("(Source) Node"); 
     alert("You have created an arrow from source: " + source + " to target: " + target);
   });
 }
@@ -401,10 +406,10 @@ $(document).ready(function(){
           alert("Failed to save changes to node " + selected_node + ".");
         } else {
           alert("Saved changes to node " + selected_node + ".");
-          $("#edit-menu-inputs").css("display", "none");
-          $(".EditProperty").each(function(i, obj) {
+          //$("#edit-menu-inputs").css("display", "none");
+          /*$(".EditProperty").each(function(i, obj) {
             $(this)[0].parentNode.removeChild($(this)[0]);
-          });
+          });*/
         };
       });
     };
@@ -575,6 +580,8 @@ $(document).ready(function(){
 
   //On click of createNodeButton focuses on searchAddNodeField
   $("#createNodeButton").on("click", function(event){
+    $("#edit-menu-inputs").hide();
+    $("#searchAddNodeField").show();
     $("#searchAddNodeField").focus();
   });
 
