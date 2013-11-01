@@ -647,6 +647,17 @@ $(document).ready(function(){
     $("#nodeKeyValues").hide();
     $("#editButtonHolder").hide();
     edit_node(selected_node);
+    $("#stopeEditButtonHolder").show();
   });
+
+  //Turns off node editing menu with stopeEditNodeButton
+  $("#stopeEditNodeButton").on("click", function(event){
+    $("#nodeKeyValues").show();
+    $("#editButtonHolder").show();
+    select_node(selected_node);
+    $("#stopeEditButtonHolder").hide();
+  });
+
+
 
 });
