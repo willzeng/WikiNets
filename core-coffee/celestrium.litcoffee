@@ -28,6 +28,13 @@ only plugins which instantiate the `singleton` class should be used with `init`
 Load the global libraries contained within celestrium here.
 This offloads this responsibility from the user.
 
+Ensure global variable dependencies are respected
+
+    requirejs.config
+      shim:
+        "lib/jquery.typeahead": ["lib/jquery"]
+        "lib/backbone": ["lib/underscore"]
+
     globalLibs = [
       'lib/jquery',
       'lib/jquery.typeahead',
