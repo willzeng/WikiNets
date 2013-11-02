@@ -1,138 +1,134 @@
-## API
+define ["core/graphModel", "core/graphView", "core/singleton", "core/keyListener"],
+(GraphModel, GraphView, Singleton, KeyListener) ->
 
-## Code
+  class Selection
 
-    define ["core/graphModel", "core/graphView", "core/singleton", "core/keyListener"],
-    (GraphModel, GraphView, Singleton, KeyListener) ->
+    constructor: (@graphModel, @graphView, @linkFilter, @keyListener) ->
 
-      class Selection
+      _.extend this, Backbone.Events
 
-        constructor: (@graphModel, @graphView, @linkFilter, @keyListener) ->
+      @listenTo @keyListener, "down:17:65", @selectAll
+      @listenTo @keyListener, "down:27", @deselectAll
+      @listenTo @keyListener, "down:46", @removeSelection
+      @listenTo @keyListener, "down:13", @removeSelectionCompliment
 
-          _.extend this, Backbone.Events
-
-          @listenTo @keyListener, "down:17:65", @selectAll
-          @listenTo @keyListener, "down:27", @deselectAll
-          @listenTo @keyListener, "down:46", @removeSelection
-          @listenTo @keyListener, "down:13", @removeSelectionCompliment
-
-          # handle selecting and deselecting nodes
-          clickSemaphore = 0
-          @graphView.on "enter:node", (nodeEnterSelection) =>
-            nodeEnterSelection.on("click", (datum, index) =>
-              # ignore drag
-              return  if d3.event.defaultPrevented
-              datum.fixed = true
+      # handle selecting and deselecting nodes
+      clickSemaphore = 0
+      @graphView.on "enter:node", (nodeEnterSelection) =>
+        nodeEnterSelection.on("click", (datum, index) =>
+          # ignore drag
+          return  if d3.event.defaultPrevented
+          datum.fixed = true
+          clickSemaphore += 1
+          savedClickSemaphore = clickSemaphore
+          setTimeout (=>
+            if clickSemaphore is savedClickSemaphore
+              @toggleSelection datum
+              datum.fixed = false
+            else
+              # increment so second click isn't registered as a click
               clickSemaphore += 1
-              savedClickSemaphore = clickSemaphore
-              setTimeout (=>
-                if clickSemaphore is savedClickSemaphore
-                  @toggleSelection datum
-                  datum.fixed = false
-                else
-                  # increment so second click isn't registered as a click
-                  clickSemaphore += 1
-                  datum.fixed = false
-              ), 250
-            ).on "dblclick", (datum, index) =>
-              @selectConnectedComponent datum
+              datum.fixed = false
+          ), 250
+        ).on "dblclick", (datum, index) =>
+          @selectConnectedComponent datum
 
-        renderSelection: () ->
-          nodeSelection = @graphView.getNodeSelection()
-          if nodeSelection
-            nodeSelection.call (selection) ->
-              selection.classed "selected", (d) ->
-                d.selected
+    renderSelection: () ->
+      nodeSelection = @graphView.getNodeSelection()
+      if nodeSelection
+        nodeSelection.call (selection) ->
+          selection.classed "selected", (d) ->
+            d.selected
 
-        filterSelection: (filter) ->
-          _.each @graphModel.getNodes(), (node) ->
-            node.selected = filter(node)
+    filterSelection: (filter) ->
+      _.each @graphModel.getNodes(), (node) ->
+        node.selected = filter(node)
 
-          @renderSelection()
+      @renderSelection()
 
-        selectAll: () ->
-          @filterSelection (n) ->
-            true
+    selectAll: () ->
+      @filterSelection (n) ->
+        true
 
-          @trigger "change"
+      @trigger "change"
 
-        deselectAll: () ->
-          @filterSelection (n) ->
-            false
+    deselectAll: () ->
+      @filterSelection (n) ->
+        false
 
-          @trigger "change"
+      @trigger "change"
 
-        toggleSelection: (node) ->
-          node.selected = not node.selected
-          @trigger "change"
-          @renderSelection()
+    toggleSelection: (node) ->
+      node.selected = not node.selected
+      @trigger "change"
+      @renderSelection()
 
-        removeSelection: () ->
-          @graphModel.filterNodes (node) ->
-            not node.selected
+    removeSelection: () ->
+      @graphModel.filterNodes (node) ->
+        not node.selected
 
 
-        removeSelectionCompliment: () ->
-          @graphModel.filterNodes (node) ->
-            node.selected
+    removeSelectionCompliment: () ->
+      @graphModel.filterNodes (node) ->
+        node.selected
 
 
-        getSelectedNodes: ->
-          _.filter @graphModel.getNodes(), (node) ->
-            node.selected
+    getSelectedNodes: ->
+      _.filter @graphModel.getNodes(), (node) ->
+        node.selected
 
 
 
-        # select all nodes which have a path to node
-        # using links meeting current Connectivity criteria
-        selectConnectedComponent: (node) ->
+    # select all nodes which have a path to node
+    # using links meeting current Connectivity criteria
+    selectConnectedComponent: (node) ->
 
-          visit = (text) ->
-            unless _.has(seen, text)
-              seen[text] = 1
-              _.each graph[text], (ignore, neighborText) ->
-                visit neighborText
+      visit = (text) ->
+        unless _.has(seen, text)
+          seen[text] = 1
+          _.each graph[text], (ignore, neighborText) ->
+            visit neighborText
 
-          # create adjacency list version of graph
-          graph = {}
-          lookup = {}
-          _.each @graphModel.getNodes(), (node) ->
-            graph[node.text] = {}
-            lookup[node.text] = node
+      # create adjacency list version of graph
+      graph = {}
+      lookup = {}
+      _.each @graphModel.getNodes(), (node) ->
+        graph[node.text] = {}
+        lookup[node.text] = node
 
-          _.each @linkFilter.filter(@graphModel.getLinks()), (link) ->
-            graph[link.source.text][link.target.text] = 1
-            graph[link.target.text][link.source.text] = 1
+      _.each @linkFilter.filter(@graphModel.getLinks()), (link) ->
+        graph[link.source.text][link.target.text] = 1
+        graph[link.target.text][link.source.text] = 1
 
-          # perform DFS to compile connected component
-          seen = {}
-          visit node.text
+      # perform DFS to compile connected component
+      seen = {}
+      visit node.text
 
-          # toggle selection appropriately
-          # selection before ==> selection after
-          #       none ==> all
-          #       some ==> all
-          #       all  ==> none
-          allTrue = true
-          _.each seen, (ignore, text) ->
-            allTrue = allTrue and lookup[text].selected
+      # toggle selection appropriately
+      # selection before ==> selection after
+      #       none ==> all
+      #       some ==> all
+      #       all  ==> none
+      allTrue = true
+      _.each seen, (ignore, text) ->
+        allTrue = allTrue and lookup[text].selected
 
-          newSelected = not allTrue
-          _.each seen, (ignore, text) ->
-            lookup[text].selected = newSelected
+      newSelected = not allTrue
+      _.each seen, (ignore, text) ->
+        lookup[text].selected = newSelected
 
-          # notify listeners of change
-          @trigger "change"
+      # notify listeners of change
+      @trigger "change"
 
-          # update UI
-          @renderSelection()
+      # update UI
+      @renderSelection()
 
-      class SelectionAPI extends Selection
-        constructor: () ->
-          graphModel = GraphModel.getInstance()
-          graphView = GraphView.getInstance()
-          linkFilter = graphView.getLinkFilter()
-          keyListener = KeyListener.getInstance()
-          super(graphModel, graphView, linkFilter, keyListener)
+  class SelectionAPI extends Selection
+    constructor: () ->
+      graphModel = GraphModel.getInstance()
+      graphView = GraphView.getInstance()
+      linkFilter = graphView.getLinkFilter()
+      keyListener = KeyListener.getInstance()
+      super(graphModel, graphView, linkFilter, keyListener)
 
-      _.extend SelectionAPI, Singleton
+  _.extend SelectionAPI, Singleton
