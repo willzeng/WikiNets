@@ -25,15 +25,16 @@ body, .node-search-container input {font-family: "Trebuchet MS";}
 /* stats */
 .graph-stat {color: white;}
 
-/* histogram */
-.histogram text {font-size: 6pt;}
-.histogram .bar rect {fill: steelblue;}
-.histogram .bar text {fill: white; stroke: #ccc;}
-.histogram .axis path,
-.histogram .axis line {fill: none; stroke: #000; shape-rendering: crispEdges; }
-.histogram-header {text-align: center; }
-.threshold-line {stroke: white; stroke-width: 1px;}
-.threshold-line:hover, .threshold-line.drag {stroke-width: 3px; cursor: pointer;}
+/* cdf */
+.link-cdf, .cdf {margin-left: auto; margin-right: auto; width: 200px; }
+.cdf .axis text {font-size: 6pt;}
+.cdf path {fill: steelblue;}
+.cdf .axis path,
+.cdf .axis line {fill: none; stroke: #000; shape-rendering: crispEdges; }
+.cdf-header {text-align: center; }
+.threshold-line {stroke: white; stroke-width: 3px; cursor: ew-resize;}
+.link-cdf.drag {cursor: ew-resize;}
+.link-cdf.drag .threshold-line, .threshold-line:hover {stroke-width: 5px; }
 
 /* links */
 #bottom-right-container a { text-decoration: none; font-style: italic; color: black;}
