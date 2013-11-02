@@ -2,13 +2,15 @@
 
 ## Code
 
-    define ["core/selection", "core/workspace", "core/singleton"], (Selection, Workspace, Singleton) ->
+    define ["core/selection", "core/workspace", "core/singleton", "core/keyListener"],
+    (Selection, Workspace, Singleton, KeyListener) ->
 
       class NodeProfileView extends Backbone.View
 
-        constructor: (@selection) ->
+        constructor: (@selection, @keyListener) ->
           @selection.on "change", @update.bind(this)
           super()
+          @listenTo @keyListener, "down:80", @toggle
 
         render: ->
           return this
@@ -30,7 +32,8 @@
       class NodeProfileAPI extends Backbone.Model
         constructor: () ->
           selection = Selection.getInstance()
-          view = new NodeProfileView(selection).render()
+          keyListener = KeyListener.getInstance()
+          view = new NodeProfileView(selection, keyListener).render()
           workspace = Workspace.getInstance()
           workspace.addBottomRight view.el
 

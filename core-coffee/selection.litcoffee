@@ -2,13 +2,19 @@
 
 ## Code
 
-    define ["core/graphModel", "core/graphView", "core/singleton"], (GraphModel, GraphView, Singleton) ->
+    define ["core/graphModel", "core/graphView", "core/singleton", "core/keyListener"],
+    (GraphModel, GraphView, Singleton, KeyListener) ->
 
       class Selection
 
-        constructor: (@graphModel, @graphView, @linkFilter) ->
+        constructor: (@graphModel, @graphView, @linkFilter, @keyListener) ->
 
           _.extend this, Backbone.Events
+
+          @listenTo @keyListener, "down:17:65", @selectAll
+          @listenTo @keyListener, "down:27", @deselectAll
+          @listenTo @keyListener, "down:46", @removeSelection
+          @listenTo @keyListener, "down:13", @removeSelectionCompliment
 
           # handle selecting and deselecting nodes
           clickSemaphore = 0
@@ -126,6 +132,7 @@
           graphModel = GraphModel.getInstance()
           graphView = GraphView.getInstance()
           linkFilter = graphView.getLinkFilter()
-          super(graphModel, graphView, linkFilter)
+          keyListener = KeyListener.getInstance()
+          super(graphModel, graphView, linkFilter, keyListener)
 
       _.extend SelectionAPI, Singleton

@@ -2,15 +2,19 @@
 
 ## Code
 
-    define ["core/graphModel", "core/workspace", "core/Singleton"], (GraphModel, Workspace, Singleton) ->
+    define ["core/graphModel", "core/workspace", "core/singleton", "core/keyListener"],
+    (GraphModel, Workspace, Singleton, KeyListener) ->
 
       class NodeSearch extends Backbone.View
 
         events:
           "typeahead:selected input": "addNode"
 
-        constructor: (@graphModel, @prefetch) ->
+        constructor: (@graphModel, @prefetch, @keyListener) ->
           super()
+          @listenTo keyListener, "down:191", (e) =>
+            @$("input").focus()
+            e.preventDefault()
 
         render: ->
           $container = $("<div />").addClass("node-search-container")
@@ -34,7 +38,8 @@
       class NodeSearchAPI extends Backbone.Model
         constructor: (prefetch) ->
           graphModel = GraphModel.getInstance()
-          nodeSearch = new NodeSearch(graphModel, prefetch).render()
+          keyListener = KeyListener.getInstance()
+          nodeSearch = new NodeSearch(graphModel, prefetch, keyListener).render()
           workspace = Workspace.getInstance()
           workspace.addTopRight(nodeSearch.el)
 
