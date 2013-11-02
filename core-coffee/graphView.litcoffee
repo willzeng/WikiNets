@@ -19,10 +19,13 @@ TODO - sorry
         render: ->
           initialWindowWidth = $(window).width()
           initialWindowHeight = $(window).height()
-          @force = d3.layout.force().size([initialWindowWidth, initialWindowHeight])
-          linkStrength = (link) =>
+          @force = d3.layout.force()
+            .size([initialWindowWidth, initialWindowHeight])
+            .charge(-500)
+            .gravity(0.2)
+          @linkStrength = (link) =>
             return (link.strength - @linkFilter.get("threshold")) / (1.0 - @linkFilter.get("threshold"))
-          @force.linkStrength linkStrength
+          @force.linkStrength @linkStrength
           svg = d3.select(@el).append("svg:svg").attr("pointer-events", "all")
           zoom = d3.behavior.zoom()
 
@@ -75,7 +78,9 @@ TODO - sorry
           @force.nodes(nodes).links(filteredLinks).start()
           link = @linkSelection = d3.select(@el).select(".linkContainer").selectAll(".link").data(filteredLinks, @model.get("linkHash"))
           linkEnter = link.enter().append("line").attr("class", "link")
+          @force.start()
           link.exit().remove()
+          link.attr "stroke-width", (link) => 5 * (@linkStrength link)
           node = @nodeSelection = d3.select(@el).select(".nodeContainer").selectAll(".node").data(nodes, @model.get("nodeHash"))
           nodeEnter = node.enter().append("g").attr("class", "node").call(@force.drag)
           nodeEnter.append("text")

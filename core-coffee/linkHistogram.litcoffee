@@ -51,16 +51,20 @@
             .attr("y1", 0)
             .attr("y2", height)
           @$(".threshold-line").on "mousedown", (e) =>
+            $line = @$(".threshold-line")
             pageX = e.pageX
-            originalX = parseInt @$(".threshold-line").attr("x1")
+            originalX = parseInt $line.attr("x1")
+            d3.select($line.get()[0]).classed("drag", true)
             $(window).one "mouseup", () ->
               $(window).off "mousemove", moveListener
+              d3.select($line.get()[0]).classed("drag", false)
             moveListener = (e) =>
+              @paint()
               dx = e.pageX - pageX
               newX = Math.min(Math.max(0, originalX + dx), width)
               @graphView.getLinkFilter().set("threshold", x.invert(newX))
-              @$(".threshold-line").attr("x1", newX)
-              @$(".threshold-line").attr("x2", newX)
+              $line.attr("x1", newX)
+              $line.attr("x2", newX)
             $(window).on "mousemove", moveListener
           return this
 
@@ -94,14 +98,10 @@
             .select("rect")
             .attr("width", (d) => @x(d.x + d.dx) - @x(d.x))
             .attr("height", (d) => height - y(d.y))
-              .select("text")
-              .attr("dy", ".75em")
-              .attr("y", 6)
-              .attr("x", (d) => (@x(d.x + d.dx) - @x(d.x)) / 2)
-              .attr("text-anchor", "middle")
-              .text((d) => formatCount d.y)
-
-
+            .style("opacity", (d) =>
+              threshold = @graphView.getLinkFilter().get("threshold")
+              return 0.25 + 0.75 * (1 - Math.min(1, Math.max(0, (threshold - d.x) / d.dx)))
+            )
 
       class LinkHistogramAPI extends Backbone.Model
         constructor: () ->
