@@ -14,11 +14,15 @@ TODO - sorry
           # filter between model and visible graph
           # use identify function if not defined
           @linkFilter = new LinkFilter(this);
+          @listenTo @linkFilter, "change:threshold", @update
 
         render: ->
           initialWindowWidth = $(window).width()
           initialWindowHeight = $(window).height()
           @force = d3.layout.force().size([initialWindowWidth, initialWindowHeight])
+          linkStrength = (link) =>
+            return (link.strength - @linkFilter.get("threshold")) / (1.0 - @linkFilter.get("threshold"))
+          @force.linkStrength linkStrength
           svg = d3.select(@el).append("svg:svg").attr("pointer-events", "all")
           zoom = d3.behavior.zoom()
 

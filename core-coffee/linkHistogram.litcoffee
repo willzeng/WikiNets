@@ -2,7 +2,7 @@
 
 ## Code
 
-    define ["core/graphModel", "core/workspace", "core/singleton"], (GraphModel, Workspace, Singleton) ->
+    define ["core/graphModel", "core/graphView", "core/workspace", "core/singleton"], (GraphModel, GraphView, Workspace, Singleton) ->
       margin =
         top: 10
         right: 30
@@ -11,21 +11,18 @@
 
       width = 200 - margin.left - margin.right
       height = 200 - margin.top - margin.bottom
+      min = 0
+      max = 1
 
       class LinkHistogramView extends Backbone.View
 
-        constructor: (@model) ->
-          @listenTo model, "change:links", @update
+        constructor: (@model, @graphView) ->
+          @listenTo model, "change:links", @paint
           super()
 
         render: ->
-          @update()
-          return this
-
-        update: ->
-          @$el.empty()
           @$el.append $("<div class='histogram-header'>Link Strength</div>")
-          svg = d3.select(@el)
+          @svg = d3.select(@el)
                   .append("svg")
                   .classed("histogram", true)
                   .attr("width", width + margin.left + margin.right)
@@ -33,68 +30,84 @@
                   .append("g")
                   .classed("workspace", true)
                   .attr("transform", "translate(#{margin.left},#{margin.top})")
-          values = _.pluck(@model.getLinks(), "strength")
-
-          # A formatter for counts.
-          formatCount = d3.format(",.0f")
-          min = 0 # d3.min(values) or 0
-          max = 1 # d3.max(values) or 1
-          max += .001  if min is max
-          x = d3.scale.linear()
+          x = @x = d3.scale.linear()
                       .domain([min, max])
                       .range([0, width])
-          numBins = 5
-          ticks = []
-          i = 0
-
-          while i < numBins + 1
-            ticks.push min + (max - min) * i / (numBins)
-            ++i
-          data = d3.layout.histogram().bins(ticks)(values)
-          y = d3.scale.linear().domain([0, d3.max(data, (d) ->
-            d.y
-          )]).range([height, 0])
           xAxis = d3.svg.axis()
                         .scale(x)
                         .orient("bottom")
-          bar = svg.selectAll(".bar")
-                   .data(data)
-                   .enter()
-                   .append("g")
-                   .attr("class", "bar")
-                   .attr("transform", (d) ->
-                        "translate(#{x(d.x)},#{y(d.y)})"
-                      )
-
-          bar.append("rect")
-             .attr("x", 1)
-             .attr("width", (d) ->
-                x(d.x + d.dx) - x(d.x) - 1
-                )
-             .attr("height", (d) ->
-                height - y(d.y)
-                )
-
-          bar.append("text")
-             .attr("dy", ".75em")
-             .attr("y", 6)
-             .attr("x", (d) ->
-                (x(d.x + d.dx) - x(d.x) - 1) / 2
-                )
-             .attr("text-anchor", "middle")
-             .text((d) ->
-                formatCount d.y
-                )
-
-          svg.append("g")
+          @svg.append("g")
              .attr("class", "x axis")
              .attr("transform", "translate(0,#{height})")
              .call(xAxis)
+          @paint()
+          d3.select(@el).select(".workspace")
+            .append("line")
+            .classed("threshold-line", true)
+          thresholdX = @x(@graphView.getLinkFilter().get("threshold"))
+          d3.select(@el).select(".threshold-line")
+            .attr("x1", thresholdX)
+            .attr("x2", thresholdX)
+            .attr("y1", 0)
+            .attr("y2", height)
+          @$(".threshold-line").on "mousedown", (e) =>
+            pageX = e.pageX
+            originalX = parseInt @$(".threshold-line").attr("x1")
+            $(window).one "mouseup", () ->
+              $(window).off "mousemove", moveListener
+            moveListener = (e) =>
+              dx = e.pageX - pageX
+              newX = Math.min(Math.max(0, originalX + dx), width)
+              @graphView.getLinkFilter().set("threshold", x.invert(newX))
+              @$(".threshold-line").attr("x1", newX)
+              @$(".threshold-line").attr("x2", newX)
+            $(window).on "mousemove", moveListener
+          return this
+
+        paint: ->
+
+          values = _.pluck @model.getLinks(), "strength"
+
+          numBins = 5
+          ticks = []
+          i = 0
+          while i < numBins + 1
+            ticks.push min + (max - min) * i / (numBins)
+            ++i
+
+          data = d3.layout.histogram().bins(ticks)(values)
+
+          y = d3.scale.linear().domain([0, d3.max(data, (d) ->
+            d.y
+          )]).range([height, 0])
+
+          bar = @svg.selectAll(".bar").data(data)
+          bar.enter()
+             .append("g")
+             .attr("class", "bar")
+             .append("rect")
+
+          # A formatter for counts.
+          formatCount = d3.format(",.0f")
+          bar
+            .attr("transform", (d) => "translate(#{@x(d.x)},#{y(d.y)})")
+            .select("rect")
+            .attr("width", (d) => @x(d.x + d.dx) - @x(d.x))
+            .attr("height", (d) => height - y(d.y))
+              .select("text")
+              .attr("dy", ".75em")
+              .attr("y", 6)
+              .attr("x", (d) => (@x(d.x + d.dx) - @x(d.x)) / 2)
+              .attr("text-anchor", "middle")
+              .text((d) => formatCount d.y)
+
+
 
       class LinkHistogramAPI extends Backbone.Model
         constructor: () ->
           graphModel = GraphModel.getInstance()
-          view = new LinkHistogramView(graphModel).render()
+          graphView = GraphView.getInstance()
+          view = new LinkHistogramView(graphModel, graphView).render()
           workspace = Workspace.getInstance()
           workspace.addTopLeft view.el
 
