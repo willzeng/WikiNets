@@ -1,3 +1,7 @@
+# manages overall layout of page
+# provides functions to add DOM elements to different locations of the screen
+# automatically puts links to celestrium repo in bottom right
+# and a button to show/hide all other helpers
 define ["core/singleton"], (Singleton) ->
 
   class Workspace extends Backbone.View
@@ -26,7 +30,11 @@ define ["core/singleton"], (Singleton) ->
     constructor: (options) ->
       @workspace = new Workspace(options).render()
       @addTop($("""<span id="title">#{options.title}</span>""")) if options.title?
-      @addBottomRight($("""<div><a href="https://github.com/jdhenke/celestrium">celestrium repo</a></div>"""))
+      @addBottomRight $ """
+        <div>
+          <a href="https://github.com/jdhenke/celestrium">celestrium repo</a>
+        </div>
+      """
     addCenter: (el) ->
       @workspace.$el.append el
     addTopLeft: (el) ->

@@ -26,10 +26,10 @@ define [], () ->
     getLinkedNodes: (nodes, callback) ->
       throw "must implement getLinkedNodes for your data provider"
 
-    # only adds the node if returns true
+    # called on each node - only adds the node if returns true
     nodeFilter: -> true
 
-    # only adds the link if returns true
+    # called on each link - only adds the link if returns true
     linkFilter: -> true
 
     # makes an ajax request to url with data and calls callback with response

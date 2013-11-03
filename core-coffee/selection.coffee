@@ -1,3 +1,4 @@
+# makes nodes "selectable"
 define ["core/graphModel", "core/graphView", "core/singleton", "core/keyListener"],
 (GraphModel, GraphView, Singleton, KeyListener) ->
 
@@ -67,17 +68,13 @@ define ["core/graphModel", "core/graphView", "core/singleton", "core/keyListener
       @graphModel.filterNodes (node) ->
         not node.selected
 
-
     removeSelectionCompliment: () ->
       @graphModel.filterNodes (node) ->
         node.selected
 
-
     getSelectedNodes: ->
       _.filter @graphModel.getNodes(), (node) ->
         node.selected
-
-
 
     # select all nodes which have a path to node
     # using links meeting current Connectivity criteria

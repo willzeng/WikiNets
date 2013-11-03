@@ -1,3 +1,4 @@
+# fires down:key1:key2... with all currently down keys on keydowns
 define ["core/Singleton"], (Singleton) ->
 
   class KeyListener

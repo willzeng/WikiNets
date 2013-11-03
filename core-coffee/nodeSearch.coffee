@@ -1,3 +1,4 @@
+# provides an input box which can add nodes to the graph
 define ["core/graphModel", "core/workspace", "core/singleton", "core/keyListener"],
 (GraphModel, Workspace, Singleton, KeyListener) ->
 

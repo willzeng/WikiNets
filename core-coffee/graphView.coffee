@@ -1,5 +1,18 @@
-define ["core/graphModel", "core/workspace", "core/singleton", "core/linkFilter", "core/selectionLayer"],
-(GraphModel, Workspace, Singleton, LinkFilter, SelectionLayer) ->
+# renders the graph using d3's force directed layout
+define ["core/graphModel", "core/workspace", "core/singleton", "core/selectionLayer"],
+(GraphModel, Workspace, Singleton, SelectionLayer) ->
+
+  class LinkFilter extends Backbone.Model
+    initialize: () ->
+      @set "threshold", 0.75
+    filter: (links) ->
+      return _.filter links, (link) =>
+        return link.strength > @get("threshold")
+    connectivity: (value) ->
+      if value
+        @set("threshold", value)
+      else
+        @get("threshold")
 
   class GraphView extends Backbone.View
 

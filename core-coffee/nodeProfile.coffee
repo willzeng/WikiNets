@@ -1,3 +1,4 @@
+# provides details of the selected nodes
 define ["core/selection", "core/workspace", "core/singleton", "core/keyListener"],
 (Selection, Workspace, Singleton, KeyListener) ->
 

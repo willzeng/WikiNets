@@ -1,3 +1,4 @@
+# core, underlying model of the graph
 define ["core/singleton"], (Singleton) ->
 
   class GraphModel extends Backbone.Model

@@ -1,10 +1,14 @@
+# provides a variably smoothed PDF of the distribution link strengths.
+# also provides a slider on that distribution
+# which filters out links with weight below that threshold.
 define ["core/graphModel", "core/graphView", "core/workspace", "core/singleton", "core/sliders"],
 (GraphModel, GraphView, Workspace, Singleton, Sliders) ->
+
   margin =
     top: 10
-    right: 30
+    right: 10
     bottom: 40
-    left: 30
+    left: 10
 
   width = 200 - margin.left - margin.right
   height = 200 - margin.top - margin.bottom

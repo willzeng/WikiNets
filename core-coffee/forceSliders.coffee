@@ -1,4 +1,6 @@
-define ["core/singleton", "core/graphView", "core/sliders"], (Singleton, GraphView, Sliders) ->
+# includes a spacing slider to adjust the charge in the force directed layout
+define ["core/singleton", "core/graphView", "core/sliders"],
+(Singleton, GraphView, Sliders) ->
 
   class ForceSliders
     constructor: (force, sliders) ->

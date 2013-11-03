@@ -1,3 +1,16 @@
+###
+
+provides an interface to add sliders to the ui
+
+`addSlider(label, initialValue, onChange)` does the following
+  - shows the text `label` next to the slider
+  - starts it at `initialValue`
+  - calls `onChange` when the value changes
+    with the new value as the argument
+
+sliders have range [0, 100]
+
+###
 define ["core/singleton", "core/workspace"], (Singleton, Workspace) ->
 
   class SlidersView extends Backbone.View
