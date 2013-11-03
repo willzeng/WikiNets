@@ -1,17 +1,32 @@
 define ["core/singleton"], (Singleton) ->
 
   class Workspace extends Backbone.View
+
+    events: "click #bottom-center-outer-container #toggle": "toggle"
+
     render: ->
       @tl = $("<div id=\"top-left-container\" class=\"container\"/>")
       @bl = $("<div id=\"bottom-left-container\" class=\"container\"/>")
       @br = $("<div id=\"bottom-right-container\" class=\"container\"/>")
       @tr = $("<div id=\"top-right-container\" class=\"container\"/>")
-      @$el.append(@tl).append(@bl).append(@br).append(@tr)
+      @top = $("""<div id="top-center-outer-container" align="center"/>""")
+      @bottom = $ """
+        <div id="bottom-center-outer-container" align="center">
+          <button id="toggle">Show/Hide</button>
+        </div>
+      """
+      @$el.append($el) for $el in [@tl, @bl, @br, @tr, @top, @bottom]
+
       return this
+
+    toggle: () ->
+      $el.toggle() for $el in [@tl, @bl, @br, @tr, @top]
 
   class WorkspaceAPI extends Backbone.Model
     constructor: (options) ->
       @workspace = new Workspace(options).render()
+      @addTop($("""<span id="title">#{options.title}</span>""")) if options.title?
+      @addBottomRight($("""<div><a href="https://github.com/jdhenke/celestrium">celestrium repo</a></div>"""))
     addCenter: (el) ->
       @workspace.$el.append el
     addTopLeft: (el) ->
@@ -22,5 +37,7 @@ define ["core/singleton"], (Singleton) ->
       @workspace.tr.append el
     addBottomRight: (el) ->
       @workspace.br.append el
+    addTop: (el) ->
+      @workspace.top.append el
 
   _.extend WorkspaceAPI, Singleton
