@@ -10,7 +10,7 @@ define ["core/graphModel", "core/graphView", "core/workspace", "core/singleton"]
   minStrength = 0
   maxStrength = 1
 
-  class LinkStrengthCDFView extends Backbone.View
+  class LinkDistributionView extends Backbone.View
 
     className: "link-cdf"
 
@@ -23,7 +23,7 @@ define ["core/graphModel", "core/graphView", "core/workspace", "core/singleton"]
       ### one time setup of link strength cdf view ###
 
       # add title
-      @$el.append $("<div class='cdf-header'>Link Strength CDF</div>")
+      @$el.append $("<div class='cdf-header'>Link Strength Distribution</div>")
 
       # create cleanly transformed workspace to generate display
       @svg = d3.select(@el)
@@ -110,9 +110,15 @@ define ["core/graphModel", "core/graphView", "core/workspace", "core/singleton"]
 
       # raw distribution of link strengths
       values = _.pluck @model.getLinks(), "strength"
-      pdf = layout(values)
-      cdf = @getCDF(pdf) # array of {x: <strength>, y: <cdf>} objects
-      visibleCDF = _.filter cdf, (bin) => @graphView.getLinkFilter().get("threshold") < bin.x
+      sum = 0
+      cdf = ["x": maxStrength, "y": 0].concat _.chain(layout(values))
+        .reverse()
+        .map (bin) ->
+          "x": bin.x, "y": sum += bin.y
+        .value()
+
+      visibleCDF = _.filter cdf, (bin) =>
+        @graphView.getLinkFilter().get("threshold") < bin.x
 
       # set opacity on area, bad I know
       cdf.opacity = 0.25
@@ -120,6 +126,7 @@ define ["core/graphModel", "core/graphView", "core/workspace", "core/singleton"]
 
       # create area generator based on cdf
       area = d3.svg.area()
+        .interpolate("monotone")
         .x((d) => @x(d.x))
         .y0(@y(0))
         .y1((d) => @y(d.y))
@@ -140,17 +147,12 @@ define ["core/graphModel", "core/graphView", "core/workspace", "core/singleton"]
         .attr("d", area)
         .style("opacity", (d) -> d.opacity)
 
-    getCDF: (pdf) ->
-      ### turn pdf into an array of {x: <strength>, y: <cdf>} objects ###
-      cdf = 0
-      _.map pdf, (bin) -> x: bin.x, y: cdf += bin.y
-
-  class LinkcdfAPI extends Backbone.Model
+  class LinkDistributionAPI extends Backbone.Model
     constructor: () ->
       graphModel = GraphModel.getInstance()
       graphView = GraphView.getInstance()
-      view = new LinkStrengthCDFView(graphModel, graphView).render()
+      view = new LinkDistributionView(graphModel, graphView).render()
       workspace = Workspace.getInstance()
       workspace.addTopLeft view.el
 
-  _.extend LinkcdfAPI, Singleton
+  _.extend LinkDistributionAPI, Singleton

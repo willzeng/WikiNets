@@ -32,9 +32,9 @@ body, .node-search-container input {font-family: "Trebuchet MS";}
 .cdf .axis path,
 .cdf .axis line {fill: none; stroke: #000; shape-rendering: crispEdges; }
 .cdf-header {text-align: center; }
-.threshold-line {stroke: white; stroke-width: 3px; cursor: ew-resize;}
+.threshold-line {stroke: #EEE; stroke-width: 3px; cursor: ew-resize;}
 .link-cdf.drag {cursor: ew-resize;}
-.link-cdf.drag .threshold-line, .threshold-line:hover {stroke-width: 5px; }
+.link-cdf.drag .threshold-line, .threshold-line:hover {stroke: #FFF;}
 
 /* links */
 #bottom-right-container a { text-decoration: none; font-style: italic; color: black;}
