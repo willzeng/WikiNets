@@ -1,8 +1,9 @@
-define ["core/graphModel", "core/graphView", "core/workspace", "core/singleton"], (GraphModel, GraphView, Workspace, Singleton) ->
+define ["core/graphModel", "core/graphView", "core/workspace", "core/singleton", "core/sliders"],
+(GraphModel, GraphView, Workspace, Singleton, Sliders) ->
   margin =
     top: 10
     right: 30
-    bottom: 30
+    bottom: 40
     left: 30
 
   width = 200 - margin.left - margin.right
@@ -14,16 +15,21 @@ define ["core/graphModel", "core/graphView", "core/workspace", "core/singleton"]
 
     className: "link-cdf"
 
-    constructor: (@model, @graphView) ->
+    constructor: (@model, @graphView, sliders) ->
       @listenTo model, "change:links", @paint
+      @windowModel = new Backbone.Model()
+      @windowModel.set("window", 10)
+      @listenTo @windowModel, "change:window", @paint
+      scale = d3.scale.log()
+        .domain([2,200])
+        .range([0, 100])
+      sliders.addSlider "Smoothing", scale(@windowModel.get("window")), (val) =>
+        @windowModel.set "window", scale.invert(val)
       super()
 
     render: ->
 
       ### one time setup of link strength cdf view ###
-
-      # add title
-      @$el.append $("<div class='cdf-header'>Link Strength Distribution</div>")
 
       # create cleanly transformed workspace to generate display
       @svg = d3.select(@el)
@@ -42,19 +48,20 @@ define ["core/graphModel", "core/graphView", "core/workspace", "core/singleton"]
         .domain([minStrength, maxStrength])
         .range([0, width])
 
-      # scale mapping cdf to y coordinate in workspace
-      @y = d3.scale.linear()
-        .domain([0, 1])
-        .range([height, 0])
-
       # create axis
       xAxis = d3.svg.axis()
         .scale(@x)
         .orient("bottom")
-      @svg.append("g")
-         .attr("class", "x axis")
-         .attr("transform", "translate(0,#{height})")
-         .call(xAxis)
+      bottom = @svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0,#{height})")
+      bottom.append("g")
+        .call(xAxis)
+      bottom.append("text")
+        .classed("label", true)
+        .attr("x", width / 2)
+        .attr("y", 35)
+        .text("Link Strength")
 
       # initialize plot
       @paint()
@@ -111,28 +118,48 @@ define ["core/graphModel", "core/graphView", "core/workspace", "core/singleton"]
       # raw distribution of link strengths
       values = _.pluck @model.getLinks(), "strength"
       sum = 0
-      cdf = ["x": maxStrength, "y": 0].concat _.chain(layout(values))
-        .reverse()
+      cdf = _.chain(layout(values))
         .map (bin) ->
           "x": bin.x, "y": sum += bin.y
         .value()
+      halfWindow = Math.max 1, parseInt(@windowModel.get("window")/2)
+      pdf = _.map cdf, (bin, i) ->
+        # get quantiles
+        q1 = Math.max 0, i - halfWindow
+        q2 = Math.min cdf.length - 1, i + halfWindow
+        # get y value at quantiles
+        y1 = cdf[q1]["y"]
+        y2 = cdf[q2]["y"]
+        # get slope
+        slope = (y2 - y1) / (q2 - q1)
+        # return slope as y to produce a smoothed derivative
+        return "x": bin.x, "y": slope
 
-      visibleCDF = _.filter cdf, (bin) =>
+      # scale mapping cdf to y coordinate in workspace
+      maxY = _.chain(pdf)
+        .map((bin) -> bin.y)
+        .max()
+        .value()
+      @y = d3.scale.linear()
+        .domain([0, maxY])
+        .range([height, 0])
+
+      visiblePDF = _.filter pdf, (bin) =>
         @graphView.getLinkFilter().get("threshold") < bin.x
 
       # set opacity on area, bad I know
-      cdf.opacity = 0.25
-      visibleCDF.opacity = 1
+      pdf.opacity = 0.25
+      visiblePDF.opacity = 1
 
-      # create area generator based on cdf
+      # create area generator based on pdf
       area = d3.svg.area()
         .interpolate("monotone")
         .x((d) => @x(d.x))
         .y0(@y(0))
         .y1((d) => @y(d.y))
 
-      data = [cdf]
-      data.push visibleCDF unless visibleCDF.length is 0
+      data = [pdf]
+      data.push visiblePDF unless visiblePDF.length is 0
 
       path = d3
         .select(@el)
@@ -151,7 +178,8 @@ define ["core/graphModel", "core/graphView", "core/workspace", "core/singleton"]
     constructor: () ->
       graphModel = GraphModel.getInstance()
       graphView = GraphView.getInstance()
-      view = new LinkDistributionView(graphModel, graphView).render()
+      sliders = Sliders.getInstance()
+      view = new LinkDistributionView(graphModel, graphView, sliders).render()
       workspace = Workspace.getInstance()
       workspace.addTopLeft view.el
 
