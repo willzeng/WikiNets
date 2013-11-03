@@ -19,4 +19,4 @@ define globalLibs, () -> init: (singletonPlugins, callback) ->
       args = singletonPlugins[pluginPaths[i]]
       plugin.init args
       i += 1
-    callback()
+    callback() if callback?

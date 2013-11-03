@@ -82,7 +82,7 @@ define ["core/graphModel", "core/graphView", "core/workspace", "core/singleton"]
         pageX = e.pageX
         originalX = parseInt $line.attr("x1")
         d3.select(@el).classed("drag", true)
-        $(window).one "mouseup", () ->
+        $(window).one "mouseup", () =>
           $(window).off "mousemove", moveListener
           d3.select(@el).classed("drag", false)
         moveListener = (e) =>
