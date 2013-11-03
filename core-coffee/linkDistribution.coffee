@@ -20,7 +20,7 @@ define ["core/graphModel", "core/graphView", "core/workspace", "core/singleton",
       @windowModel = new Backbone.Model()
       @windowModel.set("window", 10)
       @listenTo @windowModel, "change:window", @paint
-      scale = d3.scale.log()
+      scale = d3.scale.linear()
         .domain([2,200])
         .range([0, 100])
       sliders.addSlider "Smoothing", scale(@windowModel.get("window")), (val) =>
