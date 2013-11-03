@@ -32,5 +32,6 @@ define ["core/selection", "core/workspace", "core/singleton", "core/keyListener"
       view = new NodeProfileView(selection, keyListener).render()
       workspace = Workspace.getInstance()
       workspace.addBottomRight view.el
+      view.toggle()
 
   _.extend NodeProfileAPI, Singleton
