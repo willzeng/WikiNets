@@ -36,4 +36,4 @@ define globalLibs, () ->
         instance = new plugin(options)
         instance.init instances
         instances[pluginPaths[i]] = instance
-      callback() if callback?
+      callback(instances) if callback?
