@@ -1,6 +1,5 @@
 # renders the graph using d3's force directed layout
-define ["core/graphModel", "core/workspace", "core/singleton", "core/selectionLayer"],
-(GraphModel, Workspace, Singleton, SelectionLayer) ->
+define ["SelectionLayer"], (SelectionLayer) ->
 
   class LinkFilter extends Backbone.Model
     initialize: () ->
@@ -16,8 +15,13 @@ define ["core/graphModel", "core/workspace", "core/singleton", "core/selectionLa
 
   class GraphView extends Backbone.View
 
-    initialize: (options) ->
+    init: (instances) ->
+      @model = instances["GraphModel"]
       @model.on "change", @update.bind(this)
+      @render()
+      instances["Layout"].addCenter @el
+
+    initialize: (options) ->
       # filter between model and visible graph
       # use identify function if not defined
       @linkFilter = new LinkFilter(this);
@@ -130,15 +134,3 @@ define ["core/graphModel", "core/workspace", "core/singleton", "core/selectionLa
 
     getLinkFilter: ->
       return @linkFilter
-
-  class GraphViewAPI extends GraphView
-    constructor: () ->
-      @model = GraphModel.getInstance()
-      super()
-    initialize: () ->
-      @render()
-      workspace = Workspace.getInstance()
-      workspace.addCenter @el
-      super()
-
-  _.extend GraphViewAPI, Singleton

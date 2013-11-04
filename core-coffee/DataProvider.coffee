@@ -3,10 +3,10 @@ define [], () ->
 
   class DataProvider
 
-    # expects instances of these standard plugins
-    constructor: (@graphModel, @keyListener, @selection) ->
-      @keyListener.on "down:16:187", () =>
-        @getLinkedNodes @selection.getSelectedNodes(), (nodes) =>
+    init: (instances) ->
+      @graphModel = instances["GraphModel"]
+      instances["KeyListener"].on "down:16:187", () =>
+        @getLinkedNodes instances["NodeSelection"].getSelectedNodes(), (nodes) =>
           _.each nodes, (node) =>
             @graphModel.putNode node if @nodeFilter node
       @graphModel.on "add:node", (node) =>

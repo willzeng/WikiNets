@@ -1,12 +1,16 @@
 # makes nodes "selectable"
-define ["core/graphModel", "core/graphView", "core/singleton", "core/keyListener"],
-(GraphModel, GraphView, Singleton, KeyListener) ->
+define [], () ->
 
   class Selection
 
-    constructor: (@graphModel, @graphView, @linkFilter, @keyListener) ->
+    init: (instances) ->
 
       _.extend this, Backbone.Events
+
+      @keyListener = instances['KeyListener']
+      @graphView = instances['GraphView']
+      @linkFilter = @graphView.getLinkFilter()
+      @graphModel = instances['GraphModel']
 
       @listenTo @keyListener, "down:17:65", @selectAll
       @listenTo @keyListener, "down:27", @deselectAll
@@ -119,13 +123,3 @@ define ["core/graphModel", "core/graphView", "core/singleton", "core/keyListener
 
       # update UI
       @renderSelection()
-
-  class SelectionAPI extends Selection
-    constructor: () ->
-      graphModel = GraphModel.getInstance()
-      graphView = GraphView.getInstance()
-      linkFilter = graphView.getLinkFilter()
-      keyListener = KeyListener.getInstance()
-      super(graphModel, graphView, linkFilter, keyListener)
-
-  _.extend SelectionAPI, Singleton

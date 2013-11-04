@@ -1,7 +1,9 @@
 # core, underlying model of the graph
-define ["core/singleton"], (Singleton) ->
+define [], () ->
 
   class GraphModel extends Backbone.Model
+
+    init: ->
 
     initialize: ->
       @set "nodes", []
@@ -73,6 +75,3 @@ define ["core/singleton"], (Singleton) ->
     filterAttribute: (attr, filter) ->
       filteredData = _.filter(@get(attr), filter)
       @set attr, filteredData
-
-  class GraphModelAPI extends GraphModel
-  _.extend GraphModelAPI, Singleton

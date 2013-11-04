@@ -1,17 +1,21 @@
 # provides an input box which can add nodes to the graph
-define ["core/graphModel", "core/workspace", "core/singleton", "core/keyListener"],
-(GraphModel, Workspace, Singleton, KeyListener) ->
+define [], () ->
 
   class NodeSearch extends Backbone.View
 
     events:
       "typeahead:selected input": "addNode"
 
-    constructor: (@graphModel, @prefetch, @keyListener) ->
+    constructor: (@prefetch) ->
       super()
-      @listenTo keyListener, "down:191", (e) =>
+
+    init: (instances) ->
+      @graphModel = instances["GraphModel"]
+      @listenTo instances["KeyListener"], "down:191", (e) =>
         @$("input").focus()
         e.preventDefault()
+      @render()
+      instances["Layout"].addTopRight @el
 
     render: ->
       $container = $("<div />").addClass("node-search-container")
@@ -31,13 +35,3 @@ define ["core/graphModel", "core/workspace", "core/singleton", "core/keyListener
       @graphModel.putNode newNode  unless _.some @graphModel.get("nodes"), (node) ->
         h(node) is newNodeHash
       $(e.target).blur()
-
-  class NodeSearchAPI extends Backbone.Model
-    constructor: (prefetch) ->
-      graphModel = GraphModel.getInstance()
-      keyListener = KeyListener.getInstance()
-      nodeSearch = new NodeSearch(graphModel, prefetch, keyListener).render()
-      workspace = Workspace.getInstance()
-      workspace.addTopRight(nodeSearch.el)
-
-  _.extend NodeSearchAPI, Singleton

@@ -11,9 +11,13 @@ provides an interface to add sliders to the ui
 sliders have range [0, 100]
 
 ###
-define ["core/singleton", "core/workspace"], (Singleton, Workspace) ->
+define [], () ->
 
   class SlidersView extends Backbone.View
+
+    init: (instances) ->
+      @render()
+      instances["Layout"].addTopLeft @el
 
     render: () ->
       $container = $ """
@@ -42,12 +46,3 @@ define ["core/singleton", "core/workspace"], (Singleton, Workspace) ->
           $(this).blur()
 
       @$("table").append $row
-
-  class Sliders extends SlidersView
-    constructor: () ->
-      workspace = Workspace.getInstance()
-      super()
-      @render()
-      workspace.addTopLeft @$el
-
-  _.extend Sliders, Singleton

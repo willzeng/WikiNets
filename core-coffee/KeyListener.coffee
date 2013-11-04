@@ -1,12 +1,12 @@
 # fires down:key1:key2... with all currently down keys on keydowns
-define ["core/Singleton"], (Singleton) ->
+define [], () ->
 
   class KeyListener
 
     constructor: (target) ->
       _.extend this, Backbone.Events
       state = {}
-      watch = [17, 65, 27, 46, 13, 16, 80, 187, 191, 70]
+      watch = [17, 65, 27, 46, 13, 16, 80, 187, 191]
 
       # this ignores keypresses from inputs
       $(window).keydown (e) =>
@@ -26,5 +26,4 @@ define ["core/Singleton"], (Singleton) ->
         return if e.target isnt target
         delete state[e.which]
 
-  class KeyListenerAPI extends KeyListener
-  _.extend KeyListenerAPI, Singleton
+    init: () ->

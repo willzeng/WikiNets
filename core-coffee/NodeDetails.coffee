@@ -1,16 +1,14 @@
 # provides details of the selected nodes
-define ["core/selection", "core/workspace", "core/singleton", "core/keyListener"],
-(Selection, Workspace, Singleton, KeyListener) ->
+define [], () ->
 
-  class NodeProfileView extends Backbone.View
+  class NodeDetailsView extends Backbone.View
 
-    constructor: (@selection, @keyListener) ->
+    init: (instances) ->
+      @selection = instances["NodeSelection"]
       @selection.on "change", @update.bind(this)
-      super()
-      @listenTo @keyListener, "down:80", @toggle
-
-    render: ->
-      return this
+      @listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
+      instances["Layout"].addBottomRight @el
+      @$el.toggle()
 
     update: ->
       @$el.empty()
@@ -22,17 +20,3 @@ define ["core/selection", "core/workspace", "core/singleton", "core/keyListener"
         $("<div class=\"node-profile-title\">#{node['text']}</div>").appendTo $nodeDiv
         _.each node, (value, property) ->
           $("<div class=\"node-profile-property\">#{property}:  #{value}</div>").appendTo $nodeDiv  if blacklist.indexOf(property) < 0
-
-    toggle: ->
-      @$el.toggle()
-
-  class NodeProfileAPI extends Backbone.Model
-    constructor: () ->
-      selection = Selection.getInstance()
-      keyListener = KeyListener.getInstance()
-      view = new NodeProfileView(selection, keyListener).render()
-      workspace = Workspace.getInstance()
-      workspace.addBottomRight view.el
-      view.toggle()
-
-  _.extend NodeProfileAPI, Singleton

@@ -15,23 +15,25 @@ exposes an object with an `init` function which takes two arguments.
 
 requirejs.config
   shim:
-    "lib/jquery.typeahead": ["lib/jquery"]
-    "lib/backbone": ["lib/underscore"]
+    "../lib/jquery.typeahead": ["../lib/jquery"]
+    "../lib/backbone": ["../lib/underscore"]
 
 globalLibs = [
-  'lib/jquery',
-  'lib/jquery.typeahead',
-  'lib/underscore',
-  'lib/backbone',
-  'lib/d3',
+  '../lib/jquery',
+  '../lib/jquery.typeahead',
+  '../lib/underscore',
+  '../lib/backbone',
+  '../lib/d3',
 ]
 
-define globalLibs, () -> init: (singletonPlugins, callback) ->
-  pluginPaths = _.keys(singletonPlugins)
-  require pluginPaths, (plugins...) ->
-    i = 0
-    for plugin in plugins
-      args = singletonPlugins[pluginPaths[i]]
-      plugin.init args
-      i += 1
-    callback() if callback?
+define globalLibs, () ->
+  init: (pluginsDict, callback) ->
+    pluginPaths = _.keys(pluginsDict)
+    instances = {}
+    require pluginPaths, (plugins...) ->
+      _.each plugins, (plugin, i) ->
+        options = pluginsDict[pluginPaths[i]]
+        instance = new plugin(options)
+        instance.init instances
+        instances[pluginPaths[i]] = instance
+      callback() if callback?

@@ -2,12 +2,16 @@
 # provides functions to add DOM elements to different locations of the screen
 # automatically puts links to celestrium repo in bottom right
 # and a button to show/hide all other helpers
-define ["core/singleton"], (Singleton) ->
+define [], () ->
 
-  class Workspace extends Backbone.View
+  class Layout extends Backbone.View
 
     events: "click #bottom-center-outer-container #toggle": "toggle"
 
+    constructor: (@options) ->
+      super(@options)
+    init: () ->
+      @render()
     render: ->
       @tl = $("<div id=\"top-left-container\" class=\"container\"/>")
       @bl = $("<div id=\"bottom-left-container\" class=\"container\"/>")
@@ -20,32 +24,24 @@ define ["core/singleton"], (Singleton) ->
         </div>
       """
       @$el.append($el) for $el in [@tl, @bl, @br, @tr, @top, @bottom]
-
-      return this
-
-    toggle: () ->
-      $el.toggle() for $el in [@tl, @bl, @br, @tr, @top]
-
-  class WorkspaceAPI extends Backbone.Model
-    constructor: (options) ->
-      @workspace = new Workspace(options).render()
-      @addTop($("""<span id="title">#{options.title}</span>""")) if options.title?
+      @addTop($("""<span id="title">#{@options.title}</span>""")) if @options.title?
       @addBottomRight $ """
         <div>
           <a href="https://github.com/jdhenke/celestrium">celestrium repo</a>
         </div>
       """
+      return this
+    toggle: () ->
+      $el.toggle() for $el in [@tl, @bl, @br, @tr, @top]
     addCenter: (el) ->
-      @workspace.$el.append el
+      @$el.append el
     addTopLeft: (el) ->
-      @workspace.tl.append el
+      @tl.append el
     addBottomLeft: (el) ->
-      @workspace.bl.append el
+      @bl.append el
     addTopRight: (el) ->
-      @workspace.tr.append el
+      @tr.append el
     addBottomRight: (el) ->
-      @workspace.br.append el
+      @br.append el
     addTop: (el) ->
-      @workspace.top.append el
-
-  _.extend WorkspaceAPI, Singleton
+      @top.append el

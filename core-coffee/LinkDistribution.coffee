@@ -1,8 +1,7 @@
 # provides a variably smoothed PDF of the distribution link strengths.
 # also provides a slider on that distribution
 # which filters out links with weight below that threshold.
-define ["core/graphModel", "core/graphView", "core/workspace", "core/singleton", "core/sliders"],
-(GraphModel, GraphView, Workspace, Singleton, Sliders) ->
+define [], () ->
 
   margin =
     top: 10
@@ -19,17 +18,23 @@ define ["core/graphModel", "core/graphView", "core/workspace", "core/singleton",
 
     className: "link-cdf"
 
-    constructor: (@model, @graphView, sliders) ->
-      @listenTo model, "change:links", @paint
+    constructor: (options) ->
       @windowModel = new Backbone.Model()
       @windowModel.set("window", 10)
       @listenTo @windowModel, "change:window", @paint
+      super()
+
+    init: (instances) ->
+      @graphModel = instances["GraphModel"]
+      @graphView = instances["GraphView"]
+      @listenTo instances["GraphModel"], "change:links", @paint
       scale = d3.scale.linear()
         .domain([2,200])
         .range([0, 100])
-      sliders.addSlider "Smoothing", scale(@windowModel.get("window")), (val) =>
+      instances["Sliders"].addSlider "Smoothing", scale(@windowModel.get("window")), (val) =>
         @windowModel.set "window", scale.invert(val)
-      super()
+      @render()
+      instances["Layout"].addTopLeft @el
 
     render: ->
 
@@ -120,7 +125,7 @@ define ["core/graphModel", "core/graphView", "core/workspace", "core/singleton",
         .bins(100) # determines the granularity of the display
 
       # raw distribution of link strengths
-      values = _.pluck @model.getLinks(), "strength"
+      values = _.pluck @graphModel.getLinks(), "strength"
       sum = 0
       cdf = _.chain(layout(values))
         .map (bin) ->
@@ -177,14 +182,3 @@ define ["core/graphModel", "core/graphView", "core/workspace", "core/singleton",
       path
         .attr("d", area)
         .style("opacity", (d) -> d.opacity)
-
-  class LinkDistributionAPI extends Backbone.Model
-    constructor: () ->
-      graphModel = GraphModel.getInstance()
-      graphView = GraphView.getInstance()
-      sliders = Sliders.getInstance()
-      view = new LinkDistributionView(graphModel, graphView, sliders).render()
-      workspace = Workspace.getInstance()
-      workspace.addTopLeft view.el
-
-  _.extend LinkDistributionAPI, Singleton
