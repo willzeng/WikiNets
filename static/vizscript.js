@@ -373,4 +373,21 @@ $.getJSON('/json', function(data){
             });
           });
 
+  //Tests the typeAhead code
+    console.log(graph.nodes);
+    var nodeNames=[];
+    for(var i=0; i<graph.nodes.length;i++){
+      tmpName=graph.nodes[i].name;
+      if(!(typeof tmpName === "undefined")){
+        nodeNames.push(tmpName);
+      }
+    };
+    console.log(nodeNames);
+    $("#searchBox").typeahead({                                
+    name: 'nodes',
+    local: nodeNames,
+    //prefetch: '/data/',
+    limit: 10
+  });
+
 });

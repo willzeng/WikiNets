@@ -659,6 +659,13 @@ $(document).ready(function(){
     $("#stopeEditButtonHolder").hide();
   });
 
-
+  //Selects a Node with the search bar
+  //Does not yet work due to the bad numbering of the graph JSON object
+  /*$("#searchBox").on("submit", function(event){
+    $("#nodeKeyValues").show();
+    $("#editButtonHolder").show();
+    select_node(selected_node);
+    $("#stopeEditButtonHolder").hide();
+  });*/
 
 });

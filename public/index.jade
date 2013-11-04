@@ -7,6 +7,7 @@ html
     script(type='text/javascript', src='jquery-1.10.2.js')
     script(type='text/javascript', src='d3.v3.min.js')
     script(type='text/javascript', src='vizscript.js')
+    script(type='text/javascript', src='jquery.typeahead.js')
 
 
   body
@@ -19,7 +20,7 @@ html
 
       #searchbar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
         form(method="post",action="/search_id")
-        input(type="text",name="nodeid") 
+        input#searchBox(type="text") 
         input(type="submit",value="Get Node")
         #SearchOutput
 

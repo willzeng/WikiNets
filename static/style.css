@@ -1,3 +1,18 @@
+  .tt-suggestions{
+    background-color: white;
+    width: 150px;
+    border: 1px solid #333333;
+    padding: 5px;
+  }
+
+  .tt-suggestion{
+    border: 1px solid #333333;
+  }
+
+  .tt-is-under-cursor{
+    background-color: #e3edef;
+  }
+
   h1 a{
     color:black;
     text-decoration:none;
