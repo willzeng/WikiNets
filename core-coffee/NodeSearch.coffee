@@ -6,7 +6,7 @@ define [], () ->
     events:
       "typeahead:selected input": "addNode"
 
-    constructor: (@prefetch) ->
+    constructor: (@options) ->
       super()
 
     init: (instances) ->
@@ -23,7 +23,8 @@ define [], () ->
       $container.append $input
       @$el.append $container
       $input.typeahead
-        prefetch: @prefetch
+        prefetch: @options.prefetch
+        local: @options.local
         name: "nodes"
         limit: 100
       return this
