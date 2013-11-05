@@ -246,6 +246,14 @@ function SANcreateArrow(){
   });
 }
 
+//Switches to the interface to allow the creation of a new node
+function switchToNodeCreate(){
+  $("#edit-menu-inputs").hide();
+  $("#nodeKeyValues").hide();
+  $("#searchAddNodeField").show();
+  $("#searchAddNodeField").focus();
+}
+
 
 // this is the interactive stuff that happens after the document has loaded
 $(document).ready(function(){
@@ -606,7 +614,8 @@ $(document).ready(function(){
       console.log("searchAddArrowField query made with text: ", $("#searchAddArrowField").val());
       window.arrowquery = $("#searchAddArrowField").val();
       $('#searchAddArrowField').val("");
-      $("#searchAddNodeField").focus();
+      //$("#searchAddNodeField").focus();
+      switchToNodeCreate();
       $('#searchAddNodeFieldLabel').text("(Target) Node");   
       buildingarrow=true;     
     }
@@ -614,9 +623,7 @@ $(document).ready(function(){
 
   //On click of createNodeButton focuses on searchAddNodeField
   $("#createNodeButton").on("click", function(event){
-    $("#edit-menu-inputs").hide();
-    $("#searchAddNodeField").show();
-    $("#searchAddNodeField").focus();
+    switchToNodeCreate();
   });
 
   //On click of createArrowButton focuses on searchAddNodeField
@@ -630,6 +637,7 @@ $(document).ready(function(){
   });
 
   //TAB focuses on searchAddArrowField unless buildingarrow
+  //ENTER hits addNode button
   $(function() {
      $(window).keydown(function(e) {
         var code = e.keyCode || e.which;
@@ -638,6 +646,12 @@ $(document).ready(function(){
           e.preventDefault(); 
           if(!buildingarrow){
             $("#searchAddArrowField").focus();
+          }
+        }
+        else if(code==13){
+          e.preventDefault(); 
+          if(!buildingarrow){
+            switchToNodeCreate();
           }
         }
      });
