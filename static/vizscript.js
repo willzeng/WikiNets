@@ -29,28 +29,6 @@ var width = viewportwidth-480,
 
 var graph;
 
-function updategraph()
-{
-  console.log(graph);
-  /* Make AJAX query to get JSON data for visualization */
-  $.getJSON('/json', function(data){
-  graph = data;
-  console.log("update viz called");
-  console.log(graph);
-  });
-}
-
-/* Make AJAX query to get JSON data for visualization */
-//function loadviz()
-//{
-//$.getJSON('/json', function(data){
-//  graph = data;
-//  console.log("make call for json");
-//  console.log(graph);
-//});
-//}
-
-
 /* Make AJAX query to get JSON data for visualization */
 $.getJSON('/json', function(data){
   graph = data;

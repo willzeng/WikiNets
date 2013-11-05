@@ -5,7 +5,7 @@ var neo4js = require('neo4js');
 
 var graphDb = new neo4js.GraphDatabase4Node(url);
 
-var App = require('./myapp');
+var App = require('./wikinets');
 
 app = new App(graphDb);
 

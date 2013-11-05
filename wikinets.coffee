@@ -311,7 +311,7 @@ module.exports = class MyApp
     )
 
     ###
-    Parses a textin query to create a node
+    Parses a syntax markup query to create a node
     ###
     app.post('/submit', (request,response)->
       console.log "Textin Query Requested"
@@ -361,7 +361,7 @@ module.exports = class MyApp
     )
 
     ###
-    Parses a textin query to create an arrow
+    Parses a syntax markup query to create an arrow
     ###
     app.post('/submitarrow', (request,response)->
       console.log "Arrow create query Requested"
@@ -409,21 +409,6 @@ module.exports = class MyApp
       )
 
     )
-  
-    ###
-    indexPromise = graphDb.index.createNodeIndex "myIndex"
-    indexPromise.then((index)->
-      app.post '/create_node', (request, response)->
-        node = graphDb.node request.body
-        console.log "Node Created"
-
-        index.index(node, "name", request.body.name).then(()->
-          console.log "Index updated with node " + request.body.name + "\n\n"
-          response.redirect "/" 
-        )
-    )
-    ###
-
 
     port = process.env.PORT || 3000
     app.listen port, -> console.log("Listening on " + port)
