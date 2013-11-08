@@ -1,5 +1,7 @@
-define ['jquery', 'underscore', 'backbone', 'd3'], ($, _, Backbone, d3) ->
+define [], () ->
+
   class SelectionLayer
+
     constructor: (args) ->
       @parent = args.parent
       @$parent = $(@parent)

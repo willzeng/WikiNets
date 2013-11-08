@@ -1,5 +1,10 @@
-define ["underscore", "backbone"], (_, Backbone) ->
-  GraphModel = Backbone.Model.extend(
+# core, underlying model of the graph
+define [], () ->
+
+  class GraphModel extends Backbone.Model
+
+    init: ->
+
     initialize: ->
       @set "nodes", []
       @set "links", []
@@ -34,14 +39,17 @@ define ["underscore", "backbone"], (_, Backbone) ->
       data.push datum
       @set attr, data
 
-      # QA: this is not already fired because of the rep-exposure of get.
-      #   `data` is the actual underlying object so even though set
-      #   performs a deep search to detect changes, it will not detect any
-      #   because it's literally comparing the same object
-      # Note: at least we know this will never be a redundant trigger
+      ###
+      QA: this is not already fired because of the rep-exposure of get.
+      `data` is the actual underlying object
+      so even though set performs a deep search to detect changes,
+      it will not detect any because it's literally comparing the same object.
+
+      Note: at least we know this will never be a redundant trigger
+      ###
+
       @trigger "change:#{attr}"
       @trigger "change"
-
 
     # also removes links incident to any node which is removed
     filterNodes: (filter) ->
@@ -67,5 +75,3 @@ define ["underscore", "backbone"], (_, Backbone) ->
     filterAttribute: (attr, filter) ->
       filteredData = _.filter(@get(attr), filter)
       @set attr, filteredData
-  )
-  return GraphModel

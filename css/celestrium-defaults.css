@@ -6,11 +6,20 @@ body, .node-search-container input {font-family: "Trebuchet MS";}
 #top-left-container { top: 5px; left: 5px; }
 #top-right-container { top: 5px; right: 5px; }
 #bottom-left-container { bottom: 5px; left: 5px;}
-#bottom-right-container {bottom: 5px; right: 5px;}
+#bottom-right-container {bottom: 5px; right: 5px; text-align: right; }
+
+/* title */
+#top-center-outer-container {position: fixed; top: 5px; width: 100%; padding: 2px;}
+#title {background-color: #ccc; padding: 4px; font-size: 18pt;}
+
+/* hide stuff */
+#bottom-center-outer-container {position: fixed; bottom: 5px; width: 100%;}
+#toggle { font-family: "Trebuchet MS"; font-size: 12pt; }
+#toggle:hover {color: white;}
 
 /* graph workspace */
 .node circle {}
-.node.selected circle {fill: lime;}
+.node.selected circle {fill: steelblue;}
 .node text {opacity: 0.5; }
 .node:hover text {opacity: 1; }
 .link {stroke: gray; opacity: 0.5;}
@@ -25,15 +34,19 @@ body, .node-search-container input {font-family: "Trebuchet MS";}
 /* stats */
 .graph-stat {color: white;}
 
-/* histogram */
-.histogram text {font-size: 6pt;}
-.histogram .bar rect {fill: steelblue;}
-.histogram .bar text {fill: white;}
-.histogram .axis path,
-.histogram .axis line {fill: none; stroke: #000; shape-rendering: crispEdges; }
-.histogram-header {text-align: center; }
+/* cdf */
+.link-cdf, .cdf {margin-left: auto; margin-right: auto; width: 200px; }
+.cdf .axis text {font-size: 6pt;}
+.cdf path {fill: steelblue;}
+.cdf .axis path,
+.cdf .axis line {fill: none; stroke: #000; shape-rendering: crispEdges; }
+.cdf .axis .label {font-size: 10pt; text-anchor: middle;}
+.cdf-header {text-align: center; }
+.threshold-line {stroke: #EEE; stroke-width: 3px; cursor: ew-resize;}
+.link-cdf.drag {cursor: ew-resize;}
+.link-cdf.drag .threshold-line, .threshold-line:hover {stroke: #FFF;}
 
-/* links */
+/* hyperinks */
 #bottom-right-container a { text-decoration: none; font-style: italic; color: black;}
 #bottom-right-container a:hover {color: white;}
 

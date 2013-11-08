@@ -1,11 +1,14 @@
-define ["jquery", "underscore", "backbone"], ($, _, Backbone) ->
-  Backbone.View.extend
-    initialize: (options) ->
-      @selection = options.selection
-      @selection.on "change", @update.bind(this)
+# provides details of the selected nodes
+define [], () ->
 
-    render: ->
-      return this
+  class NodeDetailsView extends Backbone.View
+
+    init: (instances) ->
+      @selection = instances["NodeSelection"]
+      @selection.on "change", @update.bind(this)
+      @listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
+      instances["Layout"].addBottomRight @el
+      @$el.toggle()
 
     update: ->
       @$el.empty()
@@ -17,8 +20,3 @@ define ["jquery", "underscore", "backbone"], ($, _, Backbone) ->
         $("<div class=\"node-profile-title\">#{node['text']}</div>").appendTo $nodeDiv
         _.each node, (value, property) ->
           $("<div class=\"node-profile-property\">#{property}:  #{value}</div>").appendTo $nodeDiv  if blacklist.indexOf(property) < 0
-
-
-
-    toggle: ->
-      @$el.toggle()

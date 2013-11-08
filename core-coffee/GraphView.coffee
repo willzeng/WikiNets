@@ -1,16 +1,42 @@
-define ["jquery", "underscore", "backbone", "d3", "core/selectionLayer"], ($, _, Backbone, d3, SelectionLayer) ->
-  GraphView = Backbone.View.extend(
-    initialize: (options) ->
+# renders the graph using d3's force directed layout
+define ["SelectionLayer"], (SelectionLayer) ->
+
+  class LinkFilter extends Backbone.Model
+    initialize: () ->
+      @set "threshold", 0.75
+    filter: (links) ->
+      return _.filter links, (link) =>
+        return link.strength > @get("threshold")
+    connectivity: (value) ->
+      if value
+        @set("threshold", value)
+      else
+        @get("threshold")
+
+  class GraphView extends Backbone.View
+
+    init: (instances) ->
+      @model = instances["GraphModel"]
       @model.on "change", @update.bind(this)
+      @render()
+      instances["Layout"].addCenter @el
+
+    initialize: (options) ->
       # filter between model and visible graph
       # use identify function if not defined
-      @linkFilter = options.linkFilter
-      _.extend this, Backbone.Events
+      @linkFilter = new LinkFilter(this);
+      @listenTo @linkFilter, "change:threshold", @update
 
     render: ->
       initialWindowWidth = $(window).width()
       initialWindowHeight = $(window).height()
-      @force = d3.layout.force().size([initialWindowWidth, initialWindowHeight])
+      @force = d3.layout.force()
+        .size([initialWindowWidth, initialWindowHeight])
+        .charge(-500)
+        .gravity(0.2)
+      @linkStrength = (link) =>
+        return (link.strength - @linkFilter.get("threshold")) / (1.0 - @linkFilter.get("threshold"))
+      @force.linkStrength @linkStrength
       svg = d3.select(@el).append("svg:svg").attr("pointer-events", "all")
       zoom = d3.behavior.zoom()
 
@@ -28,14 +54,12 @@ define ["jquery", "underscore", "backbone", "d3", "core/selectionLayer"], ($, _,
       # typically occur when dragging a node
       translateLock = false
       currentZoom = undefined
-      @force.drag().on("dragstart", ->
+      @force.drag().on "dragstart", ->
         translateLock = true
         currentZoom = zoom.translate()
-      ).on("dragend", ->
+      .on "dragend", ->
         zoom.translate currentZoom
         translateLock = false
-      )
-
 
       # add event listener to actually affect UI
 
@@ -65,7 +89,9 @@ define ["jquery", "underscore", "backbone", "d3", "core/selectionLayer"], ($, _,
       @force.nodes(nodes).links(filteredLinks).start()
       link = @linkSelection = d3.select(@el).select(".linkContainer").selectAll(".link").data(filteredLinks, @model.get("linkHash"))
       linkEnter = link.enter().append("line").attr("class", "link")
+      @force.start()
       link.exit().remove()
+      link.attr "stroke-width", (link) => 5 * (@linkStrength link)
       node = @nodeSelection = d3.select(@el).select(".nodeContainer").selectAll(".node").data(nodes, @model.get("nodeHash"))
       nodeEnter = node.enter().append("g").attr("class", "node").call(@force.drag)
       nodeEnter.append("text")
@@ -97,8 +123,6 @@ define ["jquery", "underscore", "backbone", "d3", "core/selectionLayer"], ($, _,
         node.attr "transform", (d) ->
           "translate(#{d.x},#{d.y})"
 
-
-
     getNodeSelection: ->
       return @nodeSelection
 
@@ -107,5 +131,6 @@ define ["jquery", "underscore", "backbone", "d3", "core/selectionLayer"], ($, _,
 
     getForceLayout: ->
       return @force
-  )
-  return GraphView
+
+    getLinkFilter: ->
+      return @linkFilter
