@@ -12,15 +12,20 @@ define [], () ->
     render: =>
       @canvas = $('<canvas/>').addClass('selectionLayer')
                   .css('position', 'absolute')
-                  .attr('width', $('body').width())
-                  .attr('height', $('body').height())
                   .css('top', 0)
                   .css('left', 0)
-                  .css('margin', '8px')
                   .css('pointer-events', 'none')[0]
 
+      @_sizeCanvas()
+
       @$parent.append @canvas
-      @_registerMouseEvents()
+
+      @_registerEvents()
+
+    _sizeCanvas: =>
+      ctx = @canvas.getContext('2d')
+      ctx.canvas.width = $(window).width()
+      ctx.canvas.height = $(window).height()
 
     _intializeDragVariables: =>
       @dragging = false
@@ -38,7 +43,10 @@ define [], () ->
       @startPoint.x = coord.x
       @startPoint.y = coord.y
 
-    _registerMouseEvents: =>
+    _registerEvents: =>
+      $(window).resize (e) =>
+        @_sizeCanvas()
+
       @$parent.mousedown (e) =>
         if e.shiftKey
           @dragging = true;
