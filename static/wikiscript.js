@@ -245,6 +245,7 @@ function SANcreateArrow(){
     buildingarrow=false;
     $('#searchAddNodeFieldLabel').text("(Source) Node"); 
     alert("You have created an arrow from source: " + source + " to target: " + target);
+    redoviz();
   });
 }
 
@@ -473,6 +474,7 @@ $(document).ready(function(){
             $(this)[0].parentNode.removeChild($(this)[0]);
           });
           $("#stopeEditButtonHolder").hide();
+          redoviz();
         }
       });
     };
