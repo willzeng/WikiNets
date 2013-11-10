@@ -304,22 +304,26 @@ $.getJSON('/json', function(data){
       .attr("width", width)
       .attr("height", height)
     .attr("pointer-events", "all")
-  .append('svg:g')
-    .call(d3.behavior.zoom().on("zoom", redraw))
+    .append('svg:g')
+    .call(d3.behavior.zoom().on("zoom", redraw));
 
-
-  set_marker_data("mainNet", 0.75);
-
-  var svgG=svgContainer.append("svg:g");
-  svgG.append('svg:rect')
+  svgContainer.append('svg:rect')
     .attr('width', width)
     .attr('height', height)
     .attr('fill', 'black');
 
+  //svgContainer
+
+  set_marker_data("mainNet", 0.75);
+
+  var svgG=svgContainer.append("svg:g");
+
+
 drawXHairs(width/2,height/2);
   svgContainer.on("mousemove", function() {
 
-      fisheye.center(d3.mouse(this));
+      fisheye.center(d3.mouse($(this).children("g")[0])); //#HACK
+      //console.log("THIS is: ", x=this);
 
 
     var d=this;
@@ -365,7 +369,7 @@ drawXHairs(width/2,height/2);
   var node = svgG.selectAll(".node")
   .data(graph.nodes)
   .enter().append("circle")
-  .on("mouseover", translate)
+  .on("click", translate)
   .attr("class", "node")
   .attr("r", 5)
   .style("fill", function(d) { return color(d.group); })
@@ -441,14 +445,14 @@ drawXHairs(width/2,height/2);
 
 function drawXHairs(x,y) {
 
-  svgG.append("line")
+  svgContainer.append("line")
   .attr("x1", x)
   .attr("x2", x)
   .attr("y1", y-10)
   .attr("y2", y+10)
   .attr("stroke-width", 2)
   .attr("stroke", "red");
-  svgG.append("line")
+  svgContainer.append("line")
   .attr("x1", x+10)
   .attr("x2", x-10)
   .attr("y1", y)
@@ -460,6 +464,7 @@ function drawXHairs(x,y) {
 
 function translate() {
   // pan that node to the center
+  console.log("this translate is: ", this);
   var x = this.cx.animVal.value, y = this.cy.animVal.value;
  // d3.select(this).transition().attr("r",7)
  pan[0] = -x;
