@@ -10,7 +10,7 @@
 
   /*WikiNet viz css*/
   .choose_menu {cursor: pointer;}
-  .node { stroke: #fff; stroke-width: 1.5px; }
+  .node { stroke: none; stroke-width: 1.5px; }
   .link { stroke: #999; stroke-opacity: .6; }
 
   /*Css for the sidebar*/
