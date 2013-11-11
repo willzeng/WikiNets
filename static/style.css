@@ -16,17 +16,63 @@
 
   /* Stuff moved out of the .jade file */
   #buildbar { color:#3b5d14; background:white; font-weight:bold; padding:4px; height:100%; width:300px; float:left; margin-left:10px; }
-  #searchbar { font-size:12px; color:#3b5d14; background:white; font-weight:bold; padding:4px; float:left; }
-  #titler { background:#FFFFFF;font-size:18px;color:#000000;text-align:center;width:303px;height:30; }
+  #titler { background:#FFFFFF; font-size:18px; color:#000000; text-align:center; width:290px; height:30; }
+  #nodeKeyValues { width:290px; display:none; font-weight:normal; color:black; }
 
   /*Css for the sidebar*/
   ul, li{ margin:0; border:0; padding:0; list-style:none; }
-  #sidebar{ font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;height:100%;width: 300px;float:right;margin-right: 10px; }
-  #sidebar .menu li { height:30px; float:left; margin-right:10px; }
-  #sidebar .menu li a{ color:#3b5d14; text-decoration:none; padding:0 10px; height:30px; line-height:30px; display:block; float:left; padding:0 26px 0 10px; }
-  #sidebar .menu li a:hover{ color:#666666; }
-  #sidebar ul .submenu { border:solid 1px #c9dea1; border-top:none; background:#FFFFFF; position:relative; top:4px; width:100%; padding:6px 0; clear:both; z-index:2; display:block; }
-  #sidebar ul .submenu li{ background:none; display:block; float:none; margin:0 6px; border:0; height:auto; line-height:normal; border-top:solid 1px #DEDEDE; }
-  #sidebar .submenu li a{ background:none; display:block; float:none; padding:6px 6px; margin:0; border:0; height:auto; color:#105cbe; line-height:normal; }
-  #sidebar .submenu li a#show_edit:hover{ background:#738678; }
-  #sidebar .submenu li a#show_edit{ color:#000000; }
+
+/* New tab navigation */
+/*
+	Tabs CSS code starts here
+*/
+.tabs_wrapper {
+	width: 300px;
+	margin: 5px;
+}
+
+.tab_content {
+	display: none;
+}
+
+/* Original tabs */
+#original_tabs {
+        width: 302px;
+	border-bottom: 1px solid #cccccc;
+}
+#original_tabs ul {
+	list-style: none;
+	padding: 5px 0 4px 0;
+	margin: 0 0 0 10px;
+	font-size: 0.75em;
+}
+#original_tabs ul li {
+	display: inline;
+}
+#original_tabs ul li a {
+	border: 1px solid #ccc;
+	padding: 4px 6px;
+	text-decoration: none;
+	background-color: #eeeeee;
+	border-bottom: none;
+	outline: none;
+}
+#original_tabs ul li a:hover {
+	background-color: #dddddd;
+}
+#original_tabs ul li.active a {
+	border-bottom: 1px solid #fff;
+	background-color: #fff;
+	padding: 4px 6px 5px;
+	border-bottom: none;
+}
+#original_tabs ul li.active a:hover {
+	background-color: #eeeeee;
+}
+#original_tabs_content {
+	border: 1px solid #ccc;
+	border-top: none;
+	padding: 1px;
+	width: 298px;
+}
+

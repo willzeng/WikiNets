@@ -128,6 +128,7 @@ $.getJSON('/json', function(data){
 
     //changes the selected name at the top of the sidebar
     $('#selectednamebox').html(d.name);
+    $("#editButtonHolder").show();
 
     // if "Edit Node" menu is visible, fill in data for selected node
     //if ($("#en_1").css("display") == "block") {
