@@ -23,7 +23,7 @@ html
       #searchbar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
         form(method="post",action="/search_id")
         input#searchBox(type="text") 
-        input(type="submit",value="Get Node")
+        input#getNode(type="submit",value="Get Node")
         #SearchOutput
 
       input#syntaxMenuShowButton(type="submit",value="Menu 1")
@@ -31,9 +31,9 @@ html
 
       #syntaxAddMenu
 
-        input#createNodeButton(type="submit",value="Create Node")
+        input#createNodeButton(type="submit",value="New Node")
         
-        input#createArrowButton(type="submit",value="Create Arrow")
+        input#createArrowButton(type="submit",value="New Arrow")
 
         #buildNodeArea(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
           ul#querybox
@@ -54,7 +54,7 @@ html
               input#EditNode(type='button', value='Save Node')
 
           textarea#searchAddNodeField(name="textin", rows="6", cols="27")
-          input#queryform(type="submit",value="Submit")
+          input#queryform(type="submit",value="Create Node")
 
           #stopeEditButtonHolder(style="display:none")
             input#stopeEditNodeButton(type="submit",value="Stop Editing This Node")
@@ -65,12 +65,12 @@ html
           ul#arrowquerybox
           p(style='width:100%') Arrow
           textarea#searchAddArrowField(name="textin", rows="6", cols="27")
-          input#arrowqueryform(type="submit",value="Submit")
+          input#arrowqueryform(type="submit",value="Create Arrow")
 
         #buildTargetArea(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;display:none;')
           p(style='width:100%', id='buildTargetAreaLabel') (Target) Node
           textarea#buildTargetAreaField(name="textin", rows="6", cols="27")
-          input#targetQueryForm(type="submit",value="Submit")
+          input#targetQueryForm(type="submit",value="Create (Target) Node")
 
       #fullAddMenu(style="display:none")
         #addbar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')

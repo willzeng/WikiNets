@@ -569,6 +569,17 @@ function redraw() {
     });
 
    });
+
+  
+  //UPDATES THE TYPEAHEAD get node box
+  //IS NOT YET FUNCTIONAL
+  /*$.getJSON('/node_names', function(data){
+      console.log("update called");
+      var typeahead=$("#searchBox").data('typeahead');
+      if(typeahead) typeahead.source = data;
+    }
+  )*/
+
 };
 
 //redoviz();

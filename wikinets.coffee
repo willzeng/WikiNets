@@ -410,5 +410,15 @@ module.exports = class MyApp
 
     )
 
+    app.get('/node_names', (request,response)->
+      graphDb.cypher.execute("start n=node(*) return n;").then(
+        (noderes)->
+          console.log "Query Executed"
+          nodesNamesAndIds = ({name:n[0]['data']['name'], _id:trim(n[0]["self"])[0]} for n in noderes.data)
+          #nodesNamesAndIds = (n[0]['data']['name'] for n in noderes.data)
+          response.json nodesNamesAndIds
+          )
+    )
+
     port = process.env.PORT || 3000
     app.listen port, -> console.log("Listening on " + port)

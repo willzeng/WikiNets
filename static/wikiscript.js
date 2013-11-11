@@ -97,6 +97,7 @@ function select_node(nodeid) {
         console.log(JSON.stringify(data));
         $('#SelectNodeID').val(selected_node);
         $("#editButtonHolder").show();
+        $("#queryform").hide();
         cleanup_editable_menu();
 
         //Creates an arrow if buildingarrow
@@ -635,13 +636,13 @@ $(document).ready(function(){
       $("#buildTargetArea").hide();
   });
   
-  //Parses searchAddNodeField input into a dictionary of properties to create a node on click
+  //Parses buildTargetAreaField input into a dictionary of properties to create a node on click
   $("#targetQueryForm").on("click", function(event){
     SANcreateNode(buildingarrow,'#buildTargetAreaField');
     console.log("building arrow ", buildingarrow);
   });
 
-  //Parses searchAddNodeField input into a dictionary of properties
+  //Parses buildTargetAreaField input into a dictionary of properties
   $('#buildTargetAreaField').keydown(function(e) {
     var code = e.keyCode || e.which;
     //console.log(code);
@@ -652,7 +653,7 @@ $(document).ready(function(){
 
       SANcreateNode(buildingarrow,'#buildTargetAreaField');
 
-      //If TAB or switches focus to searchAddArrowField
+      //If TAB or switches focus to buildTargetAreaField
       if(code == 9){
         //$("#searchAddArrowField").show();
         $("#searchAddArrowField").focus();    
@@ -700,6 +701,7 @@ $(document).ready(function(){
   $("#editNodeButton").on("click", function(event){
     $("#nodeKeyValues").hide();
     $("#editButtonHolder").hide();
+    $("#queryform").hide();
     edit_node(selected_node);
     $("#stopeEditButtonHolder").show();
   });
@@ -709,8 +711,53 @@ $(document).ready(function(){
     $("#nodeKeyValues").show();
     $("#editButtonHolder").show();
     select_node(selected_node);
+    $("#queryform").show();
     $("#stopeEditButtonHolder").hide();
   });
+
+  //SETS UP THE TYPEAHEAD get node box
+  $.getJSON('/node_names', function(data){
+      console.log("get names called");
+
+      var n, namesList;
+
+      namesList = (function() {
+        var _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = data.length; _i < _len; _i++) {
+          n = data[_i];
+          _results.push(n['name']);
+        }
+        return _results;
+      })();
+
+      console.log(namesList);
+
+      $("#searchBox").typeahead({
+        name: 'thenodes',
+        local: namesList,
+        limit: 10 //NOTE THIS IS A #HACK
+      });
+
+      //On click of #getNode focuses on searchAddNodeField
+      $("#getNode").on("click", function(event){
+        nodename= $("#searchBox").val();
+        
+        var n, searchedNodeID, _i, _len;
+
+        for (_i = 0, _len = data.length; _i < _len; _i++) {
+          n = data[_i];
+          if (n["name"] === nodename) {
+            searchedNodeID = n["_id"];
+          }
+        }
+
+        select_node(searchedNodeID);
+
+      });
+
+    }
+  )
 
   //Selects a Node with the search bar
   //Does not yet work due to the bad numbering of the graph JSON object
