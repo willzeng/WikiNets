@@ -270,17 +270,6 @@ $(document).ready(function(){
   moreFields("writerootObj","readrootObj","NodeProperty");
   moreFields("writerootArr","readrootArr","ArrProperty");
 
-  // showing or hiding various menus and submenus
-  $("#syntaxMenuShowButton").on("click", function(event){
-    $("#fullAddMenu").hide();
-    $("#syntaxAddMenu").show();
-  });
-
-  $("#fullMenuShowButton").on("click", function(event){
-    $("#fullAddMenu").show();
-    $("#syntaxAddMenu").hide();
-  });
-
 
   /* Tab menu functionality */
   //  Main function that shows and hides the requested tabs and their content
@@ -340,53 +329,6 @@ $(document).ready(function(){
   });
   /* End tab menu functionality */
 
-
-  /*$("#fullMenuShowButton").on("click", function(event){
-    if(!fullmenu){
-      //console.log("hide menu");
-      $("#fullAddMenu").show();
-      $("#syntaxAddMenu").hide();
-      //$("#fullMenuShowButton").val("Hide Full Menu");
-    }
-    else {
-      //console.log("show menu");
-      $("#fullAddMenu").hide();
-      $("#syntaxAddMenu").show();
-      //$("#fullMenuShowButton").val("Show Full Menu");
-    }
-    fullmenu=!fullmenu;
-  });*/
-
-  /*$("img.choose_menu").click(function() {
-    //showlayer('browse_menu');
-    showlayer('edit_menu');
-  });
-  $("#show_edit").click(function(a) {
-    a.preventDefault();
-    //console.log("open edit menu");
-    //showlayer('browse_menu');
-    showlayer('edit_menu');
-  });
-  $("#toggle_en_1").click(function(a) {
-    a.preventDefault();
-    showlayer('en_1');
-  });
-  $("#toggle_enn_1").click(function(a) {
-    a.preventDefault();
-    showlayer('enn_1');
-  });
-  $("#toggle_sm_1").click(function(a) {
-    a.preventDefault();
-    showlayer('sm_1');
-  });
-  $("#toggle_sm_2").click(function(a) {
-    a.preventDefault();
-    showlayer('sm_2');
-  });
-  $("#toggle_sm_3").click(function(a) {
-    a.preventDefault();
-    showlayer('sm_3');
-  });*/
 
   // create a new node from the data in the create node input form
   $("#createObj").on("click", function(event){
