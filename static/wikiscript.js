@@ -238,11 +238,12 @@ function SANcreateNode(witharrow){
 //Resets the arrowquery text fields and resets building arrow to false.
 function SANcreateArrow(){
   console.log("Creating an arrow with source: ", source, " and target: ", target);
+  buildingarrow=false;
   $.post('/submitarrow', {"text":arrowquery, "from":source, "to":target}, function(data) { 
     console.log(data);
     $("#arrowquerybox").append('<li>'+arrowquery+'</li>');
     $('#searchAddArrowField').val("");
-    buildingarrow=false;
+    //buildingarrow=false;
     $('#searchAddNodeFieldLabel').text("(Source) Node"); 
     alert("You have created an arrow from source: " + source + " to target: " + target);
     redoviz();

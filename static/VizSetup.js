@@ -74,13 +74,19 @@ function updategraph()
 
 function redoviz(){
 
-console.log("redoviz");
+/*console.log("redoviz has been called");
 $('#mainNet').empty();
 $('#subgraphcontainer').empty();
-$('#togglebox').empty();
+$('#togglebox').empty();*/
 
 /* Make AJAX query to get JSON data for visualization */
 $.getJSON('/json', function(data){
+
+  console.log("redoviz getJSON has been called");
+  $('#mainNet').empty();
+  $('#subgraphcontainer').empty();
+  $('#togglebox').empty();
+
   graph = data;
   console.log("make call for json");
   console.log(graph);
