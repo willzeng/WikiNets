@@ -2,12 +2,9 @@ define [], () ->
 
   class SelectionLayer
 
-    init: (instances) ->
-      @graphView = instances["GraphView"]
-      @nodeSearch = instances["NodeSearch"]
-      @nodeSelection = instances["NodeSelection"]
-
-      @parent = @graphView.el
+    constructor: (args) ->
+      @graphView = args.graphView
+      @parent = args.graphView.el
       @$parent = $(@parent)
 
       _.extend this, Backbone.Events
@@ -94,7 +91,7 @@ define [], () ->
     determineSelection: =>
       # find out what nodes are in box
       rectDim = @rectDim(@startPoint, @currentPoint)
-      @nodeSelection.selectBoundedNodes rectDim
+      @graphView.instances['NodeSelection'].selectBoundedNodes rectDim
 
     renderRect: =>
       @_clearRect @startPoint, @prevPoint

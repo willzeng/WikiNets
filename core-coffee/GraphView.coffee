@@ -16,10 +16,12 @@ define ["SelectionLayer"], (SelectionLayer) ->
   class GraphView extends Backbone.View
 
     init: (instances) ->
+      @instances = instances # HACK to access other instances
       @model = instances["GraphModel"]
       @model.on "change", @update.bind(this)
       @render()
       instances["Layout"].addCenter @el
+
 
     initialize: (options) ->
       # filter between model and visible graph
@@ -79,6 +81,9 @@ define ["SelectionLayer"], (SelectionLayer) ->
       # so that nodes always appear above links
       linkContainer = workspace.append("svg:g").classed("linkContainer", true)
       nodeContainer = workspace.append("svg:g").classed("nodeContainer", true)
+      selectionLayer = new SelectionLayer(
+        graphView: this
+        )
       return this
 
     update: ->
