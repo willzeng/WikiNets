@@ -26,7 +26,7 @@ html
             li.active
               a(href='#create', rel='create') Create
             li
-              a(href='#syntax', rel='syntax') Syntax
+              a(href='#syntax', rel='syntax') Syntax Create
             li
               a(href='#edit', rel='edit') Edit
             li
@@ -82,12 +82,12 @@ html
             #buildArrowArea(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;')
               ul#arrowquerybox
               p(style='width:100%') Arrow
-              input#searchAddArrowField(type="text", name="textin", rows="6", cols="27")
+              textarea#searchAddArrowField(name="textin", rows="6", cols="27")
               input#arrowqueryform(type="submit",value="Create Arrow")
 
             #buildTargetArea(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;display:none;')
               p(style='width:100%', id='buildTargetAreaLabel') (Target) Node
-              textarea#buildTargetAreaField(name="textin", rows="6", cols="27")
+              input#buildTargetAreaField(type="text", name="textin", rows="6", cols="27")
               input#targetQueryForm(type="submit",value="Create (Target) Node")
 
           #edit.tab_content

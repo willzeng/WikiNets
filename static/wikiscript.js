@@ -515,6 +515,7 @@ $(document).ready(function(){
           alert("Failed to save changes to node " + selected_node + ".");
         } else {
           alert("Saved changes to node " + selected_node + ".");
+          redoviz();
           //$("#edit-menu-inputs").css("display", "none");
           /*$(".EditProperty").each(function(i, obj) {
             $(this)[0].parentNode.removeChild($(this)[0]);
@@ -624,6 +625,7 @@ $(document).ready(function(){
           $(".EditArrowProperty").each(function(i, obj) {
             $(this)[0].parentNode.removeChild($(this)[0]);
           });
+          redoviz();
         };
       });
     };
