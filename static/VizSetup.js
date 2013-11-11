@@ -74,9 +74,10 @@ function updategraph()
 
 function redoviz(){
 
+console.log("redoviz");
 $('#mainNet').empty();
-$('#subgraphcontainer');
-$('#togglebox');
+$('#subgraphcontainer').empty();
+$('#togglebox').empty();
 
 /* Make AJAX query to get JSON data for visualization */
 $.getJSON('/json', function(data){

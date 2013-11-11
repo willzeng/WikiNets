@@ -228,7 +228,7 @@ function SANcreateNode(witharrow){
       console.log("Set source to: ", data);
       source=data;
     }
-    alert("You have created Node: " + source);
+    alert("You have created Node: " + data);
     console.log("Redoing the viz");
     redoviz();
   });
