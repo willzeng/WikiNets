@@ -79,7 +79,7 @@ define ["SelectionLayer"], (SelectionLayer) ->
       # so that nodes always appear above links
       linkContainer = workspace.append("svg:g").classed("linkContainer", true)
       nodeContainer = workspace.append("svg:g").classed("nodeContainer", true)
-      selectionLayer = new SelectionLayer(parent: @el)
+      #selectionLayer = new SelectionLayer(parent: @el)
       return this
 
     update: ->

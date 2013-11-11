@@ -2,9 +2,14 @@ define [], () ->
 
   class SelectionLayer
 
-    constructor: (args) ->
-      @parent = args.parent
+    init: (instances) ->
+      @graphView = instances["GraphView"]
+      @parent = @graphView.el
       @$parent = $(@parent)
+    # constructor: (args) ->
+    #   @parent = args.parent
+    #   @$parent = $(@parent)
+
       _.extend this, Backbone.Events
       @_intializeDragVariables()
       @render()
@@ -65,6 +70,7 @@ define [], () ->
               y: e.pageY
             }
             @renderRect()
+            @determineSelection()
             return false;
 
       @$parent.mouseup (e) =>
@@ -84,6 +90,9 @@ define [], () ->
           @dragging = false
           @_clearRect @startPoint, @prevPoint
           @_clearRect @startPoint, @currentPoint
+
+    determineSelection: =>
+      # find out what nodes are in box
 
     renderRect: =>
       @_clearRect @startPoint, @prevPoint
