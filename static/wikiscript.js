@@ -212,14 +212,14 @@ function assign_properties(form_name) {
 //Selects the newly created node
 //Resets the SANFields
 //Sets source to the id of the newly created node.
-function SANcreateNode(witharrow){
-  console.log("SANcreateNode called for query text",$("#searchAddNodeField").val());
-  $.post('/submit', {"text":$("#searchAddNodeField").val()}, function(data) {
+function SANcreateNode(amBuildingArrow, readField){
+  console.log("SANcreateNode called for query text",$(readField).val());
+  $.post('/submit', {"text":$(readField).val()}, function(data) {
     console.log("Selecting Node:", data);
     select_node(data);
-    $("#querybox").append('<li>'+$("#searchAddNodeField").val()+'</li>');
-    $('#searchAddNodeField').val("");
-    if(buildingarrow) {
+    $("#querybox").append('<li>'+$(readField).val()+'</li>');
+    $(readField).val("");
+    if(amBuildingArrow) {
       console.log("Set target to: ", data);
       target=data;
       SANcreateArrow();
@@ -246,7 +246,10 @@ function SANcreateArrow(){
     //buildingarrow=false;
     $('#searchAddNodeFieldLabel').text("(Source) Node"); 
     alert("You have created an arrow from source: " + source + " to target: " + target);
+    
     redoviz();
+
+    $("#buildTargetArea").hide();
   });
 }
 
@@ -586,7 +589,7 @@ $(document).ready(function(){
 
   //Parses searchAddNodeField input into a dictionary of properties to create a node on click
   $("#queryform").on("click", function(event){
-    SANcreateNode(buildingarrow);
+    SANcreateNode(buildingarrow,'#searchAddNodeField');
     console.log("building arrow ", buildingarrow);
   });
 
@@ -599,7 +602,7 @@ $(document).ready(function(){
     if(code == 13 || code == 9) { //Enter keycode
       e.preventDefault();  
 
-      SANcreateNode(buildingarrow);
+      SANcreateNode(buildingarrow, '#searchAddNodeField');
 
       //If TAB or switches focus to searchAddArrowField
       if(code == 9){
@@ -613,16 +616,47 @@ $(document).ready(function(){
   //ENTER or TAB stores the input properties for an arrow in variable arrowquery and marks buildingarrow=true
   $('#searchAddArrowField').keydown(function(e){
     var code = e.keyCode || e.which;
-    //console.log(code);
     if(code == 13 || code == 9) {
       e.preventDefault();  
       console.log("searchAddArrowField query made with text: ", $("#searchAddArrowField").val());
       window.arrowquery = $("#searchAddArrowField").val();
       $('#searchAddArrowField').val("");
-      //$("#searchAddNodeField").focus();
-      switchToNodeCreate();
-      $('#searchAddNodeFieldLabel').text("(Target) Node");   
-      buildingarrow=true;     
+      buildingarrow=true;
+      $("#buildTargetAreaField").focus();     
+    }
+  });
+
+  $("#searchAddArrowField").focus(function (){
+    $("#buildTargetArea").show();
+  });
+
+  $("#searchAddArrowField").focusout(function (){
+    if(!$("#buildTargetAreaField").is(":visible"))
+      $("#buildTargetArea").hide();
+  });
+  
+  //Parses searchAddNodeField input into a dictionary of properties to create a node on click
+  $("#targetQueryForm").on("click", function(event){
+    SANcreateNode(buildingarrow,'#buildTargetAreaField');
+    console.log("building arrow ", buildingarrow);
+  });
+
+  //Parses searchAddNodeField input into a dictionary of properties
+  $('#buildTargetAreaField').keydown(function(e) {
+    var code = e.keyCode || e.which;
+    //console.log(code);
+    
+    //If ENTER or TAB then queries the server to create a node
+    if(code == 13 || code == 9) { //Enter keycode
+      e.preventDefault();  
+
+      SANcreateNode(buildingarrow,'#buildTargetAreaField');
+
+      //If TAB or switches focus to searchAddArrowField
+      if(code == 9){
+        //$("#searchAddArrowField").show();
+        $("#searchAddArrowField").focus();    
+      }
     }
   });
 

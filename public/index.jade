@@ -52,8 +52,10 @@ html
             div(style='float: right;')
               input#DeleteNode(type='button', value='Delete Node')
               input#EditNode(type='button', value='Save Node')
+
           textarea#searchAddNodeField(name="textin", rows="6", cols="27")
           input#queryform(type="submit",value="Submit")
+
           #stopeEditButtonHolder(style="display:none")
             input#stopeEditNodeButton(type="submit",value="Stop Editing This Node")
           #editButtonHolder(style="display:none")
@@ -64,6 +66,11 @@ html
           p(style='width:100%') Arrow
           textarea#searchAddArrowField(name="textin", rows="6", cols="27")
           input#arrowqueryform(type="submit",value="Submit")
+
+        #buildTargetArea(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;display:none;')
+          p(style='width:100%', id='buildTargetAreaLabel') (Target) Node
+          textarea#buildTargetAreaField(name="textin", rows="6", cols="27")
+          input#targetQueryForm(type="submit",value="Submit")
 
       #fullAddMenu(style="display:none")
         #addbar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
