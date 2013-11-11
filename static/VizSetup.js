@@ -162,29 +162,29 @@ $.getJSON('/json', function(data){
   function setup_subgraph(d, i, th){
 
     /* This bit of code turns the selected node in the main graph into a
-       large pink circle with red edge and returns any other node to its
-       default radius and colour */
-       svgG.selectAll(".node").attr("r", function(d_1) {
-        if(d_1 === d){
-          return 20;
-        }
-        return 10;
-      }).style("stroke", function(d_1) { 
-        if(d_1 === d){
-          return "red";
-        }
-        return "none";
-      }).style("fill", function(d_1) { 
-        if(d_1 === d){
-          return "lightcoral";
-        }
-        return color(d_1.group);
-      });
+    large pink circle with red edge and returns any other node to its
+    default radius and colour */
+    svgG.selectAll(".node").attr("r", function(d_1) {
+      if(d_1 === d){
+        return 20;
+      }
+      return 10;
+    }).style("stroke", function(d_1) { 
+      if(d_1 === d){
+        return "red";
+      }
+      return "none";
+    }).style("fill", function(d_1) { 
+      if(d_1 === d){
+        return "lightcoral";
+      }
+      return color(d_1.group);
+    });
 
-      /* remove previous subgraph and prepare a new one */
-      d3.select("#subNet svg").remove();
-      var frame = d3.select("#subNet").append("svg:svg").attr("width", subwidth)
-      .attr("height", subheight);
+    /* remove previous subgraph and prepare a new one */
+    d3.select("#subNet svg").remove();
+    var frame = d3.select("#subNet").append("svg:svg").attr("width", subwidth)
+                  .attr("height", subheight);
 
     // this bit doesn't help very much at the moment as we aren't using
     // arrowheads in the subgraph
@@ -207,14 +207,14 @@ $.getJSON('/json', function(data){
 
     //This code draws the spokes out from the central node in the subgraph  
     frame.selectAll("line").data(neighbors).enter().append("line")
-    .attr("x1", subwidth/2+central_width/2)
-    .attr("y1", subheight/2+central_width/2)
-    .attr("x2", function(d_2, i_2){
-     return subgraph_scalar*Math.cos(2*i_2*Math.PI/neighbors.length)+subwidth/2+central_width/2;
-   })
-    .attr("y2", function(d_2, i_2){
-     return subgraph_scalar*Math.sin(2*i_2*Math.PI/neighbors.length)+subheight/2+central_width/2;
-   })
+         .attr("x1", subwidth/2+central_width/2)
+         .attr("y1", subheight/2+central_width/2)
+         .attr("x2", function(d_2, i_2){
+           return subgraph_scalar*Math.cos(2*i_2*Math.PI/neighbors.length)+subwidth/2+central_width/2;
+         })
+         .attr("y2", function(d_2, i_2){
+           return subgraph_scalar*Math.sin(2*i_2*Math.PI/neighbors.length)+subheight/2+central_width/2;
+         })
          /* all lines in subgraph currently go from centre to neighbours
             so arrow directions are meaningless -- will have to change this
             before implementing arrowheads in subgraph */
@@ -230,58 +230,58 @@ $.getJSON('/json', function(data){
 
     //Draws the central node in the subgraph as a light blue square
     frame.selectAll("rect").data([th]).enter().append("rect")
-    .attr("x", subwidth/2).attr("y", subheight/2).attr("width", central_width)
-    .attr("height", central_width).attr("fill", "lightblue");
+         .attr("x", subwidth/2).attr("y", subheight/2).attr("width", central_width)
+         .attr("height", central_width).attr("fill", "lightblue");
 
     //Draws the neighbors in the subgraph as red circles
     frame.selectAll(".node").data(neighbors).enter().append("circle")
-    .attr("class", "node")
-    .attr("r", function(d_2, i_2){
-     if(neighboring(d, d_2)) return circle_sizer;
-
-     return 0;
-   })
-    .attr("fill", "pink")
-    .attr("cx", function(d_2, i_2){
-     return subgraph_scalar*Math.cos(2*i_2*Math.PI/neighbors.length)+subwidth/2+central_width/2;
-   })
-    .attr("cy", function(d_2, i_2){
-     return subgraph_scalar*Math.sin(2*i_2*Math.PI/neighbors.length)+subheight/2+central_width/2;
-   })
-    .on("click", function(d_2, i_2) {
+         .attr("class", "node")
+         .attr("r", function(d_2, i_2){
+           if(neighboring(d, d_2)) return circle_sizer;
+           return 0;
+         })
+         .attr("fill", "pink")
+         .attr("cx", function(d_2, i_2){
+           return subgraph_scalar*Math.cos(2*i_2*Math.PI/neighbors.length)+subwidth/2+central_width/2;
+         })
+         .attr("cy", function(d_2, i_2){
+           return subgraph_scalar*Math.sin(2*i_2*Math.PI/neighbors.length)+subheight/2+central_width/2;
+         })
+         .on("click", function(d_2, i_2) {
            // update node info if node is clicked in subgraph
            node_info(d_2, i_2, this);
          });
 
     var subgraph_text_size=16;//font size of the subgraph text labels
 
-    //Draws the text lables on the neighors in the subgraph
+    //Draws the text labels on the neighors in the subgraph
     frame.selectAll("text").data(neighbors).enter().append("text")
-    .attr("fill", "black")
-    .attr("font-size", subgraph_text_size)
-    .attr("x", function(d_2, i_2){
-     return subgraph_scalar*Math.cos(2*i_2*Math.PI/neighbors.length)+subwidth/2+5;
-   })
-    .attr("y", function(d_2, i_2){
-     return subgraph_scalar*Math.sin(2*i_2*Math.PI/neighbors.length)+subheight/2+central_width/2+5;
-   })
-    .text(function(d_2){ return d_2.name; })
-    .on("click", function(d_2, i_2) {
+         .attr("fill", "black")
+         .attr("font-size", subgraph_text_size)
+         .attr("x", function(d_2, i_2){
+           return subgraph_scalar*Math.cos(2*i_2*Math.PI/neighbors.length)+subwidth/2+5;
+         })
+         .attr("y", function(d_2, i_2){
+           return subgraph_scalar*Math.sin(2*i_2*Math.PI/neighbors.length)+subheight/2+central_width/2+5;
+         })
+         .text(function(d_2){ return d_2.name; })
+         .on("click", function(d_2, i_2) {
            // update node info if node label is clicked in subgraph
            node_info(d_2, i_2, this);
          });
 
     //Draws the text label on the central node in the subgraph
     frame.selectAll("text.label").data([th]).enter().append("text")
-    .attr("fill", "black")
-    .attr("font-size", subgraph_text_size)
-    .attr("x", function(d_2, i_2){
-     return subwidth/2+5;
-   })
-    .attr("y", function(d_2, i_2){
-     return subheight/2-1+central_width/2;
-   })
-    .text(function(d_2){ return d.name; });
+         .attr("fill", "black")
+         .attr("font-size", subgraph_text_size)
+         .attr("x", function(d_2, i_2){
+           return subwidth/2+5;
+         })
+         .attr("y", function(d_2, i_2){
+           return subheight/2-1+central_width/2;
+         })
+         .text(function(d_2){ return d.name; });
+
   };
   // end of "setup_subgraph"
 
