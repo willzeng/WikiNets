@@ -121,10 +121,6 @@ $.getJSON('/json', function(data){
   /* Displays node information in InfoBox and (if open) EditNode menu */
   function node_info(d, i, th) { 
     translate(d, i, th);
-    // Use data from existing JSON to put into InfoBar div
-    // Should replace this with something more versatile
-    var theinfo = "This node is called: "+ d.name + "\<br\> Info: " + d.Info;
-    $('#infobox').html(theinfo);
 
     //changes the selected name at the top of the sidebar
     $('#selectednamebox').html(d.name);
@@ -135,6 +131,7 @@ $.getJSON('/json', function(data){
       window.selected_node = d._id;
       $("#SelectNodeID").val(window.selected_node);
       select_node(window.selected_node);
+    edit_node(window.selected_node);
     //};
     // update subgraph to centre on newly-selected node
     setup_subgraph(d, i, th);

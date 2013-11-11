@@ -411,6 +411,7 @@ $(document).ready(function(){
       alert("Node ID must be a number.");
     } else {
       select_node($("#SelectNodeID").val());
+      edit_node($("#SelectNodeID").val());
     };
   });
 
