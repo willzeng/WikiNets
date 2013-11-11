@@ -80,6 +80,31 @@ define [], () ->
       _.filter @graphModel.getNodes(), (node) ->
         node.selected
 
+    selectBoundedNodes: (dim) ->
+      selectRect = {
+        left: dim.x
+        right: dim.x + dim.width
+        top: dim.y
+        bottom: dim.y + dim.height
+      }
+      nodes = @graphModel.getNodes()
+      _.each nodes, (node) =>
+        length = 10 # fix this
+        nodeRect = {
+          left: node.x
+          right: node.x + length
+          top: node.y
+          bottom: node.y + length
+        }
+        # TODO: we need to transform the nodeRect when
+        # the workspace has been zoomed / translated
+        node.selected = @_intersect(selectRect, nodeRect)
+        @trigger 'change'
+        @renderSelection()
+
+    _intersect: (rect1, rect2) ->
+      return !(rect1.right < rect2.left || rect1.bottom < rect2.top || rect1.left > rect2.right || rect1.top > rect2.bottom)
+
     # select all nodes which have a path to node
     # using links meeting current Connectivity criteria
     selectConnectedComponent: (node) ->

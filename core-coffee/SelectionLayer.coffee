@@ -4,11 +4,11 @@ define [], () ->
 
     init: (instances) ->
       @graphView = instances["GraphView"]
+      @nodeSearch = instances["NodeSearch"]
+      @nodeSelection = instances["NodeSelection"]
+
       @parent = @graphView.el
       @$parent = $(@parent)
-    # constructor: (args) ->
-    #   @parent = args.parent
-    #   @$parent = $(@parent)
 
       _.extend this, Backbone.Events
       @_intializeDragVariables()
@@ -56,8 +56,8 @@ define [], () ->
         if e.shiftKey
           @dragging = true;
           _.extend @startPoint, {
-            x: e.pageX
-            y: e.pageY
+            x: e.clientX
+            y: e.clientY
           }
           return false;
 
@@ -66,8 +66,8 @@ define [], () ->
           if @dragging
             _.extend @prevPoint, @currentPoint
             _.extend @currentPoint, {
-              x: e.pageX
-              y: e.pageY
+              x: e.clientX
+              y: e.clientY
             }
             @renderRect()
             @determineSelection()
@@ -93,6 +93,8 @@ define [], () ->
 
     determineSelection: =>
       # find out what nodes are in box
+      rectDim = @rectDim(@startPoint, @currentPoint)
+      @nodeSelection.selectBoundedNodes rectDim
 
     renderRect: =>
       @_clearRect @startPoint, @prevPoint
