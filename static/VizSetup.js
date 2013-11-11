@@ -324,7 +324,8 @@ $.getJSON('/json', function(data){
   svgContainer.append('svg:rect')
     .attr('width', width)
     .attr('height', height)
-    .attr('fill', 'black');
+    .attr('fill', 'white')
+    .attr('stroke', 'black');
 
   //svgContainer
 
@@ -401,8 +402,8 @@ drawXHairs(width/2,height/2);
                .data(graph.nodes)
                .enter().append("text")
                .attr("class", "label")
-               .attr("fill", "white")
-               .attr("color", "white")
+               .attr("fill", "black")
+               .attr("color", "black")
                .attr("font-size", 16)
                .text(function(d) {  return d.name;  });
                /*.on("click", function(d, i) {
