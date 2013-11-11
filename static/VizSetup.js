@@ -376,10 +376,17 @@ drawXHairs(width/2,height/2);
   .start();
 
   var link = svgG.selectAll(".link")
-  .data(graph.links)
-  .enter().append("line")
-  .attr("class", "link")
-  .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+      .data(graph.links)
+      .enter().append("line")
+      .attr("class", "link")
+      .attr("marker-end", "url(#mainNetTriangle)")
+      .style("stroke-width", 2)
+      .on("click", function(d, i) {
+        // will need to add actual functionality here once it's available
+        alert("You clicked a link!");
+        console.log(d);
+        console.log(i);
+      });
 
   var node = svgG.selectAll(".node")
   .data(graph.nodes)
