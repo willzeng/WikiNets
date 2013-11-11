@@ -115,20 +115,20 @@ html
                 input#SelectArrow(type="submit", value="Select Arrow")
               #edit-arrow-menu-inputs(style='display: none;')
                 #readrootEditArrow(style='display: none;')
-                input.propertyEditArrow(style='width:80px', name='propertyEditArrow', value='')
-                input.valueEditArrow(style='width:80px', name='valueEditArrow', value='')
-                input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
-                br
-              form#edit-arrow
-                div
-                  #edit-from from: node ID
-                  #edit-to to: node ID
-                  #edit-rel-type type
-                span#writerootEditArrow
-              input#moreFields(type='button', value='+', onclick='moreFields("writerootEditArrow","readrootEditArrow","EditArrowProperty")')
-              div(style='float: right;')
-                input#DeleteArrow(type='button', value='Delete Arrow')
-                input#EditArrow(type='button', value='Save Arrow')
+                  input.propertyEditArrow(style='width:80px', name='propertyEditArrow', value='')
+                  input.valueEditArrow(style='width:80px', name='valueEditArrow', value='')
+                  input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
+                  br
+                form#edit-arrow
+                  div
+                    #edit-from from: node ID
+                    #edit-to to: node ID
+                    #edit-rel-type type
+                  span#writerootEditArrow
+                  input#moreFields(type='button', value='+', onclick='moreFields("writerootEditArrow","readrootEditArrow","EditArrowProperty")')
+                  div(style='float: right;')
+                    input#DeleteArrow(type='button', value='Delete Arrow')
+                    input#EditArrow(type='button', value='Save Arrow')
 
           #explore.tab_content
             form(method="post",action="/search_id")

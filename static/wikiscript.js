@@ -405,12 +405,10 @@ $(document).ready(function(){
       console.log(JSON.stringify(nodeObject[1]));
       $.post('/create_node', nodeObject[1], function(data) {
         alert("Created node with ID " + data);
-        // would now like to have option of reloading the visualisation here
+        moreFields("writerootObj","readrootObj","NodeProperty");
+        redoviz();
       });
     }
-    console.log("updategraph() called.")
-    updategraph();
-    moreFields("writerootObj","readrootObj","NodeProperty");
   });
 
   // creates a relationship from the data in the create-relationship input form
@@ -456,11 +454,10 @@ $(document).ready(function(){
             $(this)[0].parentNode.removeChild($(this)[0]);
           });
           alert("Created relationship with ID " + data + ".");
-          // would now like option to reload the visualisation here
+          redoviz();
         };
       });
     }
-    moreFields("writerootArr","readrootArr","ArrProperty");
   });
 
 
@@ -745,7 +742,7 @@ $(document).ready(function(){
      $(window).keydown(function(e) {
         var code = e.keyCode || e.which;
         //console.log(code, buildingarrow);
-        if(code==9) {
+        if((code == 9) && (window.location.hash == "#syntax")) {
           e.preventDefault(); 
           if(!buildingarrow){
             $("#searchAddArrowField").focus();
