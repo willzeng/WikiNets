@@ -583,6 +583,7 @@ $(document).ready(function(){
           $(".EditArrowProperty").each(function(i, obj) {
             $(this)[0].parentNode.removeChild($(this)[0]);
           });
+          redoviz();
         }
       });
     };
