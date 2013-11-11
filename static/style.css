@@ -5,6 +5,7 @@
   .tt-is-under-cursor{ background-color: #e3edef; }
 
   /*Header css*/
+  #header { background-color:white; }
   h1 a{ color:black; text-decoration:none; }
   h1 a:hover{ background:#e3edef; }
 
@@ -13,9 +14,14 @@
   .node { stroke: none; stroke-width: 1.5px; }
   .link { stroke: #999; stroke-opacity: .6; }
 
+  /* Stuff moved out of the .jade file */
+  #buildbar { color:#3b5d14; background:white; font-weight:bold; padding:4px; height:100%; width:300px; float:left; margin-left:10px; }
+  #searchbar { font-size:12px; color:#3b5d14; background:white; font-weight:bold; padding:4px; float:left; }
+  #titler { background:#FFFFFF;font-size:18px;color:#000000;text-align:center;width:303px;height:30; }
+
   /*Css for the sidebar*/
   ul, li{ margin:0; border:0; padding:0; list-style:none; }
-  #sidebar{ font-size:12px; color:#3b5d14; background:white; font-weight:bold; padding:4px; float:left; }
+  #sidebar{ font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;height:100%;width: 300px;float:right;margin-right: 10px; }
   #sidebar .menu li { height:30px; float:left; margin-right:10px; }
   #sidebar .menu li a{ color:#3b5d14; text-decoration:none; padding:0 10px; height:30px; line-height:30px; display:block; float:left; padding:0 26px 0 10px; }
   #sidebar .menu li a:hover{ color:#666666; }

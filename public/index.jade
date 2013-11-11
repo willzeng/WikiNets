@@ -14,13 +14,13 @@ html
 
   body
 
-    #buildbar(style='color:#3b5d14;background:white;font-weight:bold;padding:4px;height:100%;width:300px;float:left;margin-left: 10px;')
+    #buildbar
 
-      #header(style='background-color: white;')
+      #header
       h1(style='margin-bottom: 5px; margin-left: 10px;')
         a(href='http://thewikinetsproject.wordpress.com/') WikiNets
 
-      #searchbar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;float:left;')
+      #searchbar
         form(method="post",action="/search_id")
         input#searchBox(type="text") 
         input#getNode(type="submit",value="Get Node")
@@ -110,10 +110,10 @@ html
 
     #maingraph(style="height:20px")
 
-    #sidebar(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;height:100%;width: 300px;float:right;margin-right: 10px;')
+    #sidebar
         ul.menu
           li
-            #titler(style="background:#FFFFFF;font-size:18px;color:#000000;text-align:center;width:303px;height:30")
+            #titler
               p#selectednamebox No Node Selected
           ul#sm_3.submenu
             li
@@ -158,17 +158,5 @@ html
     //  a(href='http://thewikinetsproject.wordpress.com') About
     //  | |
     //  a(href='http://thewikinetsproject.wordpress.com/about/') Contact
-
-    //CHANGE
-
-    //h1 nodes in database: 
-    //ul
-    //  each node in displaydata["nodes"]
-    //   li= JSON.stringify(node)
-
-    //h1 arrows in database:
-    //ul
-    //  each node in displaydata["links"]
-    //   li= JSON.stringify(node)
 
 
