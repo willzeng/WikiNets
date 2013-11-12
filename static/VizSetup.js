@@ -290,7 +290,7 @@ $.getJSON('/json', function(data){
 
   var force = d3.layout.force()
   .charge(-400)
-  .linkDistance(80)
+  .linkDistance(90)
   .size([width, height]);
 
   // creates a place for the grey-out buttons to go at bottom of body
