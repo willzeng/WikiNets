@@ -229,7 +229,7 @@ function SANcreateNode(amBuildingArrow, readField){
       console.log("Set source to: ", data);
       source=data;
     }
-    alert("You have created Node: " + data);
+    //alert("You have created Node: " + data);
     console.log("Redoing the viz");
     redoviz();
   });
@@ -246,7 +246,7 @@ function SANcreateArrow(){
     $('#searchAddArrowField').val("");
     //buildingarrow=false;
     $('#searchAddNodeFieldLabel').text("(Source) Node"); 
-    alert("You have created an arrow from source: " + source + " to target: " + target);
+    alert("You have created arrow " + data + " from source: " + source + " to target: " + target);
     
     redoviz();
 
@@ -346,7 +346,7 @@ $(document).ready(function(){
       });
       console.log(JSON.stringify(nodeObject[1]));
       $.post('/create_node', nodeObject[1], function(data) {
-        alert("Created node with ID " + data);
+        //alert("Created node with ID " + data);
         moreFields("writerootObj","readrootObj","NodeProperty");
         redoviz();
       });
@@ -395,7 +395,7 @@ $(document).ready(function(){
           $('.ArrProperty').each(function(i, obj) {
             $(this)[0].parentNode.removeChild($(this)[0]);
           });
-          alert("Created relationship with ID " + data + ".");
+          //alert("Created relationship with ID " + data + ".");
           redoviz();
         };
       });
@@ -474,7 +474,7 @@ $(document).ready(function(){
         if (data === "error") {
           alert("Could not delete node " + selected_node + ". Ensure you delete all relationships involving a node before deleting the node itself.");
         } else {
-          alert("Deleted node " + selected_node + ".");
+          //alert("Deleted node " + selected_node + ".");
           $("#edit-menu-inputs").css("display", "none");
           $(".EditProperty").each(function(i, obj) {
             $(this)[0].parentNode.removeChild($(this)[0]);
