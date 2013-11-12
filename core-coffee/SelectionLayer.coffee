@@ -2,9 +2,9 @@ define [], () ->
 
   class SelectionLayer
 
-    constructor: (args) ->
-      @graphView = args.graphView
-      @parent = args.graphView.el
+    init: (instances) ->
+      @graphView = instances.graphView
+      @parent = @graphView.el
       @$parent = $(@parent)
 
       _.extend this, Backbone.Events
