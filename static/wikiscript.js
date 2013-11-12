@@ -98,7 +98,7 @@ function select_node(nodeid) {
         $("#syntaxNodeInfo").show();
         name = data['name'];
         descript = data['description'];
-        displayedInfo = "Node Name: " + JSON.stringify(name) + "\n Node description: " + JSON.stringify(descript);
+        displayedInfo = "Node Name: " + name + "\n Node description: " + descript;
         $('#syntaxNodeInfo').text(displayedInfo);
         
         console.log(JSON.stringify(data));
@@ -268,6 +268,7 @@ function switchToNodeCreate(){
   $("#nodeKeyValues").hide();
   $("#searchAddNodeField").show();
   $("#searchAddNodeField").focus();
+  $('#syntaxNodeInfo').hide();
 }
 
 
