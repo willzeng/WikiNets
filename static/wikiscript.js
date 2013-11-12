@@ -94,9 +94,17 @@ function select_node(nodeid) {
         //Switches out menus
         $("#nodeKeyValues").show();
         $('#nodeKeyValues').text(JSON.stringify(data));
+
+        $("#syntaxNodeInfo").show();
+        name = data['name'];
+        descript = data['description'];
+        displayedInfo = "Node Name: " + JSON.stringify(name) + "\n Node description: " + JSON.stringify(descript);
+        $('#syntaxNodeInfo').text(displayedInfo);
+        
         console.log(JSON.stringify(data));
         $('#SelectNodeID').val(selected_node);
         $("#editButtonHolder").show();
+        
         $("#queryform").hide();
         cleanup_editable_menu();
 
@@ -710,6 +718,7 @@ $(document).ready(function(){
   $("#stopeEditNodeButton").on("click", function(event){
     $("#nodeKeyValues").show();
     $("#editButtonHolder").show();
+    
     select_node(selected_node);
     $("#queryform").show();
     $("#stopeEditButtonHolder").hide();
