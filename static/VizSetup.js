@@ -289,8 +289,8 @@ $.getJSON('/json', function(data){
   var color = d3.scale.category20();
 
   var force = d3.layout.force()
-  .charge(-360)
-  .linkDistance(50)
+  .charge(-400)
+  .linkDistance(80)
   .size([width, height]);
 
   // creates a place for the grey-out buttons to go at bottom of body
