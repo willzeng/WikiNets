@@ -3,7 +3,7 @@ define [], () ->
   class SelectionLayer
 
     init: (instances) ->
-      @graphView = instances.graphView
+      @graphView = instances.GraphView
       @parent = @graphView.el
       @$parent = $(@parent)
 
