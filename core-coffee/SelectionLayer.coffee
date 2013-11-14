@@ -61,6 +61,7 @@ define [], () ->
             x: e.clientX
             y: e.clientY
           }
+          @determineSelection()
 
           return false;
 
