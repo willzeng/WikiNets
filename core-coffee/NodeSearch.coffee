@@ -1,7 +1,7 @@
 # provides an input box which can add nodes to the graph
-define [], () ->
+define ["AbstractPluginView"], (AbstractPluginView) ->
 
-  class NodeSearch extends Backbone.View
+  class NodeSearch extends AbstractPluginView
 
     events:
       "typeahead:selected input": "addNode"
@@ -16,6 +16,7 @@ define [], () ->
         e.preventDefault()
       @render()
       instances["Layout"].addTopRight @el
+      super()
 
     render: ->
       $container = $("<div />").addClass("node-search-container")

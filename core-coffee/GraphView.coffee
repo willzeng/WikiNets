@@ -1,5 +1,5 @@
 # renders the graph using d3's force directed layout
-define ["SelectionLayer"], (SelectionLayer) ->
+define ["AbstractPluginView"], (AbstractPluginView) ->
 
   class LinkFilter extends Backbone.Model
     initialize: () ->
@@ -13,7 +13,7 @@ define ["SelectionLayer"], (SelectionLayer) ->
       else
         @get("threshold")
 
-  class GraphView extends Backbone.View
+  class GraphView extends AbstractPluginView
 
     init: (instances) ->
       @instances = instances # HACK to access other instances
@@ -21,6 +21,7 @@ define ["SelectionLayer"], (SelectionLayer) ->
       @model.on "change", @update.bind(this)
       @render()
       instances["Layout"].addCenter @el
+      super()
 
 
     initialize: (options) ->

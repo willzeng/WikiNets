@@ -11,13 +11,14 @@ provides an interface to add sliders to the ui
 sliders have range [0, 100]
 
 ###
-define [], () ->
+define ["AbstractPluginView"], (AbstractPluginView) ->
 
-  class SlidersView extends Backbone.View
+  class SlidersView extends AbstractPluginView
 
     init: (instances) ->
       @render()
       instances["Layout"].addTopLeft @el
+      super()
 
     render: () ->
       $container = $ """
