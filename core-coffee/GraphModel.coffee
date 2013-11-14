@@ -31,6 +31,7 @@ define [], () ->
       @pushDatum "nodes", node
 
     putLink: (link) ->
+      link.strength ?= 1
       @pushDatum "links", link
       @trigger "add:link", link
 
@@ -56,7 +57,6 @@ define [], () ->
       nodeWasRemoved = (node) ->
         _.some removed, (n) ->
           _.isEqual n, node
-
       linkFilter = (link) ->
         not nodeWasRemoved(link.source) and not nodeWasRemoved(link.target)
       removed = []
