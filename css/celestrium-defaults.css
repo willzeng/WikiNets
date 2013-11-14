@@ -15,21 +15,21 @@ body, .node-search-container input {font-family: "Trebuchet MS";}
     width: 100%;
 }
 /* container positioning */
-.container {position: fixed; z-index: 10; background-color: #ccc;  padding: 2px;}
+/*.container {position: fixed; z-index: 10; background-color: #ccc;  padding: 2px;}
 #top-left-container { top: 5px; left: 5px; }
 #top-right-container { top: 5px; right: 5px; }
 #bottom-left-container { bottom: 5px; left: 5px;}
 #bottom-right-container {bottom: 5px; right: 5px; text-align: right; }
-
+*/
 /* title */
-#top-center-outer-container {position: fixed; top: 5px; width: 100%; padding: 2px;}
+/*#top-center-outer-container {position: fixed; top: 5px; width: 100%; padding: 2px;}
 #title {background-color: #ccc; padding: 4px; font-size: 18pt;}
-
+*/
 /* hide stuff */
-#bottom-center-outer-container {position: fixed; bottom: 5px; width: 100%;}
+/*#bottom-center-outer-container {position: fixed; bottom: 5px; width: 100%;}
 #toggle { font-family: "Trebuchet MS"; font-size: 12pt; }
 #toggle:hover {color: white;}
-
+*/
 /* graph workspace */
 .node circle {}
 .node.selected circle {fill: steelblue;}

@@ -6,7 +6,7 @@ define [], () ->
 
   class Layout extends Backbone.View
 
-    events: "click #bottom-center-outer-container #toggle": "toggle"
+    # events: "click #bottom-center-outer-container #toggle": "toggle"
 
     constructor: (@options) ->
       super(@options)
@@ -32,10 +32,14 @@ define [], () ->
       #     <a href="https://github.com/jdhenke/celestrium">celestrium repo</a>
       #   </div>
       # """
+      @bottom = $("<div id=\"bottom-center-outer-container\"><button id=\"toggle\">Show/Hide</button></div>")
+      @pluginContainer.append @bottom
+      @bottomRight = $("<div><a href=\"https://github.com/jdhenke/celestrium\">celestrium repo</a></div>")
+      @pluginContainer.append @bottomRight
       return this
 
-    toggle: () ->
-      $el.toggle() for $el in [@tl, @bl, @br, @tr, @top]
+    # toggle: () ->
+    #   $el.toggle() for $el in [@tl, @bl, @br, @tr, @top]
 
     addCenter: (el) ->
       @$el.append el
