@@ -2,9 +2,11 @@ define [], () ->
 
   class SelectionLayer
 
-    constructor: (args) ->
-      @parent = args.parent
+    init: (instances) ->
+      @graphView = instances.GraphView
+      @parent = @graphView.el
       @$parent = $(@parent)
+
       _.extend this, Backbone.Events
       @_intializeDragVariables()
       @render()
@@ -12,15 +14,20 @@ define [], () ->
     render: =>
       @canvas = $('<canvas/>').addClass('selectionLayer')
                   .css('position', 'absolute')
-                  .attr('width', $('body').width())
-                  .attr('height', $('body').height())
                   .css('top', 0)
                   .css('left', 0)
-                  .css('margin', '8px')
                   .css('pointer-events', 'none')[0]
 
+      @_sizeCanvas()
+
       @$parent.append @canvas
-      @_registerMouseEvents()
+
+      @_registerEvents()
+
+    _sizeCanvas: =>
+      ctx = @canvas.getContext('2d')
+      ctx.canvas.width = $(window).width()
+      ctx.canvas.height = $(window).height()
 
     _intializeDragVariables: =>
       @dragging = false
@@ -38,14 +45,24 @@ define [], () ->
       @startPoint.x = coord.x
       @startPoint.y = coord.y
 
-    _registerMouseEvents: =>
+    _registerEvents: =>
+      $(window).resize (e) =>
+        @_sizeCanvas()
+
       @$parent.mousedown (e) =>
         if e.shiftKey
           @dragging = true;
           _.extend @startPoint, {
-            x: e.pageX
-            y: e.pageY
+            x: e.clientX
+            y: e.clientY
           }
+
+          _.extend @currentPoint, {
+            x: e.clientX
+            y: e.clientY
+          }
+          @determineSelection()
+
           return false;
 
       @$parent.mousemove (e) =>
@@ -53,10 +70,11 @@ define [], () ->
           if @dragging
             _.extend @prevPoint, @currentPoint
             _.extend @currentPoint, {
-              x: e.pageX
-              y: e.pageY
+              x: e.clientX
+              y: e.clientY
             }
             @renderRect()
+            @determineSelection()
             return false;
 
       @$parent.mouseup (e) =>
@@ -76,6 +94,11 @@ define [], () ->
           @dragging = false
           @_clearRect @startPoint, @prevPoint
           @_clearRect @startPoint, @currentPoint
+
+    determineSelection: =>
+      # find out what nodes are in box
+      rectDim = @rectDim(@startPoint, @currentPoint)
+      @graphView.instances['NodeSelection'].selectBoundedNodes rectDim
 
     renderRect: =>
       @_clearRect @startPoint, @prevPoint

@@ -80,6 +80,24 @@ define [], () ->
       _.filter @graphModel.getNodes(), (node) ->
         node.selected
 
+    selectBoundedNodes: (dim) ->
+      selectRect = {
+        left: dim.x
+        right: dim.x + dim.width
+        top: dim.y
+        bottom: dim.y + dim.height
+      }
+
+      intersect = (rect1, rect2) ->
+        return !(rect1.right < rect2.left || rect1.bottom < rect2.top || rect1.left > rect2.right || rect1.top > rect2.bottom)
+
+      @graphView.getNodeSelection().each (datum, i) ->
+        bcr = this.getBoundingClientRect()
+        datum.selected = intersect(selectRect, bcr)
+
+      @trigger 'change'
+      @renderSelection()
+
     # select all nodes which have a path to node
     # using links meeting current Connectivity criteria
     selectConnectedComponent: (node) ->
