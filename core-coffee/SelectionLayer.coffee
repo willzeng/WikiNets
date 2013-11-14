@@ -56,6 +56,12 @@ define [], () ->
             x: e.clientX
             y: e.clientY
           }
+
+          _.extend @currentPoint, {
+            x: e.clientX
+            y: e.clientY
+          }
+
           return false;
 
       @$parent.mousemove (e) =>
