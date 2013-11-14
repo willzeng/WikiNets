@@ -2,15 +2,14 @@
 # `addStat(label)` adds a stat with said label and returns a function
 # `update(newVal)` which can be called with udpated values of the stat
 # and the displayed statistic will be updated
-define ["AbstractPluginView"], (AbstractPluginView) ->
+define [], () ->
 
-  class StatsView extends AbstractPluginView
+  class StatsView extends Backbone.View
     init: (instances) ->
       @render()
       @graphModel = instances["GraphModel"]
       @listenTo @graphModel, "change", @update
       instances["Layout"].addBottomLeft @el
-      super()
 
     render: ->
       container = $("<div />").addClass("graph-stats-container").appendTo(@$el)

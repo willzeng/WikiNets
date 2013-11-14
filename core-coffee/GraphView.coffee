@@ -1,5 +1,5 @@
 # renders the graph using d3's force directed layout
-define ["AbstractPluginView"], (AbstractPluginView) ->
+define [], () ->
 
   class LinkFilter extends Backbone.Model
     initialize: () ->
@@ -13,7 +13,7 @@ define ["AbstractPluginView"], (AbstractPluginView) ->
       else
         @get("threshold")
 
-  class GraphView extends AbstractPluginView
+  class GraphView extends Backbone.View
 
     init: (instances) ->
       @instances = instances # HACK to access other instances
@@ -21,7 +21,6 @@ define ["AbstractPluginView"], (AbstractPluginView) ->
       @model.on "change", @update.bind(this)
       @render()
       instances["Layout"].addCenter @el
-      super()
 
 
     initialize: (options) ->

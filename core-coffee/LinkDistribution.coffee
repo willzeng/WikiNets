@@ -1,7 +1,7 @@
 # provides a variably smoothed PDF of the distribution link strengths.
 # also provides a slider on that distribution
 # which filters out links with weight below that threshold.
-define ["AbstractPluginView"], (AbstractPluginView) ->
+define [], () ->
 
   margin =
     top: 10
@@ -14,7 +14,7 @@ define ["AbstractPluginView"], (AbstractPluginView) ->
   minStrength = 0
   maxStrength = 1
 
-  class LinkDistributionView extends AbstractPluginView
+  class LinkDistributionView extends Backbone.View
 
     className: "link-cdf"
 
@@ -35,7 +35,6 @@ define ["AbstractPluginView"], (AbstractPluginView) ->
         @windowModel.set "window", scale.invert(val)
       @render()
       instances["Layout"].addTopLeft @el
-      super()
 
     render: ->
 

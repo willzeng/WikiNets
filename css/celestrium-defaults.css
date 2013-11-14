@@ -11,9 +11,21 @@ body, .node-search-container input {font-family: "Trebuchet MS";}
     right: 10px;
 }
 
-.plugin-container .plugin {
+.plugin-container .plugin-wrapper {
     width: 100%;
+    clear: both;
 }
+
+.plugin-wrapper .plugin-content {
+    position: relative;
+    float: left;
+}
+.plugin-wrapper .plugin-controls {
+    position: relative;
+    width: 15px;
+    float: right;
+}
+
 /* container positioning */
 /*.container {position: fixed; z-index: 10; background-color: #ccc;  padding: 2px;}
 #top-left-container { top: 5px; left: 5px; }

@@ -1,7 +1,7 @@
 # provides details of the selected nodes
-define ["AbstractPluginView"], (AbstractPluginView) ->
+define [], () ->
 
-  class NodeDetailsView extends AbstractPluginView
+  class NodeDetailsView extends Backbone.View
 
     init: (instances) ->
       @selection = instances["NodeSelection"]
@@ -9,7 +9,6 @@ define ["AbstractPluginView"], (AbstractPluginView) ->
       @listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
       instances["Layout"].addBottomRight @el
       @$el.toggle()
-      super()
 
     update: ->
       @$el.empty()
