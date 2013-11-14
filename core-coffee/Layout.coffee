@@ -13,35 +13,45 @@ define [], () ->
     init: () ->
       @render()
     render: ->
-      @tl = $("<div id=\"top-left-container\" class=\"container\"/>")
-      @bl = $("<div id=\"bottom-left-container\" class=\"container\"/>")
-      @br = $("<div id=\"bottom-right-container\" class=\"container\"/>")
-      @tr = $("<div id=\"top-right-container\" class=\"container\"/>")
-      @top = $("""<div id="top-center-outer-container" align="center"/>""")
-      @bottom = $ """
-        <div id="bottom-center-outer-container" align="center">
-          <button id="toggle">Show/Hide</button>
-        </div>
-      """
-      @$el.append($el) for $el in [@tl, @bl, @br, @tr, @top, @bottom]
-      @addTop($("""<span id="title">#{@options.title}</span>""")) if @options.title?
-      @addBottomRight $ """
-        <div>
-          <a href="https://github.com/jdhenke/celestrium">celestrium repo</a>
-        </div>
-      """
+      @pluginContainer = $("<div class=\"plugin-container\"/>")
+      @$el.append @pluginContainer
+      # @tl = $("<div id=\"top-left-container\" class=\"container\"/>")
+      # @bl = $("<div id=\"bottom-left-container\" class=\"container\"/>")
+      # @br = $("<div id=\"bottom-right-container\" class=\"container\"/>")
+      # @tr = $("<div id=\"top-right-container\" class=\"container\"/>")
+      # @top = $("""<div id="top-center-outer-container" align="center"/>""")
+      # @bottom = $ """
+      #   <div id="bottom-center-outer-container" align="center">
+      #     <button id="toggle">Show/Hide</button>
+      #   </div>
+      # """
+      # @$el.append($el) for $el in [@tl, @bl, @br, @tr, @top, @bottom]
+      # @addTop($("""<span id="title">#{@options.title}</span>""")) if @options.title?
+      # @addBottomRight $ """
+      #   <div>
+      #     <a href="https://github.com/jdhenke/celestrium">celestrium repo</a>
+      #   </div>
+      # """
       return this
+
     toggle: () ->
       $el.toggle() for $el in [@tl, @bl, @br, @tr, @top]
+
     addCenter: (el) ->
       @$el.append el
+
     addTopLeft: (el) ->
-      @tl.append el
+      @pluginContainer.append el
+      # @tl.append el
     addBottomLeft: (el) ->
-      @bl.append el
+      @pluginContainer.append el
+      # @bl.append el
     addTopRight: (el) ->
-      @tr.append el
+      @pluginContainer.append el
+      # @tr.append el
     addBottomRight: (el) ->
-      @br.append el
+      @pluginContainer.append el
+      # @br.append el
     addTop: (el) ->
-      @top.append el
+      @pluginContainer.append el
+      # @top.append el

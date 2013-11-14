@@ -1,6 +1,19 @@
 /* overall font */
 body, .node-search-container input {font-family: "Trebuchet MS";}
 
+/* plugin container */
+.plugin-container {
+    position: fixed;
+    z-index: 10;
+    background-color: #ccc;
+    padding: 2px;
+    box-sizing: border-box;
+    right: 10px;
+}
+
+.plugin-container .plugin {
+    width: 100%;
+}
 /* container positioning */
 .container {position: fixed; z-index: 10; background-color: #ccc;  padding: 2px;}
 #top-left-container { top: 5px; left: 5px; }
