@@ -5,21 +5,40 @@
 define [], () ->
   class PluginWrapper extends Backbone.View
     className: 'plugin-wrapper'
-    events:
-      'click .plugin-controls .close': 'close'
-
-    close: (e) ->
-      console.log 'collapse'
 
     initialize: (args) ->
       @plugin = args.plugin
       @collapsed = false
       @render()
 
+    events:
+      'click .plugin-controls .header': 'close'
+
+    close: (e) ->
+      if @collapsed
+        @collapsed = false
+        # expand
+        @expand @$el.find('.plugin-content')
+      else
+        @collapsed = true
+        # collapse
+        @collapse @$el.find('.plugin-content')
+
+    expand: (el) ->
+      el.slideDown(300)
+      @$el.removeClass('collapsed')
+
+    collapse: (el) ->
+      el.slideUp(300)
+      @$el.addClass('collapsed')
+
     render: ->
       @controls = $ """
         <div class=\"plugin-controls\">
-          <div class=\"close\">Header</div>
+          <div class=\"header\">
+            <span>Header</span>
+            <div class=\"arrow\"></div>
+          </div>
         </div>
       """
       @content = $("<div class=\"plugin-content\"></div>")
@@ -57,7 +76,6 @@ define [], () ->
 
     renderPlugins: ->
       for pluginWrapper in @pluginWrappers
-        console.log pluginWrapper.plugin
         @pluginContainer.append pluginWrapper.el
 
     addCenter: (el) ->
