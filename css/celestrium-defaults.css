@@ -74,7 +74,7 @@ body, .node-search-container input {font-family: "Trebuchet MS";}
 .cdf .axis line {fill: none; stroke: #000; shape-rendering: crispEdges; }
 .cdf .axis .label {font-size: 10pt; text-anchor: middle;}
 .cdf-header {text-align: center; }
-.threshold-line {stroke: #EEE; stroke-width: 3px; cursor: ew-resize;}
+.threshold-line {stroke: steelblue; stroke-width: 3px; cursor: ew-resize;}
 .link-cdf.drag {cursor: ew-resize;}
 .link-cdf.drag .threshold-line, .threshold-line:hover {stroke: #FFF;}
 
