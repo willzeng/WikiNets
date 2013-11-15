@@ -8,6 +8,7 @@ define [], () ->
 
     initialize: (args) ->
       @plugin = args.plugin
+      @pluginName = args.name
       @collapsed = false
       @render()
 
@@ -36,7 +37,7 @@ define [], () ->
       @controls = $ """
         <div class=\"plugin-controls\">
           <div class=\"header\">
-            <span>Header</span>
+            <span>#{@pluginName}</span>
             <div class=\"arrow\"></div>
           </div>
         </div>
@@ -81,20 +82,10 @@ define [], () ->
     addCenter: (el) ->
       @$el.append el
 
-    addPlugin: (plugin) ->
+    addPlugin: (plugin, name="Plugin") ->
       pluginWrapper = new PluginWrapper(
         plugin: plugin
+        name: name
         )
       @pluginWrappers.push pluginWrapper
       @renderPlugins()
-
-    addTopLeft: (el) ->
-      @addPlugin el
-    addBottomLeft: (el) ->
-      @addPlugin el
-    addTopRight: (el) ->
-      @addPlugin el
-    addBottomRight: (el) ->
-      @addPlugin el
-    addTop: (el) ->
-      @addPlugin el

@@ -34,7 +34,7 @@ define [], () ->
       instances["Sliders"].addSlider "Smoothing", scale(@windowModel.get("window")), (val) =>
         @windowModel.set "window", scale.invert(val)
       @render()
-      instances["Layout"].addTopLeft @el
+      instances["Layout"].addPlugin @el, 'Link Distribution'
 
     render: ->
 

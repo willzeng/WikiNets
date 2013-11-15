@@ -5,47 +5,48 @@ body, .node-search-container input {font-family: "Trebuchet MS";}
 .plugin-container {
     position: fixed;
     z-index: 10;
-    background-color: red;
+    /*background-color: red;*/
     padding: 2px;
     box-sizing: border-box;
     right: 10px;
     overflow: hidden;
     min-width: 240px;
 }
-/*.plugin-wrapper.collapsed .plugin-content{
-    display: none;
-}*/
+
+.plugin-controls .header {
+    color: lightgrey;
+}
 .plugin-wrapper .plugin-controls .arrow{
+    /* down arrow */
     float: right;
-    margin-top: 4px;
+    margin-top: 6px;
     margin-right: 5px;
     width: 0;
     height: 0;
-    border-top: 5px solid black;
+    border-top: 5px solid lightgrey;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-bottom: 0px solid black;
+    border-bottom: 0px solid lightgrey;
 }
 .plugin-wrapper.collapsed .plugin-controls .arrow {
     /* left arrow */
-    margin-top: 2px;
+    margin-top: 4px;
     margin-right: 8px;
-    border-left: 0px solid black;
+    border-left: 0px solid lightgrey;
     border-top: 5px solid transparent;
     border-bottom: 5px solid transparent;
-    border-right: 5px solid black;
+    border-right: 5px solid lightgrey;
 }
 
 .plugin-container .plugin-wrapper {
     width: 100%;
-    border: solid 1px black;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 .plugin-wrapper .plugin-controls {
-    border: black solid;
-    border-width: 0 0 1px 0;
+    background-color: steelblue;
+    padding: 2px;
 }
 
 /* graph workspace */
@@ -63,7 +64,7 @@ body, .node-search-container input {font-family: "Trebuchet MS";}
 .tt-suggestion { margin-left: 2px;}
 
 /* stats */
-.graph-stat {color: white;}
+.graph-stat {color: black;}
 
 /* cdf */
 .link-cdf, .cdf {margin-left: auto; margin-right: auto; width: 200px; }

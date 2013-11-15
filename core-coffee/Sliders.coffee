@@ -17,7 +17,7 @@ define [], () ->
 
     init: (instances) ->
       @render()
-      instances["Layout"].addTopLeft @el
+      instances["Layout"].addPlugin @el, 'Sliders'
 
     render: () ->
       $container = $ """

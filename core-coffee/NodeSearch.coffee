@@ -15,7 +15,7 @@ define [], () ->
         @$("input").focus()
         e.preventDefault()
       @render()
-      instances["Layout"].addTopRight @el
+      instances["Layout"].addPlugin @el, 'Search'
 
     render: ->
       $container = $("<div />").addClass("node-search-container")
