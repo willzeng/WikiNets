@@ -5,21 +5,32 @@
 define [], () ->
   class PluginWrapper extends Backbone.View
     className: 'plugin-wrapper'
+    events:
+      'click .plugin-controls .close': 'close'
+
+    close: (e) ->
+      console.log 'collapse'
+
     initialize: (args) ->
       @plugin = args.plugin
+      @collapsed = false
       @render()
 
     render: ->
+      @controls = $ """
+        <div class=\"plugin-controls\">
+          <div class=\"close\">Header</div>
+        </div>
+      """
       @content = $("<div class=\"plugin-content\"></div>")
       @content.append @plugin
-      @controls = $("<div class=\"plugin-controls\">x</div>")
-      @$el.append @content
+
+
       @$el.append @controls
+      @$el.append @content
 
 
   class Layout extends Backbone.View
-
-    # events: "click #bottom-center-outer-container #toggle": "toggle"
 
     constructor: (@options) ->
       super(@options)
@@ -45,13 +56,9 @@ define [], () ->
       return this
 
     renderPlugins: ->
-      # i feel like i should empty these... but then things break
-      # @pluginContainer.empty()
       for pluginWrapper in @pluginWrappers
         console.log pluginWrapper.plugin
         @pluginContainer.append pluginWrapper.el
-    # toggle: () ->
-    #   $el.toggle() for $el in [@tl, @bl, @br, @tr, @top]
 
     addCenter: (el) ->
       @$el.append el

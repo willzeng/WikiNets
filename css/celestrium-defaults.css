@@ -5,43 +5,26 @@ body, .node-search-container input {font-family: "Trebuchet MS";}
 .plugin-container {
     position: fixed;
     z-index: 10;
-    background-color: #ccc;
+    background-color: red;
     padding: 2px;
     box-sizing: border-box;
     right: 10px;
+    overflow: hidden;
 }
 
 .plugin-container .plugin-wrapper {
     width: 100%;
-    clear: both;
+    border: solid 1px black;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    overflow: hidden;
 }
 
-.plugin-wrapper .plugin-content {
-    position: relative;
-    float: left;
-}
 .plugin-wrapper .plugin-controls {
-    position: relative;
-    width: 15px;
-    float: right;
+    border: black solid;
+    border-width: 0 0 1px 0;
 }
 
-/* container positioning */
-/*.container {position: fixed; z-index: 10; background-color: #ccc;  padding: 2px;}
-#top-left-container { top: 5px; left: 5px; }
-#top-right-container { top: 5px; right: 5px; }
-#bottom-left-container { bottom: 5px; left: 5px;}
-#bottom-right-container {bottom: 5px; right: 5px; text-align: right; }
-*/
-/* title */
-/*#top-center-outer-container {position: fixed; top: 5px; width: 100%; padding: 2px;}
-#title {background-color: #ccc; padding: 4px; font-size: 18pt;}
-*/
-/* hide stuff */
-/*#bottom-center-outer-container {position: fixed; bottom: 5px; width: 100%;}
-#toggle { font-family: "Trebuchet MS"; font-size: 12pt; }
-#toggle:hover {color: white;}
-*/
 /* graph workspace */
 .node circle {}
 .node.selected circle {fill: steelblue;}
