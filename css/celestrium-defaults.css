@@ -2,52 +2,19 @@
 body, .node-search-container input {font-family: "Trebuchet MS";}
 
 /* plugin container */
-.plugin-container {
-    position: fixed;
-    z-index: 10;
-    /*background-color: red;*/
-    padding: 2px;
-    box-sizing: border-box;
-    right: 10px;
-    overflow: hidden;
-    min-width: 240px;
-}
+.plugin-container {position: fixed; z-index: 10; padding: 2px; box-sizing: border-box; right: 10px; overflow: hidden; min-width: 240px;}
+.plugin-container .plugin-wrapper {width: 100%; padding-top: 2px; padding-bottom: 2px;}
 
-.plugin-controls .header {
-    color: lightgrey;
-}
-.plugin-wrapper .plugin-controls .arrow{
-    /* down arrow */
-    float: right;
-    margin-top: 6px;
-    margin-right: 5px;
-    width: 0;
-    height: 0;
-    border-top: 5px solid lightgrey;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-bottom: 0px solid lightgrey;
-}
-.plugin-wrapper.collapsed .plugin-controls .arrow {
-    /* left arrow */
-    margin-top: 4px;
-    margin-right: 8px;
-    border-left: 0px solid lightgrey;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
-    border-right: 5px solid lightgrey;
-}
+.plugin-container .plugin-wrapper .plugin-controls {background-color: steelblue; padding: 2px;}
 
-.plugin-container .plugin-wrapper {
-    width: 100%;
-    padding-top: 2px;
-    padding-bottom: 2px;
-}
+.plugin-container .plugin-wrapper .plugin-controls .header {color: lightgrey;}
+.plugin-container .plugin-wrapper .plugin-controls .header:hover {cursor: pointer;}
 
-.plugin-wrapper .plugin-controls {
-    background-color: steelblue;
-    padding: 2px;
-}
+/* down arrow */
+.plugin-container .plugin-wrapper .plugin-controls .arrow{float: right; margin-top: 6px; margin-right: 5px; width: 0; height: 0; border-top: 5px solid lightgrey; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 0px solid lightgrey;}
+/* left arrow */
+.plugin-container .plugin-wrapper.collapsed .plugin-controls .arrow {margin-top: 4px; margin-right: 8px; border-left: 0px solid lightgrey; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-right: 5px solid lightgrey;}
+
 
 /* graph workspace */
 .node circle {}
