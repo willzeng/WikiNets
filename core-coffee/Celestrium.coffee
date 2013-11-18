@@ -24,6 +24,7 @@ globalLibs = [
   '../lib/underscore',
   '../lib/backbone',
   '../lib/d3',
+  '../lib/less'
 ]
 
 define globalLibs, () ->
