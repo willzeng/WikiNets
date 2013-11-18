@@ -16,7 +16,7 @@ define [], () ->
 
   class LinkDistributionView extends Backbone.View
 
-    className: "link-cdf"
+    className: "link-pdf"
 
     constructor: (options) ->
       @windowModel = new Backbone.Model()
@@ -38,19 +38,19 @@ define [], () ->
 
     render: ->
 
-      ### one time setup of link strength cdf view ###
+      ### one time setup of link strength pdf view ###
 
       # create cleanly transformed workspace to generate display
       @svg = d3.select(@el)
               .append("svg")
-              .classed("cdf", true)
+              .classed("pdf", true)
               .attr("width", width + margin.left + margin.right)
               .attr("height", height + margin.top + margin.bottom)
               .append("g")
               .classed("workspace", true)
               .attr("transform", "translate(#{margin.left},#{margin.top})")
       @svg.append("g")
-        .classed("cdfs", true)
+        .classed("pdfs", true)
 
       # scale mapping link strength to x coordinate in workspace
       @x = d3.scale.linear()
@@ -172,12 +172,12 @@ define [], () ->
 
       path = d3
         .select(@el)
-        .select(".cdfs")
-        .selectAll(".cdf")
+        .select(".pdfs")
+        .selectAll(".pdf")
           .data(data)
       path.enter()
         .append("path")
-        .classed("cdf", true)
+        .classed("pdf", true)
       path.exit().remove()
       path
         .attr("d", area)
