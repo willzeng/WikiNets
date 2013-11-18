@@ -153,19 +153,41 @@ define [], () ->
         .domain([0, maxY])
         .range([height, 0])
 
-      visiblePDF = _.filter pdf, (bin) =>
-        @graphView.getLinkFilter().get("threshold") < bin.x
-
-      # set opacity on area, bad I know
-      pdf.opacity = 0.25
-      visiblePDF.opacity = 1
-
       # create area generator based on pdf
       area = d3.svg.area()
         .interpolate("monotone")
         .x((d) => @x(d.x))
         .y0(@y(0))
         .y1((d) => @y(d.y))
+
+      ###
+
+      define the x and y points to use for the visible links.
+      they should be the points from the original pdf that are above
+      the threshold
+
+      to avoid granularity issues (jdhenke/celestrium#75),
+      we also prepend this list of points with a point with x value exactly at
+      the threshold and y value that is the average of it's neighbors' y values
+
+      ###
+
+      threshold = @graphView.getLinkFilter().get("threshold")
+      visiblePDF = _.filter pdf, (bin) =>
+        bin.x > threshold
+      if visiblePDF.length > 0
+        i = pdf.length - visiblePDF.length
+        if i > 0
+          y = (pdf[i-1].y + pdf[i].y) / 2.0
+        else
+          y = pdf[i].y
+        visiblePDF.unshift
+          "x": threshold
+          "y": y
+
+      # set opacity on area, bad I know
+      pdf.opacity = 0.25
+      visiblePDF.opacity = 1
 
       data = [pdf]
       data.push visiblePDF unless visiblePDF.length is 0
