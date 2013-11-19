@@ -4,10 +4,10 @@ define [], () ->
 
     init: (instances) ->
       @graphView = instances.GraphView
-      @parent = @graphView.el
-      @$parent = $(@parent)
-
+      @nodeSelection = instances.NodeSelection
+      @$parent = @graphView.$el
       _.extend this, Backbone.Events
+
       @_intializeDragVariables()
       @render()
 
@@ -98,7 +98,7 @@ define [], () ->
     determineSelection: =>
       # find out what nodes are in box
       rectDim = @rectDim(@startPoint, @currentPoint)
-      @graphView.instances['NodeSelection'].selectBoundedNodes rectDim
+      @nodeSelection.selectBoundedNodes rectDim
 
     renderRect: =>
       @_clearRect @startPoint, @prevPoint
