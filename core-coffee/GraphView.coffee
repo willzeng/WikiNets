@@ -16,7 +16,6 @@ define [], () ->
   class GraphView extends Backbone.View
 
     init: (instances) ->
-      @instances = instances # HACK to access other instances
       @model = instances["GraphModel"]
       @model.on "change", @update.bind(this)
       @render()
