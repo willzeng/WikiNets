@@ -37,6 +37,12 @@ require ["Celestrium"], (Celestrium) ->
   The value is passed to its constructor.
 
   ###
+  
+  doWikiNetsSelection = (nodeName) ->
+      $.getJSON "/json", (data) -> 
+        select_node(node['_id']) for node in data["nodes"] when node['name'] is nodeName
+
+  
   plugins =
 
     # organizes where things are displayed on the screen
@@ -56,9 +62,10 @@ require ["Celestrium"], (Celestrium) ->
 
     # renders the graph using d3's force directedlayout
     GraphView: {}
-
+      
     # allows nodes to be selected
-    NodeSelection: {}
+    NodeSelection: 
+      onClick: doWikiNetsSelection
 
     # provides functions to retreive nodes and links
     # relative present ones
