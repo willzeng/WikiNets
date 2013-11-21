@@ -1,7 +1,10 @@
 # makes nodes "selectable"
 define [], () ->
 
-  class Selection
+  class Selection extends Backbone.View
+
+    constructor: (@options) ->
+     super()
 
     init: (instances) ->
 
@@ -12,15 +15,20 @@ define [], () ->
       @linkFilter = @graphView.getLinkFilter()
       @graphModel = instances['GraphModel']
 
-      @listenTo @keyListener, "down:17:65", @selectAll
-      @listenTo @keyListener, "down:27", @deselectAll
-      @listenTo @keyListener, "down:46", @removeSelection
-      @listenTo @keyListener, "down:13", @removeSelectionCompliment
+      #Link to keycodes for javascript: http://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
+      @listenTo @keyListener, "down:17:65", @selectAll                  #CTRL-A
+      @listenTo @keyListener, "down:27", @deselectAll                   #ESC
+      @listenTo @keyListener, "down:46", @removeSelection               #DEL
+      @listenTo @keyListener, "down:13", @removeSelectionCompliment     #ENTR
 
       # handle selecting and deselecting nodes
       clickSemaphore = 0
       @graphView.on "enter:node", (nodeEnterSelection) =>
         nodeEnterSelection.on("click", (datum, index) =>
+
+          #calls an onClick optional method passed to the constructor
+          @options.onClick(datum['text'])
+
           # ignore drag
           return  if d3.event.defaultPrevented
           datum.fixed = true
