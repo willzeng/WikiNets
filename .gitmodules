@@ -1,0 +1,3 @@
+[submodule "static/celestrium_code"]
+	path = static/celestrium_code
+	url = git://github.com/willzeng/celestrium.git
