@@ -31,7 +31,7 @@
     var plugins;
     plugins = {
       Layout: {
-        el: document.querySelector("body")
+        el: document.querySelector("#maingraph")
       },
       KeyListener: document.querySelector("body"),
       GraphModel: {
@@ -54,9 +54,19 @@
       NodeDetails: {}
     };
     return Celestrium.init(plugins, function(instances) {
-      instances["GraphModel"].putNode({
-        text: "WikiNets"
-      });
+      var loadEverything;
+      loadEverything = function(nodeNames) {
+        var nodeName, _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = nodeNames.length; _i < _len; _i++) {
+          nodeName = nodeNames[_i];
+          _results.push(instances["GraphModel"].putNode({
+            text: nodeName
+          }));
+        }
+        return _results;
+      };
+      $.get('/get_node_names', loadEverything);
       return instances["GraphView"].getLinkFilter().set("threshold", 0);
     });
   });

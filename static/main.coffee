@@ -43,7 +43,7 @@ require ["Celestrium"], (Celestrium) ->
     Layout:
 
       # el is it's container element
-      el: document.querySelector("body")
+      el: document.querySelector("#maingraph")
 
     # listens for keystroke on the dom element it's given
     KeyListener:
@@ -75,11 +75,19 @@ require ["Celestrium"], (Celestrium) ->
 
     NodeDetails: {}
 
+  
+
   # initialize the plugins and execute a callback once done
   Celestrium.init plugins, (instances) ->
 
+    loadEverything = (nodeNames) -> 
+      instances["GraphModel"].putNode {text: nodeName} for nodeName in nodeNames
+
+    #Prepopulate the GraphModel with all the nodes and links
+    $.get('/get_node_names', loadEverything)
+
     # this prepopulates the graph with the "Albert" node
-    instances["GraphModel"].putNode {text: "WikiNets"} #, id:"300"}
+    #instances["GraphModel"].putNode {text: "WikiNets"} #, id:"300"}
 
     # this allows all link strengths to be visible
     instances["GraphView"].getLinkFilter().set("threshold", 0)
