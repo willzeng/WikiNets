@@ -420,5 +420,13 @@ module.exports = class MyApp
           )
     )
 
+    ###
+    get_node_names returns a list of all the node names
+    ###
+    app.get('/get_node_names', (request,response)->
+      inputer = (builder)->response.json (node['name'] for node in builder["nodes"] when typeof node['name'] isnt "undefined")
+      getvizjson inputer, request, response
+    )
+
     port = process.env.PORT || 3000
     app.listen port, -> console.log("Listening on " + port)
