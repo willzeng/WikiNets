@@ -72,18 +72,20 @@
     };
     return Celestrium.init(plugins, function(instances) {
       var loadEverything;
-      loadEverything = function(nodeNames) {
-        var nodeName, _i, _len, _results;
+      loadEverything = function(fullJson) {
+        var node, nodes, _i, _len, _results;
+        nodes = fullJson['nodes'];
         _results = [];
-        for (_i = 0, _len = nodeNames.length; _i < _len; _i++) {
-          nodeName = nodeNames[_i];
+        for (_i = 0, _len = nodes.length; _i < _len; _i++) {
+          node = nodes[_i];
           _results.push(instances["GraphModel"].putNode({
-            text: nodeName
+            text: node['name'],
+            _id: node['_id']
           }));
         }
         return _results;
       };
-      $.get('/get_node_names', loadEverything);
+      $.get('/json', loadEverything);
       return instances["GraphView"].getLinkFilter().set("threshold", 0);
     });
   });

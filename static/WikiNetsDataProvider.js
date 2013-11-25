@@ -42,146 +42,14 @@ all nodes in the graph are added.
     BUG/TODO: doesn't handle asymmetric weights well.
     */
 
-    var WikiNetsDataProvider, graph, linksList, nodesList, _ref;
-    graph = {
-      "A": {
-        "B": 1.0
-      },
-      "B": {
-        "A": 1.0,
-        "C": 0.1
-      },
-      "C": {
-        "B": 0.1
-      }
-    };
-    nodesList = {};
-    linksList = {};
+    var WikiNetsDataProvider, _ref;
     return WikiNetsDataProvider = (function(_super) {
-      var assignNeighbors, convertForCelestrium, filterGetName, findSources, findTargets, getID, getName, newLink, renumberLinkSTIds, setUpNewGraph;
-
       __extends(WikiNetsDataProvider, _super);
 
       function WikiNetsDataProvider() {
         _ref = WikiNetsDataProvider.__super__.constructor.apply(this, arguments);
         return _ref;
       }
-
-      filterGetName = function(name) {
-        if (typeof name === "undefined") {
-          name = "";
-        }
-        return name;
-      };
-
-      getName = function(id) {
-        var node, _i, _len;
-        for (_i = 0, _len = nodesList.length; _i < _len; _i++) {
-          node = nodesList[_i];
-          if (node['_id'] === id) {
-            return filterGetName(node['name']);
-          }
-        }
-      };
-
-      getID = function(name) {
-        var node, _i, _len;
-        for (_i = 0, _len = nodesList.length; _i < _len; _i++) {
-          node = nodesList[_i];
-          if (node['name'] === name) {
-            return node['_id'];
-          }
-        }
-      };
-
-      assignNeighbors = function(centerNode, Nnode, NewGraph, strength) {
-        return NewGraph[centerNode][Nnode] = strength;
-      };
-
-      findTargets = function(id, NewGraph) {
-        var link, _i, _len;
-        for (_i = 0, _len = linksList.length; _i < _len; _i++) {
-          link = linksList[_i];
-          if (link['source'] === id) {
-            assignNeighbors(getName(id), getName(link['target']), NewGraph, link['strength']);
-          }
-        }
-        return NewGraph;
-      };
-
-      setUpNewGraph = function(id, NewGraph) {
-        return NewGraph[getName(id)] = {};
-      };
-
-      findSources = function(id, NewGraph) {
-        var link, _i, _len;
-        for (_i = 0, _len = linksList.length; _i < _len; _i++) {
-          link = linksList[_i];
-          if (link['target'] === id) {
-            assignNeighbors(getName(id), getName(link['source']), NewGraph, link['strength']);
-          }
-        }
-        return NewGraph;
-      };
-
-      renumberLinkSTIds = function(linkSTId) {
-        return nodesList[linkSTId]['_id'];
-      };
-
-      newLink = function(oldlink) {
-        var tmp;
-        tmp = {};
-        tmp['source'] = renumberLinkSTIds(oldlink['source']);
-        tmp['target'] = renumberLinkSTIds(oldlink['target']);
-        tmp['strength'] = 1;
-        return tmp;
-      };
-
-      convertForCelestrium = function(graphNew) {
-        /*console.log "CONVERT HAS BEEN CALLED"
-        console.log graphNew["nodes"]
-        */
-
-        var NewGraph, link, n, node, _i, _j, _k, _len, _len1, _len2;
-        nodesList = (function() {
-          var _i, _len, _ref1, _results;
-          _ref1 = graphNew["nodes"];
-          _results = [];
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            n = _ref1[_i];
-            _results.push(n);
-          }
-          return _results;
-        })();
-        linksList = (function() {
-          var _i, _len, _ref1, _results;
-          _ref1 = graphNew["links"];
-          _results = [];
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            link = _ref1[_i];
-            _results.push(newLink(link));
-          }
-          return _results;
-        })();
-        NewGraph = {};
-        /*console.log "NODESLIST", nodesList
-        console.log "linksList", linksList
-        */
-
-        for (_i = 0, _len = nodesList.length; _i < _len; _i++) {
-          node = nodesList[_i];
-          setUpNewGraph(node['_id'], NewGraph);
-        }
-        for (_j = 0, _len1 = nodesList.length; _j < _len1; _j++) {
-          node = nodesList[_j];
-          findTargets(node['_id'], NewGraph);
-        }
-        for (_k = 0, _len2 = nodesList.length; _k < _len2; _k++) {
-          node = nodesList[_k];
-          findSources(node['_id'], NewGraph);
-        }
-        return NewGraph;
-      };
 
       /*
       
@@ -192,15 +60,14 @@ all nodes in the graph are added.
 
 
       WikiNetsDataProvider.prototype.getLinks = function(node, nodes, callback) {
-        return $.getJSON("/json", function(data) {
-          graph = convertForCelestrium(data);
-          /*console.log "This is the graph: ", graph*/
-
-          return callback(_.map(nodes, function(otherNode, i) {
-            return {
-              "strength": graph[node.text][otherNode.text]
-            };
-          }));
+        return $.post("/get_links", {
+          'node': node,
+          'nodes': nodes
+        }, function(data) {
+          console.log("NODE: ", node);
+          console.log("NODES: ", nodes);
+          console.log("THE get_links POST DATA: ", data);
+          return callback(data);
         });
       };
 
@@ -213,16 +80,20 @@ all nodes in the graph are added.
 
 
       WikiNetsDataProvider.prototype.getLinkedNodes = function(nodes, callback) {
-        return $.getJSON("/json", function(data) {
-          graph = convertForCelestrium(data);
-          return callback(_.chain(nodes).map(function(node) {
-            return _.map(graph[node.text], function(strength, text) {
-              return {
-                "text": text,
-                "id": getID(text)
-              };
-            });
-          }).flatten().value());
+        var makeDisplayable;
+        makeDisplayable = function(n) {
+          n['text'] = n.name;
+          return n;
+        };
+        return $.post("/get_linked_nodes", {
+          'nodes': nodes
+        }, function(data) {
+          var celNodes, n, _i, _len;
+          for (_i = 0, _len = data.length; _i < _len; _i++) {
+            n = data[_i];
+            celNodes = makeDisplayable(n);
+          }
+          return callback(data);
         });
       };
 

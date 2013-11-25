@@ -428,87 +428,118 @@ module.exports = class MyApp
       getvizjson inputer, request, response
     )
 
-    ###
-    get_node_names_and_ids returns a list of all the node names
-    ###
-    app.get('/get_node_names_and_ids', (request,response)->
-      graphDb.cypher.execute("start n=node(*) return n;").then(
-        (noderes)->
-          console.log "Query Executed"
+    # ###
+    # - getLinks(node, nodes, callback) should return array, A, of links 
+    #   st. A[i] is the link from node to nodes[i]
+    #   links are javascript objects and can have any attributes you like
+    #   so long as they don't conflict with d3's attributes and they
+    #   must have a "strength" attribute in [0,1]
+    # ###
+    # #$.post "/get_links", {'node': node, 'nodes': nodes}, (data) ->
+    # app.post('/get_links', (request,response)->
+    #   console.log "GET LINKS REQUESTED"
+    #   console.log request
+    #   node= request.body.node
+    #   nodes= request.body.nodes
 
-          ### Display an example of what is returned by the database for each node. E.g.
+    #   cypherQuery = "START n=node("+node["_id"]+") MATCH p=(n)-[]-(m) RETURN relationships(p);"
+    #   console.log "Executing " + cypherQuery
+    #   graphDb.cypher.execute(cypherQuery).then(
+    #     (relres) ->
+    #       console.log "Get Links executed"
+    #       console.log relres.data[0][0]
+    #       response.json relres.data[0]
+    #       #response.json {from: trim(relres.data[0][0]["start"])[0], to: trim(relres.data[0][0]["end"])[0], type:relres.data[0][0]["type"], properties: relres.data[0][0]["data"]}
+    #     (relres) ->
+    #       console.log "Node not found"
+    #       response.send "error"
+    #   )
+    # )
 
-          { outgoing_relationships: 'http://localhost:7474/db/data/node/312/relationships/out',
-            labels: 'http://localhost:7474/db/data/node/312/labels',
-            data: { propertyExample: 'valueExample' },
-            all_typed_relationships: 'http://localhost:7474/db/data/node/312/relationships/all/{-list|&|types}',
-            traverse: 'http://localhost:7474/db/data/node/312/traverse/{returnType}',
-            self: 'http://localhost:7474/db/data/node/312',
-            property: 'http://localhost:7474/db/data/node/312/properties/{key}',
-            outgoing_typed_relationships: 'http://localhost:7474/db/data/node/312/relationships/out/{-list|&|types}',
-            properties: 'http://localhost:7474/db/data/node/312/properties',
-            incoming_relationships: 'http://localhost:7474/db/data/node/312/relationships/in',
-            extensions: {},
-            create_relationship: 'http://localhost:7474/db/data/node/312/relationships',
-            paged_traverse: 'http://localhost:7474/db/data/node/312/paged/traverse/{returnType}{?pageSize,leaseTime}'
-            all_relationships: 'http://localhost:7474/db/data/node/312/relationships/all',
-            incoming_typed_relationships: 'http://localhost:7474/db/data/node/312/relationships/in/{-list|&|types}' }  
+    # adds a default strength value to a relationship 
+    # TODO: (should only do this if there isnt one already)
+    addStrength = (dict) -> 
+      dict['strength'] = 1
+      dict = {'strength':1}   
+      dict
 
-          ###
-          console.log noderes.data[0]
-           
-          ### Extract the ID's off all the nodes.  These are then reindexed for the d3js viz format.
-          E.g.
-            self: 'http://localhost:7474/db/data/node/312'
-          ###
-          nodeids=(trim(num[0]["self"]) for num in noderes.data)
+    app.post('/get_links', (request,response)->
+      console.log "GET LINKS REQUESTED"
+      #console.log request
+      node= request.body.node
+      nodes= request.body.nodes
+      #console.log "NODE: ", node
+      #console.log "NODES: ", nodes
 
-          ### Generate reindexing array ###
-          `var nodeconvert = {};
-          for (i = 0; i < nodeids.length; i++) {
-            nodeconvert[nodeids[i]+'']=i;            
-          }`
+      cypherQuery = "START n=node("+node["_id"]+") MATCH p=(n)-[]-(m) RETURN relationships(p);"
 
-          ### Get all the data for all the nodes, i.e. all the properties and values, e.g
-            data: { propertyExample: 'valueExample' }
-          ###
-          nodedata=(ntmp[0]["data"] for ntmp in noderes.data)
-          `for (i=0; i < nodeids.length; i++) {
-             nodedata[i]["_id"] = nodeids[i]+'';
-          }`
-          graphDb.cypher.execute("start n=rel(*) return n;").then(
-            (arrres)->
-              console.log "Query Executed"
+      console.log cypherQuery
 
-              ### Display an example of what is returned by the database for each arrow. E.g.
+      nodeIndexes = (n["_id"] for n in nodes)
+      console.log "IDS", nodeIndexes
 
-              { start: 'http://localhost:7474/db/data/node/314',
-                data: {},
-                self: 'http://localhost:7474/db/data/relationshi
-                property: 'http://localhost:7474/db/data/relatio
-                properties: 'http://localhost:7474/db/data/relat
-                type: 'RELATED_TO',
-                extensions: {},
-                end: 'http://localhost:7474/db/data/node/316' }
+      # # cypherQuery = "START n=node("+960+") MATCH p=(n)-[]-(m) RETURN relationships(p);"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (relres) ->
+          console.log "Get Links executed"
+          # console.log relres.data
+          #console.log relres.data[0]
 
-              ###
-              console.log arrres.data[0]
-              arrdata=({source:nodeconvert[trim(ntmp[0]["start"])],target:nodeconvert[trim(ntmp[0]["end"])]} for ntmp in arrres.data)
-              displaydata = [nodes:nodedata,links:arrdata][0]
-              
-              ###  Code to write the full database data to a file.  Currently inactive. ###
-              ###
-              `fs = require('fs');
-              fs.writeFile('.\\static\\test.json', JSON.stringify(displaydata), function (err) {
-                if (err) throw err;
-                console.log('.json SAVED!');
-              });`
-              ###
+          nodeIndexes = (n["_id"] for n in nodes)
+          relList = (addStrength(link[0][0].data) for link in relres.data when trim(link[0][0].start)[0] in nodeIndexes or trim(link[0][0].end)[0] in nodeIndexes)
+          response.json relList
 
-              ### Render the index.jade and pass it the displaydata, which is a
-              JSON formatted for D3JS viz of the entire Neo4j database ###
-              onSuccess(displaydata)
-          )
+
+          # relList = (addStrength(link[0][0].data) for link in relres.data)
+          # response.json (link[0][0] for link in relres.data)
+          
+        (relres) ->
+          console.log "Node not found"
+          response.send "error"
+      )
+    )
+
+
+    # adds a property to a node
+    addID = (dict, id) -> 
+      dict['_id'] = id
+      dict
+
+    # - getLinkedNodes(nodes, callback) should call callback with
+    #   an array of the union of the linked nodes of each node in nodes.
+    #   currently, a node can have any attributes you like so they long
+    #   as they don't conflict with d3's attributes and they
+    #   must have a "text" attribute.
+    app.post('/get_linked_nodes', (request,response)->
+      
+      console.log "GET LINKED NODES REQUESTED"
+      console.log request
+      nodes= request.body.nodes
+      console.log "NODES: ", nodes
+
+      nodeIndexes = (n["_id"] for n in nodes when n["_id"] isnt undefined)
+      #console.log "IDS", nodeIndexes
+
+      #nodeIndexes = {1199,1200}
+
+      cypherQuery = "START n=node("+nodeIndexes+") MATCH p=(n)-[]-(m) RETURN m;"
+
+      console.log cypherQuery
+
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (nodeRes) ->
+          console.log "Get Linked Nodes executed"
+          # console.log nodeRes.data
+          console.log nodeRes.data[0]
+
+          nodeList = (addID(node[0].data,trim(node[0].self)) for node in nodeRes.data)
+          response.json nodeList
+          
+        (nodeRes) ->
+          console.log "Node not found"
+          response.send "error"
       )
     )
 

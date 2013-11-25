@@ -59,6 +59,11 @@ require ["Celestrium"], (Celestrium) ->
     GraphModel:
       nodeHash: (node) -> node.text
       linkHash: (link) -> link.source.text+link.target.text
+      # nodeAttributes: 
+      #   'text': getValue = (node) -> node.text
+      #   'name': getValue = (node) -> node.name
+      #   'description': getValue = (node) -> node.description
+      #   '_id': getValue = (node) -> node['_id']
 
     # renders the graph using d3's force directedlayout
     GraphView: {}
@@ -87,11 +92,12 @@ require ["Celestrium"], (Celestrium) ->
   # initialize the plugins and execute a callback once done
   Celestrium.init plugins, (instances) ->
 
-    loadEverything = (nodeNames) -> 
-      instances["GraphModel"].putNode {text: nodeName} for nodeName in nodeNames
+    loadEverything = (fullJson) -> 
+      nodes = fullJson['nodes']
+      instances["GraphModel"].putNode {text: node['name'], _id: node['_id']} for node in nodes
 
     #Prepopulate the GraphModel with all the nodes and links
-    $.get('/get_node_names', loadEverything)
+    $.get('/json', loadEverything)
 
     # this prepopulates the graph with the "Albert" node
     #instances["GraphModel"].putNode {text: "WikiNets"} #, id:"300"}
