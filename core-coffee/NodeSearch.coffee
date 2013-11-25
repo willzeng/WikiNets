@@ -30,7 +30,7 @@ define [], () ->
       return this
 
     addNode: (e, datum) ->
-      newNode = text: datum.value
+      newNode = {text: datum.value, '_id': -1} #TODO FIX THIS BY CHANGING THE NODEHASH FOR WIKINETS
       h = @graphModel.get("nodeHash")
       newNodeHash = h(newNode)
       @graphModel.putNode newNode  unless _.some @graphModel.get("nodes"), (node) ->
