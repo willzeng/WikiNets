@@ -41,6 +41,35 @@ define [], () ->
       svg = d3.select(@el).append("svg:svg").attr("pointer-events", "all")
       zoom = d3.behavior.zoom()
 
+      # asdf
+      defs = svg.append("defs")
+
+      defs
+        .append("marker")
+        .attr("id", "Triangle")
+        .attr("viewBox", "0 0 20 15")
+        .attr("refX", "15")
+        .attr("refY", "5")
+        .attr("markerUnits", "userSpaceOnUse")
+        .attr("markerWidth", "20")
+        .attr("markerHeight", "15")
+        .attr("orient", "auto")
+        .append("path")
+          .attr("d", "M 0 0 L 10 5 L 0 10 z")
+
+      defs
+        .append("marker")
+        .attr("id", "Triangle2")
+        .attr("viewBox", "0 0 20 15")
+        .attr("refX", "-5")
+        .attr("refY", "5")
+        .attr("markerUnits", "userSpaceOnUse")
+        .attr("markerWidth", "20")
+        .attr("markerHeight", "15")
+        .attr("orient", "auto")
+        .append("path")
+          .attr("d", "M 10 0 L 0 5 L 10 10 z")
+
       # outermost wrapper - this is used to capture all zoom events
       zoomCapture = svg.append("g")
 
@@ -88,7 +117,12 @@ define [], () ->
       filteredLinks = if @linkFilter then @linkFilter.filter(links) else links
       @force.nodes(nodes).links(filteredLinks).start()
       link = @linkSelection = d3.select(@el).select(".linkContainer").selectAll(".link").data(filteredLinks, @model.get("linkHash"))
-      linkEnter = link.enter().append("line").attr("class", "link")
+      linkEnter = link.enter().append("line")
+        .attr("class", "link")
+        .attr 'marker-end', (link) ->
+          'url(#Triangle)' if link.direction is 'forward' or link.direction is 'bidirectional'
+        .attr 'marker-start', (link) ->
+          'url(#Triangle2)' if link.direction is 'backward' or link.direction is 'bidirectional'
       @force.start()
       link.exit().remove()
       link.attr "stroke-width", (link) => 5 * (@linkStrength link)
