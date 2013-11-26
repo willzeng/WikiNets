@@ -1,3 +1,16 @@
+// toggles whether the given layer is visible
+function showlayer(layer){
+  var myLayer = document.getElementById(layer);
+  if(myLayer.style.display=="none" || myLayer.style.display==""){
+    myLayer.style.display="block";
+  } else { 
+    myLayer.style.display="none";
+  }
+}
+
+//-----------------------------------------
+
+
 // this is currently a bit of a hack of jQuery and non-jQuery code.
 // Not sure how to convert it all into jQuery though...
 // Code for adding more input fields modified from http://www.quirksmode.org/dom/domform.html
@@ -742,5 +755,14 @@ $(document).ready(function(){
 
     }
   )
+
+  //Selects a Node with the search bar
+  //Does not yet work due to the bad numbering of the graph JSON object
+  /*$("#searchBox").on("submit", function(event){
+    $("#nodeKeyValues").show();
+    $("#editButtonHolder").show();
+    select_node(selected_node);
+    $("#stopeEditButtonHolder").hide();
+  });*/
 
 });
