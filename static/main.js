@@ -67,25 +67,24 @@
       "NodeSearch": {
         prefetch: "/get_node_names"
       },
-      NodeDetails: {},
-      MiniMap: {}
+      NodeDetails: {}
     };
     return Celestrium.init(plugins, function(instances) {
-      var loadEverything;
-      loadEverything = function(fullJson) {
-        var node, nodes, _i, _len, _results;
-        nodes = fullJson['nodes'];
+      var loadEverything, makeDisplayable;
+      makeDisplayable = function(n) {
+        n['text'] = n.name;
+        return n;
+      };
+      loadEverything = function(nodes) {
+        var node, _i, _len, _results;
         _results = [];
         for (_i = 0, _len = nodes.length; _i < _len; _i++) {
           node = nodes[_i];
-          _results.push(instances["GraphModel"].putNode({
-            text: node['name'],
-            _id: node['_id']
-          }));
+          _results.push(instances["GraphModel"].putNode(makeDisplayable(node)));
         }
         return _results;
       };
-      $.get('/json', loadEverything);
+      $.get('/get_nodes', loadEverything);
       return instances["GraphView"].getLinkFilter().set("threshold", 0);
     });
   });

@@ -119,9 +119,9 @@ define ["DataProvider"], (DataProvider) ->
       #console.log "NODES: ", nodes
 
       $.post "/get_links", {'node': node, 'nodes': nodes}, (data) -> 
-        console.log "NODE: ", node
-        console.log "NODES: ", nodes
-        console.log "THE get_links POST DATA: ", data
+        # console.log "NODE: ", node
+        # console.log "NODES: ", nodes
+        # console.log "THE get_links POST DATA: ", data
         callback data
 
         # $.getJSON "/json", (data) -> 

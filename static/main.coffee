@@ -87,7 +87,7 @@ require ["Celestrium"], (Celestrium) ->
 
     NodeDetails: {}
 
-    MiniMap: {}  
+    #MiniMap: {}  
 
   # initialize the plugins and execute a callback once done
   Celestrium.init plugins, (instances) ->
@@ -98,7 +98,6 @@ require ["Celestrium"], (Celestrium) ->
       n
 
     loadEverything = (nodes) -> 
-      #instances["GraphModel"].putNode {text: node['name'], _id: node['_id']} for node in nodes
       instances["GraphModel"].putNode makeDisplayable(node) for node in nodes
 
     #Prepopulate the GraphModel with all the nodes and links

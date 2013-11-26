@@ -19,6 +19,11 @@ module.exports = class MyApp
     trim = (string)->
       string.match(/[0-9]*$/)
 
+    # adds an id to a node
+    addID = (dict, id) -> 
+      dict['_id'] = id
+      dict
+
     ### makes queries of database to build a JSON formatted for D3JS viz of the entire Neo4j database
       that is stored in the displaydata variable.  Method then runs argument onSuccess(displaydata)
     ###
@@ -115,6 +120,18 @@ module.exports = class MyApp
       getvizjson inputer, request, response
     )
 
+    ### Responds with a list of all the nodes ###
+    app.get('/get_nodes', (request,response)->
+      console.log "get_nodes Query Requested"
+      cypherQuery = "start n=node(*) return n;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes)->
+          console.log "get_nodes Lookup Executed"
+          nodeList = (addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
+          response.json nodeList
+      )
+    )
 
     ###  Post function to test lookup by Node id that will return the value of the property 
       "Info", which will eventually go in the Infobox.  
@@ -428,71 +445,37 @@ module.exports = class MyApp
       getvizjson inputer, request, response
     )
 
-    # ###
-    # - getLinks(node, nodes, callback) should return array, A, of links 
-    #   st. A[i] is the link from node to nodes[i]
-    #   links are javascript objects and can have any attributes you like
-    #   so long as they don't conflict with d3's attributes and they
-    #   must have a "strength" attribute in [0,1]
-    # ###
-    # #$.post "/get_links", {'node': node, 'nodes': nodes}, (data) ->
-    # app.post('/get_links', (request,response)->
-    #   console.log "GET LINKS REQUESTED"
-    #   console.log request
-    #   node= request.body.node
-    #   nodes= request.body.nodes
-
-    #   cypherQuery = "START n=node("+node["_id"]+") MATCH p=(n)-[]-(m) RETURN relationships(p);"
-    #   console.log "Executing " + cypherQuery
-    #   graphDb.cypher.execute(cypherQuery).then(
-    #     (relres) ->
-    #       console.log "Get Links executed"
-    #       console.log relres.data[0][0]
-    #       response.json relres.data[0]
-    #       #response.json {from: trim(relres.data[0][0]["start"])[0], to: trim(relres.data[0][0]["end"])[0], type:relres.data[0][0]["type"], properties: relres.data[0][0]["data"]}
-    #     (relres) ->
-    #       console.log "Node not found"
-    #       response.send "error"
-    #   )
-    # )
-
     # adds a default strength value to a relationship 
     # TODO: (should only do this if there isnt one already)
-    addStrength = (dict) -> 
+    addStrength = (dict,start,end) -> 
       dict['strength'] = 1
-      dict = {'strength':1}   
+      dict['start'] = start
+      dict['end'] = end
       dict
 
     app.post('/get_links', (request,response)->
       console.log "GET LINKS REQUESTED"
-      #console.log request
       node= request.body.node
       nodes= request.body.nodes
-      #console.log "NODE: ", node
-      #console.log "NODES: ", nodes
 
-      cypherQuery = "START n=node("+node["_id"]+") MATCH p=(n)-[]-(m) RETURN relationships(p);"
+      nodeIndexes = (k["_id"] for k in nodes)
+
+      cypherQuery = "START n=node("+node["_id"]+"), m=node("+nodeIndexes+") MATCH p=(n)-[]-(m) RETURN relationships(p);"
 
       console.log cypherQuery
-
-      nodeIndexes = (n["_id"] for n in nodes)
-      console.log "IDS", nodeIndexes
-
-      # # cypherQuery = "START n=node("+960+") MATCH p=(n)-[]-(m) RETURN relationships(p);"
       console.log "Executing " + cypherQuery
       graphDb.cypher.execute(cypherQuery).then(
         (relres) ->
           console.log "Get Links executed"
-          # console.log relres.data
-          #console.log relres.data[0]
 
-          nodeIndexes = (n["_id"] for n in nodes)
-          relList = (addStrength(link[0][0].data) for link in relres.data when trim(link[0][0].start)[0] in nodeIndexes or trim(link[0][0].end)[0] in nodeIndexes)
+          allSpokes = (addStrength(link[0][0].data, trim(link[0][0].start)[0],trim(link[0][0].end)[0]) for link in relres.data)
+
+          getLink = (nID) -> 
+            spoke for spoke in allSpokes when spoke.start is nID or spoke.end is nID
+
+          relList = ((if (getLink(n)[0]?) then getLink(n)[0] else {strength:0}) for n in nodeIndexes)
           response.json relList
 
-
-          # relList = (addStrength(link[0][0].data) for link in relres.data)
-          # response.json (link[0][0] for link in relres.data)
           
         (relres) ->
           console.log "Node not found"
@@ -500,11 +483,6 @@ module.exports = class MyApp
       )
     )
 
-
-    # adds a property to a node
-    addID = (dict, id) -> 
-      dict['_id'] = id
-      dict
 
     # - getLinkedNodes(nodes, callback) should call callback with
     #   an array of the union of the linked nodes of each node in nodes.
@@ -519,9 +497,6 @@ module.exports = class MyApp
       console.log "NODES: ", nodes
 
       nodeIndexes = (n["_id"] for n in nodes when n["_id"] isnt undefined)
-      #console.log "IDS", nodeIndexes
-
-      #nodeIndexes = {1199,1200}
 
       cypherQuery = "START n=node("+nodeIndexes+") MATCH p=(n)-[]-(m) RETURN m;"
 
@@ -531,8 +506,6 @@ module.exports = class MyApp
       graphDb.cypher.execute(cypherQuery).then(
         (nodeRes) ->
           console.log "Get Linked Nodes executed"
-          # console.log nodeRes.data
-          console.log nodeRes.data[0]
 
           nodeList = (addID(node[0].data,trim(node[0].self)) for node in nodeRes.data)
           response.json nodeList
