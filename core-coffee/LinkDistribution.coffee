@@ -18,7 +18,7 @@ define [], () ->
 
     className: "link-pdf"
 
-    constructor: (options) ->
+    constructor: (@options) ->
       @windowModel = new Backbone.Model()
       @windowModel.set("window", 10)
       @listenTo @windowModel, "change:window", @paint
@@ -34,7 +34,7 @@ define [], () ->
       instances["Sliders"].addSlider "Smoothing", scale(@windowModel.get("window")), (val) =>
         @windowModel.set "window", scale.invert(val)
       @render()
-      instances["Layout"].addPlugin @el, 'Link Distribution'
+      instances["Layout"].addPlugin @el, @options.pluginOrder, 'Link Distribution'
 
     render: ->
 

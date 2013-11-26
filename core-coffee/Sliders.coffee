@@ -15,9 +15,12 @@ define [], () ->
 
   class SlidersView extends Backbone.View
 
+    constructor: (@options) ->
+      super()
+
     init: (instances) ->
       @render()
-      instances["Layout"].addPlugin @el, 'Sliders'
+      instances["Layout"].addPlugin @el, @options.pluginOrder, 'Sliders'
 
     render: () ->
       $container = $ """

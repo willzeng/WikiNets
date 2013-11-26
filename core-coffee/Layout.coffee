@@ -55,7 +55,8 @@ define [], () ->
     constructor: (@options) ->
       super(@options)
     init: () ->
-      @pluginWrappers = []
+      # a dictionary of lists, so we can order plugins
+      @pluginWrappers = {}
 
       # TODO: find somewhere to put these
       # @bottom = $("<div class=\"plugin-view\" id=\"bottom-center-outer-container\"><button id=\"toggle\">Show/Hide</button></div>")
@@ -70,22 +71,33 @@ define [], () ->
       # @pluginWrappers.push @bottomRightWrapper
 
       @render()
+
     render: ->
       @pluginContainer = $("<div class=\"plugin-container\"/>")
       @$el.append @pluginContainer
       return this
 
     renderPlugins: ->
-      for pluginWrapper in @pluginWrappers
-        @pluginContainer.append pluginWrapper.el
+      keys = _.keys(@pluginWrappers).sort()
+      _.each keys, (key, i) =>
+        pluginWrappersList = @pluginWrappers[key]
+        _.each pluginWrappersList, (pluginWrapper) =>
+          @pluginContainer.append pluginWrapper.el
+
 
     addCenter: (el) ->
       @$el.append el
 
-    addPlugin: (plugin, name="Plugin") ->
+
+    addPlugin: (plugin, pluginOrder, name="Plugin") ->
+      pluginOrder = if pluginOrder != undefined then pluginOrder else 6
       pluginWrapper = new PluginWrapper(
         plugin: plugin
         name: name
+        order: pluginOrder
         )
-      @pluginWrappers.push pluginWrapper
+      if _.has @pluginWrappers, pluginOrder
+        @pluginWrappers[pluginOrder].push pluginWrapper
+      else
+        @pluginWrappers[pluginOrder] = [pluginWrapper]
       @renderPlugins()

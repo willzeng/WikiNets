@@ -5,11 +5,15 @@
 define [], () ->
 
   class StatsView extends Backbone.View
+
+    constructor: (@options) ->
+      super()
+
     init: (instances) ->
       @render()
       @graphModel = instances["GraphModel"]
       @listenTo @graphModel, "change", @update
-      instances["Layout"].addPlugin @el, 'Stats'
+      instances["Layout"].addPlugin @el, @options.pluginOrder, 'Stats'
 
     render: ->
       container = $("<div />").addClass("graph-stats-container").appendTo(@$el)
