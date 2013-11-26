@@ -92,15 +92,20 @@ require ["Celestrium"], (Celestrium) ->
   # initialize the plugins and execute a callback once done
   Celestrium.init plugins, (instances) ->
 
-    loadEverything = (fullJson) -> 
-      nodes = fullJson['nodes']
-      instances["GraphModel"].putNode {text: node['name'], _id: node['_id']} for node in nodes
+    #TODO MAKE THIS GENERIC
+    makeDisplayable = (n) ->  
+      n['text'] = n.name
+      n
+
+    loadEverything = (nodes) -> 
+      #instances["GraphModel"].putNode {text: node['name'], _id: node['_id']} for node in nodes
+      instances["GraphModel"].putNode makeDisplayable(node) for node in nodes
 
     #Prepopulate the GraphModel with all the nodes and links
-    $.get('/json', loadEverything)
+    $.get('/get_nodes', loadEverything)
 
-    # this prepopulates the graph with the "Albert" node
-    #instances["GraphModel"].putNode {text: "WikiNets"} #, id:"300"}
+    #this prepopulates the graph with the "Albert" node
+    #instances["GraphModel"].putNode {text: "first"} #, id:"300"}
 
     # this allows all link strengths to be visible
     instances["GraphView"].getLinkFilter().set("threshold", 0)
