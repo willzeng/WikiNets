@@ -41,7 +41,7 @@ define [], () ->
       svg = d3.select(@el).append("svg:svg").attr("pointer-events", "all")
       zoom = d3.behavior.zoom()
 
-      # asdf
+      # create arrowhead definitions
       defs = svg.append("defs")
 
       defs
