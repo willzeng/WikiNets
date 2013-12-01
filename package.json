@@ -2,7 +2,7 @@
     "name":"node-example",
     "version":"0.0.1",
     "dependencies":{
-        "coffee-script":"1.2.0",
+        "coffee-script":"1.6.3",
         "neo4js":"0.0.3",
         "express":"2.5.2",
         "jade":"0.20.0"
