@@ -82,8 +82,8 @@ require ["Celestrium"], (Celestrium) ->
 
     "LinkDistribution": {}
 
-    #"NodeSearch": 
-    #  prefetch: "/get_node_names"
+    "NodeSearch": 
+      prefetch: "/get_node_names"
 
     NodeDetails: {}
 

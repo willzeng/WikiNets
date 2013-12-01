@@ -1,1 +1,1 @@
-web: sh server.sh
+web: node web.js
