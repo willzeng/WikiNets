@@ -67,7 +67,8 @@
       "NodeSearch": {
         prefetch: "/get_node_names"
       },
-      NodeDetails: {}
+      NodeDetails: {},
+      MiniMap: {}
     };
     return Celestrium.init(plugins, function(instances) {
       var loadEverything, makeDisplayable;

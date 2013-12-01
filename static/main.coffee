@@ -87,7 +87,7 @@ require ["Celestrium"], (Celestrium) ->
 
     NodeDetails: {}
 
-    #MiniMap: {}  
+    MiniMap: {}  
 
   # initialize the plugins and execute a callback once done
   Celestrium.init plugins, (instances) ->

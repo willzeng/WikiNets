@@ -468,7 +468,7 @@ module.exports = class MyApp
         (relres) ->
           console.log "Get Links executed"
 
-          allSpokes = (addStrength(link[0][0].data, trim(link[0][0].start)[0],trim(link[0][0].end)[0]) for link in relres.data)
+          allSpokes = (addStrength(link[0][0].data, trim(link[0][0].start)[0], trim(link[0][0].end)[0]) for link in relres.data)
 
           getLink = (nID) -> 
             spoke for spoke in allSpokes when spoke.start is nID or spoke.end is nID
