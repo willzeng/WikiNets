@@ -699,48 +699,48 @@ $(document).ready(function(){
     $("#stopeEditButtonHolder").hide();
   });
 
-  //SETS UP THE TYPEAHEAD get node box
-  $.getJSON('/node_names', function(data){
-      console.log("get names called");
+  // //SETS UP THE TYPEAHEAD get node box
+  // $.getJSON('/node_names', function(data){
+  //     console.log("get names called");
 
-      var n, namesList;
+  //     var n, namesList;
 
-      namesList = (function() {
-        var _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = data.length; _i < _len; _i++) {
-          n = data[_i];
-          _results.push(n['name']);
-        }
-        return _results;
-      })();
+  //     namesList = (function() {
+  //       var _i, _len, _results;
+  //       _results = [];
+  //       for (_i = 0, _len = data.length; _i < _len; _i++) {
+  //         n = data[_i];
+  //         _results.push(n['name']);
+  //       }
+  //       return _results;
+  //     })();
 
-      console.log(namesList);
+  //     console.log(namesList);
 
-      $("#searchBox").typeahead({
-        name: 'thenodes',
-        local: namesList,
-        limit: 10 //NOTE THIS IS A #HACK
-      });
+  //     $("#searchBox").typeahead({
+  //       name: 'thenodes',
+  //       local: namesList,
+  //       limit: 10 //NOTE THIS IS A #HACK
+  //     });
 
-      //On click of #getNode focuses on searchAddNodeField
-      $("#getNode").on("click", function(event){
-        nodename= $("#searchBox").val();
+  //     //On click of #getNode focuses on searchAddNodeField
+  //     $("#getNode").on("click", function(event){
+  //       nodename= $("#searchBox").val();
         
-        var n, searchedNodeID, _i, _len;
+  //       var n, searchedNodeID, _i, _len;
 
-        for (_i = 0, _len = data.length; _i < _len; _i++) {
-          n = data[_i];
-          if (n["name"] === nodename) {
-            searchedNodeID = n["_id"];
-          }
-        }
+  //       for (_i = 0, _len = data.length; _i < _len; _i++) {
+  //         n = data[_i];
+  //         if (n["name"] === nodename) {
+  //           searchedNodeID = n["_id"];
+  //         }
+  //       }
 
-        select_node(searchedNodeID);
+  //       select_node(searchedNodeID);
 
-      });
+  //     });
 
-    }
-  )
+  //   }
+  // )
 
 });
