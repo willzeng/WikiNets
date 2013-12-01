@@ -33,15 +33,6 @@ all nodes in the graph are added.
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(["DataProvider"], function(DataProvider) {
-    /*
-    
-    Our example graph data.
-    graph[node text][othernode text] ::=\
-      link strength between node and otherNode
-    
-    BUG/TODO: doesn't handle asymmetric weights well.
-    */
-
     var WikiNetsDataProvider, _ref;
     return WikiNetsDataProvider = (function(_super) {
       __extends(WikiNetsDataProvider, _super);
@@ -64,9 +55,6 @@ all nodes in the graph are added.
           'node': node,
           'nodes': nodes
         }, function(data) {
-          console.log("NODE: ", node);
-          console.log("NODES: ", nodes);
-          console.log("THE get_links POST DATA: ", data);
           return callback(data);
         });
       };
