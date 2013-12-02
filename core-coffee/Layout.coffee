@@ -90,7 +90,7 @@ define [], () ->
 
 
     addPlugin: (plugin, pluginOrder, name="Plugin") ->
-      pluginOrder = if pluginOrder != undefined then pluginOrder else 6
+      pluginOrder ?= Number.MAX_VALUE
       pluginWrapper = new PluginWrapper(
         plugin: plugin
         name: name
