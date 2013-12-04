@@ -57,8 +57,8 @@ require ["Celestrium"], (Celestrium) ->
 
     # stores the actual nodes and links of the graph
     GraphModel:
-      nodeHash: (node) -> node.text
-      linkHash: (link) -> link.source.text+link.target.text
+      nodeHash: (node) -> node['_id']
+      linkHash: (link) -> link.source['_id']+link.target['_id']
       # nodeAttributes: 
       #   'text': getValue = (node) -> node.text
       #   'name': getValue = (node) -> node.name
@@ -104,7 +104,7 @@ require ["Celestrium"], (Celestrium) ->
     $.get('/get_nodes', loadEverything)
 
     #this prepopulates the graph with the "Albert" node
-    #instances["GraphModel"].putNode {text: "first"} #, id:"300"}
+    #instances["GraphModel"].putNode {text: "first"} #, _id:"300"}
 
     # this allows all link strengths to be visible
     instances["GraphView"].getLinkFilter().set("threshold", 0)
