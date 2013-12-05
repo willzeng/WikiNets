@@ -42,6 +42,12 @@ function moreFields(writediv, rootdiv, classNamediv) {
   insertHere.parentNode.insertBefore(newFields,insertHere);
 }
 
+// #TODO MAKE THIS GENERIC (is implemented in too many places)
+function makeDisplayable(n) {  
+    n['text'] = n.name;
+    return n;
+  }
+
 // selects a node for editing
 // called either by clicking on a node in the visualisation while the
 // "edit node" menu is open or by entering a number into the "select node"
@@ -197,7 +203,8 @@ function assign_properties(form_name) {
 //Sets source to the id of the newly created node.
 function SANcreateNode(amBuildingArrow, readField){
   console.log("SANcreateNode called for query text",$(readField).val());
-  $.post('/submit', {"text":$(readField).val()}, function(data) {
+  $.post('/submit', {"text":$(readField).val()}, function(newNode) {
+    data = newNode['_id'];
     console.log("Selecting Node:", data);
     select_node(data);
     $("#querybox").append('<li>'+$(readField).val()+'</li>');
@@ -212,8 +219,11 @@ function SANcreateNode(amBuildingArrow, readField){
       source=data;
     }
     //alert("You have created Node: " + data);
-    console.log("Redoing the viz");
-    redoviz();
+    console.log("You have created Node: " + data);
+
+
+    window.instances.GraphModel.putNode(makeDisplayable(newNode));
+    
   });
 }
 
@@ -230,7 +240,7 @@ function SANcreateArrow(){
     $('#searchAddNodeFieldLabel').text("(Source) Node"); 
     alert("You have created arrow " + data + " from source: " + source + " to target: " + target);
     
-    redoviz();
+    //window.instances.GraphModel.putLink(data);
 
     $("#buildTargetArea").hide();
   });
