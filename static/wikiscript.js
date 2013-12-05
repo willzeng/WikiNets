@@ -240,7 +240,7 @@ function SANcreateArrow(){
     $('#searchAddNodeFieldLabel').text("(Source) Node"); 
     alert("You have created arrow " + data + " from source: " + source + " to target: " + target);
     
-    //window.instances.GraphModel.putLink(data);
+    //window.instances.GraphModel.putLink({'source':source, 'target':target});
 
     $("#buildTargetArea").hide();
   });

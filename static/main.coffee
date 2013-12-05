@@ -57,7 +57,7 @@ require ["Celestrium"], (Celestrium) ->
 
     # stores the actual nodes and links of the graph
     GraphModel:
-      nodeHash: (node) -> if node['_id'] is undefined then console.log "WITHOUT AN ID: ", node else node['_id']
+      nodeHash: (node) -> node['_id']
       linkHash: (link) -> link.source['_id']+link.target['_id']
       # nodeAttributes: 
       #   'text': getValue = (node) -> node.text

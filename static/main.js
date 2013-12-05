@@ -50,11 +50,7 @@
       KeyListener: document.querySelector("body"),
       GraphModel: {
         nodeHash: function(node) {
-          if (node['_id'] === void 0) {
-            return console.log("WITHOUT AN ID: ", node);
-          } else {
-            return node['_id'];
-          }
+          return node['_id'];
         },
         linkHash: function(link) {
           return link.source['_id'] + link.target['_id'];
