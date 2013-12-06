@@ -3,6 +3,9 @@ define [], () ->
 
   class Selection
 
+    constructor: (@options) ->
+      super()
+
     init: (instances) ->
 
       _.extend this, Backbone.Events
@@ -21,6 +24,10 @@ define [], () ->
       clickSemaphore = 0
       @graphView.on "enter:node", (nodeEnterSelection) =>
         nodeEnterSelection.on("click", (datum, index) =>
+
+          #calls an onClick optional method passed to constructor
+          @options.onClick(datum['text'])
+
           # ignore drag
           return  if d3.event.defaultPrevented
           datum.fixed = true
