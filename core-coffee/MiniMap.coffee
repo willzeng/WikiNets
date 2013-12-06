@@ -1,4 +1,4 @@
-# provides details of the selected nodes
+# provides a minimap showing the neighbors of the node most recently clicked on
 define [], () ->
 
   class MiniMap extends Backbone.View
