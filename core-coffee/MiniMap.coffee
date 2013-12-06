@@ -1,4 +1,4 @@
-# provides details of the selected nodes
+# provides a minimap showing the neighbors of the node most recently clicked on
 define [], () ->
 
   class MiniMap extends Backbone.View
@@ -6,16 +6,20 @@ define [], () ->
     constructor: (@options) ->
       super()
 
-    init: (instances) ->
-      @selection = instances["NodeSelection"]
-      @selection.on "change", @update.bind(this)
-      
+    init: (instances) ->    
+      @graphView = instances['GraphView']
+      @graphView.on("enter:node:click", (datum) =>
+        @mostRecentNode = datum
+        @update()
+        )
+
       @model = instances["GraphModel"]
       @model.on "change", @update.bind(this)
       
       instances["Layout"].addPlugin @el, @options.pluginOrder, 'MiniMap'
 
       @render()
+
 
     render: ->
       @miniMapWidth = 200
@@ -34,12 +38,12 @@ define [], () ->
       @frame = d3.select(@el).append("svg:svg").attr("width", @miniMapWidth)
                 .attr("height", @miniMapHeight);
 
-      selectedNodes = @selection.getSelectedNodes()
-      mostRecentNode = selectedNodes[selectedNodes.length - 1] #Currently this only works well when a single node is selected
+      #selectedNodes = @selection.getSelectedNodes()
+      #mostRecentNode = selectedNodes[selectedNodes.length - 1] #Currently this only works well when a single node is selected
 
-      if mostRecentNode isnt undefined
+      if @mostRecentNode isnt undefined
 
-        centerID = @model.get("nodeHash")(mostRecentNode)
+        centerID = @model.get("nodeHash")(@mostRecentNode)
     
         #Find the list of neighbors only using links of non-zero strength
         allLinks = (link for link in @model.getLinks() when link.strength > 0)
@@ -116,4 +120,4 @@ define [], () ->
             .attr("font-size", minimap_text_size)
             .attr("x", sub_width/2+5)
             .attr("y", sub_height/2-1+central_width/2)
-            .text(mostRecentNode.text) 
+            .text(@mostRecentNode.text) 

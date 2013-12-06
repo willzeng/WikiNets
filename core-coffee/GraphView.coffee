@@ -135,10 +135,29 @@ define [], () ->
             d.text
           )
 
-      nodeEnter.append("circle")
+      nodeEnter.append("circle") 
            .attr("r", 5)
            .attr("cx", 0)
            .attr("cy", 0)
+
+      clickSemaphore = 0
+      nodeEnter.on("click", (datum, index) =>
+        #ignore drag
+        return  if d3.event.defaultPrevented
+        datum.fixed = true
+        clickSemaphore += 1
+        savedClickSemaphore = clickSemaphore
+        setTimeout (=>
+          if clickSemaphore is savedClickSemaphore
+            @trigger "enter:node:click", datum
+            datum.fixed = false
+          else
+            # increment so second click isn't registered as a click
+            clickSemaphore += 1
+            datum.fixed = false
+        ), 250)
+        .on "dblclick", (datum, index) =>
+          @trigger "enter:node:dblclick", datum
 
       @trigger "enter:node", nodeEnter
       @trigger "enter:link", linkEnter
