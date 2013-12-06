@@ -57,7 +57,9 @@
         }
       },
       GraphView: {},
-      NodeSelection: {},
+      NodeSelection: {
+        onClick: doWikiNetsSelection
+      },
       "local/WikiNetsDataProvider": {},
       "Sliders": {},
       "ForceSliders": {},
