@@ -21,9 +21,9 @@ define [], () ->
       return  if @get("nodeSet")[@get("nodeHash")(node)]
 
       # modify node to have attribute accessor functions
-      nodeAttributes = @get("nodeAttributes")
-      node.getAttributeValue = (attr) ->
-        nodeAttributes[attr].getValue node
+      #nodeAttributes = @get("nodeAttributes")
+      #node.getAttributeValue = (attr) ->
+      #  nodeAttributes[attr].getValue node
 
       # commit this node to this graph
       @get("nodeSet")[@get("nodeHash")(node)] = true
