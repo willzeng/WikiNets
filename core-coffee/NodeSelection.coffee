@@ -1,7 +1,7 @@
 # makes nodes "selectable"
 define [], () ->
 
-  class Selection
+  class Selection extends Backbone.View
 
     constructor: (@options) ->
       super()
