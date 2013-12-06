@@ -72,8 +72,7 @@ require ["Celestrium"], (Celestrium) ->
     NodeSelection:
       onClick: doWikiNetsSelection
 
-    # provides functions to retreive nodes and links
-    # relative present ones
+    # provides functions to get nodes and links
     "local/WikiNetsDataProvider": {}
 
     "Sliders": {}
