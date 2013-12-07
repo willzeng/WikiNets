@@ -184,7 +184,7 @@ define [], () ->
       });###
       zoomCapture.on "mouseout", () ->
               self.StopScroll()
-              self.blur()
+              #self.blur()
               $("body").css("cursor","inherit")              
           
       zoomCapture.on "mousemove", () ->
@@ -239,53 +239,93 @@ define [], () ->
       # so that nodes always appear above links
       linkContainer = workspace.append("svg:g").classed("linkContainer", true)
       nodeContainer = workspace.append("svg:g").classed("nodeContainer", true)
+
+      
+      #hack fixing multi-eval of Update and hence Start bug:
+      ###@force.on "start", () =>
+        console.log("aoeuoae")
+        @tickTimer=setTimeout( () => 
+          
+          clearTimeout(@tickTimer)
+
+          console.log(x=@force.alpha())
+          @forwardAlpha(@force,.01,1000)
+          console.log(x=@force.alpha())
+        , 10)
+      ###
       return this
 
+    #fast-forward force graph rendering to prevent bouncing http://stackoverflow.com/questions/13463053/calm-down-initial-tick-of-a-force-layout  
+    forwardAlpha: (layout, alpha, max) ->
+      alpha = alpha || 0
+      max = max || 1000
+      i = 0
+      while layout.alpha() > alpha && i++ < max
+        layout.tick()
+      
+
     update: ->
-      nodes = @model.get("nodes")
-      links = @model.get("links")
-      filteredLinks = if @linkFilter then @linkFilter.filter(links) else links
-      @force.nodes(nodes).links(filteredLinks).start()
-      link = @linkSelection = d3.select(@el).select(".linkContainer").selectAll(".link").data(filteredLinks, @model.get("linkHash"))
-      linkEnter = link.enter().append("line")
-        .attr("class", "link")
-        .attr 'marker-end', (link) ->
-          'url(#Triangle)' if link.direction is 'forward' or link.direction is 'bidirectional'
-        .attr 'marker-start', (link) ->
-          'url(#Triangle2)' if link.direction is 'backward' or link.direction is 'bidirectional'
-      @force.start()
-      link.exit().remove()
-      link.attr "stroke-width", (link) => 5 * (@linkStrength link)
-      node = @nodeSelection = d3.select(@el).select(".nodeContainer").selectAll(".node").data(nodes, @model.get("nodeHash"))
-      nodeEnter = node.enter().append("g").attr("class", "node").call(@force.drag)
-      nodeEnter.append("text")
-           .attr("dx", 12)
-           .attr("dy", ".35em")
-           .text((d) ->
-            d.text
+      #hack fixing multi-eval of Update and hence Start bug:
+      
+      clearTimeout(@tickTimer)
+      @tickTimer=setTimeout( () => 
+
+        nodes = @model.get("nodes")
+        links = @model.get("links")
+        filteredLinks = if @linkFilter then @linkFilter.filter(links) else links
+        @force.nodes(nodes).links(filteredLinks).start()
+        link = @linkSelection = d3.select(@el).select(".linkContainer").selectAll(".link").data(filteredLinks, @model.get("linkHash"))
+        linkEnter = link.enter().append("line")
+          .attr("class", "link")
+          .attr 'marker-end', (link) ->
+            'url(#Triangle)' if link.direction is 'forward' or link.direction is 'bidirectional'
+          .attr 'marker-start', (link) ->
+            'url(#Triangle2)' if link.direction is 'backward' or link.direction is 'bidirectional'
+        @force.start()
+        
+        link.exit().remove()
+        link.attr "stroke-width", (link) => 5 * (@linkStrength link)
+        node = @nodeSelection = d3.select(@el).select(".nodeContainer").selectAll(".node").data(nodes, @model.get("nodeHash"))
+        nodeEnter = node.enter().append("g").attr("class", "node").call(@force.drag)
+        nodeEnter.append("text")
+             .attr("dx", 12)
+             .attr("dy", ".35em")
+             .text((d) ->
+              d.text
+            )
+
+        nodeEnter.append("circle")
+             .attr("r", 5)
+             .attr("cx", 0)
+             .attr("cy", 0)
+
+        @trigger "enter:node", nodeEnter
+        @trigger "enter:link", linkEnter
+        node.exit().remove()
+        @force.on "tick", ->
+          link.attr("x1", (d) ->
+            d.source.x
+          ).attr("y1", (d) ->
+            d.source.y
+          ).attr("x2", (d) ->
+            d.target.x
+          ).attr("y2", (d) ->
+            d.target.y
           )
 
-      nodeEnter.append("circle")
-           .attr("r", 5)
-           .attr("cx", 0)
-           .attr("cy", 0)
+          node.attr "transform", (d) ->
+            "translate(#{d.x},#{d.y})"
 
-      @trigger "enter:node", nodeEnter
-      @trigger "enter:link", linkEnter
-      node.exit().remove()
-      @force.on "tick", ->
-        link.attr("x1", (d) ->
-          d.source.x
-        ).attr("y1", (d) ->
-          d.source.y
-        ).attr("x2", (d) ->
-          d.target.x
-        ).attr("y2", (d) ->
-          d.target.y
-        )
+          
 
-        node.attr "transform", (d) ->
-          "translate(#{d.x},#{d.y})"
+        
+        console.log(x=@force.alpha())
+
+        #fast forward rendering
+        @forwardAlpha(@force,.005,2000)
+        console.log(x=@force.alpha())
+      , 5)
+    
 
     getNodeSelection: ->
       return @nodeSelection
