@@ -88,6 +88,8 @@ require ["Celestrium"], (Celestrium) ->
 
     MiniMap: {}  
 
+    "local/Neo4jDataController": {}
+
   # initialize the plugins and execute a callback once done
   Celestrium.init plugins, (instances) ->
 

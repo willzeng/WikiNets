@@ -14,27 +14,42 @@
       }
 
       Neo4jDataController.prototype.nodeAdd = function(node, callback) {
-        return $.post("/create_node", node, callback);
+        var filteredNode;
+        filteredNode = this.filterNode(node);
+        console.log("filtered: ", filteredNode);
+        return $.post("/create_node", filteredNode, callback);
       };
 
       Neo4jDataController.prototype.nodeDelete = function(node, callback) {
-        return $.post("/delete_node", node, callback);
+        return $.post("/delete_node", this.filterNode(node), callback);
       };
 
-      Neo4jDataController.prototype.nodeEdit = function(oldNode, newNode, callback) {
-        return $.post("/edit_node", node, callback);
+      Neo4jDataController.prototype.nodeEdit = function(oldNode, newNode) {
+        return $.post("/edit_node", this.filterNode(node), callback);
       };
 
       Neo4jDataController.prototype.linkAdd = function(link, callback) {
-        return $.post("/create_link", link, callback);
+        return $.post("/create_arrow", link, callback);
       };
 
-      Neo4jDataController.prototype.linkDelete = function(link, callback) {
-        return $.post("/delete_link", link, callback);
+      Neo4jDataController.prototype.linkDelete = function(link) {
+        return $.post("/delete_arrow", link, callback);
       };
 
-      Neo4jDataController.prototype.linkEdit = function(oldLink, newLink, callback) {
-        return $.post("/edit_link", link, callback);
+      Neo4jDataController.prototype.linkEdit = function(oldLink, newLink) {
+        return $.post("/edit_arrow", link, callback);
+      };
+
+      Neo4jDataController.prototype.filterNode = function(node) {
+        var blacklist, filteredNode;
+        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight"];
+        filteredNode = {};
+        _.each(node, function(value, property) {
+          if (blacklist.indexOf(property) < 0) {
+            return filteredNode[value] = property;
+          }
+        });
+        return filteredNode;
       };
 
       return Neo4jDataController;

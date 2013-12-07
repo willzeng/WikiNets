@@ -68,7 +68,8 @@
         prefetch: "/get_node_names"
       },
       NodeDetails: {},
-      MiniMap: {}
+      MiniMap: {},
+      "local/Neo4jDataController": {}
     };
     return Celestrium.init(plugins, function(instances) {
       var loadEverything, makeDisplayable;
