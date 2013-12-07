@@ -27,22 +27,24 @@ define [], () ->
       # use identify function if not defined
       @linkFilter = new LinkFilter(this);
       @listenTo @linkFilter, "change:threshold", @update
-
+      @translateParams = [0,0]
+      console.log("dragend")
+    
     drawXHairs: (x,y,obj) ->
-            obj.append("line")
-            .attr("x1", x)
-            .attr("x2", x)
-            .attr("y1", y-10)
-            .attr("y2", y+10)
-            .attr("stroke-width", 2)
-            .attr("stroke", "red");
-            obj.append("line")
-            .attr("x1", x+10)
-            .attr("x2", x-10)
-            .attr("y1", y)
-            .attr("y2", y)
-            .attr("stroke-width", 2)
-            .attr("stroke", "red")
+        obj.append("line")
+        .attr("x1", x)
+        .attr("x2", x)
+        .attr("y1", y-10)
+        .attr("y2", y+10)
+        .attr("stroke-width", 2)
+        .attr("stroke", "red");
+        obj.append("line")
+        .attr("x1", x+10)
+        .attr("x2", x-10)
+        .attr("y1", y)
+        .attr("y2", y)
+        .attr("stroke-width", 2)
+        .attr("stroke", "red")
 
 
     render: ->
@@ -101,36 +103,50 @@ define [], () ->
       # typically occur when dragging a node
       translateLock = false
       currentZoom = undefined
-      @force.drag().on "dragstart", ->
-        translateLock = true
-        currentZoom = zoom.translate()
-      .on "dragend", ->
-        zoom.translate currentZoom
-        translateLock = false
+
+      #   translateLock = false
+      #   console.log("#dragend")
 
       # add event listener to actually affect UI
 
       # ignore zoom event if it's due to a node being dragged
 
       # otherwise, translate and scale according to zoom
-      ###
-      #disabled dragging for clicking
-      zoomCapture.call(zoom.on("zoom", -> # ignore double click to zoom
-        return  if translateLock
-        workspace.attr "transform", "translate(#{d3.event.translate}) scale(#{d3.event.scale})"
-      )).on("dblclick.zoom", null)
-###
+      ###zoomCapture.call(zoom.on("zoom", -> # ignore double click to zoom
+        if d3.event.translate
+	        height =  800 #zoomCapture.getBBox().height #.style("height")
+	        width =  804 #zoomCapture.getBBox().width #.style("width")
+	        scale = d3.event.scale
+	        trans = d3.event.translate
+	        @translateParams = [trans[0],trans[1] ]
+	        # @translateParams = [trans[0] + width/scale/2,trans[1] + height/scale/2]
+
+        console.log trans,width,scale
+        return workspace.transition().ease("linear").attr "transform", "translate(#{@translateParams}) scale(#{d3.event.scale})"
+        
+
+
+        # return  if translateLock
+        # workspace.attr "transform", "translate(#{d3.event.translate}) scale(#{d3.event.scale})"
+
+
+
+        # return  if translateLock
+        # workspace.attr "transform", "translate(#{d3.event.translate}) scale(#{d3.event.scale})"
+      )).on("dblclick.zoom", null)###
+
       # inner workspace which nodes and links go on
       # scaling and transforming are abstracted away from this
       workspace = zoomCapture.append("svg:g")
 
 
+
+
       width=$("#maingraph").width()
-      height=$("#maingraph").height()-300 #temp #hack to move the xhairs up 
+      height=$("#maingraph").height()-200
 
       @drawXHairs(width/2,height/2,zoomCapture);
       translateParams=[0,0]
-      
       zoomCapture.on "click", ->
         # translateLock = true
         x = d3.mouse(this)[0]
@@ -144,12 +160,19 @@ define [], () ->
         console.log(width,height,x,y,scale,translateParams)
         workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
         
+        # pan[0] = -x
+        # pan[1] = -y
+
+
 
 
       # containers to house nodes and links
       # so that nodes always appear above links
       linkContainer = workspace.append("svg:g").classed("linkContainer", true)
       nodeContainer = workspace.append("svg:g").classed("nodeContainer", true)
+
+      @on "enter:node:click", () =>
+        console.log("#clk")
       return this
 
     update: ->

@@ -14,7 +14,6 @@ define [], () ->
         @get("threshold")
 
   class GraphView extends Backbone.View
-
     init: (instances) ->
       @model = instances["GraphModel"]
       @model.on "change", @update.bind(this)
@@ -23,27 +22,14 @@ define [], () ->
 
 
     initialize: (options) ->
+    	@pan = [0, 0]; # pan to a node
+			@trans = [0, 0]; # translation from zooming
+			@scale = 1;
+      
       # filter between model and visible graph
       # use identify function if not defined
       @linkFilter = new LinkFilter(this);
       @listenTo @linkFilter, "change:threshold", @update
-
-    drawXHairs: (x,y,obj) ->
-            obj.append("line")
-            .attr("x1", x)
-            .attr("x2", x)
-            .attr("y1", y-10)
-            .attr("y2", y+10)
-            .attr("stroke-width", 2)
-            .attr("stroke", "red");
-            obj.append("line")
-            .attr("x1", x+10)
-            .attr("x2", x-10)
-            .attr("y1", y)
-            .attr("y2", y)
-            .attr("stroke-width", 2)
-            .attr("stroke", "red")
-
 
     render: ->
       initialWindowWidth = $(window).width()
@@ -108,43 +94,27 @@ define [], () ->
         zoom.translate currentZoom
         translateLock = false
 
+
+      translateLock = false
+      currentZoom = undefined
+      @force.on "enter:node:click", ->
+        translateLock = true
+        currentZoom = zoom.translate()
+
+
       # add event listener to actually affect UI
 
       # ignore zoom event if it's due to a node being dragged
 
       # otherwise, translate and scale according to zoom
-      ###
-      #disabled dragging for clicking
       zoomCapture.call(zoom.on("zoom", -> # ignore double click to zoom
         return  if translateLock
         workspace.attr "transform", "translate(#{d3.event.translate}) scale(#{d3.event.scale})"
       )).on("dblclick.zoom", null)
-###
+
       # inner workspace which nodes and links go on
       # scaling and transforming are abstracted away from this
       workspace = zoomCapture.append("svg:g")
-
-
-      width=$("#maingraph").width()
-      height=$("#maingraph").height()-300 #temp #hack to move the xhairs up 
-
-      @drawXHairs(width/2,height/2,zoomCapture);
-      translateParams=[0,0]
-      
-      zoomCapture.on "click", ->
-        # translateLock = true
-        x = d3.mouse(this)[0]
-        y = d3.mouse(this)[1]
-        scale = zoom.scale()
-
-
-        #translateParams = [x + width/scale/2,y + height/scale/2]
-        translateParams = [translateParams[0]+width/scale/2 -x,translateParams[1]+height/scale/2-y]
-        
-        console.log(width,height,x,y,scale,translateParams)
-        workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
-        
-
 
       # containers to house nodes and links
       # so that nodes always appear above links
@@ -176,10 +146,29 @@ define [], () ->
             d.text
           )
 
-      nodeEnter.append("circle")
+      nodeEnter.append("circle") 
            .attr("r", 5)
            .attr("cx", 0)
            .attr("cy", 0)
+
+      clickSemaphore = 0
+      nodeEnter.on("click", (datum, index) =>
+        #ignore drag
+        return  if d3.event.defaultPrevented
+        datum.fixed = true
+        clickSemaphore += 1
+        savedClickSemaphore = clickSemaphore
+        setTimeout (=>
+          if clickSemaphore is savedClickSemaphore
+            @trigger "enter:node:click", datum
+            datum.fixed = false
+          else
+            # increment so second click isn't registered as a click
+            clickSemaphore += 1
+            datum.fixed = false
+        ), 250)
+        .on "dblclick", (datum, index) =>
+          @trigger "enter:node:dblclick", datum
 
       @trigger "enter:node", nodeEnter
       @trigger "enter:link", linkEnter
@@ -197,6 +186,38 @@ define [], () ->
 
         node.attr "transform", (d) ->
           "translate(#{d.x},#{d.y})"
+
+      @on "enter:node:click" @clickTranslate
+
+
+		clickTranslate: ->
+			x = @cx.animVal.value
+			y = @cy.animVal.value
+			# d3.select(this).transition().attr("r",7)
+			@pan[0] = -x
+			@pan[1] = -y
+			console.log("translate",width/2,height/2)
+			console.log(x,y)
+			# drawXHairs(x,y)
+			@clickTransRedraw
+
+		clickTransRedraw: ->
+		  if(d3.event.translate){
+		    # zoom
+		    trans = d3.event.translate;
+		    scale = d3.event.scale;
+		  }
+		  console.log("redraw",trans,scale);
+		  translate = [
+			  @pan[0] + width/scale/2,
+			  @pan[1] + height/scale/2
+		  ]
+
+		  svgG.transition().ease("linear").attr("transform",
+		    "scale(" + scale + ") "
+		    + "translate(" + translate + ")");
+
+		
 
     getNodeSelection: ->
       return @nodeSelection
