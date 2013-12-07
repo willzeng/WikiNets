@@ -1,7 +1,10 @@
 # uses quick WikiNets syntax to create up a network of nodes and arrows in the database
 define [], () ->
 
-  class SyntaxCreate
+  class SyntaxCreate extends Backbone.View
+
+    constructor: (@options) ->
+      super()
 
     init: (instances) ->
 
@@ -11,20 +14,26 @@ define [], () ->
       @graphView = instances['GraphView']
       @graphModel = instances['GraphModel']
 
-      #some trigger should take you to the SyntaxCreate box
-      #perhaps SPACE?
+      #some key press should take you to the SyntaxCreate box. Perhaps SPACE?
       #@listenTo @keyListener, "down:17:65", @selectAll
 
       @graphView.on "enter:node:click", @update.bind(this)
 
-      instances["Layout"].addPlugin @el, @options.pluginOrder, 'Node Details'
+      @render()
+
+      instances["Layout"].addPlugin @el, @options.pluginOrder, 'Syntax Create'
+
+    render: ->
+      $container = $("<div class=\"syntax-create-container\">").appendTo @$el
+
+      $createNodeButton = $("<input id=\"createNodeButton\" type=\"submit\" value=\"New Node\">").appendTo $container
+      $createArrowButton = $("<input id=\"createArrowButton\" type=\"submit\" value=\"New Arrow\">").appendTo $container
+
+      $("<br>").appendTo $container
+      $sourceInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo $container
+
+      $arrowInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo $container
+
+      $targetInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo $container
 
     update: ->
-          @$el.empty()
-          $container = $("<div class=\"syntax-create-container\"/>").appendTo(@$el)
-          blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight"]
-          _.each selectedNodes, (node) ->
-            $nodeDiv = $("<div class=\"node-profile\"/>").appendTo($container)
-            $("<div class=\"node-profile-title\">#{node['text']}</div>").appendTo $nodeDiv
-            _.each node, (value, property) ->
-              $("<div class=\"node-profile-property\">#{property}:  #{value}</div>").appendTo $nodeDiv  if blacklist.indexOf(property) < 0

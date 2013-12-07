@@ -75,6 +75,12 @@ require ["Celestrium"], (Celestrium) ->
     # provides functions to get nodes and links
     "local/WikiNetsDataProvider": {}
 
+    "local/Neo4jDataController": {}
+
+    "local/Create": {}
+
+    "local/SyntaxCreate": {}    
+
     "Sliders": {}
 
     "ForceSliders": {}
@@ -87,8 +93,6 @@ require ["Celestrium"], (Celestrium) ->
     NodeDetails: {}
 
     MiniMap: {}  
-
-    "local/Neo4jDataController": {}
 
   # initialize the plugins and execute a callback once done
   Celestrium.init plugins, (instances) ->

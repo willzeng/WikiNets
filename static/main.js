@@ -61,6 +61,9 @@
         onClick: doWikiNetsSelection
       },
       "local/WikiNetsDataProvider": {},
+      "local/Neo4jDataController": {},
+      "local/Create": {},
+      "local/SyntaxCreate": {},
       "Sliders": {},
       "ForceSliders": {},
       "LinkDistribution": {},
@@ -68,8 +71,7 @@
         prefetch: "/get_node_names"
       },
       NodeDetails: {},
-      MiniMap: {},
-      "local/Neo4jDataController": {}
+      MiniMap: {}
     };
     return Celestrium.init(plugins, function(instances) {
       var loadEverything, makeDisplayable;
