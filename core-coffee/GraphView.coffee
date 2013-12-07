@@ -125,8 +125,9 @@ define [], () ->
       workspace = zoomCapture.append("svg:g")
 
 
-      width=$("#maingraph").width()
-      height=$("#maingraph").height()-300 #temp #hack to move the xhairs up 
+      #Click Scrolling
+      width = $("#maingraph").width()
+      height = $("#maingraph").height() 
 
       @drawXHairs(width/2,height/2,zoomCapture);
       translateParams=[0,0]
@@ -143,7 +144,95 @@ define [], () ->
         
         console.log(width,height,x,y,scale,translateParams)
         workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
+      
+
+
+
+
+      #Edge Scrolling
+      self = this;
+
+      edgeScrollVect=[0,0]
+      edgeScrollSpeed=10
+
+      ScrollTimer = ""
+      @StartScroll = () ->
+          ScrollTimer = window.setInterval( () ->
+              translateParams = [translateParams[0]+edgeScrollSpeed*edgeScrollVect[0],translateParams[1]+edgeScrollSpeed*edgeScrollVect[1]]
+              scale = zoom.scale()
+              workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
+          , 10)
+
+      
+
+      @StopScroll = () ->
+          if ScrollTimer != ""
+              window.clearInterval(ScrollTimer)
         
+      ###// to scroll the div when the mouse mouse at the bottom right corner
+      canvas.mousemove(function(event) {
+          self.StopScroll();
+          var boundaries = canvas[0].getBoundingClientRect();
+          //-50 margin, so that we can scroll the div when the mouse at the bottom right corner.
+          if (event.offsetX > boundaries.width - 50) {
+              self.StartScroll()
+          }
+      });
+      // stop scroll when the mouse is out of the div 
+      canvas.mouseout(function(event) {
+          self.StopScroll();
+      });###
+      zoomCapture.on "mouseout", () ->
+              self.StopScroll()
+              self.blur()
+              $("body").css("cursor","inherit")              
+          
+      zoomCapture.on "mousemove", () ->
+        self.StopScroll()
+        edgeScrollVect=[0,0]
+
+        margin=20;
+        
+        x=d3.mouse(this)[0]
+        y=d3.mouse(this)[1]
+
+        if x < margin
+          edgeScrollVect[0]=1
+        else if width-x < margin
+          edgeScrollVect[0]=-1
+        else if y < margin
+          edgeScrollVect[1]=1
+        else if height-y < margin
+          edgeScrollVect[1]=-1
+
+        else
+          $("body").css("cursor","inherit") 
+          return
+
+        $("body").css("cursor","move")              
+        self.StartScroll()
+        console.log(x,y,width,height,edgeScrollVect)
+        ###
+        
+        boundaries = workspace.getBoundingClientRect()
+        #//-50 margin, so that we can scroll the div when the mouse at the bottom right corner.
+        if (event.offsetX > boundaries.width - 50) {
+            self.StartScroll()
+        }
+
+
+        # translateLock = true
+        x = d3.mouse(this)[0]
+        y = d3.mouse(this)[1]
+        scale = zoom.scale()
+
+
+        #translateParams = [x + width/scale/2,y + height/scale/2]
+        translateParams = [translateParams[0]+width/scale/2 -x,translateParams[1]+height/scale/2-y]
+        
+        console.log(width,height,x,y,scale,translateParams)
+        workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
+        ###
 
 
       # containers to house nodes and links
