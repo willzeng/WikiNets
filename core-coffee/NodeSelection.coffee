@@ -26,7 +26,6 @@ define [], () ->
         
         #calls an onClick optional method passed to constructor
         @options.onClick(datum['text'])
-
       
       @graphView.on "enter:node:dblclick", (datum) =>
         @selectConnectedComponent datum
