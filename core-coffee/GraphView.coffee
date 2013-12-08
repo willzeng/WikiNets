@@ -164,8 +164,8 @@ define [], () ->
 
     update: ->
       #hack fixing multi-eval of Update and hence Start bug:
-      clearTimeout(@tickTimer)
-      @tickTimer=setTimeout( () => 
+      #clearTimeout(@tickTimer)
+      #@tickTimer=setTimeout( () => 
 
         nodes = @model.get("nodes")
         links = @model.get("links")
@@ -234,9 +234,9 @@ define [], () ->
 
 
         #fast forward rendering
-        @forwardAlpha(@force,.005,2000)
+        #@forwardAlpha(@force,.005,2000)
         
-      , 5)
+      #, 5)
 
     getNodeSelection: ->
       return @nodeSelection
