@@ -135,7 +135,7 @@ define [], () ->
             d.text
           )
 
-      nodeEnter.append("circle") 
+      nodeEnter.append("circle")
            .attr("r", 5)
            .attr("cx", 0)
            .attr("cy", 0)
@@ -143,7 +143,7 @@ define [], () ->
       clickSemaphore = 0
       nodeEnter.on("click", (datum, index) =>
         #ignore drag
-        return  if d3.event.defaultPrevented
+        return if d3.event.defaultPrevented
         datum.fixed = true
         clickSemaphore += 1
         savedClickSemaphore = clickSemaphore
