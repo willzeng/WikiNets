@@ -139,7 +139,8 @@ define [], () ->
         x = node.x
         y = node.y
         scale = zoom.scale()
-        translateParams = [width/scale/2 -x,height/scale/2-y]
+        translateParams = [(width/2 -x)/scale,(height/2-y)/scale]
+        # translateParams = [width/scale/2 -x,height/scale/2-y]
 
         #update translate values
         zoom.translate([translateParams[0], translateParams[1]])
