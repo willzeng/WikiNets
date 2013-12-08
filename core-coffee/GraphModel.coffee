@@ -32,6 +32,7 @@ define [], () ->
 
     putLink: (link) ->
       link.strength ?= 1
+      if link.strength is 1 then link.strength = Math.random()*0.8+0.2
       @pushDatum "links", link
       @trigger "add:link", link
 
