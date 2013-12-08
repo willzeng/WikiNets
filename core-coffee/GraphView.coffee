@@ -112,6 +112,7 @@ define [], () ->
       return this
 
     update: ->
+
       nodes = @model.get("nodes")
       links = @model.get("links")
       filteredLinks = if @linkFilter then @linkFilter.filter(links) else links
