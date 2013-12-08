@@ -98,6 +98,15 @@ define [], () ->
              .style("fill-opacity", "0%")
 
 
+      #Panning
+
+       # #hack
+      width = $("#maingraph").width()  #$(@el).width()
+      height = $("#maingraph").height()  #$(@el).height() 
+
+      translateParams=[0,0]
+
+
       #Translate on drag
       # lock infrastracture to ignore zoom changes that would
       # typically occur when dragging a node
@@ -114,7 +123,9 @@ define [], () ->
       # ignore zoom event if it's due to a node being dragged
       # otherwise, translate and scale according to zoom
       # disabled dragging for clicking
+      
       zoomCapture.call(zoom.on("zoom", -> # ignore double click to zoom
+
         return  if translateLock
         workspace.attr "transform", "translate(#{d3.event.translate}) scale(#{d3.event.scale})"
       )).on("dblclick.zoom", null)
@@ -122,61 +133,25 @@ define [], () ->
       # inner workspace which nodes and links go on
       # scaling and transforming are abstracted away from this
       workspace = zoomCapture.append("svg:g")
+     
+      #Center node on click
+      @on "enter:node:click", (node) ->
+        x = node.x
+        y = node.y
+        scale = zoom.scale()
+        translateParams = [width/scale/2 -x,height/scale/2-y]
 
+        #update translate values
+        zoom.translate([translateParams[0], translateParams[1]])
 
-      # #hack
-      # width = $("#maingraph").width()  #$(@el).width()
-      # height = $("#maingraph").height()  #$(@el).height() 
-
-      # # width = $(@el).parent().width()
-      # # height = $(@el).parent().height() 
-      # # console.log window.x=$(@el).parent()
-      # # $("#maingraph").height(), $(@el).height() 
-      # # console.log window.x=@el, window.y=$("#maingraph")
-
-
-
-      # #DblClick Scrolling
-
-      # @drawXHairs(width/2,height/2,zoomCapture);
-      # translateParams=[0,0]
-      
-      # zoomCapture.on "dblclick", ->
-      #   # translateLock = true
-      #   x = d3.mouse(this)[0]
-      #   y = d3.mouse(this)[1]
-      #   scale = zoom.scale()
-
-
-      #   #translateParams = [x + width/scale/2,y + height/scale/2]
-      #   translateParams = [translateParams[0]+width/scale/2 -x,translateParams[1]+height/scale/2-y]
-        
-      #   #console.log(width,height,x,y,scale,translateParams)
-      #   workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
-      
-
-
-
-
+        workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
+    
 
       # containers to house nodes and links
       # so that nodes always appear above links
       linkContainer = workspace.append("svg:g").classed("linkContainer", true)
       nodeContainer = workspace.append("svg:g").classed("nodeContainer", true)
 
-      
-      #hack fixing multi-eval of Update and hence Start bug:
-      ###@force.on "start", () =>
-        console.log("aoeuoae")
-        @tickTimer=setTimeout( () => 
-          
-          clearTimeout(@tickTimer)
-
-          console.log(x=@force.alpha())
-          @forwardAlpha(@force,.01,1000)
-          console.log(x=@force.alpha())
-        , 10)
-      ###
       return this
 
     #fast-forward force graph rendering to prevent bouncing http://stackoverflow.com/questions/13463053/calm-down-initial-tick-of-a-force-layout  
@@ -257,9 +232,6 @@ define [], () ->
           node.attr "transform", (d) ->
             "translate(#{d.x},#{d.y})"
 
-          
-
-        
 
         #fast forward rendering
         @forwardAlpha(@force,.005,2000)
