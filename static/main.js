@@ -61,9 +61,6 @@
         onClick: doWikiNetsSelection
       },
       "local/WikiNetsDataProvider": {},
-      "local/Neo4jDataController": {},
-      "local/Create": {},
-      "local/SyntaxCreate": {},
       "Sliders": {},
       "ForceSliders": {},
       "LinkDistribution": {},

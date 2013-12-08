@@ -20,7 +20,7 @@
         this.graphModel = instances['GraphModel'];
         this.graphView.on("enter:node:click", this.update.bind(this));
         this.render();
-        return instances["Layout"].addPlugin(this.el, this.options.pluginOrder, 'Node Details');
+        return instances["Layout"].addPlugin(this.el, this.options.pluginOrder, 'Syntax Create');
       };
 
       SyntaxCreate.prototype.render = function() {
