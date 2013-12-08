@@ -22,7 +22,6 @@ define [], () ->
 
       # handle selecting and deselecting nodes
       @graphView.on "enter:node:click", (datum) =>
-        console.log("#clk2")
         @toggleSelection datum
         
         #calls an onClick optional method passed to constructor
