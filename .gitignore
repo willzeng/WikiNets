@@ -21,3 +21,6 @@ node_modules
 # javascript output folders
 core
 test
+
+#extra junk code
+junk
