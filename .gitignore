@@ -23,5 +23,4 @@ core
 test
 
 #extra junk code
-core-coffee/junk
-*.junk
+junk
