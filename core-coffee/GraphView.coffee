@@ -29,20 +29,20 @@ define [], () ->
       @listenTo @linkFilter, "change:threshold", @update
 
     drawXHairs: (x,y,obj) ->
-            obj.append("line")
-            .attr("x1", x)
-            .attr("x2", x)
-            .attr("y1", y-10)
-            .attr("y2", y+10)
-            .attr("stroke-width", 2)
-            .attr("stroke", "red");
-            obj.append("line")
-            .attr("x1", x+10)
-            .attr("x2", x-10)
-            .attr("y1", y)
-            .attr("y2", y)
-            .attr("stroke-width", 2)
-            .attr("stroke", "red")
+      obj.append("line")
+      .attr("x1", x)
+      .attr("x2", x)
+      .attr("y1", y-10)
+      .attr("y2", y+10)
+      .attr("stroke-width", 2)
+      .attr("stroke", "red");
+      obj.append("line")
+      .attr("x1", x+10)
+      .attr("x2", x-10)
+      .attr("y1", y)
+      .attr("y2", y)
+      .attr("stroke-width", 2)
+      .attr("stroke", "red")
 
 
     render: ->
@@ -97,6 +97,8 @@ define [], () ->
              .attr("height", "100%")
              .style("fill-opacity", "0%")
 
+
+      #Translate on drag
       # lock infrastracture to ignore zoom changes that would
       # typically occur when dragging a node
       translateLock = false
@@ -109,130 +111,52 @@ define [], () ->
         translateLock = false
 
       # add event listener to actually affect UI
-
       # ignore zoom event if it's due to a node being dragged
-
       # otherwise, translate and scale according to zoom
-      ###
-      #disabled dragging for clicking
+      # disabled dragging for clicking
       zoomCapture.call(zoom.on("zoom", -> # ignore double click to zoom
         return  if translateLock
         workspace.attr "transform", "translate(#{d3.event.translate}) scale(#{d3.event.scale})"
       )).on("dblclick.zoom", null)
-###
+
       # inner workspace which nodes and links go on
       # scaling and transforming are abstracted away from this
       workspace = zoomCapture.append("svg:g")
 
 
-      #Click Scrolling
-      width = $("#maingraph").width()
-      height = $("#maingraph").height() 
+      # #hack
+      # width = $("#maingraph").width()  #$(@el).width()
+      # height = $("#maingraph").height()  #$(@el).height() 
 
-      @drawXHairs(width/2,height/2,zoomCapture);
-      translateParams=[0,0]
+      # # width = $(@el).parent().width()
+      # # height = $(@el).parent().height() 
+      # # console.log window.x=$(@el).parent()
+      # # $("#maingraph").height(), $(@el).height() 
+      # # console.log window.x=@el, window.y=$("#maingraph")
+
+
+
+      # #DblClick Scrolling
+
+      # @drawXHairs(width/2,height/2,zoomCapture);
+      # translateParams=[0,0]
       
-      zoomCapture.on "click", ->
-        # translateLock = true
-        x = d3.mouse(this)[0]
-        y = d3.mouse(this)[1]
-        scale = zoom.scale()
+      # zoomCapture.on "dblclick", ->
+      #   # translateLock = true
+      #   x = d3.mouse(this)[0]
+      #   y = d3.mouse(this)[1]
+      #   scale = zoom.scale()
 
 
-        #translateParams = [x + width/scale/2,y + height/scale/2]
-        translateParams = [translateParams[0]+width/scale/2 -x,translateParams[1]+height/scale/2-y]
+      #   #translateParams = [x + width/scale/2,y + height/scale/2]
+      #   translateParams = [translateParams[0]+width/scale/2 -x,translateParams[1]+height/scale/2-y]
         
-        console.log(width,height,x,y,scale,translateParams)
-        workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
-      
-
-
-
-
-      #Edge Scrolling
-      self = this;
-
-      edgeScrollVect=[0,0]
-      edgeScrollSpeed=10
-
-      ScrollTimer = ""
-      @StartScroll = () ->
-          ScrollTimer = window.setInterval( () ->
-              translateParams = [translateParams[0]+edgeScrollSpeed*edgeScrollVect[0],translateParams[1]+edgeScrollSpeed*edgeScrollVect[1]]
-              scale = zoom.scale()
-              workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
-          , 10)
-
+      #   #console.log(width,height,x,y,scale,translateParams)
+      #   workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
       
 
-      @StopScroll = () ->
-          if ScrollTimer != ""
-              window.clearInterval(ScrollTimer)
-        
-      ###// to scroll the div when the mouse mouse at the bottom right corner
-      canvas.mousemove(function(event) {
-          self.StopScroll();
-          var boundaries = canvas[0].getBoundingClientRect();
-          //-50 margin, so that we can scroll the div when the mouse at the bottom right corner.
-          if (event.offsetX > boundaries.width - 50) {
-              self.StartScroll()
-          }
-      });
-      // stop scroll when the mouse is out of the div 
-      canvas.mouseout(function(event) {
-          self.StopScroll();
-      });###
-      zoomCapture.on "mouseout", () ->
-              self.StopScroll()
-              #self.blur()
-              $("body").css("cursor","inherit")              
-          
-      zoomCapture.on "mousemove", () ->
-        self.StopScroll()
-        edgeScrollVect=[0,0]
-
-        margin=20;
-        
-        x=d3.mouse(this)[0]
-        y=d3.mouse(this)[1]
-
-        if x < margin
-          edgeScrollVect[0]=1
-        else if width-x < margin
-          edgeScrollVect[0]=-1
-        else if y < margin
-          edgeScrollVect[1]=1
-        else if height-y < margin
-          edgeScrollVect[1]=-1
-
-        else
-          $("body").css("cursor","inherit") 
-          return
-
-        $("body").css("cursor","move")              
-        self.StartScroll()
-        console.log(x,y,width,height,edgeScrollVect)
-        ###
-        
-        boundaries = workspace.getBoundingClientRect()
-        #//-50 margin, so that we can scroll the div when the mouse at the bottom right corner.
-        if (event.offsetX > boundaries.width - 50) {
-            self.StartScroll()
-        }
 
 
-        # translateLock = true
-        x = d3.mouse(this)[0]
-        y = d3.mouse(this)[1]
-        scale = zoom.scale()
-
-
-        #translateParams = [x + width/scale/2,y + height/scale/2]
-        translateParams = [translateParams[0]+width/scale/2 -x,translateParams[1]+height/scale/2-y]
-        
-        console.log(width,height,x,y,scale,translateParams)
-        workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
-        ###
 
 
       # containers to house nodes and links
@@ -262,11 +186,9 @@ define [], () ->
       i = 0
       while layout.alpha() > alpha && i++ < max
         layout.tick()
-      
 
     update: ->
       #hack fixing multi-eval of Update and hence Start bug:
-      
       clearTimeout(@tickTimer)
       @tickTimer=setTimeout( () => 
 
@@ -319,11 +241,10 @@ define [], () ->
           
 
         
-        console.log(x=@force.alpha())
 
         #fast forward rendering
         @forwardAlpha(@force,.005,2000)
-        console.log(x=@force.alpha())
+        
       , 5)
     
 
