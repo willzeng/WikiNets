@@ -28,6 +28,23 @@ define [], () ->
       @linkFilter = new LinkFilter(this);
       @listenTo @linkFilter, "change:threshold", @update
 
+    drawXHairs: (x,y,obj) ->
+      obj.append("line")
+      .attr("x1", x)
+      .attr("x2", x)
+      .attr("y1", y-10)
+      .attr("y2", y+10)
+      .attr("stroke-width", 2)
+      .attr("stroke", "red");
+      obj.append("line")
+      .attr("x1", x+10)
+      .attr("x2", x-10)
+      .attr("y1", y)
+      .attr("y2", y)
+      .attr("stroke-width", 2)
+      .attr("stroke", "red")
+
+
     render: ->
       initialWindowWidth = $(window).width()
       initialWindowHeight = $(window).height()
@@ -80,6 +97,17 @@ define [], () ->
              .attr("height", "100%")
              .style("fill-opacity", "0%")
 
+
+      #Panning
+
+       # #hack
+      width = $("#maingraph").width()  #$(@el).width()
+      height = $("#maingraph").height()  #$(@el).height() 
+
+      translateParams=[0,0]
+
+
+      #Translate on drag
       # lock infrastracture to ignore zoom changes that would
       # typically occur when dragging a node
       translateLock = false
@@ -92,11 +120,12 @@ define [], () ->
         translateLock = false
 
       # add event listener to actually affect UI
-
       # ignore zoom event if it's due to a node being dragged
-
       # otherwise, translate and scale according to zoom
+      # disabled dragging for clicking
+      
       zoomCapture.call(zoom.on("zoom", -> # ignore double click to zoom
+
         return  if translateLock
         workspace.attr "transform", "translate(#{d3.event.translate}) scale(#{d3.event.scale})"
       )).on("dblclick.zoom", null)
@@ -104,77 +133,111 @@ define [], () ->
       # inner workspace which nodes and links go on
       # scaling and transforming are abstracted away from this
       workspace = zoomCapture.append("svg:g")
+     
+      #Center node on click
+      @on "enter:node:click", (node) ->
+        x = node.x
+        y = node.y
+        scale = zoom.scale()
+        translateParams = [width/scale/2 -x,height/scale/2-y]
+
+        #update translate values
+        zoom.translate([translateParams[0], translateParams[1]])
+
+        workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
+    
 
       # containers to house nodes and links
       # so that nodes always appear above links
       linkContainer = workspace.append("svg:g").classed("linkContainer", true)
       nodeContainer = workspace.append("svg:g").classed("nodeContainer", true)
+
       return this
 
+    #fast-forward force graph rendering to prevent bouncing http://stackoverflow.com/questions/13463053/calm-down-initial-tick-of-a-force-layout  
+    forwardAlpha: (layout, alpha, max) ->
+      alpha = alpha || 0
+      max = max || 1000
+      i = 0
+      while layout.alpha() > alpha && i++ < max
+        layout.tick()
+
     update: ->
-      nodes = @model.get("nodes")
-      links = @model.get("links")
-      filteredLinks = if @linkFilter then @linkFilter.filter(links) else links
-      @force.nodes(nodes).links(filteredLinks).start()
-      link = @linkSelection = d3.select(@el).select(".linkContainer").selectAll(".link").data(filteredLinks, @model.get("linkHash"))
-      linkEnter = link.enter().append("line")
-        .attr("class", "link")
-        .attr 'marker-end', (link) ->
-          'url(#Triangle)' if link.direction is 'forward' or link.direction is 'bidirectional'
-        .attr 'marker-start', (link) ->
-          'url(#Triangle2)' if link.direction is 'backward' or link.direction is 'bidirectional'
-      @force.start()
-      link.exit().remove()
-      link.attr "stroke-width", (link) => 5 * (@linkStrength link)
-      node = @nodeSelection = d3.select(@el).select(".nodeContainer").selectAll(".node").data(nodes, @model.get("nodeHash"))
-      nodeEnter = node.enter().append("g").attr("class", "node").call(@force.drag)
-      nodeEnter.append("text")
-           .attr("dx", 12)
-           .attr("dy", ".35em")
-           .text((d) ->
-            d.text
+      #hack fixing multi-eval of Update and hence Start bug:
+      clearTimeout(@tickTimer)
+      @tickTimer=setTimeout( () => 
+
+        nodes = @model.get("nodes")
+        links = @model.get("links")
+        filteredLinks = if @linkFilter then @linkFilter.filter(links) else links
+        @force.nodes(nodes).links(filteredLinks).start()
+        link = @linkSelection = d3.select(@el).select(".linkContainer").selectAll(".link").data(filteredLinks, @model.get("linkHash"))
+        linkEnter = link.enter().append("line")
+          .attr("class", "link")
+          .attr 'marker-end', (link) ->
+            'url(#Triangle)' if link.direction is 'forward' or link.direction is 'bidirectional'
+          .attr 'marker-start', (link) ->
+            'url(#Triangle2)' if link.direction is 'backward' or link.direction is 'bidirectional'
+        @force.start()
+        
+        link.exit().remove()
+        link.attr "stroke-width", (link) => 5 * (@linkStrength link)
+        node = @nodeSelection = d3.select(@el).select(".nodeContainer").selectAll(".node").data(nodes, @model.get("nodeHash"))
+        nodeEnter = node.enter().append("g").attr("class", "node").call(@force.drag)
+        nodeEnter.append("text")
+             .attr("dx", 12)
+             .attr("dy", ".35em")
+             .text((d) ->
+              d.text
+            )
+
+        nodeEnter.append("circle")
+             .attr("r", 5)
+             .attr("cx", 0)
+             .attr("cy", 0)
+        
+        clickSemaphore = 0
+        nodeEnter.on("click", (datum, index) =>
+          #ignore drag
+          return  if d3.event.defaultPrevented
+          datum.fixed = true
+          clickSemaphore += 1
+          savedClickSemaphore = clickSemaphore
+          setTimeout (=>
+            if clickSemaphore is savedClickSemaphore
+              @trigger "enter:node:click", datum
+              datum.fixed = false
+            else
+              # increment so second click isn't registered as a click
+              clickSemaphore += 1
+              datum.fixed = false
+          ), 250)
+          .on "dblclick", (datum, index) =>
+            @trigger "enter:node:dblclick", datum
+
+        @trigger "enter:node", nodeEnter
+        @trigger "enter:link", linkEnter
+        node.exit().remove()
+        @force.on "tick", ->
+          link.attr("x1", (d) ->
+            d.source.x
+          ).attr("y1", (d) ->
+            d.source.y
+          ).attr("x2", (d) ->
+            d.target.x
+          ).attr("y2", (d) ->
+            d.target.y
           )
 
-      nodeEnter.append("circle") 
-           .attr("r", 5)
-           .attr("cx", 0)
-           .attr("cy", 0)
+          node.attr "transform", (d) ->
+            "translate(#{d.x},#{d.y})"
 
-      clickSemaphore = 0
-      nodeEnter.on("click", (datum, index) =>
-        #ignore drag
-        return  if d3.event.defaultPrevented
-        datum.fixed = true
-        clickSemaphore += 1
-        savedClickSemaphore = clickSemaphore
-        setTimeout (=>
-          if clickSemaphore is savedClickSemaphore
-            @trigger "enter:node:click", datum
-            datum.fixed = false
-          else
-            # increment so second click isn't registered as a click
-            clickSemaphore += 1
-            datum.fixed = false
-        ), 250)
-        .on "dblclick", (datum, index) =>
-          @trigger "enter:node:dblclick", datum
 
-      @trigger "enter:node", nodeEnter
-      @trigger "enter:link", linkEnter
-      node.exit().remove()
-      @force.on "tick", ->
-        link.attr("x1", (d) ->
-          d.source.x
-        ).attr("y1", (d) ->
-          d.source.y
-        ).attr("x2", (d) ->
-          d.target.x
-        ).attr("y2", (d) ->
-          d.target.y
-        )
-
-        node.attr "transform", (d) ->
-          "translate(#{d.x},#{d.y})"
+        #fast forward rendering
+        @forwardAlpha(@force,.005,2000)
+        
+      , 5)
+    
 
     getNodeSelection: ->
       return @nodeSelection
