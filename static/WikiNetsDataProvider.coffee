@@ -40,7 +40,7 @@ define ["DataProvider"], (DataProvider) ->
     ###
     getLinks: (node, nodes, callback) ->
       #console.log "NODE: ", node
-      #console.log "NODES: ", nodes
+      #console.log "NODES: ", nodes"
 
       $.post "/get_links", {'node': node, 'nodes': nodes}, (data) -> 
         # console.log "NODE: ", node

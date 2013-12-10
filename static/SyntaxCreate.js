@@ -19,43 +19,98 @@
         this.graphView = instances['GraphView'];
         this.graphModel = instances['GraphModel'];
         this.dataController = instances['local/Neo4jDataController'];
+        this.buildingLink = false;
+        this.sourceSet = false;
+        this.tempLink = {};
         this.render();
-        this.graphView.on("enter:node:click", this.update.bind(this));
+        this.selection = instances["NodeSelection"];
+        this.selection.on("change", this.update.bind(this));
         return instances["Layout"].addPlugin(this.el, this.options.pluginOrder, 'Syntax Create');
       };
 
       SyntaxCreate.prototype.render = function() {
-        var $arrowInput, $container, $createArrowButton, $createLinkButton, $createNodeButton, $createSourceNodeButton, $createTargetNodeButton, $sourceInput, $targetInput,
+        var $container, $createLinkButton, $createNodeButton, $createSourceNodeButton, $createTargetNodeButton, $linkInput, $sourceInput, $targetInput,
           _this = this;
         $container = $("<div class=\"syntax-create-container\">").appendTo(this.$el);
         $createNodeButton = $("<input id=\"createNodeButton\" type=\"submit\" value=\"New Node\">").appendTo($container);
-        $createArrowButton = $("<input id=\"createArrowButton\" type=\"submit\" value=\"New Arrow\"><br>").appendTo($container);
-        $sourceInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo($container);
-        $createSourceNodeButton = $("<input id=\"queryform\" type=\"button\" value=\"Create Node\"><br>").appendTo($container);
-        $createSourceNodeButton.click(function() {
-          return _this.buildNode(_this.parseSyntax($sourceInput.val()));
-        });
-        $arrowInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo($container);
+        $createLinkButton = $("<input id=\"createArrowButton\" type=\"submit\" value=\"New Link\"><br>").appendTo($container);
+        this.$sourceWrapper = $("<div class=\"source-container\">").appendTo($container);
+        $sourceInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo(this.$sourceWrapper);
+        $createSourceNodeButton = $("<input id=\"queryform\" type=\"button\" value=\"Create Node\"><br>").appendTo(this.$sourceWrapper);
+        $linkInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo($container);
         $createLinkButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create Link\"><br>").appendTo($container);
         $targetInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo($container);
-        return $createTargetNodeButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create (Target) Node\"><br>").appendTo($container);
+        $createTargetNodeButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create (Target) Node\"><br>").appendTo($container);
+        $createNodeButton.click(function() {
+          return $sourceInput.focus();
+        });
+        $createLinkButton.click(function() {
+          return $linkInput.focus();
+        });
+        $createSourceNodeButton.click(function() {
+          _this.buildNode(_this.parseSyntax($sourceInput.val()));
+          return $sourceInput.val("");
+        });
+        $createTargetNodeButton.click(function() {
+          _this.buildNode(_this.parseSyntax($targetInput.val()));
+          return $targetInput.val("");
+        });
+        $createLinkButton.click(function() {
+          _this.buildLink(_this.parseSyntax($linkInput.val()));
+          return $linkInput.val("");
+        });
+        return this.graphView.on("enter:node:click", function(node) {
+          var link;
+          console.log("buildingLink", _this.buildingLink);
+          console.log("sourceSet", _this.sourceSet);
+          if (_this.buildingLink) {
+            if (_this.sourceSet) {
+              _this.tempLink.target = node;
+              link = _this.tempLink;
+              _this.dataController.linkAdd(link, function(linkres) {
+                var allNodes, n, newLink, _i, _j, _len, _len1;
+                newLink = linkres;
+                allNodes = _this.graphModel.getNodes();
+                for (_i = 0, _len = allNodes.length; _i < _len; _i++) {
+                  n = allNodes[_i];
+                  if (n['_id'] === link.source['_id']) {
+                    newLink.source = n;
+                  }
+                }
+                for (_j = 0, _len1 = allNodes.length; _j < _len1; _j++) {
+                  n = allNodes[_j];
+                  if (n['_id'] === link.target['_id']) {
+                    newLink.target = n;
+                  }
+                }
+                return _this.graphModel.putLink(newLink);
+              });
+              return _this.sourceSet = _this.buildingLink = false;
+            } else {
+              _this.tempLink.source = node;
+              return _this.sourceSet = true;
+            }
+          }
+        });
       };
 
       SyntaxCreate.prototype.update = function(node) {
-        return this.selectedNode = node;
+        return this.selection.getSelectedNodes();
       };
 
       SyntaxCreate.prototype.buildNode = function(node) {
         var _this = this;
-        console.log("ADD THE NODE: ", node);
         return this.dataController.nodeAdd(node, function(datum) {
           return _this.graphModel.putNode(datum);
         });
       };
 
-      SyntaxCreate.prototype.parseSyntax = function(input) {
-        /*Parse the input query into key value pairs*/
+      SyntaxCreate.prototype.buildLink = function(linkProperties) {
+        this.tempLink.properties = linkProperties;
+        return this.buildingLink = true;
+      };
 
+      SyntaxCreate.prototype.parseSyntax = function(input) {
         var dict, match, pattern, strsplit, text;
         strsplit = input.split("#");
         strsplit[0] = strsplit[0].replace(/:/, " #description ");
@@ -68,12 +123,9 @@
         while (match = pattern.exec(text)) {
           dict[match[1].trim()] = match[2].trim();
         }
-        console.log("This is the dictionary", dict);
         /*The first entry becomes the name*/
 
         dict["name"] = text.split("#")[0].trim();
-        console.log("This is the title", text.split("#")[0].trim());
-        console.log(dict);
         return dict;
       };
 

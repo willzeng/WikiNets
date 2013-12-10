@@ -179,7 +179,44 @@ module.exports = class MyApp
       )
     )
 
+    ### Creates a link using a Cypher query ###
+    # request should be of the form {properties: {name:type , key1:val1 ...}, source: sourceNode, target: targeNode}
+    app.post('/create_link', (request, response) ->
+      console.log "Link Creation Requested"
+      sourceNode = request.body.source
+      targetNode = request.body.target
+      console.log "sourceNode", sourceNode
+      console.log "targetNode", targetNode
+      cypherQuery = "start n=node(" + sourceNode['_id'] + "), m=node(" + targetNode['_id'] + ") create (n)-[r:" + request.body.properties.name
+      if request.body.properties isnt undefined
+        cypherQuery += " {"
+        for property, value of request.body.properties
+          cypherQuery += "#{property}:'#{value}', "
+        cypherQuery = cypherQuery.substring(0,cypherQuery.length-2) + "}"
+      cypherQuery +="]->(m) return r;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (relres) ->
+          console.log relres.data[0][0]
+          relIDstart = relres.data[0][0]["self"].lastIndexOf('/') + 1
+          newRelID = relres.data[0][0]["self"].slice(relIDstart)
+          newLink = relres.data[0][0]["data"]
+          newLink['_id'] = newRelID
+          newLink.source = sourceNode
+          newLink.start = sourceNode['_id']
+          newLink.target = targetNode
+          newLink.end = targetNode['_id']
+          newLink.strength = 1
+          console.log "here is the new link", newLink
+          response.send newLink
+        (relres) ->
+          console.log relres
+          response.send "error"
+      )
+    )
+
     ### Creates a relationship using a Cypher query ###
+    # request should be of the form {properties: {key1:val1 , ...}, from: node_id, to: node_id, type: type}
     app.post('/create_rel', (request, response) ->
       console.log "Relationship Creation Requested"
       cypherQuery = "start n=node(" + request.body.from + "), m=node(" + request.body.to + ") create (n)-[r:" + request.body.type
@@ -452,10 +489,11 @@ module.exports = class MyApp
 
     # adds a default strength value to a relationship 
     # TODO: (should only do this if there isnt one already)
-    addStrength = (dict,start,end) -> 
+    addStrength = (dict,start,end, id) -> 
       dict['strength'] = 1
       dict['start'] = start
       dict['end'] = end
+      dict['_id'] = id
       dict
 
     app.post('/get_links', (request,response)->
@@ -472,8 +510,9 @@ module.exports = class MyApp
       graphDb.cypher.execute(cypherQuery).then(
         (relres) ->
           console.log "Get Links executed"
+          #console.log trim(link[0][0].self)[0]
 
-          allSpokes = (addStrength(link[0][0].data, trim(link[0][0].start)[0], trim(link[0][0].end)[0]) for link in relres.data)
+          allSpokes = (addStrength(link[0][0].data, trim(link[0][0].start)[0], trim(link[0][0].end)[0], trim(link[0][0].self)[0]) for link in relres.data)
 
           getLink = (nID) -> 
             spoke for spoke in allSpokes when spoke.start is nID or spoke.end is nID

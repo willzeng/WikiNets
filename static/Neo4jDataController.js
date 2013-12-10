@@ -29,7 +29,11 @@
       };
 
       Neo4jDataController.prototype.linkAdd = function(link, callback) {
-        return $.post("/create_arrow", link, callback);
+        var filteredLink;
+        filteredLink = link;
+        filteredLink.source = this.filterNode(link.source);
+        filteredLink.target = this.filterNode(link.target);
+        return $.post("/create_link", link, callback);
       };
 
       Neo4jDataController.prototype.linkDelete = function(link) {

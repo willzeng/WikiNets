@@ -19,7 +19,10 @@ define ["DataController"], (DataController) ->
 
     #should add a link to the database
     linkAdd: (link, callback) ->
-      $.post "/create_arrow", link, callback
+      filteredLink = link
+      filteredLink.source = @filterNode(link.source)
+      filteredLink.target = @filterNode(link.target)
+      $.post "/create_link", link, callback
 
     #should delete a link from the database
     linkDelete: (link) ->
