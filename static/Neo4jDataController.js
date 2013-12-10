@@ -46,7 +46,7 @@
         filteredNode = {};
         _.each(node, function(value, property) {
           if (blacklist.indexOf(property) < 0) {
-            return filteredNode[value] = property;
+            return filteredNode[property] = value;
           }
         });
         return filteredNode;

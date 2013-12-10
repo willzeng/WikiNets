@@ -172,7 +172,10 @@ module.exports = class MyApp
           nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
           nodeID = noderes.data[0][0]["self"].slice(nodeIDstart)
           console.log "Node Creation Done, ID = " + nodeID
-          response.send nodeID
+          newNode = noderes.data[0][0]["data"]
+          newNode['_id'] = nodeID
+          console.log "newNode: ", newNode
+          response.send newNode
       )
     )
 

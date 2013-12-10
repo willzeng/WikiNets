@@ -34,6 +34,6 @@ define ["DataController"], (DataController) ->
       blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight"]
       filteredNode = {}
       _.each node, (value, property) ->
-        filteredNode[value] = property if blacklist.indexOf(property) < 0
+        filteredNode[property] = value if blacklist.indexOf(property) < 0
       filteredNode
 

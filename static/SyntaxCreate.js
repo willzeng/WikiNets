@@ -18,23 +18,64 @@
         this.keyListener = instances['KeyListener'];
         this.graphView = instances['GraphView'];
         this.graphModel = instances['GraphModel'];
-        this.graphView.on("enter:node:click", this.update.bind(this));
+        this.dataController = instances['local/Neo4jDataController'];
         this.render();
+        this.graphView.on("enter:node:click", this.update.bind(this));
         return instances["Layout"].addPlugin(this.el, this.options.pluginOrder, 'Syntax Create');
       };
 
       SyntaxCreate.prototype.render = function() {
-        var $arrowInput, $container, $createArrowButton, $createNodeButton, $sourceInput, $targetInput;
+        var $arrowInput, $container, $createArrowButton, $createLinkButton, $createNodeButton, $createSourceNodeButton, $createTargetNodeButton, $sourceInput, $targetInput,
+          _this = this;
         $container = $("<div class=\"syntax-create-container\">").appendTo(this.$el);
         $createNodeButton = $("<input id=\"createNodeButton\" type=\"submit\" value=\"New Node\">").appendTo($container);
-        $createArrowButton = $("<input id=\"createArrowButton\" type=\"submit\" value=\"New Arrow\">").appendTo($container);
-        $("<br>").appendTo($container);
+        $createArrowButton = $("<input id=\"createArrowButton\" type=\"submit\" value=\"New Arrow\"><br>").appendTo($container);
         $sourceInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo($container);
+        $createSourceNodeButton = $("<input id=\"queryform\" type=\"button\" value=\"Create Node\"><br>").appendTo($container);
+        $createSourceNodeButton.click(function() {
+          return _this.buildNode(_this.parseSyntax($sourceInput.val()));
+        });
         $arrowInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo($container);
-        return $targetInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo($container);
+        $createLinkButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create Link\"><br>").appendTo($container);
+        $targetInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo($container);
+        return $createTargetNodeButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create (Target) Node\"><br>").appendTo($container);
       };
 
-      SyntaxCreate.prototype.update = function() {};
+      SyntaxCreate.prototype.update = function(node) {
+        return this.selectedNode = node;
+      };
+
+      SyntaxCreate.prototype.buildNode = function(node) {
+        var _this = this;
+        console.log("ADD THE NODE: ", node);
+        return this.dataController.nodeAdd(node, function(datum) {
+          return _this.graphModel.putNode(datum);
+        });
+      };
+
+      SyntaxCreate.prototype.parseSyntax = function(input) {
+        /*Parse the input query into key value pairs*/
+
+        var dict, match, pattern, strsplit, text;
+        strsplit = input.split("#");
+        strsplit[0] = strsplit[0].replace(/:/, " #description ");
+        /* The : is shorthand for #description*/
+
+        text = strsplit.join("#");
+        pattern = new RegExp(/#([a-zA-Z0-9]+) ([^#]+)/g);
+        dict = {};
+        match = {};
+        while (match = pattern.exec(text)) {
+          dict[match[1].trim()] = match[2].trim();
+        }
+        console.log("This is the dictionary", dict);
+        /*The first entry becomes the name*/
+
+        dict["name"] = text.split("#")[0].trim();
+        console.log("This is the title", text.split("#")[0].trim());
+        console.log(dict);
+        return dict;
+      };
 
       return SyntaxCreate;
 
