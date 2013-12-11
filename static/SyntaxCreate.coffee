@@ -38,13 +38,18 @@ define [], () ->
 
       @$sourceWrapper = $("<div class=\"source-container\">").appendTo $container
       $sourceInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo @$sourceWrapper
+      $sourceInput.val("Node : A node's description #key1 value1 #key2 value2")
+      $sourceInput.focus () -> $sourceInput.val("")
+
       $createSourceNodeButton = $("<input id=\"queryform\" type=\"button\" value=\"Create Node\"><br>").appendTo @$sourceWrapper
 
       $linkInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo $container
+      $linkInput.val("Link : A link's description #key1 value1 #key2 value2")
+      $linkInput.focus () -> $linkInput.val("")
       $createLinkButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create Link\"><br>").appendTo $container
 
-      $targetInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo $container
-      $createTargetNodeButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create (Target) Node\"><br>").appendTo $container
+      #$targetInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo $container
+      #$createTargetNodeButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create (Target) Node\"><br>").appendTo $container
 
       $createNodeButton.click(() => $sourceInput.focus())
       $createLinkButton.click(() => $linkInput.focus())
@@ -52,9 +57,9 @@ define [], () ->
       $createSourceNodeButton.click () => 
         @buildNode(@parseSyntax($sourceInput.val()))
         $sourceInput.val("")
-      $createTargetNodeButton.click () => 
-        @buildNode(@parseSyntax($targetInput.val()))
-        $targetInput.val("")
+      #$createTargetNodeButton.click () => 
+      #  @buildNode(@parseSyntax($targetInput.val()))
+      #  $targetInput.val("")
 
       $createLinkButton.click () =>
         @buildLink(@parseSyntax($linkInput.val()))

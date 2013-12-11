@@ -29,18 +29,24 @@
       };
 
       SyntaxCreate.prototype.render = function() {
-        var $container, $createLinkButton, $createNodeButton, $createSourceNodeButton, $createTargetNodeButton, $linkInput, $sourceInput, $targetInput,
+        var $container, $createLinkButton, $createNodeButton, $createSourceNodeButton, $linkInput, $sourceInput,
           _this = this;
         $container = $("<div class=\"syntax-create-container\">").appendTo(this.$el);
         $createNodeButton = $("<input id=\"createNodeButton\" type=\"submit\" value=\"New Node\">").appendTo($container);
         $createLinkButton = $("<input id=\"createArrowButton\" type=\"submit\" value=\"New Link\"><br>").appendTo($container);
         this.$sourceWrapper = $("<div class=\"source-container\">").appendTo($container);
         $sourceInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo(this.$sourceWrapper);
+        $sourceInput.val("Node : A node's description #key1 value1 #key2 value2");
+        $sourceInput.focus(function() {
+          return $sourceInput.val("");
+        });
         $createSourceNodeButton = $("<input id=\"queryform\" type=\"button\" value=\"Create Node\"><br>").appendTo(this.$sourceWrapper);
         $linkInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo($container);
+        $linkInput.val("Link : A link's description #key1 value1 #key2 value2");
+        $linkInput.focus(function() {
+          return $linkInput.val("");
+        });
         $createLinkButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create Link\"><br>").appendTo($container);
-        $targetInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo($container);
-        $createTargetNodeButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create (Target) Node\"><br>").appendTo($container);
         $createNodeButton.click(function() {
           return $sourceInput.focus();
         });
@@ -50,10 +56,6 @@
         $createSourceNodeButton.click(function() {
           _this.buildNode(_this.parseSyntax($sourceInput.val()));
           return $sourceInput.val("");
-        });
-        $createTargetNodeButton.click(function() {
-          _this.buildNode(_this.parseSyntax($targetInput.val()));
-          return $targetInput.val("");
         });
         $createLinkButton.click(function() {
           _this.buildLink(_this.parseSyntax($linkInput.val()));
