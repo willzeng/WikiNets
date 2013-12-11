@@ -43,10 +43,12 @@ define [], () ->
 
       $createSourceNodeButton = $("<input id=\"queryform\" type=\"button\" value=\"Create Node\"><br>").appendTo @$sourceWrapper
 
-      $linkInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo $container
+      @$linkWrapper = $("<div class=\"source-container\">").appendTo $container
+      $linkInput = $("<textarea id=\"linkInputField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo @$linkWrapper
       $linkInput.val("Link : A link's description #key1 value1 #key2 value2")
-      $linkInput.focus () -> $linkInput.val("")
-      $createLinkButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create Link\"><br>").appendTo $container
+      #$linkInput.focus () -> $linkInput.val("")
+
+      $createLinkButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create Link\"><br>").appendTo @$linkWrapper
 
       #$targetInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo $container
       #$createTargetNodeButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create (Target) Node\"><br>").appendTo $container
@@ -66,8 +68,8 @@ define [], () ->
         $linkInput.val("")
 
       @graphView.on "enter:node:click", (node) =>
-        console.log "buildingLink", @buildingLink
-        console.log "sourceSet", @sourceSet
+        # console.log "buildingLink", @buildingLink
+        # console.log "sourceSet", @sourceSet
         if @buildingLink
           if @sourceSet
             @tempLink.target = node
@@ -92,10 +94,12 @@ define [], () ->
 
     buildLink: (linkProperties) ->
       @tempLink.properties = linkProperties
+      console.log "tempLink set to", @tempLink
       @buildingLink = true
 
     
     parseSyntax: (input) ->
+      console.log "input", input
       strsplit=input.split("#");
       strsplit[0]=strsplit[0].replace(/:/," #description ");### The : is shorthand for #description ###
       text=strsplit.join("#")
@@ -107,5 +111,5 @@ define [], () ->
 
       ###The first entry becomes the name###
       dict["name"]=text.split("#")[0].trim()
-      #console.log "This is the title", text.split("#")[0].trim()
+      console.log "This is the title", text.split("#")[0].trim()
       dict

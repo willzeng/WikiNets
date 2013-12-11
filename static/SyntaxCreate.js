@@ -41,12 +41,10 @@
           return $sourceInput.val("");
         });
         $createSourceNodeButton = $("<input id=\"queryform\" type=\"button\" value=\"Create Node\"><br>").appendTo(this.$sourceWrapper);
-        $linkInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo($container);
+        this.$linkWrapper = $("<div class=\"source-container\">").appendTo($container);
+        $linkInput = $("<textarea id=\"linkInputField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo(this.$linkWrapper);
         $linkInput.val("Link : A link's description #key1 value1 #key2 value2");
-        $linkInput.focus(function() {
-          return $linkInput.val("");
-        });
-        $createLinkButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create Link\"><br>").appendTo($container);
+        $createLinkButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create Link\"><br>").appendTo(this.$linkWrapper);
         $createNodeButton.click(function() {
           return $sourceInput.focus();
         });
@@ -63,8 +61,6 @@
         });
         return this.graphView.on("enter:node:click", function(node) {
           var link;
-          console.log("buildingLink", _this.buildingLink);
-          console.log("sourceSet", _this.sourceSet);
           if (_this.buildingLink) {
             if (_this.sourceSet) {
               _this.tempLink.target = node;
@@ -109,11 +105,13 @@
 
       SyntaxCreate.prototype.buildLink = function(linkProperties) {
         this.tempLink.properties = linkProperties;
+        console.log("tempLink set to", this.tempLink);
         return this.buildingLink = true;
       };
 
       SyntaxCreate.prototype.parseSyntax = function(input) {
         var dict, match, pattern, strsplit, text;
+        console.log("input", input);
         strsplit = input.split("#");
         strsplit[0] = strsplit[0].replace(/:/, " #description ");
         /* The : is shorthand for #description*/
@@ -128,6 +126,7 @@
         /*The first entry becomes the name*/
 
         dict["name"] = text.split("#")[0].trim();
+        console.log("This is the title", text.split("#")[0].trim());
         return dict;
       };
 
