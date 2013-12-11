@@ -71,7 +71,8 @@
         prefetch: "/get_node_names"
       },
       NodeDetails: {},
-      MiniMap: {}
+      MiniMap: {},
+      Stats: {}
     };
     return Celestrium.init(plugins, function(instances) {
       var loadEverything, makeDisplayable;

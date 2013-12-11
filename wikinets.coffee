@@ -113,6 +113,10 @@ module.exports = class MyApp
       getvizjson inputer, request, response
     )
 
+    app.get('/test', (request,response)->
+      response.render('test.jade')
+    )
+
 
     ###  Responds with a JSON formatted for D3JS viz of the entire Neo4j database ###
     app.get('/json',(request,response)->

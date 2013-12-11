@@ -94,6 +94,8 @@ require ["Celestrium"], (Celestrium) ->
 
     MiniMap: {}  
 
+    Stats: {}
+
   # initialize the plugins and execute a callback once done
   Celestrium.init plugins, (instances) ->
 
