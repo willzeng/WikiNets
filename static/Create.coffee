@@ -10,6 +10,7 @@ define [], () ->
 
       _.extend this, Backbone.Events
 
+      
       @graphView = instances['GraphView']
       @graphModel = instances['GraphModel']
       @dataController = instances['local/Neo4jDataController']
@@ -28,12 +29,12 @@ define [], () ->
         """
       $container.appendTo @$el
 
-      @nodeInputNumber = 0
+      nodeInputNumber = 0
 
       $nodeMoreFields = $("<input id=\"moreFields\" type=\"button\" value=\"+\">").appendTo($container)
       $nodeMoreFields.click(() => 
-        @addNodeField(@nodeInputNumber)
-        @nodeInputNumber = @nodeInputNumber+1
+        @addNodeField(nodeInputNumber)
+        nodeInputNumber = nodeInputNumber+1
         )
 
       $nodeCreate = $("<input id=\"createObj\" type=\"button\" value=\"Create node\">").appendTo($container)
@@ -41,6 +42,7 @@ define [], () ->
 
       return this
 
+    # should come up with a better naming scheme really...
     addNodeField: (inputIndex) =>
       $row = $ """
           <div id=\'createDiv#{inputIndex}\' class=\"createDiv\">
@@ -49,11 +51,6 @@ define [], () ->
           <input type=\"button\" id=\"removeRow#{inputIndex}\" value=\"x\" onclick=\'this.parentNode.parentNode.removeChild(this.parentNode);\'>
           </div>
       """
-      # () => 
-      #   console.log "index removed" inputIndex
-      #   @nodeInputNumber = @nodeInputNumber-1
-      #   $(".row#{inputIndex}").remove()
-      # )
 
       @$("#NodeCreateFields").append $row
 
@@ -67,10 +64,9 @@ define [], () ->
       # if all property names were fine, remove the on-the-fly created input
       # fields and submit the data to the server to actually create the node
       if (nodeObject[0]) then (
-        $('.NodeProperty').each( (i, obj) ->
+        $('.createDiv').each( (i, obj) ->
           $(this)[0].parentNode.removeChild $(this)[0]
         )
-        console.log nodeObject[1]
         @dataController.nodeAdd(nodeObject[1], (datum) => @graphModel.putNode(datum))
       )
       
@@ -108,7 +104,7 @@ define [], () ->
     is_illegal: (property, type) ->
       reserved_keys = ["_id"]
       if (property == '') then (
-        alert type+" name must not be empty." 
+        alert type + " name must not be empty." 
         return true
       ) else if (/^.*[^a-zA-Z0-9_].*$/.test(property)) then (
         alert(type + " name '" + property + "' illegal: " + type + " names must only contain alphanumeric characters and underscore.")
