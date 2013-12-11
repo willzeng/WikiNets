@@ -22,18 +22,18 @@ define [], () ->
       $container = $ """
           <div class=\"create-container\">
             Create Node: 
-            <div id=\"inputList\">
-            </div>
+            <form id=\"NodeCreateFields\">
+            </form>
           </div>
         """
       $container.appendTo @$el
 
-      nodeInputNumber = 0
+      @nodeInputNumber = 0
 
       $nodeMoreFields = $("<input id=\"moreFields\" type=\"button\" value=\"+\">").appendTo($container)
       $nodeMoreFields.click(() => 
-        @addNodeField(nodeInputNumber)
-        nodeInputNumber = nodeInputNumber+1
+        @addNodeField(@nodeInputNumber)
+        @nodeInputNumber = @nodeInputNumber+1
         )
 
       $nodeCreate = $("<input id=\"createObj\" type=\"button\" value=\"Create node\">").appendTo($container)
@@ -43,7 +43,7 @@ define [], () ->
 
     addNodeField: (inputIndex) =>
       $row = $ """
-          <div id=\'createDiv#{inputIndex}\'>
+          <div id=\'createDiv#{inputIndex}\' class=\"createDiv\">
           <input style=\"width:80px\" name=\"propertyNode#{inputIndex}\" value=\"propertyEx\" class=\"propertyNode\">
           <input style=\"width:80px\" name=\"valueNode#{inputIndex}\" value=\"valueEx\" class=\"valueNode\">
           <input type=\"button\" id=\"removeRow#{inputIndex}\" value=\"x\" onclick=\'this.parentNode.parentNode.removeChild(this.parentNode);\'>
@@ -55,7 +55,7 @@ define [], () ->
       #   $(".row#{inputIndex}").remove()
       # )
 
-      @$("#inputList").append $row
+      @$("#NodeCreateFields").append $row
 
     createNode: =>
       console.log "create node called"
@@ -63,17 +63,16 @@ define [], () ->
       # first component of nodeObject is boolean result of whether all
       # properties are legal; second component is dictionary of properties to
       # be assigned
-      nodeObject = @assign_properties("Node")
+      nodeObject = @assign_properties("NodeInputFields", @is_illegal)
       # if all property names were fine, remove the on-the-fly created input
       # fields and submit the data to the server to actually create the node
       if (nodeObject[0]) then (
         $('.NodeProperty').each( (i, obj) ->
           $(this)[0].parentNode.removeChild $(this)[0]
         )
-        console.log(JSON.stringify(nodeObject[1]));
-
-        console.log "CALL THE SERVER TO MAKE A NODE", nodeObject[1])
-        #@dataController.addNode nodeObject[1] 
+        console.log nodeObject[1]
+        @dataController.nodeAdd(nodeObject[1], (datum) => @graphModel.putNode(datum))
+      )
       
 
     # takes a form and populates a propertyObject with the property-value pairs
@@ -81,12 +80,12 @@ define [], () ->
     # returns: submitOK: a boolean indicating whether the property names were all
     #                    legal
     #          propertyObject: a dictionary of property-value pairs
-    assign_properties: (form_name) => 
+    assign_properties: (form_name, is_illegal) => 
         submitOK = true
         propertyObject = {}
-        $("." + form_name + "Property").each( (i, obj) =>
-            property = $(this).children(".property" + form_name).val()
-            value = $(this).children(".value" + form_name).val()
+        $(".createDiv").each (i, obj) ->
+            property = $(this).children(".propertyNode").val()
+            value = $(this).children(".valueNode").val()
             # check whether property name is allowed and ensure that user does not
             # accidentally assign the same property twice
             # - if property name is not ok, there is an apropriate error message and
@@ -94,18 +93,20 @@ define [], () ->
             # - if property name is ok, property-value pair is assigned to the
             #   nodeObject, escaping any single quotes in the value so they don't
             #  break the cypher query
-            if @is_illegal(property, "Property") then submitOK = false
-            else if (property in propertyObject) then (
-              alert("Property '" + property + "' already assigned.\nFirst value: " + propertyObject[property] + "\nSecond value: " + value)
+            if is_illegal(property, "Property")
               submitOK = false
-            ) #else propertyObject[property] = value.replace(/'/g, "\\'")
-        )
-        return [submitOK, propertyObject];
+            else if property of propertyObject
+              alert "Property '" + property + "' already assigned.\nFirst value: " + propertyObject[property] + "\nSecond value: " + value
+              submitOK = false
+            else
+              propertyObject[property] = value.replace(/'/g, "\\'")
+        [submitOK, propertyObject];
 
 
     # checks whether property names will break the cypher queries or are any of
     # the reserved terms
     is_illegal: (property, type) ->
+      reserved_keys = ["_id"]
       if (property == '') then (
         alert type+" name must not be empty." 
         return true
