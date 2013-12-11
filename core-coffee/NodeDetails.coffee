@@ -9,7 +9,7 @@ define [], () ->
     init: (instances) ->
       @selection = instances["NodeSelection"]
       @selection.on "change", @update.bind(this)
-      @listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
+      @listenTo instances["KeyListener"], "down:80", () => @$el.toggle() #down on 'p'
       instances["Layout"].addPlugin @el, @options.pluginOrder, 'Node Details'
       @$el.toggle()
 
