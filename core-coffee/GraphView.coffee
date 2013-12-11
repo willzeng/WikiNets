@@ -42,6 +42,7 @@ define [], () ->
       @force.linkStrength @linkStrength
       svg = d3.select(@el).append("svg:svg").attr("pointer-events", "all")
       zoom = d3.behavior.zoom()
+      @zoom = zoom
 
       # create arrowhead definitions
       defs = svg.append("defs")
@@ -107,6 +108,7 @@ define [], () ->
       # inner workspace which nodes and links go on
       # scaling and transforming are abstracted away from this
       workspace = zoomCapture.append("svg:g")
+      @workspace = workspace
 
       # containers to house nodes and links
       # so that nodes always appear above links
@@ -141,7 +143,7 @@ define [], () ->
 
     update: ->
       #Center node on shift+click
-      @addCentering(workspace, zoom)
+      @addCentering(@workspace, @zoom)
 
       #hack fixing multi-eval of Update and hence Start bug:
       #clearTimeout(@tickTimer)
