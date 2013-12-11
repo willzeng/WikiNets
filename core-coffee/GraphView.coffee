@@ -28,26 +28,11 @@ define [], () ->
       @linkFilter = new LinkFilter(this);
       @listenTo @linkFilter, "change:threshold", @update
 
-    drawXHairs: (x,y,obj) ->
-      obj.append("line")
-      .attr("x1", x)
-      .attr("x2", x)
-      .attr("y1", y-10)
-      .attr("y2", y+10)
-      .attr("stroke-width", 2)
-      .attr("stroke", "red");
-      obj.append("line")
-      .attr("x1", x+10)
-      .attr("x2", x-10)
-      .attr("y1", y)
-      .attr("y2", y)
-      .attr("stroke-width", 2)
-      .attr("stroke", "red")
-
-
     render: ->
       initialWindowWidth = $(window).width()
       initialWindowHeight = $(window).height()
+      @initialWindowWidth = initialWindowWidth
+      @initialWindowHeight = initialWindowHeight
       @force = d3.layout.force()
         .size([initialWindowWidth, initialWindowHeight])
         .charge(-500)
@@ -97,17 +82,7 @@ define [], () ->
              .attr("height", "100%")
              .style("fill-opacity", "0%")
 
-
-      #Panning
-
-       # #hack
-      width = $("#maingraph").width()  #$(@el).width()
-      height = $("#maingraph").height()  #$(@el).height() 
-
-      translateParams=[0,0]
-
-
-      #Translate on drag
+      # Panning on Drag
       # lock infrastracture to ignore zoom changes that would
       # typically occur when dragging a node
       translateLock = false
@@ -125,7 +100,6 @@ define [], () ->
       # disabled dragging for clicking
       
       zoomCapture.call(zoom.on("zoom", -> # ignore double click to zoom
-
         return  if translateLock
         workspace.attr "transform", "translate(#{d3.event.translate}) scale(#{d3.event.scale})"
       )).on("dblclick.zoom", null)
@@ -133,20 +107,6 @@ define [], () ->
       # inner workspace which nodes and links go on
       # scaling and transforming are abstracted away from this
       workspace = zoomCapture.append("svg:g")
-     
-      #Center node on click
-      @on "enter:node:click", (node) ->
-        x = node.x
-        y = node.y
-        scale = zoom.scale()
-        translateParams = [(width/2 -x)/scale,(height/2-y)/scale]
-        # translateParams = [width/scale/2 -x,height/scale/2-y]
-
-        #update translate values
-        zoom.translate([translateParams[0], translateParams[1]])
-
-        workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
-    
 
       # containers to house nodes and links
       # so that nodes always appear above links
@@ -154,6 +114,22 @@ define [], () ->
       nodeContainer = workspace.append("svg:g").classed("nodeContainer", true)
 
       return this
+
+    addCentering: (workspace, zoom) ->
+      width = $(@el).width()
+      height = $(@el).height() 
+
+      translateParams=[0,0]
+           
+      @on "enter:node:shift:click", (node) ->
+        x = node.x
+        y = node.y
+        scale = zoom.scale()
+        translateParams = [(width/2 -x)/scale,(height/2-y)/scale]
+        #update translate values
+        zoom.translate([translateParams[0], translateParams[1]])
+        workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
+    
 
     #fast-forward force graph rendering to prevent bouncing http://stackoverflow.com/questions/13463053/calm-down-initial-tick-of-a-force-layout  
     forwardAlpha: (layout, alpha, max) ->
@@ -164,6 +140,9 @@ define [], () ->
         layout.tick()
 
     update: ->
+      #Center node on shift+click
+      @addCentering(workspace, zoom)
+
       #hack fixing multi-eval of Update and hence Start bug:
       #clearTimeout(@tickTimer)
       #@tickTimer=setTimeout( () => 
@@ -201,11 +180,13 @@ define [], () ->
         nodeEnter.on("click", (datum, index) =>
           #ignore drag
           return  if d3.event.defaultPrevented
+          if d3.event.shiftKey then shifted = true else shifted = false
           datum.fixed = true
           clickSemaphore += 1
           savedClickSemaphore = clickSemaphore
           setTimeout (=>
             if clickSemaphore is savedClickSemaphore
+              if shifted then @trigger "enter:node:shift:click", datum
               @trigger "enter:node:click", datum
               datum.fixed = false
             else
@@ -238,6 +219,22 @@ define [], () ->
         #@forwardAlpha(@force,.005,2000)
         
       #, 5)
+
+    drawXHairs: (x,y,obj) ->
+      obj.append("line")
+      .attr("x1", x)
+      .attr("x2", x)
+      .attr("y1", y-10)
+      .attr("y2", y+10)
+      .attr("stroke-width", 2)
+      .attr("stroke", "red");
+      obj.append("line")
+      .attr("x1", x+10)
+      .attr("x2", x-10)
+      .attr("y1", y)
+      .attr("y2", y)
+      .attr("stroke-width", 2)
+      .attr("stroke", "red")
 
     getNodeSelection: ->
       return @nodeSelection

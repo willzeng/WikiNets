@@ -20,6 +20,9 @@ define [], () ->
       # ignore if node is already in this graph
       return  if @get("nodeSet")[@get("nodeHash")(node)]
 
+      #map some chosen property to the displayed text field.
+      node.text ?= node.name
+
       # modify node to have attribute accessor functions
       #nodeAttributes = @get("nodeAttributes")
       #node.getAttributeValue = (attr) ->
