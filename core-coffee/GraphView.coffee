@@ -147,72 +147,72 @@ define [], () ->
       #clearTimeout(@tickTimer)
       #@tickTimer=setTimeout( () => 
 
-        nodes = @model.get("nodes")
-        links = @model.get("links")
-        filteredLinks = if @linkFilter then @linkFilter.filter(links) else links
-        @force.nodes(nodes).links(filteredLinks).start()
-        link = @linkSelection = d3.select(@el).select(".linkContainer").selectAll(".link").data(filteredLinks, @model.get("linkHash"))
-        linkEnter = link.enter().append("line")
-          .attr("class", "link")
-          .attr 'marker-end', (link) ->
-            'url(#Triangle)' if link.direction is 'forward' or link.direction is 'bidirectional'
-          .attr 'marker-start', (link) ->
-            'url(#Triangle2)' if link.direction is 'backward' or link.direction is 'bidirectional'
-        @force.start()
-        
-        link.exit().remove()
-        link.attr "stroke-width", (link) => 5 * (@linkStrength link)
-        node = @nodeSelection = d3.select(@el).select(".nodeContainer").selectAll(".node").data(nodes, @model.get("nodeHash"))
-        nodeEnter = node.enter().append("g").attr("class", "node").call(@force.drag)
-        nodeEnter.append("text")
-             .attr("dx", 12)
-             .attr("dy", ".35em")
-             .text((d) ->
-              d.text
-            )
-
-        nodeEnter.append("circle")
-             .attr("r", 5)
-             .attr("cx", 0)
-             .attr("cy", 0)
-        
-        clickSemaphore = 0
-        nodeEnter.on("click", (datum, index) =>
-          #ignore drag
-          return  if d3.event.defaultPrevented
-          if d3.event.shiftKey then shifted = true else shifted = false
-          datum.fixed = true
-          clickSemaphore += 1
-          savedClickSemaphore = clickSemaphore
-          setTimeout (=>
-            if clickSemaphore is savedClickSemaphore
-              if shifted then @trigger "enter:node:shift:click", datum
-              @trigger "enter:node:click", datum
-              datum.fixed = false
-            else
-              # increment so second click isn't registered as a click
-              clickSemaphore += 1
-              datum.fixed = false
-          ), 250)
-          .on "dblclick", (datum, index) =>
-            @trigger "enter:node:dblclick", datum
-
-        @trigger "enter:node", nodeEnter
-        @trigger "enter:link", linkEnter
-        node.exit().remove()
-        @force.on "tick", ->
-          link.attr("x1", (d) ->
-            d.source.x
-          ).attr("y1", (d) ->
-            d.source.y
-          ).attr("x2", (d) ->
-            d.target.x
-          ).attr("y2", (d) ->
-            d.target.y
+      nodes = @model.get("nodes")
+      links = @model.get("links")
+      filteredLinks = if @linkFilter then @linkFilter.filter(links) else links
+      @force.nodes(nodes).links(filteredLinks).start()
+      link = @linkSelection = d3.select(@el).select(".linkContainer").selectAll(".link").data(filteredLinks, @model.get("linkHash"))
+      linkEnter = link.enter().append("line")
+        .attr("class", "link")
+        .attr 'marker-end', (link) ->
+          'url(#Triangle)' if link.direction is 'forward' or link.direction is 'bidirectional'
+        .attr 'marker-start', (link) ->
+          'url(#Triangle2)' if link.direction is 'backward' or link.direction is 'bidirectional'
+      @force.start()
+      
+      link.exit().remove()
+      link.attr "stroke-width", (link) => 5 * (@linkStrength link)
+      node = @nodeSelection = d3.select(@el).select(".nodeContainer").selectAll(".node").data(nodes, @model.get("nodeHash"))
+      nodeEnter = node.enter().append("g").attr("class", "node").call(@force.drag)
+      nodeEnter.append("text")
+           .attr("dx", 12)
+           .attr("dy", ".35em")
+           .text((d) ->
+            d.text
           )
 
-          node.attr "transform", (d) ->
-            "translate(#{d.x},#{d.y})"
+      nodeEnter.append("circle")
+           .attr("r", 5)
+           .attr("cx", 0)
+           .attr("cy", 0)
+      
+      clickSemaphore = 0
+      nodeEnter.on("click", (datum, index) =>
+        #ignore drag
+        return  if d3.event.defaultPrevented
+        if d3.event.shiftKey then shifted = true else shifted = false
+        datum.fixed = true
+        clickSemaphore += 1
+        savedClickSemaphore = clickSemaphore
+        setTimeout (=>
+          if clickSemaphore is savedClickSemaphore
+            if shifted then @trigger "enter:node:shift:click", datum
+            @trigger "enter:node:click", datum
+            datum.fixed = false
+          else
+            # increment so second click isn't registered as a click
+            clickSemaphore += 1
+            datum.fixed = false
+        ), 250)
+        .on "dblclick", (datum, index) =>
+          @trigger "enter:node:dblclick", datum
+
+      @trigger "enter:node", nodeEnter
+      @trigger "enter:link", linkEnter
+      node.exit().remove()
+      @force.on "tick", ->
+        link.attr("x1", (d) ->
+          d.source.x
+        ).attr("y1", (d) ->
+          d.source.y
+        ).attr("x2", (d) ->
+          d.target.x
+        ).attr("y2", (d) ->
+          d.target.y
+        )
+
+        node.attr "transform", (d) ->
+          "translate(#{d.x},#{d.y})"
 
 
         #fast forward rendering
