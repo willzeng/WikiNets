@@ -20,20 +20,20 @@ define [], () ->
 
     render: () ->
       $container = $ """
-          <div class="create-container">
+          <div class=\"create-container\">
             Create Node: 
-            <table border="0">
-            </table>
+            <div id=\"inputList\">
+            </div>
           </div>
         """
       $container.appendTo @$el
 
-      @nodeInputNumber = 0
+      nodeInputNumber = 0
 
       $nodeMoreFields = $("<input id=\"moreFields\" type=\"button\" value=\"+\">").appendTo($container)
       $nodeMoreFields.click(() => 
-        @nodeInputNumber = @nodeInputNumber+1
-        @updateFields()
+        @addNodeField(nodeInputNumber)
+        nodeInputNumber = nodeInputNumber+1
         )
 
       $nodeCreate = $("<input id=\"createObj\" type=\"button\" value=\"Create node\">").appendTo($container)
@@ -41,27 +41,21 @@ define [], () ->
 
       return this
 
-    updateFields: =>
-      @$("table").empty()
-      @addNodeField() for num in [1..@nodeInputNumber]
-
-    addNodeField: =>
+    addNodeField: (inputIndex) =>
       $row = $ """
-        <tr>
-          <td><input style=\"width:80px\" name=\"propertyNode\" value=\"propertyEx\" class=\"propertyNode\">
-          <input style=\"width:80px\" name=\"valueNode\" value=\"valueEx\" class=\"valueNode\">
-          <input type=\"button\" id=\"removeRow\" value=\"x\">
-          </td>
-        </tr>
+          <div id=\'createDiv#{inputIndex}\'>
+          <input style=\"width:80px\" name=\"propertyNode#{inputIndex}\" value=\"propertyEx\" class=\"propertyNode\">
+          <input style=\"width:80px\" name=\"valueNode#{inputIndex}\" value=\"valueEx\" class=\"valueNode\">
+          <input type=\"button\" id=\"removeRow#{inputIndex}\" value=\"x\" onclick=\'this.parentNode.parentNode.removeChild(this.parentNode);\'>
+          </div>
       """
-      
-      #TODO This does not yet work
-      # @$("removeRow").click(() => 
+      # () => 
+      #   console.log "index removed" inputIndex
       #   @nodeInputNumber = @nodeInputNumber-1
-      #   @updateFields()
-      #   )
+      #   $(".row#{inputIndex}").remove()
+      # )
 
-      @$("table").append $row
+      @$("#inputList").append $row
 
     createNode: =>
       console.log "create node called"

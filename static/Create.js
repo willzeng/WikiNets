@@ -15,7 +15,6 @@
         this.assign_properties = __bind(this.assign_properties, this);
         this.createNode = __bind(this.createNode, this);
         this.addNodeField = __bind(this.addNodeField, this);
-        this.updateFields = __bind(this.updateFields, this);
         Create.__super__.constructor.call(this);
       }
 
@@ -29,35 +28,25 @@
       };
 
       Create.prototype.render = function() {
-        var $container, $nodeCreate, $nodeMoreFields,
+        var $container, $nodeCreate, $nodeMoreFields, nodeInputNumber,
           _this = this;
-        $container = $("<div class=\"create-container\">\n  Create Node: \n  <table border=\"0\">\n  </table>\n</div>");
+        $container = $("<div class=\"create-container\">\n  Create Node: \n  <div id=\"inputList\">\n  </div>\n</div>");
         $container.appendTo(this.$el);
-        this.nodeInputNumber = 0;
+        nodeInputNumber = 0;
         $nodeMoreFields = $("<input id=\"moreFields\" type=\"button\" value=\"+\">").appendTo($container);
         $nodeMoreFields.click(function() {
-          _this.nodeInputNumber = _this.nodeInputNumber + 1;
-          return _this.updateFields();
+          _this.addNodeField(nodeInputNumber);
+          return nodeInputNumber = nodeInputNumber + 1;
         });
         $nodeCreate = $("<input id=\"createObj\" type=\"button\" value=\"Create node\">").appendTo($container);
         $nodeCreate.click(this.createNode);
         return this;
       };
 
-      Create.prototype.updateFields = function() {
-        var num, _i, _ref, _results;
-        this.$("table").empty();
-        _results = [];
-        for (num = _i = 1, _ref = this.nodeInputNumber; 1 <= _ref ? _i <= _ref : _i >= _ref; num = 1 <= _ref ? ++_i : --_i) {
-          _results.push(this.addNodeField());
-        }
-        return _results;
-      };
-
-      Create.prototype.addNodeField = function() {
+      Create.prototype.addNodeField = function(inputIndex) {
         var $row;
-        $row = $("<tr>\n  <td><input style=\"width:80px\" name=\"propertyNode\" value=\"propertyEx\" class=\"propertyNode\">\n  <input style=\"width:80px\" name=\"valueNode\" value=\"valueEx\" class=\"valueNode\">\n  <input type=\"button\" id=\"removeRow\" value=\"x\">\n  </td>\n</tr>");
-        return this.$("table").append($row);
+        $row = $("<div id=\'createDiv" + inputIndex + "\'>\n<input style=\"width:80px\" name=\"propertyNode" + inputIndex + "\" value=\"propertyEx\" class=\"propertyNode\">\n<input style=\"width:80px\" name=\"valueNode" + inputIndex + "\" value=\"valueEx\" class=\"valueNode\">\n<input type=\"button\" id=\"removeRow" + inputIndex + "\" value=\"x\" onclick=\'this.parentNode.parentNode.removeChild(this.parentNode);\'>\n</div>");
+        return this.$("#inputList").append($row);
       };
 
       Create.prototype.createNode = function() {
