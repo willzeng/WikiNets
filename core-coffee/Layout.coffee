@@ -9,7 +9,7 @@ define [], () ->
     initialize: (args) ->
       @plugin = args.plugin
       @pluginName = args.name
-      @collapsed = false
+      @collapsed = true
       @render()
 
     events:
@@ -45,7 +45,6 @@ define [], () ->
       @content = $("<div class=\"plugin-content\"></div>")
       @content.append @plugin
 
-
       @$el.append @controls
       @$el.append @content
 
@@ -54,6 +53,7 @@ define [], () ->
 
     constructor: (@options) ->
       super(@options)
+
     init: () ->
       # a dictionary of lists, so we can order plugins
       @pluginWrappers = {}
@@ -83,6 +83,7 @@ define [], () ->
         pluginWrappersList = @pluginWrappers[key]
         _.each pluginWrappersList, (pluginWrapper) =>
           @pluginContainer.append pluginWrapper.el
+          pluginWrapper.collapse pluginWrapper.$el.find('.plugin-content')
 
 
     addCenter: (el) ->
