@@ -10,7 +10,7 @@ define [], () ->
 
       _.extend this, Backbone.Events
 
-      
+      # require various plugins:
       @graphView = instances['GraphView']
       @graphModel = instances['GraphModel']
       @dataController = instances['local/Neo4jDataController']
@@ -21,53 +21,118 @@ define [], () ->
 
     render: () ->
       $container = $ """
-          <div class=\"create-container\">
+          <div id="NodeCreateContainer">
             Create Node: 
-            <form id=\"NodeCreateFields\">
+            <form id="NodeCreateForm">
+            </form>
+          </div>
+          <div id="LinkCreateContainer">
+            Create Link: 
+            <form id="LinkCreateForm">
+              <input style="width:80px" id="LinkCreateFrom" value="from: Node ID" />
+              <input style="width:80px" id="LinkCreateTo" value="to: Node ID" /><br />
+              <input style="width:80px" id="LinkCreateType" value="type" />
             </form>
           </div>
         """
       $container.appendTo @$el
 
       nodeInputNumber = 0
+      linkInputNumber = 0
 
-      $nodeMoreFields = $("<input id=\"moreFields\" type=\"button\" value=\"+\">").appendTo($container)
+      $nodeMoreFields = $("<input id=\"moreNodeCreateFields\" type=\"button\" value=\"+\">").appendTo("#NodeCreateContainer")
       $nodeMoreFields.click(() => 
-        @addNodeField(nodeInputNumber)
+        @addField(nodeInputNumber, "NodeCreate")
         nodeInputNumber = nodeInputNumber+1
         )
 
-      $nodeCreate = $("<input id=\"createObj\" type=\"button\" value=\"Create node\">").appendTo($container)
+      $nodeCreate = $("<input id=\"NodeCreateButton\" type=\"button\" value=\"Create node\">").appendTo("#NodeCreateContainer")
       $nodeCreate.click(@createNode)
+
+      $linkMoreFields = $("<input id=\"moreLinkCreateFields\" type=\"button\" value=\"+\">").appendTo("#LinkCreateContainer")
+      $linkMoreFields.click(() => 
+        @addField(linkInputNumber, "LinkCreate")
+        linkInputNumber = linkInputNumber+1
+        )
+
+      $linkCreate = $("<input id=\"LinkCreateButton\" type=\"button\" value=\"Create link\">").appendTo("#LinkCreateContainer")
+      $linkCreate.click(@createLink)
 
       return this
 
+
     # should come up with a better naming scheme really...
-    addNodeField: (inputIndex) =>
+    addField: (inputIndex, name) =>
       $row = $ """
-          <div id=\'createDiv#{inputIndex}\' class=\"createDiv\">
-          <input style=\"width:80px\" name=\"propertyNode#{inputIndex}\" value=\"propertyEx\" class=\"propertyNode\">
-          <input style=\"width:80px\" name=\"valueNode#{inputIndex}\" value=\"valueEx\" class=\"valueNode\">
-          <input type=\"button\" id=\"removeRow#{inputIndex}\" value=\"x\" onclick=\'this.parentNode.parentNode.removeChild(this.parentNode);\'>
+          <div id="#{name}Div#{inputIndex}" class="#{name}Div">
+          <input style="width:80px" name="property#{name}#{inputIndex}" value="propertyEx" class="property#{name}">
+          <input style="width:80px" name="value#{name}#{inputIndex}" value="valueEx" class="value#{name}">
+          <input type="button" id="remove#{name}#{inputIndex}" value="x" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">
           </div>
       """
+      @$("##{name}Form").append $row
 
-      @$("#NodeCreateFields").append $row
 
     createNode: =>
       console.log "create node called"
-      # check property names and assign property-value pairs to nodeObject
+      # check property names and assign property-value pairs to nodeObject;
       # first component of nodeObject is boolean result of whether all
-      # properties are legal; second component is dictionary of properties to
+      # properties are legal, second component is dictionary of properties to
       # be assigned
-      nodeObject = @assign_properties("NodeInputFields", @is_illegal)
+      nodeObject = @assign_properties("NodeCreate")
       # if all property names were fine, remove the on-the-fly created input
       # fields and submit the data to the server to actually create the node
       if (nodeObject[0]) then (
-        $('.createDiv').each( (i, obj) ->
+        $('.NodeCreateDiv').each( (i, obj) ->
           $(this)[0].parentNode.removeChild $(this)[0]
         )
         @dataController.nodeAdd(nodeObject[1], (datum) => @graphModel.putNode(datum))
+      )
+
+
+    createLink: =>
+      console.log "create link called"
+      # relationships must have a beginning and end node (given by ID) and a
+      # type; beginning and end node IDs must be numbers; relationship type
+      # must obey same rules as property names
+      # if any of these conditions are not satisfied, the user is informed and
+      # relationship creation is cancelled
+      ## need to change names of fields!!!!
+      unless /^[0-9]+$/.test($("#LinkCreateFrom").val())
+        alert "'From: node ID' must be a number."
+        return false
+      unless /^[0-9]+$/.test($("#LinkCreateTo").val())
+        alert "'To: node ID' must be a number."
+        return false
+      return false  if @is_illegal($("#LinkCreateType").val(), "Relationship type")
+      console.log "from, to, type are OK"
+      linkObject =
+        from: $("#LinkCreateFrom").val()
+        to: $("#LinkCreateTo").val()
+        type: $("#LinkCreateType").val()
+  
+      # check property names and assign property-value pairs
+      # first component of relProperties is boolean result of whether all
+      # properties are legal; second component is dictionary of properties to
+      # be assigned
+      linkProperties = @assign_properties("LinkCreate")
+
+      # if all property names were fine, remove the on-the-fly created input
+      # fields and submit the data to the server to actually create the link
+      if (linkProperties[0]) then (
+        console.log "properties are OK"
+        $('.LinkCreateDiv').each( (i, obj) ->
+          $(this)[0].parentNode.removeChild $(this)[0]
+        )
+        linkObject["properties"] = linkProperties[1]
+        @dataController.linkAdd(linkObject, (linkres)=> 
+          console.log "called dataController.linkAdd"
+          newLink = linkres
+          allNodes = @graphModel.getNodes()
+          newLink.source = n for n in allNodes when n['_id'] is link.source['_id']
+          newLink.target = n for n in allNodes when n['_id'] is link.target['_id']
+          @graphModel.putLink(newLink)
+          )
       )
       
 
@@ -76,12 +141,12 @@ define [], () ->
     # returns: submitOK: a boolean indicating whether the property names were all
     #                    legal
     #          propertyObject: a dictionary of property-value pairs
-    assign_properties: (form_name, is_illegal) => 
+    assign_properties: (form_name, is_illegal = @is_illegal) => 
         submitOK = true
         propertyObject = {}
-        $(".createDiv").each (i, obj) ->
-            property = $(this).children(".propertyNode").val()
-            value = $(this).children(".valueNode").val()
+        $("." + form_name + "Div").each (i, obj) ->
+            property = $(this).children(".property" + form_name).val()
+            value = $(this).children(".value" + form_name).val()
             # check whether property name is allowed and ensure that user does not
             # accidentally assign the same property twice
             # - if property name is not ok, there is an apropriate error message and
