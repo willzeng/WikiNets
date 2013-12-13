@@ -29,8 +29,10 @@ define [], () ->
           <div id="LinkCreateContainer">
             Create Link: 
             <form id="LinkCreateForm">
-              <input style="width:80px" id="LinkCreateSource" value="Source: node ID" />
-              <input style="width:80px" id="LinkCreateTarget" value="Target: node ID" /><br />
+              <span id="LinkCreateSelectSource"></span>
+              <span id="LinkCreateSourceValue"></span><br />
+              <span id="LinkCreateSelectTarget"></span>
+              <span id="LinkCreateTargetValue"></span><br />
               <input style="width:80px" id="LinkCreateType" value="type" />
             </form>
           </div>
@@ -49,6 +51,20 @@ define [], () ->
       $nodeCreate = $("<input id=\"NodeCreateButton\" type=\"button\" value=\"Create node\">").appendTo("#NodeCreateContainer")
       $nodeCreate.click(@createNode)
 
+      $linkCreateSelectSourceButton = $("<input id=\"LinkCreateSource\" type=\"button\" value=\"Source:\" />").appendTo("#LinkCreateSelectSource")
+      $linkCreateSelectSourceButton.click(() =>
+        console.log "selecting source"
+        $("#LinkCreateSourceValue").replaceWith("<span id=\"LinkCreateSourceValue\" style=\"font-style:italic;\">Selecting</span>")
+        @selectingSource = true
+        )
+
+      $linkCreateSelectTargetButton = $("<input id=\"LinkCreateTarget\" type=\"button\" value=\"Target:\" />").appendTo("#LinkCreateSelectTarget")
+      $linkCreateSelectTargetButton.click(() =>
+        console.log "selecting target"
+        $("#LinkCreateTargetValue").replaceWith("<span id=\"LinkCreateTargetValue\" style=\"font-style:italic;\">Selecting</span>")
+        @selectingTarget = true
+        )
+
       $linkMoreFields = $("<input id=\"moreLinkCreateFields\" type=\"button\" value=\"+\">").appendTo("#LinkCreateContainer")
       $linkMoreFields.click(() => 
         @addField(linkInputNumber, "LinkCreate")
@@ -57,6 +73,22 @@ define [], () ->
 
       $linkCreate = $("<input id=\"LinkCreateButton\" type=\"button\" value=\"Create link\">").appendTo("#LinkCreateContainer")
       $linkCreate.click(@createLink)
+
+      selectingSource = false
+      selectingTarget = false
+
+      @graphView.on "enter:node:click", (node) =>
+        console.log "node selected"
+        if @selectingSource
+          console.log "Source: " + node["_id"]
+          $("#LinkCreateSourceValue").replaceWith("<span id=\"LinkCreateSourceValue\">" + node["text"] + " (id: " + node["_id"] + ")</span>")
+          @selectingSource = false
+          @source = node
+        if @selectingTarget
+          console.log "Target: " + node["_id"]
+          $("#LinkCreateTargetValue").replaceWith("<span id=\"LinkCreateTargetValue\">" + node["text"] + " (id: " + node["_id"] + ")</span>")
+          @selectingTarget = false
+          @target = node
 
       return this
 
@@ -97,20 +129,15 @@ define [], () ->
       # must obey same rules as property names
       # if any of these conditions are not satisfied, the user is informed and
       # relationship creation is cancelled
-      unless /^[0-9]+$/.test($("#LinkCreateSource").val())
-        alert "'Source: node ID' must be a number."
+      if @source == undefined or @target == undefined or @selectingSource or @selectingTarget
+        alert "Please select a source and a target."
         return false
-      unless /^[0-9]+$/.test($("#LinkCreateTarget").val())
-        alert "'Target: node ID' must be a number."
+      if @is_illegal($("#LinkCreateType").val(), "Relationship type")
         return false
-      return false  if @is_illegal($("#LinkCreateType").val(), "Relationship type")
       console.log "source, target, type are OK"
-      allNodes = @graphModel.getNodes()
-      source = n for n in allNodes when n['_id'] is $("#LinkCreateSource").val()
-      target = n for n in allNodes when n['_id'] is $("#LinkCreateTarget").val()
       linkObject =
-        source: source
-        target: target 
+        source: @source
+        target: @target 
       console.log linkObject
   
       # check property names and assign property-value pairs
@@ -127,8 +154,10 @@ define [], () ->
         $('.LinkCreateDiv').each( (i, obj) ->
           $(this)[0].parentNode.removeChild $(this)[0]
         )
-        $("#LinkCreateSource").val("Source: node ID")
-        $("#LinkCreateTarget").val("Target: node ID")
+        $("#LinkCreateSourceValue").replaceWith("<span id=\"LinkCreateSourceValue\"></span>")
+        $("#LinkCreateTargetValue").replaceWith("<span id=\"LinkCreateTargetValue\"></span>")
+        @source = undefined
+        @target = undefined
         $("#LinkCreateType").val("Type")
         linkObject["properties"] = linkProperties[1]
         console.log linkObject
@@ -185,5 +214,4 @@ define [], () ->
         alert(type + " name illegal: '" + property + "' is a reserved term.")
         return true
       ) else false
-    
-    
+
