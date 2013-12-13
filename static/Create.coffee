@@ -29,8 +29,8 @@ define [], () ->
           <div id="LinkCreateContainer">
             Create Link: 
             <form id="LinkCreateForm">
-              <input style="width:80px" id="LinkCreateFrom" value="from: Node ID" />
-              <input style="width:80px" id="LinkCreateTo" value="to: Node ID" /><br />
+              <input style="width:80px" id="LinkCreateSource" value="Source: node ID" />
+              <input style="width:80px" id="LinkCreateTarget" value="Target: node ID" /><br />
               <input style="width:80px" id="LinkCreateType" value="type" />
             </form>
           </div>
@@ -97,25 +97,28 @@ define [], () ->
       # must obey same rules as property names
       # if any of these conditions are not satisfied, the user is informed and
       # relationship creation is cancelled
-      ## need to change names of fields!!!!
-      unless /^[0-9]+$/.test($("#LinkCreateFrom").val())
-        alert "'From: node ID' must be a number."
+      unless /^[0-9]+$/.test($("#LinkCreateSource").val())
+        alert "'Source: node ID' must be a number."
         return false
-      unless /^[0-9]+$/.test($("#LinkCreateTo").val())
-        alert "'To: node ID' must be a number."
+      unless /^[0-9]+$/.test($("#LinkCreateTarget").val())
+        alert "'Target: node ID' must be a number."
         return false
       return false  if @is_illegal($("#LinkCreateType").val(), "Relationship type")
-      console.log "from, to, type are OK"
+      console.log "source, target, type are OK"
+      allNodes = @graphModel.getNodes()
+      source = n for n in allNodes when n['_id'] is $("#LinkCreateSource").val()
+      target = n for n in allNodes when n['_id'] is $("#LinkCreateTarget").val()
       linkObject =
-        from: $("#LinkCreateFrom").val()
-        to: $("#LinkCreateTo").val()
-        type: $("#LinkCreateType").val()
+        source: source
+        target: target 
+      console.log linkObject
   
       # check property names and assign property-value pairs
       # first component of relProperties is boolean result of whether all
       # properties are legal; second component is dictionary of properties to
       # be assigned
       linkProperties = @assign_properties("LinkCreate")
+      linkProperties[1]["name"] = $("#LinkCreateType").val()
 
       # if all property names were fine, remove the on-the-fly created input
       # fields and submit the data to the server to actually create the link
@@ -124,13 +127,17 @@ define [], () ->
         $('.LinkCreateDiv').each( (i, obj) ->
           $(this)[0].parentNode.removeChild $(this)[0]
         )
+        $("#LinkCreateSource").val("Source: node ID")
+        $("#LinkCreateTarget").val("Target: node ID")
+        $("#LinkCreateType").val("Type")
         linkObject["properties"] = linkProperties[1]
+        console.log linkObject
         @dataController.linkAdd(linkObject, (linkres)=> 
           console.log "called dataController.linkAdd"
           newLink = linkres
           allNodes = @graphModel.getNodes()
-          newLink.source = n for n in allNodes when n['_id'] is link.source['_id']
-          newLink.target = n for n in allNodes when n['_id'] is link.target['_id']
+          newLink.source = n for n in allNodes when n['_id'] is linkObject.source['_id']
+          newLink.target = n for n in allNodes when n['_id'] is linkObject.target['_id']
           @graphModel.putLink(newLink)
           )
       )
@@ -167,7 +174,7 @@ define [], () ->
     # checks whether property names will break the cypher queries or are any of
     # the reserved terms
     is_illegal: (property, type) ->
-      reserved_keys = ["_id"]
+      reserved_keys = ["_id", "name"]
       if (property == '') then (
         alert type + " name must not be empty." 
         return true
