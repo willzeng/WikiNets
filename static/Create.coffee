@@ -102,7 +102,7 @@ define [], () ->
           <input type="button" id="remove#{name}#{inputIndex}" value="x" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">
           </div>
       """
-      @$("##{name}Form").append $row
+      $("##{name}Form").append $row
 
 
     createNode: =>

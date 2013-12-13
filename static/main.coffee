@@ -90,7 +90,8 @@ require ["Celestrium"], (Celestrium) ->
     "NodeSearch": 
       prefetch: "/get_node_names"
 
-    NodeDetails: {}
+    #NodeDetails: {}
+    "local/NodeEdit": {}
 
     MiniMap: {}  
 
