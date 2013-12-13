@@ -57,7 +57,9 @@
         }
       },
       GraphView: {},
-      NodeSelection: {},
+      NodeSelection: {
+        onClick: doWikiNetsSelection
+      },
       "local/WikiNetsDataProvider": {},
       "local/Neo4jDataController": {},
       "local/Create": {},
@@ -68,7 +70,7 @@
       "NodeSearch": {
         prefetch: "/get_node_names"
       },
-      NodeDetails: {},
+      "local/NodeEdit": {},
       MiniMap: {},
       Stats: {}
     };
