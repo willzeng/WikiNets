@@ -1,1 +1,1 @@
-web: sh heroku.sh
+web: node web.js
