@@ -14,8 +14,9 @@ define [], () ->
       @graphView = instances['GraphView']
       @graphModel = instances['GraphModel']
       @dataController = instances['local/Neo4jDataController']
+      @layout = instances["Layout"]
 
-      instances["Layout"].addPlugin @el, @options.pluginOrder, 'Create'
+      @layout.addPlugin @el, @options.pluginOrder, 'Create'
 
       @render()
 
@@ -90,6 +91,20 @@ define [], () ->
           @selectingTarget = false
           @target = node
 
+      @graphView.on "view:rightclick", () => 
+        pluginsList = @layout.pluginWrappers[key] for own key, value of @layout.pluginWrappers
+        createPlugin = plugin for plugin in pluginsList when plugin.pluginName is "Create"
+        #uncollapse the Create menu if it is collapsed
+        if createPlugin.collapsed then createPlugin.close() 
+        #automatically add and fill a name field
+        if nodeInputNumber is 0
+          @addField(nodeInputNumber, "NodeCreate", "Name", "")
+          #$('valueNodeCreate0').focus() #THIS DOESN'T QUITE WORK
+          nodeInputNumber = nodeInputNumber+1
+
+
+
+
       return this
 
 
@@ -99,6 +114,16 @@ define [], () ->
           <div id="#{name}Div#{inputIndex}" class="#{name}Div">
           <input style="width:80px" name="property#{name}#{inputIndex}" value="propertyEx" class="property#{name}">
           <input style="width:80px" name="value#{name}#{inputIndex}" value="valueEx" class="value#{name}">
+          <input type="button" id="remove#{name}#{inputIndex}" value="x" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">
+          </div>
+      """
+      $("##{name}Form").append $row
+
+    addField: (inputIndex, name, defaultKey, defaultValue) =>
+      $row = $ """
+          <div id="#{name}Div#{inputIndex}" class="#{name}Div">
+          <input style="width:80px" name="property#{name}#{inputIndex}" value="#{defaultKey}" class="property#{name}">
+          <input style="width:80px" name="value#{name}#{inputIndex}" value="#{defaultValue}" class="value#{name}">
           <input type="button" id="remove#{name}#{inputIndex}" value="x" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">
           </div>
       """

@@ -15,6 +15,7 @@
         this.createLink = __bind(this.createLink, this);
         this.createNode = __bind(this.createNode, this);
         this.addField = __bind(this.addField, this);
+        this.addField = __bind(this.addField, this);
         Create.__super__.constructor.call(this);
       }
 
@@ -23,7 +24,8 @@
         this.graphView = instances['GraphView'];
         this.graphModel = instances['GraphModel'];
         this.dataController = instances['local/Neo4jDataController'];
-        instances["Layout"].addPlugin(this.el, this.options.pluginOrder, 'Create');
+        this.layout = instances["Layout"];
+        this.layout.addPlugin(this.el, this.options.pluginOrder, 'Create');
         return this.render();
       };
 
@@ -77,12 +79,40 @@
             return _this.target = node;
           }
         });
+        this.graphView.on("view:rightclick", function() {
+          var createPlugin, key, plugin, pluginsList, value, _i, _len, _ref;
+          _ref = _this.layout.pluginWrappers;
+          for (key in _ref) {
+            if (!__hasProp.call(_ref, key)) continue;
+            value = _ref[key];
+            pluginsList = _this.layout.pluginWrappers[key];
+          }
+          for (_i = 0, _len = pluginsList.length; _i < _len; _i++) {
+            plugin = pluginsList[_i];
+            if (plugin.pluginName === "Create") {
+              createPlugin = plugin;
+            }
+          }
+          if (createPlugin.collapsed) {
+            createPlugin.close();
+          }
+          if (nodeInputNumber === 0) {
+            _this.addField(nodeInputNumber, "NodeCreate", "Name", "");
+            return nodeInputNumber = nodeInputNumber + 1;
+          }
+        });
         return this;
       };
 
       Create.prototype.addField = function(inputIndex, name) {
         var $row;
         $row = $("<div id=\"" + name + "Div" + inputIndex + "\" class=\"" + name + "Div\">\n<input style=\"width:80px\" name=\"property" + name + inputIndex + "\" value=\"propertyEx\" class=\"property" + name + "\">\n<input style=\"width:80px\" name=\"value" + name + inputIndex + "\" value=\"valueEx\" class=\"value" + name + "\">\n<input type=\"button\" id=\"remove" + name + inputIndex + "\" value=\"x\" onclick=\"this.parentNode.parentNode.removeChild(this.parentNode);\">\n</div>");
+        return $("#" + name + "Form").append($row);
+      };
+
+      Create.prototype.addField = function(inputIndex, name, defaultKey, defaultValue) {
+        var $row;
+        $row = $("<div id=\"" + name + "Div" + inputIndex + "\" class=\"" + name + "Div\">\n<input style=\"width:80px\" name=\"property" + name + inputIndex + "\" value=\"" + defaultKey + "\" class=\"property" + name + "\">\n<input style=\"width:80px\" name=\"value" + name + inputIndex + "\" value=\"" + defaultValue + "\" class=\"value" + name + "\">\n<input type=\"button\" id=\"remove" + name + inputIndex + "\" value=\"x\" onclick=\"this.parentNode.parentNode.removeChild(this.parentNode);\">\n</div>");
         return $("#" + name + "Form").append($row);
       };
 
