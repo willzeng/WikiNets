@@ -162,7 +162,8 @@
           $("#LinkCreateTargetValue").replaceWith("<span id=\"LinkCreateTargetValue\"></span>");
           this.source = void 0;
           this.target = void 0;
-          $("#LinkCreateType").val("Type");
+          $("#LinkCreateType").val("");
+          $("#LinkCreateType").attr("placeholder", "Type");
           linkObject["properties"] = linkProperties[1];
           console.log(linkObject);
           return this.dataController.linkAdd(linkObject, function(linkres) {
