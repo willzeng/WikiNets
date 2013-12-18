@@ -170,7 +170,8 @@ define [], () ->
         $("#LinkCreateTargetValue").replaceWith("<span id=\"LinkCreateTargetValue\"></span>")
         @source = undefined
         @target = undefined
-        $("#LinkCreateType").val("Type")
+        $("#LinkCreateType").val("")
+        $("#LinkCreateType").attr("placeholder", "Type")
         linkObject["properties"] = linkProperties[1]
         console.log linkObject
         @dataController.linkAdd(linkObject, (linkres)=> 
