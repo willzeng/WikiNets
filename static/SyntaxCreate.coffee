@@ -23,8 +23,6 @@ define [], () ->
       @tempLink = {};
       @render()
 
-      #@graphView.on "enter:node:click", @update.bind(this)
-
       @selection = instances["NodeSelection"]
       @selection.on "change", @update.bind(this)
 
@@ -37,23 +35,16 @@ define [], () ->
       $createLinkButton = $("<input id=\"createArrowButton\" type=\"submit\" value=\"New Link\"><br>").appendTo $container
 
       @$sourceWrapper = $("<div class=\"source-container\">").appendTo $container
-      $sourceInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo @$sourceWrapper
-      $sourceInput.val("Node : A node's description #key1 value1 #key2 value2")
-      $sourceInput.focus () -> $sourceInput.val("")
+      $sourceInput = $("<textarea placeholder=\"Node : A node's description #key1 value1 #key2 value2\" id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo @$sourceWrapper
 
       $createSourceNodeButton = $("<input id=\"queryform\" type=\"button\" value=\"Create Node\"><br>").appendTo @$sourceWrapper
 
       @$linkWrapper = $("<div id=\"source-container\">").appendTo $container
-      $linkInput = $("<textarea id=\"linkInputField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo @$linkWrapper
-      $linkInput.val("Link : A link's description #key1 value1 #key2 value2")
-      #$linkInput.focus () -> $linkInput.val("")
+      $linkInput = $("<textarea placeholder=\"Link : A link's description #key1 value1 #key2 value2\" id=\"linkInputField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo @$linkWrapper
 
       $createLinkButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create Link\"><br>").appendTo @$linkWrapper
 
       $linkingInstructions = $("<span id=\"link-instructions\">").appendTo @$linkWrapper
-
-      #$targetInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo $container
-      #$createTargetNodeButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create (Target) Node\"><br>").appendTo $container
 
       $createNodeButton.click(() => $sourceInput.focus())
       $createLinkButton.click(() => $linkInput.focus())
@@ -61,9 +52,6 @@ define [], () ->
       $createSourceNodeButton.click () => 
         @buildNode(@parseSyntax($sourceInput.val()))
         $sourceInput.val("")
-      #$createTargetNodeButton.click () => 
-      #  @buildNode(@parseSyntax($targetInput.val()))
-      #  $targetInput.val("")
 
       $createLinkButton.click () =>
         @buildLink(@parseSyntax($linkInput.val()))
@@ -71,8 +59,6 @@ define [], () ->
         $("#link-instructions").replaceWith("<span id=\"link-instructions\" style=\"font-style:italic;\">Click to select source</span>")
 
       @graphView.on "enter:node:click", (node) =>
-        # console.log "buildingLink", @buildingLink
-        # console.log "sourceSet", @sourceSet
         if @buildingLink
           if @sourceSet
             @tempLink.target = node
