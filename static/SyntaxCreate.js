@@ -29,27 +29,30 @@
       };
 
       SyntaxCreate.prototype.render = function() {
-        var $container, $createLinkButton, $createNodeButton, $createSourceNodeButton, $linkInput, $sourceInput,
+        var $container, $createLinkButton, $createNodeButton, $createSourceNodeButton, $linkInput, $linkingInstructions, $sourceInput,
           _this = this;
         $container = $("<div class=\"syntax-create-container\">").appendTo(this.$el);
         $createNodeButton = $("<input id=\"createNodeButton\" type=\"submit\" value=\"New Node\">").appendTo($container);
         $createLinkButton = $("<input id=\"createArrowButton\" type=\"submit\" value=\"New Link\"><br>").appendTo($container);
         this.$sourceWrapper = $("<div class=\"source-container\">").appendTo($container);
-        $sourceInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo(this.$sourceWrapper);
-        $sourceInput.val("Node : A node's description #key1 value1 #key2 value2");
-        $sourceInput.focus(function() {
-          return $sourceInput.val("");
-        });
+        $sourceInput = $("<textarea placeholder=\"Node : A node's description #key1 value1 #key2 value2\" id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo(this.$sourceWrapper);
         $createSourceNodeButton = $("<input id=\"queryform\" type=\"button\" value=\"Create Node\"><br>").appendTo(this.$sourceWrapper);
-        this.$linkWrapper = $("<div class=\"source-container\">").appendTo($container);
-        $linkInput = $("<textarea id=\"linkInputField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo(this.$linkWrapper);
-        $linkInput.val("Link : A link's description #key1 value1 #key2 value2");
+        this.$linkWrapper = $("<div id=\"source-container\">").appendTo($container);
+        $linkInput = $("<textarea placeholder=\"Link : A link's description #key1 value1 #key2 value2\" id=\"linkInputField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo(this.$linkWrapper);
         $createLinkButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create Link\"><br>").appendTo(this.$linkWrapper);
+        $linkingInstructions = $("<span id=\"link-instructions\">").appendTo(this.$linkWrapper);
         $createNodeButton.click(function() {
           return $sourceInput.focus();
         });
         $createLinkButton.click(function() {
           return $linkInput.focus();
+        });
+        $("#searchAddNodeField").keypress(function(e) {
+          console.log(e.keyCode);
+          if (e.keyCode === 13) {
+            _this.buildNode(_this.parseSyntax($sourceInput.val()));
+            return $sourceInput.val("");
+          }
         });
         $createSourceNodeButton.click(function() {
           _this.buildNode(_this.parseSyntax($sourceInput.val()));
@@ -57,7 +60,8 @@
         });
         $createLinkButton.click(function() {
           _this.buildLink(_this.parseSyntax($linkInput.val()));
-          return $linkInput.val("");
+          $linkInput.val("");
+          return $("#link-instructions").replaceWith("<span id=\"link-instructions\" style=\"font-style:italic;\">Click to select source</span>");
         });
         return this.graphView.on("enter:node:click", function(node) {
           var link;
@@ -83,10 +87,12 @@
                 }
                 return _this.graphModel.putLink(newLink);
               });
-              return _this.sourceSet = _this.buildingLink = false;
+              _this.sourceSet = _this.buildingLink = false;
+              return $("#link-instructions").replaceWith("<span id=\"link-instructions\" style=\"font-style:italic;\"></span>");
             } else {
               _this.tempLink.source = node;
-              return _this.sourceSet = true;
+              _this.sourceSet = true;
+              return $("#link-instructions").replaceWith("<span id=\"link-instructions\" style=\"font-style:italic;\">Click to select target</span>");
             }
           }
         });
