@@ -43,12 +43,14 @@ define [], () ->
 
       $createSourceNodeButton = $("<input id=\"queryform\" type=\"button\" value=\"Create Node\"><br>").appendTo @$sourceWrapper
 
-      @$linkWrapper = $("<div class=\"source-container\">").appendTo $container
+      @$linkWrapper = $("<div id=\"source-container\">").appendTo $container
       $linkInput = $("<textarea id=\"linkInputField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo @$linkWrapper
       $linkInput.val("Link : A link's description #key1 value1 #key2 value2")
       #$linkInput.focus () -> $linkInput.val("")
 
       $createLinkButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create Link\"><br>").appendTo @$linkWrapper
+
+      $linkingInstructions = $("<span id=\"link-instructions\">").appendTo @$linkWrapper
 
       #$targetInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo $container
       #$createTargetNodeButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create (Target) Node\"><br>").appendTo $container
@@ -66,6 +68,7 @@ define [], () ->
       $createLinkButton.click () =>
         @buildLink(@parseSyntax($linkInput.val()))
         $linkInput.val("")
+        $("#link-instructions").replaceWith("<span id=\"link-instructions\" style=\"font-style:italic;\">Click to select source</span>")
 
       @graphView.on "enter:node:click", (node) =>
         # console.log "buildingLink", @buildingLink
@@ -82,9 +85,11 @@ define [], () ->
               @graphModel.putLink(newLink)
               )
             @sourceSet = @buildingLink = false
+            $("#link-instructions").replaceWith("<span id=\"link-instructions\" style=\"font-style:italic;\"></span>")
           else
             @tempLink.source = node
             @sourceSet = true
+            $("#link-instructions").replaceWith("<span id=\"link-instructions\" style=\"font-style:italic;\">Click to select target</span>")
 
     update: (node) ->
       @selection.getSelectedNodes()
