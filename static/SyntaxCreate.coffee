@@ -15,9 +15,6 @@ define [], () ->
       @graphModel = instances['GraphModel']
       @dataController = instances['local/Neo4jDataController']
 
-      #some key press should take you to the SyntaxCreate box. Perhaps SPACE?
-      #@listenTo @keyListener, "down:17:65", @selectAll
-
       @buildingLink = false
       @sourceSet = false
       @tempLink = {};
@@ -49,6 +46,12 @@ define [], () ->
       $createNodeButton.click(() => $sourceInput.focus())
       $createLinkButton.click(() => $linkInput.focus())
       
+      $("#searchAddNodeField").keypress (e) =>
+        console.log e.keyCode
+        if e.keyCode is 13
+          @buildNode(@parseSyntax($sourceInput.val()))
+          $sourceInput.val("")
+
       $createSourceNodeButton.click () => 
         @buildNode(@parseSyntax($sourceInput.val()))
         $sourceInput.val("")
@@ -87,7 +90,6 @@ define [], () ->
       @tempLink.properties = linkProperties
       console.log "tempLink set to", @tempLink
       @buildingLink = true
-
     
     parseSyntax: (input) ->
       console.log "input", input
