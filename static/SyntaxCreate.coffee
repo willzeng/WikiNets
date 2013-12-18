@@ -15,15 +15,10 @@ define [], () ->
       @graphModel = instances['GraphModel']
       @dataController = instances['local/Neo4jDataController']
 
-      #some key press should take you to the SyntaxCreate box. Perhaps SPACE?
-      #@listenTo @keyListener, "down:17:65", @selectAll
-
       @buildingLink = false
       @sourceSet = false
       @tempLink = {};
       @render()
-
-      #@graphView.on "enter:node:click", @update.bind(this)
 
       @selection = instances["NodeSelection"]
       @selection.on "change", @update.bind(this)
@@ -37,39 +32,36 @@ define [], () ->
       $createLinkButton = $("<input id=\"createArrowButton\" type=\"submit\" value=\"New Link\"><br>").appendTo $container
 
       @$sourceWrapper = $("<div class=\"source-container\">").appendTo $container
-      $sourceInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo @$sourceWrapper
-      $sourceInput.val("Node : A node's description #key1 value1 #key2 value2")
-      $sourceInput.focus () -> $sourceInput.val("")
+      $sourceInput = $("<textarea placeholder=\"Node : A node's description #key1 value1 #key2 value2\" id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo @$sourceWrapper
 
       $createSourceNodeButton = $("<input id=\"queryform\" type=\"button\" value=\"Create Node\"><br>").appendTo @$sourceWrapper
 
-      @$linkWrapper = $("<div class=\"source-container\">").appendTo $container
-      $linkInput = $("<textarea id=\"linkInputField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo @$linkWrapper
-      $linkInput.val("Link : A link's description #key1 value1 #key2 value2")
-      #$linkInput.focus () -> $linkInput.val("")
+      @$linkWrapper = $("<div id=\"source-container\">").appendTo $container
+      $linkInput = $("<textarea placeholder=\"Link : A link's description #key1 value1 #key2 value2\" id=\"linkInputField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo @$linkWrapper
 
       $createLinkButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create Link\"><br>").appendTo @$linkWrapper
 
-      #$targetInput = $("<textarea id=\"searchAddNodeField\" name=\"textin\" rows=\"4\" cols=\"27\"></textarea><br>").appendTo $container
-      #$createTargetNodeButton = $("<input id=\"queryform\" type=\"submit\" value=\"Create (Target) Node\"><br>").appendTo $container
+      $linkingInstructions = $("<span id=\"link-instructions\">").appendTo @$linkWrapper
 
       $createNodeButton.click(() => $sourceInput.focus())
       $createLinkButton.click(() => $linkInput.focus())
       
+      $("#searchAddNodeField").keypress (e) =>
+        console.log e.keyCode
+        if e.keyCode is 13
+          @buildNode(@parseSyntax($sourceInput.val()))
+          $sourceInput.val("")
+
       $createSourceNodeButton.click () => 
         @buildNode(@parseSyntax($sourceInput.val()))
         $sourceInput.val("")
-      #$createTargetNodeButton.click () => 
-      #  @buildNode(@parseSyntax($targetInput.val()))
-      #  $targetInput.val("")
 
       $createLinkButton.click () =>
         @buildLink(@parseSyntax($linkInput.val()))
         $linkInput.val("")
+        $("#link-instructions").replaceWith("<span id=\"link-instructions\" style=\"font-style:italic;\">Click to select source</span>")
 
       @graphView.on "enter:node:click", (node) =>
-        # console.log "buildingLink", @buildingLink
-        # console.log "sourceSet", @sourceSet
         if @buildingLink
           if @sourceSet
             @tempLink.target = node
@@ -82,9 +74,11 @@ define [], () ->
               @graphModel.putLink(newLink)
               )
             @sourceSet = @buildingLink = false
+            $("#link-instructions").replaceWith("<span id=\"link-instructions\" style=\"font-style:italic;\"></span>")
           else
             @tempLink.source = node
             @sourceSet = true
+            $("#link-instructions").replaceWith("<span id=\"link-instructions\" style=\"font-style:italic;\">Click to select target</span>")
 
     update: (node) ->
       @selection.getSelectedNodes()
@@ -96,7 +90,6 @@ define [], () ->
       @tempLink.properties = linkProperties
       console.log "tempLink set to", @tempLink
       @buildingLink = true
-
     
     parseSyntax: (input) ->
       console.log "input", input

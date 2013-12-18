@@ -23,14 +23,15 @@
         this.graphView = instances['GraphView'];
         this.graphModel = instances['GraphModel'];
         this.dataController = instances['local/Neo4jDataController'];
-        instances["Layout"].addPlugin(this.el, this.options.pluginOrder, 'Create');
+        this.layout = instances["Layout"];
+        this.layout.addPlugin(this.el, this.options.pluginOrder, 'Create');
         return this.render();
       };
 
       Create.prototype.render = function() {
         var $container, $linkCreate, $linkCreateSelectSourceButton, $linkCreateSelectTargetButton, $linkMoreFields, $nodeCreate, $nodeMoreFields, linkInputNumber, nodeInputNumber, selectingSource, selectingTarget,
           _this = this;
-        $container = $("<div id=\"NodeCreateContainer\">\n  Create Node: \n  <form id=\"NodeCreateForm\">\n  </form>\n</div>\n<div id=\"LinkCreateContainer\">\n  Create Link: \n  <form id=\"LinkCreateForm\">\n    <span id=\"LinkCreateSelectSource\"></span>\n    <span id=\"LinkCreateSourceValue\"></span><br />\n    <span id=\"LinkCreateSelectTarget\"></span>\n    <span id=\"LinkCreateTargetValue\"></span><br />\n    <input style=\"width:80px\" id=\"LinkCreateType\" value=\"type\" />\n  </form>\n</div>");
+        $container = $("<div id=\"NodeCreateContainer\">\n  Create Node: \n  <form id=\"NodeCreateForm\">\n  </form>\n</div>\n<div id=\"LinkCreateContainer\">\n  Create Link: \n  <form id=\"LinkCreateForm\">\n    <span id=\"LinkCreateSelectSource\"></span>\n    <span id=\"LinkCreateSourceValue\"></span><br />\n    <span id=\"LinkCreateSelectTarget\"></span>\n    <span id=\"LinkCreateTargetValue\"></span><br />\n    <input style=\"width:80px\" id=\"LinkCreateType\" placeholder=\"Type\" />\n  </form>\n</div>");
         $container.appendTo(this.$el);
         nodeInputNumber = 0;
         linkInputNumber = 0;
@@ -77,12 +78,40 @@
             return _this.target = node;
           }
         });
+        this.graphView.on("view:rightclick", function() {
+          var createPlugin, key, plugin, pluginsList, value, _i, _len, _ref;
+          _ref = _this.layout.pluginWrappers;
+          for (key in _ref) {
+            if (!__hasProp.call(_ref, key)) continue;
+            value = _ref[key];
+            pluginsList = _this.layout.pluginWrappers[key];
+          }
+          for (_i = 0, _len = pluginsList.length; _i < _len; _i++) {
+            plugin = pluginsList[_i];
+            if (plugin.pluginName === "Create") {
+              createPlugin = plugin;
+            }
+          }
+          if (createPlugin.collapsed) {
+            createPlugin.close();
+          }
+          if ($('.NodeCreateDiv').length === 0) {
+            _this.addField(nodeInputNumber, "NodeCreate", "Name", "");
+            return nodeInputNumber = nodeInputNumber + 1;
+          }
+        });
         return this;
       };
 
-      Create.prototype.addField = function(inputIndex, name) {
+      Create.prototype.addField = function(inputIndex, name, defaultKey, defaultValue) {
         var $row;
-        $row = $("<div id=\"" + name + "Div" + inputIndex + "\" class=\"" + name + "Div\">\n<input style=\"width:80px\" name=\"property" + name + inputIndex + "\" value=\"propertyEx\" class=\"property" + name + "\">\n<input style=\"width:80px\" name=\"value" + name + inputIndex + "\" value=\"valueEx\" class=\"value" + name + "\">\n<input type=\"button\" id=\"remove" + name + inputIndex + "\" value=\"x\" onclick=\"this.parentNode.parentNode.removeChild(this.parentNode);\">\n</div>");
+        if (!(defaultKey != null)) {
+          defaultKey = "propertyEx";
+        }
+        if (!(defaultValue != null)) {
+          defaultValue = "valueEx";
+        }
+        $row = $("<div id=\"" + name + "Div" + inputIndex + "\" class=\"" + name + "Div\">\n<input style=\"width:80px\" name=\"property" + name + inputIndex + "\" placeholder=\"" + defaultKey + "\" class=\"property" + name + "\">\n<input style=\"width:80px\" name=\"value" + name + inputIndex + "\" placeholder=\"" + defaultValue + "\" class=\"value" + name + "\">\n<input type=\"button\" id=\"remove" + name + inputIndex + "\" value=\"x\" onclick=\"this.parentNode.parentNode.removeChild(this.parentNode);\">\n</div>");
         return $("#" + name + "Form").append($row);
       };
 
@@ -129,7 +158,8 @@
           $("#LinkCreateTargetValue").replaceWith("<span id=\"LinkCreateTargetValue\"></span>");
           this.source = void 0;
           this.target = void 0;
-          $("#LinkCreateType").val("Type");
+          $("#LinkCreateType").val("");
+          $("#LinkCreateType").attr("placeholder", "Type");
           linkObject["properties"] = linkProperties[1];
           console.log(linkObject);
           return this.dataController.linkAdd(linkObject, function(linkres) {
