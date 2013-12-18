@@ -2,8 +2,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define([], function() {
     var Create;
@@ -13,8 +12,9 @@
       function Create(options) {
         this.options = options;
         this.assign_properties = __bind(this.assign_properties, this);
+        this.createLink = __bind(this.createLink, this);
         this.createNode = __bind(this.createNode, this);
-        this.addNodeField = __bind(this.addNodeField, this);
+        this.addField = __bind(this.addField, this);
         Create.__super__.constructor.call(this);
       }
 
@@ -28,60 +28,158 @@
       };
 
       Create.prototype.render = function() {
-        var $container, $nodeCreate, $nodeMoreFields, nodeInputNumber,
+        var $container, $linkCreate, $linkCreateSelectSourceButton, $linkCreateSelectTargetButton, $linkMoreFields, $nodeCreate, $nodeMoreFields, linkInputNumber, nodeInputNumber, selectingSource, selectingTarget,
           _this = this;
-        $container = $("<div class=\"create-container\">\n  Create Node: \n  <div id=\"inputList\">\n  </div>\n</div>");
+        $container = $("<div id=\"NodeCreateContainer\">\n  Create Node: \n  <form id=\"NodeCreateForm\">\n  </form>\n</div>\n<div id=\"LinkCreateContainer\">\n  Create Link: \n  <form id=\"LinkCreateForm\">\n    <span id=\"LinkCreateSelectSource\"></span>\n    <span id=\"LinkCreateSourceValue\"></span><br />\n    <span id=\"LinkCreateSelectTarget\"></span>\n    <span id=\"LinkCreateTargetValue\"></span><br />\n    <input style=\"width:80px\" id=\"LinkCreateType\" value=\"type\" />\n  </form>\n</div>");
         $container.appendTo(this.$el);
         nodeInputNumber = 0;
-        $nodeMoreFields = $("<input id=\"moreFields\" type=\"button\" value=\"+\">").appendTo($container);
+        linkInputNumber = 0;
+        $nodeMoreFields = $("<input id=\"moreNodeCreateFields\" type=\"button\" value=\"+\">").appendTo("#NodeCreateContainer");
         $nodeMoreFields.click(function() {
-          _this.addNodeField(nodeInputNumber);
+          _this.addField(nodeInputNumber, "NodeCreate");
           return nodeInputNumber = nodeInputNumber + 1;
         });
-        $nodeCreate = $("<input id=\"createObj\" type=\"button\" value=\"Create node\">").appendTo($container);
+        $nodeCreate = $("<input id=\"NodeCreateButton\" type=\"button\" value=\"Create node\">").appendTo("#NodeCreateContainer");
         $nodeCreate.click(this.createNode);
+        $linkCreateSelectSourceButton = $("<input id=\"LinkCreateSource\" type=\"button\" value=\"Source:\" />").appendTo("#LinkCreateSelectSource");
+        $linkCreateSelectSourceButton.click(function() {
+          console.log("selecting source");
+          $("#LinkCreateSourceValue").replaceWith("<span id=\"LinkCreateSourceValue\" style=\"font-style:italic;\">Selecting</span>");
+          return _this.selectingSource = true;
+        });
+        $linkCreateSelectTargetButton = $("<input id=\"LinkCreateTarget\" type=\"button\" value=\"Target:\" />").appendTo("#LinkCreateSelectTarget");
+        $linkCreateSelectTargetButton.click(function() {
+          console.log("selecting target");
+          $("#LinkCreateTargetValue").replaceWith("<span id=\"LinkCreateTargetValue\" style=\"font-style:italic;\">Selecting</span>");
+          return _this.selectingTarget = true;
+        });
+        $linkMoreFields = $("<input id=\"moreLinkCreateFields\" type=\"button\" value=\"+\">").appendTo("#LinkCreateContainer");
+        $linkMoreFields.click(function() {
+          _this.addField(linkInputNumber, "LinkCreate");
+          return linkInputNumber = linkInputNumber + 1;
+        });
+        $linkCreate = $("<input id=\"LinkCreateButton\" type=\"button\" value=\"Create link\">").appendTo("#LinkCreateContainer");
+        $linkCreate.click(this.createLink);
+        selectingSource = false;
+        selectingTarget = false;
+        this.graphView.on("enter:node:click", function(node) {
+          console.log("node selected");
+          if (_this.selectingSource) {
+            console.log("Source: " + node["_id"]);
+            $("#LinkCreateSourceValue").replaceWith("<span id=\"LinkCreateSourceValue\">" + node["text"] + " (id: " + node["_id"] + ")</span>");
+            _this.selectingSource = false;
+            _this.source = node;
+          }
+          if (_this.selectingTarget) {
+            console.log("Target: " + node["_id"]);
+            $("#LinkCreateTargetValue").replaceWith("<span id=\"LinkCreateTargetValue\">" + node["text"] + " (id: " + node["_id"] + ")</span>");
+            _this.selectingTarget = false;
+            return _this.target = node;
+          }
+        });
         return this;
       };
 
-      Create.prototype.addNodeField = function(inputIndex) {
+      Create.prototype.addField = function(inputIndex, name) {
         var $row;
-        $row = $("<div id=\'createDiv" + inputIndex + "\'>\n<input style=\"width:80px\" name=\"propertyNode" + inputIndex + "\" value=\"propertyEx\" class=\"propertyNode\">\n<input style=\"width:80px\" name=\"valueNode" + inputIndex + "\" value=\"valueEx\" class=\"valueNode\">\n<input type=\"button\" id=\"removeRow" + inputIndex + "\" value=\"x\" onclick=\'this.parentNode.parentNode.removeChild(this.parentNode);\'>\n</div>");
-        return this.$("#inputList").append($row);
+        $row = $("<div id=\"" + name + "Div" + inputIndex + "\" class=\"" + name + "Div\">\n<input style=\"width:80px\" name=\"property" + name + inputIndex + "\" value=\"propertyEx\" class=\"property" + name + "\">\n<input style=\"width:80px\" name=\"value" + name + inputIndex + "\" value=\"valueEx\" class=\"value" + name + "\">\n<input type=\"button\" id=\"remove" + name + inputIndex + "\" value=\"x\" onclick=\"this.parentNode.parentNode.removeChild(this.parentNode);\">\n</div>");
+        return $("#" + name + "Form").append($row);
       };
 
       Create.prototype.createNode = function() {
-        var nodeObject;
+        var nodeObject,
+          _this = this;
         console.log("create node called");
-        nodeObject = this.assign_properties("Node");
+        nodeObject = this.assign_properties("NodeCreate");
         if (nodeObject[0]) {
-          $('.NodeProperty').each(function(i, obj) {
+          $('.NodeCreateDiv').each(function(i, obj) {
             return $(this)[0].parentNode.removeChild($(this)[0]);
           });
-          console.log(JSON.stringify(nodeObject[1]));
-          return console.log("CALL THE SERVER TO MAKE A NODE", nodeObject[1]);
+          return this.dataController.nodeAdd(nodeObject[1], function(datum) {
+            return _this.graphModel.putNode(datum);
+          });
         }
       };
 
-      Create.prototype.assign_properties = function(form_name) {
-        var propertyObject, submitOK,
+      Create.prototype.createLink = function() {
+        var linkObject, linkProperties,
           _this = this;
+        console.log("create link called");
+        if (this.source === void 0 || this.target === void 0 || this.selectingSource || this.selectingTarget) {
+          alert("Please select a source and a target.");
+          return false;
+        }
+        if (this.is_illegal($("#LinkCreateType").val(), "Relationship type")) {
+          return false;
+        }
+        console.log("source, target, type are OK");
+        linkObject = {
+          source: this.source,
+          target: this.target
+        };
+        console.log(linkObject);
+        linkProperties = this.assign_properties("LinkCreate");
+        linkProperties[1]["name"] = $("#LinkCreateType").val();
+        if (linkProperties[0]) {
+          console.log("properties are OK");
+          $('.LinkCreateDiv').each(function(i, obj) {
+            return $(this)[0].parentNode.removeChild($(this)[0]);
+          });
+          $("#LinkCreateSourceValue").replaceWith("<span id=\"LinkCreateSourceValue\"></span>");
+          $("#LinkCreateTargetValue").replaceWith("<span id=\"LinkCreateTargetValue\"></span>");
+          this.source = void 0;
+          this.target = void 0;
+          $("#LinkCreateType").val("Type");
+          linkObject["properties"] = linkProperties[1];
+          console.log(linkObject);
+          return this.dataController.linkAdd(linkObject, function(linkres) {
+            var allNodes, n, newLink, _i, _j, _len, _len1;
+            console.log("called dataController.linkAdd");
+            newLink = linkres;
+            allNodes = _this.graphModel.getNodes();
+            for (_i = 0, _len = allNodes.length; _i < _len; _i++) {
+              n = allNodes[_i];
+              if (n['_id'] === linkObject.source['_id']) {
+                newLink.source = n;
+              }
+            }
+            for (_j = 0, _len1 = allNodes.length; _j < _len1; _j++) {
+              n = allNodes[_j];
+              if (n['_id'] === linkObject.target['_id']) {
+                newLink.target = n;
+              }
+            }
+            return _this.graphModel.putLink(newLink);
+          });
+        }
+      };
+
+      Create.prototype.assign_properties = function(form_name, is_illegal) {
+        var propertyObject, submitOK;
+        if (is_illegal == null) {
+          is_illegal = this.is_illegal;
+        }
         submitOK = true;
         propertyObject = {};
-        $("." + form_name + "Property").each(function(i, obj) {
+        $("." + form_name + "Div").each(function(i, obj) {
           var property, value;
-          property = $(_this).children(".property" + form_name).val();
-          value = $(_this).children(".value" + form_name).val();
-          if (_this.is_illegal(property, "Property")) {
+          property = $(this).children(".property" + form_name).val();
+          value = $(this).children(".value" + form_name).val();
+          if (is_illegal(property, "Property")) {
             return submitOK = false;
-          } else if ((__indexOf.call(propertyObject, property) >= 0)) {
+          } else if (property in propertyObject) {
             alert("Property '" + property + "' already assigned.\nFirst value: " + propertyObject[property] + "\nSecond value: " + value);
             return submitOK = false;
+          } else {
+            return propertyObject[property] = value.replace(/'/g, "\\'");
           }
         });
         return [submitOK, propertyObject];
       };
 
       Create.prototype.is_illegal = function(property, type) {
+        var reserved_keys;
+        reserved_keys = ["_id", "name"];
         if (property === '') {
           alert(type + " name must not be empty.");
           return true;
