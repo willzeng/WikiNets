@@ -15,7 +15,6 @@
         this.createLink = __bind(this.createLink, this);
         this.createNode = __bind(this.createNode, this);
         this.addField = __bind(this.addField, this);
-        this.addField = __bind(this.addField, this);
         Create.__super__.constructor.call(this);
       }
 
@@ -32,7 +31,7 @@
       Create.prototype.render = function() {
         var $container, $linkCreate, $linkCreateSelectSourceButton, $linkCreateSelectTargetButton, $linkMoreFields, $nodeCreate, $nodeMoreFields, linkInputNumber, nodeInputNumber, selectingSource, selectingTarget,
           _this = this;
-        $container = $("<div id=\"NodeCreateContainer\">\n  Create Node: \n  <form id=\"NodeCreateForm\">\n  </form>\n</div>\n<div id=\"LinkCreateContainer\">\n  Create Link: \n  <form id=\"LinkCreateForm\">\n    <span id=\"LinkCreateSelectSource\"></span>\n    <span id=\"LinkCreateSourceValue\"></span><br />\n    <span id=\"LinkCreateSelectTarget\"></span>\n    <span id=\"LinkCreateTargetValue\"></span><br />\n    <input style=\"width:80px\" id=\"LinkCreateType\" value=\"type\" />\n  </form>\n</div>");
+        $container = $("<div id=\"NodeCreateContainer\">\n  Create Node: \n  <form id=\"NodeCreateForm\">\n  </form>\n</div>\n<div id=\"LinkCreateContainer\">\n  Create Link: \n  <form id=\"LinkCreateForm\">\n    <span id=\"LinkCreateSelectSource\"></span>\n    <span id=\"LinkCreateSourceValue\"></span><br />\n    <span id=\"LinkCreateSelectTarget\"></span>\n    <span id=\"LinkCreateTargetValue\"></span><br />\n    <input style=\"width:80px\" id=\"LinkCreateType\" placeholder=\"Type\" />\n  </form>\n</div>");
         $container.appendTo(this.$el);
         nodeInputNumber = 0;
         linkInputNumber = 0;
@@ -96,7 +95,7 @@
           if (createPlugin.collapsed) {
             createPlugin.close();
           }
-          if (nodeInputNumber === 0) {
+          if ($('.NodeCreateDiv').length === 0) {
             _this.addField(nodeInputNumber, "NodeCreate", "Name", "");
             return nodeInputNumber = nodeInputNumber + 1;
           }
@@ -104,15 +103,15 @@
         return this;
       };
 
-      Create.prototype.addField = function(inputIndex, name) {
-        var $row;
-        $row = $("<div id=\"" + name + "Div" + inputIndex + "\" class=\"" + name + "Div\">\n<input style=\"width:80px\" name=\"property" + name + inputIndex + "\" value=\"propertyEx\" class=\"property" + name + "\">\n<input style=\"width:80px\" name=\"value" + name + inputIndex + "\" value=\"valueEx\" class=\"value" + name + "\">\n<input type=\"button\" id=\"remove" + name + inputIndex + "\" value=\"x\" onclick=\"this.parentNode.parentNode.removeChild(this.parentNode);\">\n</div>");
-        return $("#" + name + "Form").append($row);
-      };
-
       Create.prototype.addField = function(inputIndex, name, defaultKey, defaultValue) {
         var $row;
-        $row = $("<div id=\"" + name + "Div" + inputIndex + "\" class=\"" + name + "Div\">\n<input style=\"width:80px\" name=\"property" + name + inputIndex + "\" value=\"" + defaultKey + "\" class=\"property" + name + "\">\n<input style=\"width:80px\" name=\"value" + name + inputIndex + "\" value=\"" + defaultValue + "\" class=\"value" + name + "\">\n<input type=\"button\" id=\"remove" + name + inputIndex + "\" value=\"x\" onclick=\"this.parentNode.parentNode.removeChild(this.parentNode);\">\n</div>");
+        if (!(defaultKey != null)) {
+          defaultKey = "propertyEx";
+        }
+        if (!(defaultValue != null)) {
+          defaultValue = "valueEx";
+        }
+        $row = $("<div id=\"" + name + "Div" + inputIndex + "\" class=\"" + name + "Div\">\n<input style=\"width:80px\" name=\"property" + name + inputIndex + "\" placeholder=\"" + defaultKey + "\" class=\"property" + name + "\">\n<input style=\"width:80px\" name=\"value" + name + inputIndex + "\" placeholder=\"" + defaultValue + "\" class=\"value" + name + "\">\n<input type=\"button\" id=\"remove" + name + inputIndex + "\" value=\"x\" onclick=\"this.parentNode.parentNode.removeChild(this.parentNode);\">\n</div>");
         return $("#" + name + "Form").append($row);
       };
 
