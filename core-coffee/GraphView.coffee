@@ -115,31 +115,12 @@ define [], () ->
       linkContainer = workspace.append("svg:g").classed("linkContainer", true)
       nodeContainer = workspace.append("svg:g").classed("nodeContainer", true)
 
+      # add a trigger for rightclicks of the @el
+      $(@el).bind "contextmenu", (e) -> return false #disable defaultcontextmenu
+      $(@el).mousedown (e) => 
+        if e.which is 3 then @trigger "view:rightclick"
+
       return this
-
-    addCentering: (workspace, zoom) ->
-      width = $(@el).width()
-      height = $(@el).height() 
-
-      translateParams=[0,0]
-           
-      @on "enter:node:shift:click", (node) ->
-        x = node.x
-        y = node.y
-        scale = zoom.scale()
-        translateParams = [(width/2 -x)/scale,(height/2-y)/scale]
-        #update translate values
-        zoom.translate([translateParams[0], translateParams[1]])
-        workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
-    
-
-    #fast-forward force graph rendering to prevent bouncing http://stackoverflow.com/questions/13463053/calm-down-initial-tick-of-a-force-layout  
-    forwardAlpha: (layout, alpha, max) ->
-      alpha = alpha || 0
-      max = max || 1000
-      i = 0
-      while layout.alpha() > alpha && i++ < max
-        layout.tick()
 
     update: ->
       #Center node on shift+click
@@ -221,6 +202,30 @@ define [], () ->
         #@forwardAlpha(@force,.005,2000)
         
       #, 5)
+
+    addCentering: (workspace, zoom) ->
+      width = $(@el).width()
+      height = $(@el).height() 
+
+      translateParams=[0,0]
+           
+      @on "enter:node:shift:click", (node) ->
+        x = node.x
+        y = node.y
+        scale = zoom.scale()
+        translateParams = [(width/2 -x)/scale,(height/2-y)/scale]
+        #update translate values
+        zoom.translate([translateParams[0], translateParams[1]])
+        workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
+    
+
+    #fast-forward force graph rendering to prevent bouncing http://stackoverflow.com/questions/13463053/calm-down-initial-tick-of-a-force-layout  
+    forwardAlpha: (layout, alpha, max) ->
+      alpha = alpha || 0
+      max = max || 1000
+      i = 0
+      while layout.alpha() > alpha && i++ < max
+        layout.tick()
 
     drawXHairs: (x,y,obj) ->
       obj.append("line")

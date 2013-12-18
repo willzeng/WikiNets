@@ -94,35 +94,15 @@
         this.workspace = workspace;
         linkContainer = workspace.append("svg:g").classed("linkContainer", true);
         nodeContainer = workspace.append("svg:g").classed("nodeContainer", true);
-        return this;
-      };
-
-      GraphView.prototype.addCentering = function(workspace, zoom) {
-        var height, translateParams, width;
-        width = $(this.el).width();
-        height = $(this.el).height();
-        translateParams = [0, 0];
-        return this.on("enter:node:shift:click", function(node) {
-          var scale, x, y;
-          x = node.x;
-          y = node.y;
-          scale = zoom.scale();
-          translateParams = [(width / 2 - x) / scale, (height / 2 - y) / scale];
-          zoom.translate([translateParams[0], translateParams[1]]);
-          return workspace.transition().ease("linear").attr("transform", "translate(" + translateParams + ") scale(" + scale + ")");
+        $(this.el).bind("contextmenu", function(e) {
+          return false;
         });
-      };
-
-      GraphView.prototype.forwardAlpha = function(layout, alpha, max) {
-        var i, _results;
-        alpha = alpha || 0;
-        max = max || 1000;
-        i = 0;
-        _results = [];
-        while (layout.alpha() > alpha && i++ < max) {
-          _results.push(layout.tick());
-        }
-        return _results;
+        $(this.el).mousedown(function(e) {
+          if (e.which === 3) {
+            return _this.trigger("view:rightclick");
+          }
+        });
+        return this;
       };
 
       GraphView.prototype.update = function() {
@@ -200,6 +180,34 @@
             return "translate(" + d.x + "," + d.y + ")";
           });
         });
+      };
+
+      GraphView.prototype.addCentering = function(workspace, zoom) {
+        var height, translateParams, width;
+        width = $(this.el).width();
+        height = $(this.el).height();
+        translateParams = [0, 0];
+        return this.on("enter:node:shift:click", function(node) {
+          var scale, x, y;
+          x = node.x;
+          y = node.y;
+          scale = zoom.scale();
+          translateParams = [(width / 2 - x) / scale, (height / 2 - y) / scale];
+          zoom.translate([translateParams[0], translateParams[1]]);
+          return workspace.transition().ease("linear").attr("transform", "translate(" + translateParams + ") scale(" + scale + ")");
+        });
+      };
+
+      GraphView.prototype.forwardAlpha = function(layout, alpha, max) {
+        var i, _results;
+        alpha = alpha || 0;
+        max = max || 1000;
+        i = 0;
+        _results = [];
+        while (layout.alpha() > alpha && i++ < max) {
+          _results.push(layout.tick());
+        }
+        return _results;
       };
 
       GraphView.prototype.drawXHairs = function(x, y, obj) {
