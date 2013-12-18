@@ -34,7 +34,7 @@ define [], () ->
               <span id="LinkCreateSourceValue"></span><br />
               <span id="LinkCreateSelectTarget"></span>
               <span id="LinkCreateTargetValue"></span><br />
-              <input style="width:80px" id="LinkCreateType" value="type" />
+              <input style="width:80px" id="LinkCreateType" placeholder="Type" />
             </form>
           </div>
         """
@@ -97,33 +97,20 @@ define [], () ->
         #uncollapse the Create menu if it is collapsed
         if createPlugin.collapsed then createPlugin.close() 
         #automatically add and fill a name field
-        if nodeInputNumber is 0
+        if $('.NodeCreateDiv').length is 0
           @addField(nodeInputNumber, "NodeCreate", "Name", "")
           #$('valueNodeCreate0').focus() #THIS DOESN'T QUITE WORK
           nodeInputNumber = nodeInputNumber+1
 
-
-
-
       return this
 
-
-    # should come up with a better naming scheme really...
-    addField: (inputIndex, name) =>
-      $row = $ """
-          <div id="#{name}Div#{inputIndex}" class="#{name}Div">
-          <input style="width:80px" name="property#{name}#{inputIndex}" value="propertyEx" class="property#{name}">
-          <input style="width:80px" name="value#{name}#{inputIndex}" value="valueEx" class="value#{name}">
-          <input type="button" id="remove#{name}#{inputIndex}" value="x" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">
-          </div>
-      """
-      $("##{name}Form").append $row
-
     addField: (inputIndex, name, defaultKey, defaultValue) =>
+      if !(defaultKey?) then defaultKey = "propertyEx"
+      if !(defaultValue?) then defaultValue = "valueEx"
       $row = $ """
           <div id="#{name}Div#{inputIndex}" class="#{name}Div">
-          <input style="width:80px" name="property#{name}#{inputIndex}" value="#{defaultKey}" class="property#{name}">
-          <input style="width:80px" name="value#{name}#{inputIndex}" value="#{defaultValue}" class="value#{name}">
+          <input style="width:80px" name="property#{name}#{inputIndex}" placeholder="#{defaultKey}" class="property#{name}">
+          <input style="width:80px" name="value#{name}#{inputIndex}" placeholder="#{defaultValue}" class="value#{name}">
           <input type="button" id="remove#{name}#{inputIndex}" value="x" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">
           </div>
       """
