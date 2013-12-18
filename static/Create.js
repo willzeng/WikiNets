@@ -37,7 +37,11 @@
         linkInputNumber = 0;
         $nodeMoreFields = $("<input id=\"moreNodeCreateFields\" type=\"button\" value=\"+\">").appendTo("#NodeCreateContainer");
         $nodeMoreFields.click(function() {
-          _this.addField(nodeInputNumber, "NodeCreate");
+          if ($('.NodeCreateDiv').length === 0) {
+            _this.addField(nodeInputNumber, "NodeCreate", "name", "");
+          } else {
+            _this.addField(nodeInputNumber, "NodeCreate");
+          }
           return nodeInputNumber = nodeInputNumber + 1;
         });
         $nodeCreate = $("<input id=\"NodeCreateButton\" type=\"button\" value=\"Create node\">").appendTo("#NodeCreateContainer");
@@ -96,7 +100,7 @@
             createPlugin.close();
           }
           if ($('.NodeCreateDiv').length === 0) {
-            _this.addField(nodeInputNumber, "NodeCreate", "Name", "");
+            _this.addField(nodeInputNumber, "NodeCreate", "name", "");
             return nodeInputNumber = nodeInputNumber + 1;
           }
         });

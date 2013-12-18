@@ -45,7 +45,10 @@ define [], () ->
 
       $nodeMoreFields = $("<input id=\"moreNodeCreateFields\" type=\"button\" value=\"+\">").appendTo("#NodeCreateContainer")
       $nodeMoreFields.click(() => 
-        @addField(nodeInputNumber, "NodeCreate")
+        if $('.NodeCreateDiv').length is 0
+          @addField(nodeInputNumber, "NodeCreate", "name", "")
+        else
+          @addField(nodeInputNumber, "NodeCreate")
         nodeInputNumber = nodeInputNumber+1
         )
 
@@ -98,7 +101,7 @@ define [], () ->
         if createPlugin.collapsed then createPlugin.close() 
         #automatically add and fill a name field
         if $('.NodeCreateDiv').length is 0
-          @addField(nodeInputNumber, "NodeCreate", "Name", "")
+          @addField(nodeInputNumber, "NodeCreate", "name", "")
           #$('valueNodeCreate0').focus() #THIS DOESN'T QUITE WORK
           nodeInputNumber = nodeInputNumber+1
 
