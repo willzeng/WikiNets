@@ -115,6 +115,11 @@ define [], () ->
       linkContainer = workspace.append("svg:g").classed("linkContainer", true)
       nodeContainer = workspace.append("svg:g").classed("nodeContainer", true)
 
+      # add a trigger for rightclicks of the @el
+      $(@el).bind "contextmenu", (e) -> return false #disable defaultcontextmenu
+      $(@el).mousedown (e) => 
+        if e.which is 3 then @trigger "view:rightclick"
+
       return this
 
     addCentering: (workspace, zoom) ->
