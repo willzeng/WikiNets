@@ -219,7 +219,7 @@ define [], () ->
     # checks whether property names will break the cypher queries or are any of
     # the reserved terms
     is_illegal: (property, type) ->
-      reserved_keys = ["_id", "name"]
+      reserved_keys = ["_id", "text"]
       if (property == '') then (
         alert type + " name must not be empty." 
         return true
