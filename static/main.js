@@ -53,7 +53,11 @@
           return node['_id'];
         },
         linkHash: function(link) {
-          return link.source['_id'] + link.target['_id'];
+          if (link['_id'] != null) {
+            return link['_id'];
+          } else {
+            return 0;
+          }
         }
       },
       GraphView: {},

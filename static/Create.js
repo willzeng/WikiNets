@@ -213,7 +213,7 @@
 
       Create.prototype.is_illegal = function(property, type) {
         var reserved_keys;
-        reserved_keys = ["_id", "name"];
+        reserved_keys = ["_id", "text"];
         if (property === '') {
           alert(type + " name must not be empty.");
           return true;

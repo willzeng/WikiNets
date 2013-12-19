@@ -58,7 +58,7 @@ require ["Celestrium"], (Celestrium) ->
     # stores the actual nodes and links of the graph
     GraphModel:
       nodeHash: (node) -> node['_id']
-      linkHash: (link) -> link.source['_id']+link.target['_id']
+      linkHash: (link) -> if link['_id']? then link['_id'] else 0
       # nodeAttributes: 
       #   'text': getValue = (node) -> node.text
       #   'name': getValue = (node) -> node.name
