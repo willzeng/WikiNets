@@ -81,6 +81,9 @@ require ["Celestrium"], (Celestrium) ->
 
     "local/SyntaxCreate": {}    
 
+    #NodeDetails: {}
+    "local/NodeEdit": {}
+
     "Sliders": {}
 
     "ForceSliders": {}
@@ -90,12 +93,11 @@ require ["Celestrium"], (Celestrium) ->
     "NodeSearch": 
       prefetch: "/get_node_names"
 
-    #NodeDetails: {}
-    "local/NodeEdit": {}
-
     MiniMap: {}  
 
     Stats: {}
+
+    "local/OverlayCreate": {}
 
   # initialize the plugins and execute a callback once done
   Celestrium.init plugins, (instances) ->

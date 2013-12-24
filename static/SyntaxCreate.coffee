@@ -26,6 +26,9 @@ define [], () ->
       instances["Layout"].addPlugin @el, @options.pluginOrder, 'Syntax Create'
 
     render: ->
+
+      $overlay = $("<div class=\"overlay\">")
+
       $container = $("<div class=\"syntax-create-container\">").appendTo @$el
 
       $createNodeButton = $("<input id=\"createNodeButton\" type=\"submit\" value=\"New Node\">").appendTo $container

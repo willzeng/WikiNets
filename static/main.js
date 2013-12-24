@@ -68,15 +68,16 @@
       "local/Neo4jDataController": {},
       "local/Create": {},
       "local/SyntaxCreate": {},
+      "local/NodeEdit": {},
       "Sliders": {},
       "ForceSliders": {},
       "LinkDistribution": {},
       "NodeSearch": {
         prefetch: "/get_node_names"
       },
-      "local/NodeEdit": {},
       MiniMap: {},
-      Stats: {}
+      Stats: {},
+      "local/OverlayCreate": {}
     };
     return Celestrium.init(plugins, function(instances) {
       var loadEverything, makeDisplayable;
