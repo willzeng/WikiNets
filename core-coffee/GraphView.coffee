@@ -119,6 +119,7 @@ define [], () ->
       $(@el).bind "contextmenu", (e) -> return false #disable defaultcontextmenu
       $(@el).mousedown (e) => 
         if e.which is 3 then @trigger "view:rightclick"
+        else @trigger "view:click"
 
       return this
 
