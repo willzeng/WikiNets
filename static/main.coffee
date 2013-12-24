@@ -99,6 +99,8 @@ require ["Celestrium"], (Celestrium) ->
 
     "local/OverlayCreate": {}
 
+    "local/TopBarCreate": {}
+
   # initialize the plugins and execute a callback once done
   Celestrium.init plugins, (instances) ->
 
