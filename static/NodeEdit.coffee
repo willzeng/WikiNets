@@ -10,8 +10,8 @@ define [], () ->
       @selection = instances["NodeSelection"]
       @selection.on "change", @update.bind(this)
       @listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
-      instances["Layout"].addPlugin @el, @options.pluginOrder, 'Node Edit'
-      @$el.toggle()
+      instances["Layout"].addPlugin @el, @options.pluginOrder, 'Node Edit', true
+      #@$el.toggle()
 
       #require plugins
       @Create = instances['local/Create']

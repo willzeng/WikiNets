@@ -77,12 +77,13 @@ require ["Celestrium"], (Celestrium) ->
 
     "local/Neo4jDataController": {}
 
+    "local/NodeEdit": {}
+
     "local/Create": {}
 
-    "local/SyntaxCreate": {}    
+    #"local/SyntaxCreate": {}    
 
     #NodeDetails: {}
-    "local/NodeEdit": {}
 
     "Sliders": {}
 
