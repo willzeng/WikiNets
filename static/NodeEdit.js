@@ -71,7 +71,6 @@
         });
         $nodeDelete = $("<input name=\"NodeDeleteButton\" type=\"button\" value=\"Delete\">").appendTo(nodeDiv);
         $nodeDelete.click(function() {
-          console.log("Deletion requested");
           return _this.dataController.nodeDelete(node, console.log("Node Deleted"));
         });
         $nodeCancel = $("<input name=\"NodeCancelButton\" type=\"button\" value=\"Cancel\">").appendTo(nodeDiv);

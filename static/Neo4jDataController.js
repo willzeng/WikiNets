@@ -21,7 +21,6 @@
       };
 
       Neo4jDataController.prototype.nodeDelete = function(node, callback) {
-        console.log("call to delete node on server");
         return $.post("/delete_node", this.filterNode(node), callback);
       };
 
