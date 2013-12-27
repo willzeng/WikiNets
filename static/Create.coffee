@@ -45,7 +45,10 @@ define [], () ->
 
       $nodeMoreFields = $("<input id=\"moreNodeCreateFields\" type=\"button\" value=\"+\">").appendTo("#NodeCreateContainer")
       $nodeMoreFields.click(() => 
-        @addField(nodeInputNumber, "NodeCreate")
+        if $('.NodeCreateDiv').length is 0
+          @addField(nodeInputNumber, "NodeCreate", "name", "")
+        else
+          @addField(nodeInputNumber, "NodeCreate")
         nodeInputNumber = nodeInputNumber+1
         )
 
@@ -98,7 +101,7 @@ define [], () ->
         if createPlugin.collapsed then createPlugin.close() 
         #automatically add and fill a name field
         if $('.NodeCreateDiv').length is 0
-          @addField(nodeInputNumber, "NodeCreate", "Name", "")
+          @addField(nodeInputNumber, "NodeCreate", "name", "")
           #$('valueNodeCreate0').focus() #THIS DOESN'T QUITE WORK
           nodeInputNumber = nodeInputNumber+1
 
@@ -170,7 +173,8 @@ define [], () ->
         $("#LinkCreateTargetValue").replaceWith("<span id=\"LinkCreateTargetValue\"></span>")
         @source = undefined
         @target = undefined
-        $("#LinkCreateType").val("Type")
+        $("#LinkCreateType").val("")
+        $("#LinkCreateType").attr("placeholder", "Type")
         linkObject["properties"] = linkProperties[1]
         console.log linkObject
         @dataController.linkAdd(linkObject, (linkres)=> 
@@ -215,7 +219,7 @@ define [], () ->
     # checks whether property names will break the cypher queries or are any of
     # the reserved terms
     is_illegal: (property, type) ->
-      reserved_keys = ["_id", "name"]
+      reserved_keys = ["_id", "text"]
       if (property == '') then (
         alert type + " name must not be empty." 
         return true

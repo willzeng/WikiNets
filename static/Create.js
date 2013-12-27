@@ -37,7 +37,11 @@
         linkInputNumber = 0;
         $nodeMoreFields = $("<input id=\"moreNodeCreateFields\" type=\"button\" value=\"+\">").appendTo("#NodeCreateContainer");
         $nodeMoreFields.click(function() {
-          _this.addField(nodeInputNumber, "NodeCreate");
+          if ($('.NodeCreateDiv').length === 0) {
+            _this.addField(nodeInputNumber, "NodeCreate", "name", "");
+          } else {
+            _this.addField(nodeInputNumber, "NodeCreate");
+          }
           return nodeInputNumber = nodeInputNumber + 1;
         });
         $nodeCreate = $("<input id=\"NodeCreateButton\" type=\"button\" value=\"Create node\">").appendTo("#NodeCreateContainer");
@@ -96,7 +100,7 @@
             createPlugin.close();
           }
           if ($('.NodeCreateDiv').length === 0) {
-            _this.addField(nodeInputNumber, "NodeCreate", "Name", "");
+            _this.addField(nodeInputNumber, "NodeCreate", "name", "");
             return nodeInputNumber = nodeInputNumber + 1;
           }
         });
@@ -158,7 +162,8 @@
           $("#LinkCreateTargetValue").replaceWith("<span id=\"LinkCreateTargetValue\"></span>");
           this.source = void 0;
           this.target = void 0;
-          $("#LinkCreateType").val("Type");
+          $("#LinkCreateType").val("");
+          $("#LinkCreateType").attr("placeholder", "Type");
           linkObject["properties"] = linkProperties[1];
           console.log(linkObject);
           return this.dataController.linkAdd(linkObject, function(linkres) {
@@ -208,7 +213,7 @@
 
       Create.prototype.is_illegal = function(property, type) {
         var reserved_keys;
-        reserved_keys = ["_id", "name"];
+        reserved_keys = ["_id", "text"];
         if (property === '') {
           alert(type + " name must not be empty.");
           return true;

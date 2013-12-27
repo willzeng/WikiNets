@@ -58,7 +58,7 @@ require ["Celestrium"], (Celestrium) ->
     # stores the actual nodes and links of the graph
     GraphModel:
       nodeHash: (node) -> node['_id']
-      linkHash: (link) -> link.source['_id']+link.target['_id']
+      linkHash: (link) -> if link['_id']? then link['_id'] else 0
       # nodeAttributes: 
       #   'text': getValue = (node) -> node.text
       #   'name': getValue = (node) -> node.name
@@ -81,6 +81,9 @@ require ["Celestrium"], (Celestrium) ->
 
     "local/SyntaxCreate": {}    
 
+    #NodeDetails: {}
+    "local/NodeEdit": {}
+
     "Sliders": {}
 
     "ForceSliders": {}
@@ -90,12 +93,13 @@ require ["Celestrium"], (Celestrium) ->
     "NodeSearch": 
       prefetch: "/get_node_names"
 
-    #NodeDetails: {}
-    "local/NodeEdit": {}
-
     MiniMap: {}  
 
     Stats: {}
+
+    "local/OverlayCreate": {}
+
+    "local/TopBarCreate": {}
 
   # initialize the plugins and execute a callback once done
   Celestrium.init plugins, (instances) ->

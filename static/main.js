@@ -53,7 +53,11 @@
           return node['_id'];
         },
         linkHash: function(link) {
-          return link.source['_id'] + link.target['_id'];
+          if (link['_id'] != null) {
+            return link['_id'];
+          } else {
+            return 0;
+          }
         }
       },
       GraphView: {},
@@ -64,15 +68,17 @@
       "local/Neo4jDataController": {},
       "local/Create": {},
       "local/SyntaxCreate": {},
+      "local/NodeEdit": {},
       "Sliders": {},
       "ForceSliders": {},
       "LinkDistribution": {},
       "NodeSearch": {
         prefetch: "/get_node_names"
       },
-      "local/NodeEdit": {},
       MiniMap: {},
-      Stats: {}
+      Stats: {},
+      "local/OverlayCreate": {},
+      "local/TopBarCreate": {}
     };
     return Celestrium.init(plugins, function(instances) {
       var loadEverything, makeDisplayable;

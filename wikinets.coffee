@@ -437,7 +437,7 @@ module.exports = class MyApp
 
     # adds a default strength value to a relationship 
     # TODO: (should only do this if there isnt one already)
-    addStrength = (dict,start,end, id) -> 
+    addStrength = (dict,start,end,id) -> 
       dict['strength'] = 1
       dict['start'] = start
       dict['end'] = end
@@ -468,7 +468,6 @@ module.exports = class MyApp
           relList = ((if (getLink(n)[0]?) then getLink(n)[0] else {strength:0}) for n in nodeIndexes)
           response.json relList
 
-          
         (relres) ->
           console.log "Node not found"
           response.send "error"

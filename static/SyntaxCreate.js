@@ -29,8 +29,9 @@
       };
 
       SyntaxCreate.prototype.render = function() {
-        var $container, $createLinkButton, $createNodeButton, $createSourceNodeButton, $linkInput, $linkingInstructions, $sourceInput,
+        var $container, $createLinkButton, $createNodeButton, $createSourceNodeButton, $linkInput, $linkingInstructions, $overlay, $sourceInput,
           _this = this;
+        $overlay = $("<div class=\"overlay\">");
         $container = $("<div class=\"syntax-create-container\">").appendTo(this.$el);
         $createNodeButton = $("<input id=\"createNodeButton\" type=\"submit\" value=\"New Node\">").appendTo($container);
         $createLinkButton = $("<input id=\"createArrowButton\" type=\"submit\" value=\"New Link\"><br>").appendTo($container);
