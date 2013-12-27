@@ -38,9 +38,6 @@ define [], () ->
       @frame = d3.select(@el).append("svg:svg").attr("width", @miniMapWidth)
                 .attr("height", @miniMapHeight);
 
-      #selectedNodes = @selection.getSelectedNodes()
-      #mostRecentNode = selectedNodes[selectedNodes.length - 1] #Currently this only works well when a single node is selected
-
       if @mostRecentNode isnt undefined
 
         centerID = @model.get("nodeHash")(@mostRecentNode)
