@@ -14,6 +14,7 @@ define ["DataController"], (DataController) ->
       $.post "/delete_node", @filterNode(node), callback
 
     #should edit oldNode into newNode
+    # Send this to the server to edit: {nodeid: selected_node, properties: nodeObject[1], remove: deleted_props}
     nodeEdit: (oldNode, newNode) ->
       $.post "/edit_node", @filterNode(node), callback
 
