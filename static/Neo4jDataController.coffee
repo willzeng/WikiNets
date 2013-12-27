@@ -11,7 +11,6 @@ define ["DataController"], (DataController) ->
 
     #should delete a node from the database
     nodeDelete: (node, callback) ->
-      console.log "call to delete node on server"
       $.post "/delete_node", @filterNode(node), callback
 
     #should edit oldNode into newNode

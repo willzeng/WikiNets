@@ -57,7 +57,6 @@ define [], () ->
 
           $nodeDelete = $("<input name=\"NodeDeleteButton\" type=\"button\" value=\"Delete\">").appendTo(nodeDiv)
           $nodeDelete.click () => 
-            console.log "Deletion requested"
             @dataController.nodeDelete(node, console.log "Node Deleted")
 
           $nodeCancel =  $("<input name=\"NodeCancelButton\" type=\"button\" value=\"Cancel\">").appendTo(nodeDiv)
