@@ -9,7 +9,8 @@ define [], () ->
     initialize: (args) ->
       @plugin = args.plugin
       @pluginName = args.name
-      @collapsed = true
+      @init_state = args.init_state
+      if args.init_state? then @collapsed = args.init_state else @collapsed = true
       @render()
 
     events:
@@ -83,19 +84,21 @@ define [], () ->
         pluginWrappersList = @pluginWrappers[key]
         _.each pluginWrappersList, (pluginWrapper) =>
           @pluginContainer.append pluginWrapper.el
-          pluginWrapper.collapse pluginWrapper.$el.find('.plugin-content')
+          if !pluginWrapper.init_state
+            pluginWrapper.collapse pluginWrapper.$el.find('.plugin-content')
 
 
     addCenter: (el) ->
       @$el.append el
 
 
-    addPlugin: (plugin, pluginOrder, name="Plugin") ->
+    addPlugin: (plugin, pluginOrder, name="Plugin", defaultView) ->
       pluginOrder ?= Number.MAX_VALUE
       pluginWrapper = new PluginWrapper(
         plugin: plugin
         name: name
         order: pluginOrder
+        init_state: defaultView
         )
       if _.has @pluginWrappers, pluginOrder
         @pluginWrappers[pluginOrder].push pluginWrapper
