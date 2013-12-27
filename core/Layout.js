@@ -18,7 +18,12 @@
       PluginWrapper.prototype.initialize = function(args) {
         this.plugin = args.plugin;
         this.pluginName = args.name;
-        this.collapsed = true;
+        this.init_state = args.init_state;
+        if (args.init_state != null) {
+          this.collapsed = args.init_state;
+        } else {
+          this.collapsed = true;
+        }
         return this.render();
       };
 
@@ -85,7 +90,9 @@
           pluginWrappersList = _this.pluginWrappers[key];
           return _.each(pluginWrappersList, function(pluginWrapper) {
             _this.pluginContainer.append(pluginWrapper.el);
-            return pluginWrapper.collapse(pluginWrapper.$el.find('.plugin-content'));
+            if (!pluginWrapper.init_state) {
+              return pluginWrapper.collapse(pluginWrapper.$el.find('.plugin-content'));
+            }
           });
         });
       };
@@ -94,7 +101,7 @@
         return this.$el.append(el);
       };
 
-      Layout.prototype.addPlugin = function(plugin, pluginOrder, name) {
+      Layout.prototype.addPlugin = function(plugin, pluginOrder, name, defaultView) {
         var pluginWrapper;
         if (name == null) {
           name = "Plugin";
@@ -105,7 +112,8 @@
         pluginWrapper = new PluginWrapper({
           plugin: plugin,
           name: name,
-          order: pluginOrder
+          order: pluginOrder,
+          init_state: defaultView
         });
         if (_.has(this.pluginWrappers, pluginOrder)) {
           this.pluginWrappers[pluginOrder].push(pluginWrapper);

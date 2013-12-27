@@ -100,6 +100,8 @@
         $(this.el).mousedown(function(e) {
           if (e.which === 3) {
             return _this.trigger("view:rightclick");
+          } else {
+            return _this.trigger("view:click");
           }
         });
         return this;
