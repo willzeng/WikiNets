@@ -15,6 +15,7 @@
 
       NodeEdit.prototype.init = function(instances) {
         var _this = this;
+        this.dataController = instances['local/Neo4jDataController'];
         this.selection = instances["NodeSelection"];
         this.selection.on("change", this.update.bind(this));
         this.listenTo(instances["KeyListener"], "down:80", function() {
@@ -70,7 +71,8 @@
         });
         $nodeDelete = $("<input name=\"NodeDeleteButton\" type=\"button\" value=\"Delete\">").appendTo(nodeDiv);
         $nodeDelete.click(function() {
-          return console.log("Deletion requested");
+          console.log("Deletion requested");
+          return _this.dataController.nodeDelete(node, console.log("Node Deleted"));
         });
         $nodeCancel = $("<input name=\"NodeCancelButton\" type=\"button\" value=\"Cancel\">").appendTo(nodeDiv);
         return $nodeCancel.click(function() {

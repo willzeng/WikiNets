@@ -7,6 +7,9 @@ define [], () ->
       super()
 
     init: (instances) ->
+
+      @dataController = instances['local/Neo4jDataController']
+
       @selection = instances["NodeSelection"]
       @selection.on "change", @update.bind(this)
       @listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
@@ -53,7 +56,9 @@ define [], () ->
           $nodeCreate.click(() -> console.log "Save Node requested")
 
           $nodeDelete = $("<input name=\"NodeDeleteButton\" type=\"button\" value=\"Delete\">").appendTo(nodeDiv)
-          $nodeDelete.click(() -> console.log "Deletion requested")
+          $nodeDelete.click () => 
+            console.log "Deletion requested"
+            @dataController.nodeDelete(node, console.log "Node Deleted")
 
           $nodeCancel =  $("<input name=\"NodeCancelButton\" type=\"button\" value=\"Cancel\">").appendTo(nodeDiv)
           $nodeCancel.click(() =>

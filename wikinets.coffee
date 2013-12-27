@@ -238,7 +238,7 @@ module.exports = class MyApp
     ###
     app.post('/delete_node', (request,response)->
       console.log "Node Deletion Requested"
-      cypherQuery = "start n=node(" + request.body.nodeid + ") delete n;"
+      cypherQuery = "start n=node(" + request.body['_id'] + ") delete n;"
       console.log "Executing " + cypherQuery
       graphDb.cypher.execute(cypherQuery).then(
         (noderes) ->
