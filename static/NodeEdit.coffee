@@ -10,6 +10,8 @@ define [], () ->
 
       @dataController = instances['local/Neo4jDataController']
 
+      @graphModel = instances['GraphModel']
+
       @selection = instances["NodeSelection"]
       @selection.on "change", @update.bind(this)
       @listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
@@ -59,7 +61,7 @@ define [], () ->
 
           $nodeDelete = $("<input name=\"NodeDeleteButton\" type=\"button\" value=\"Delete\">").appendTo(nodeDiv)
           $nodeDelete.click () => 
-            @dataController.nodeDelete(node, console.log "Node Deleted")
+            @deleteNode(node)
 
           $nodeCancel =  $("<input name=\"NodeCancelButton\" type=\"button\" value=\"Cancel\">").appendTo(nodeDiv)
           $nodeCancel.click(() =>
@@ -71,3 +73,12 @@ define [], () ->
               @editNode(node, nodeDiv, blacklist)
               )
             )
+
+    deleteNode: (delNode) ->
+      @dataController.nodeDelete delNode, (response) ->
+        if response == "error"
+          alert("Could not delete node. Make sure there are no links remaining on the node.")
+        else
+          console.log "Node Deleted"
+          @graphModel.filterNodes (node) ->
+            !(delNode['_id'] == node['_id'])

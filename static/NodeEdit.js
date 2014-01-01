@@ -16,6 +16,7 @@
       NodeEdit.prototype.init = function(instances) {
         var _this = this;
         this.dataController = instances['local/Neo4jDataController'];
+        this.graphModel = instances['GraphModel'];
         this.selection = instances["NodeSelection"];
         this.selection.on("change", this.update.bind(this));
         this.listenTo(instances["KeyListener"], "down:80", function() {
@@ -71,7 +72,7 @@
         });
         $nodeDelete = $("<input name=\"NodeDeleteButton\" type=\"button\" value=\"Delete\">").appendTo(nodeDiv);
         $nodeDelete.click(function() {
-          return _this.dataController.nodeDelete(node, console.log("Node Deleted"));
+          return _this.deleteNode(node);
         });
         $nodeCancel = $("<input name=\"NodeCancelButton\" type=\"button\" value=\"Cancel\">").appendTo(nodeDiv);
         return $nodeCancel.click(function() {
@@ -86,6 +87,19 @@
           return $nodeEdit.click(function() {
             return _this.editNode(node, nodeDiv, blacklist);
           });
+        });
+      };
+
+      NodeEdit.prototype.deleteNode = function(delNode) {
+        return this.dataController.nodeDelete(delNode, function(response) {
+          if (response === "error") {
+            return alert("Could not delete node. Make sure there are no links remaining on the node.");
+          } else {
+            console.log("Node Deleted");
+            return this.graphModel.filterNodes(function(node) {
+              return !(delNode['_id'] === node['_id']);
+            });
+          }
         });
       };
 
