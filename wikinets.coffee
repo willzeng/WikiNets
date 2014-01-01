@@ -252,6 +252,28 @@ module.exports = class MyApp
 
 
     ###
+    Deletes a node AND ALL LINKS TO IT
+    ###
+    app.post('/delete_node_full', (request,response)->
+      console.log "Node Deletion Requested"
+      cypherQuery = "start n=node("+ request.body['_id'] + ") match (n)-[r]-(m) delete r"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes) -> 
+          console.log "Links Deleted"
+          cypherQuery = "start n=node(" + request.body['_id'] + ") delete n;"
+          console.log "Executing " + cypherQuery
+          graphDb.cypher.execute(cypherQuery).then(
+            (noderes) ->
+              console.log "Links and Node Deleted"
+              response.send "success"
+          )
+        ) 
+    )
+
+
+
+    ###
     Collects data from an arrow so it can be edited  
     ###
     app.post('/get_arrow', (request,response)->

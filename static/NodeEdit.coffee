@@ -74,10 +74,15 @@ define [], () ->
               )
             )
 
-    deleteNode: (delNode) ->
-      @dataController.nodeDelete delNode, (response) ->
+    deleteNode: (delNode)=>
+      @dataController.nodeDelete delNode, (response) =>
         if response == "error"
-          alert("Could not delete node. Make sure there are no links remaining on the node.")
+          if confirm("Could not delete node. There might be links remaining on this node. Do you want to delete the node (and all links to it) anyway?")
+            console.log "Call to delete node and all links to it."
+            @dataController.nodeDeleteFull delNode, (responseFull) => 
+              console.log "Node Deleted"
+              @graphModel.filterNodes (node) ->
+                !(delNode['_id'] == node['_id'])
         else
           console.log "Node Deleted"
           @graphModel.filterNodes (node) ->

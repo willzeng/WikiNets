@@ -24,6 +24,10 @@
         return $.post("/delete_node", this.filterNode(node), callback);
       };
 
+      Neo4jDataController.prototype.nodeDeleteFull = function(node, callback) {
+        return $.post("/delete_node_full", this.filterNode(node), callback);
+      };
+
       Neo4jDataController.prototype.nodeEdit = function(oldNode, newNode) {
         return $.post("/edit_node", this.filterNode(node), callback);
       };

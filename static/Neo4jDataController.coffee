@@ -13,6 +13,10 @@ define ["DataController"], (DataController) ->
     nodeDelete: (node, callback) ->
       $.post "/delete_node", @filterNode(node), callback
 
+    #should delete a node from the database even when there are remaining links
+    nodeDeleteFull: (node, callback) ->
+      $.post "/delete_node_full", @filterNode(node), callback
+
     #should edit oldNode into newNode
     # Send this to the server to edit: {nodeid: selected_node, properties: nodeObject[1], remove: deleted_props}
     nodeEdit: (oldNode, newNode) ->
