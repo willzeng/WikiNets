@@ -97,7 +97,6 @@
         return this.dataController.nodeDelete(delNode, function(response) {
           if (response === "error") {
             if (confirm("Could not delete node. There might be links remaining on this node. Do you want to delete the node (and all links to it) anyway?")) {
-              console.log("Call to delete node and all links to it.");
               return _this.dataController.nodeDeleteFull(delNode, function(responseFull) {
                 console.log("Node Deleted");
                 return _this.graphModel.filterNodes(function(node) {
