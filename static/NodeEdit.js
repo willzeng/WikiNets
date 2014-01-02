@@ -39,7 +39,7 @@
           _.each(node, function(value, property) {
             var makeLinks;
             if (blacklist.indexOf(property) < 0) {
-              makeLinks = value.replace(/<((https?|ftp|dict):[^'">\s]+)>/gi, "<a href=\"$1\">$1</a>");
+              makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi, "<a href=\"$1\">$1</a>");
               return $("<div class=\"node-profile-property\">" + property + ":  " + makeLinks + "</div>").appendTo($nodeDiv);
             }
           });

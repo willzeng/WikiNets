@@ -26,7 +26,7 @@ define [], () ->
         $("<div class=\"node-profile-title\">#{node['text']}</div>").appendTo $nodeDiv
         _.each node, (value, property) ->
           if blacklist.indexOf(property) < 0
-            makeLinks = value.replace(/<((https?|ftp|dict):[^'">\s]+)>/gi,"<a href=\"$1\">$1</a>")
+            makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi,"<a href=\"$1\">$1</a>")
             $("<div class=\"node-profile-property\">#{property}:  #{makeLinks}</div>").appendTo $nodeDiv  
         $nodeEdit = $("<input id=\"NodeEditButton#{node['_id']}\" class=\"NodeEditButton\" type=\"button\" value=\"Edit this node\">").appendTo $nodeDiv
         $nodeEdit.click(() =>
