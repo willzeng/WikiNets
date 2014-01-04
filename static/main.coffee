@@ -69,8 +69,7 @@ require ["Celestrium"], (Celestrium) ->
     GraphView: {}
       
     # allows nodes to be selected
-    NodeSelection:
-      onClick: doWikiNetsSelection
+    NodeSelection: {}
 
     # provides functions to get nodes and links
     "local/WikiNetsDataProvider": {}
