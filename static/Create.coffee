@@ -193,7 +193,7 @@ define [], () ->
     # returns: submitOK: a boolean indicating whether the property names were all
     #                    legal
     #          propertyObject: a dictionary of property-value pairs
-    assign_properties: (form_name, is_illegal = @is_illegal) => 
+    assign_properties: (form_name, is_illegal = @dataController.is_illegal) => 
         submitOK = true
         propertyObject = {}
         $("." + form_name + "Div").each (i, obj) ->
@@ -214,20 +214,3 @@ define [], () ->
             else
               propertyObject[property] = value.replace(/'/g, "\\'")
         [submitOK, propertyObject];
-
-
-    # checks whether property names will break the cypher queries or are any of
-    # the reserved terms
-    is_illegal: (property, type) ->
-      reserved_keys = ["_id", "text"]
-      if (property == '') then (
-        alert type + " name must not be empty." 
-        return true
-      ) else if (/^.*[^a-zA-Z0-9_].*$/.test(property)) then (
-        alert(type + " name '" + property + "' illegal: " + type + " names must only contain alphanumeric characters and underscore.")
-        return true
-      ) else if (reserved_keys.indexOf(property) != -1) then (
-        alert(type + " name illegal: '" + property + "' is a reserved term.")
-        return true
-      ) else false
-

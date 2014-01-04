@@ -225,7 +225,10 @@ module.exports = class MyApp
           nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
           nodeID = noderes.data[0][0]["self"].slice(nodeIDstart)
           console.log "Node Edit Done, ID = " + nodeID
-          response.json noderes.data[0][0]["data"]
+          savedNode = noderes.data[0][0]["data"]
+          savedNode['_id'] = nodeID
+          console.log "savedNode: ", savedNode
+          response.json savedNode
         (noderes) ->
           console.log "Node Edit Failed"
           response.send "error"

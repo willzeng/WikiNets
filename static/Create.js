@@ -191,7 +191,7 @@
       Create.prototype.assign_properties = function(form_name, is_illegal) {
         var propertyObject, submitOK;
         if (is_illegal == null) {
-          is_illegal = this.is_illegal;
+          is_illegal = this.dataController.is_illegal;
         }
         submitOK = true;
         propertyObject = {};
@@ -209,23 +209,6 @@
           }
         });
         return [submitOK, propertyObject];
-      };
-
-      Create.prototype.is_illegal = function(property, type) {
-        var reserved_keys;
-        reserved_keys = ["_id", "text"];
-        if (property === '') {
-          alert(type + " name must not be empty.");
-          return true;
-        } else if (/^.*[^a-zA-Z0-9_].*$/.test(property)) {
-          alert(type + " name '" + property + "' illegal: " + type + " names must only contain alphanumeric characters and underscore.");
-          return true;
-        } else if (reserved_keys.indexOf(property) !== -1) {
-          alert(type + " name illegal: '" + property + "' is a reserved term.");
-          return true;
-        } else {
-          return false;
-        }
       };
 
       return Create;
