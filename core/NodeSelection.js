@@ -25,10 +25,7 @@
         this.listenTo(this.keyListener, "down:46", this.removeSelection);
         this.listenTo(this.keyListener, "down:13", this.removeSelectionCompliment);
         this.graphView.on("enter:node:click", function(datum) {
-          _this.toggleSelection(datum);
-          if (_this.options.onClick != null) {
-            return _this.options.onClick(datum['text']);
-          }
+          return _this.toggleSelection(datum);
         });
         return this.graphView.on("enter:node:dblclick", function(datum) {
           return _this.selectConnectedComponent(datum);
