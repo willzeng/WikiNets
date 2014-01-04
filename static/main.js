@@ -70,7 +70,7 @@
       "ForceSliders": {},
       "LinkDistribution": {},
       "NodeSearch": {
-        prefetch: "/get_node_names"
+        prefetch: "/node_names"
       },
       MiniMap: {},
       Stats: {},
