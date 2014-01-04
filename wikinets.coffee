@@ -15,104 +15,13 @@ module.exports = class MyApp
       app.use app.router
       app.use express.static(__dirname+'/static')
 
-
-    trim = (string)->
-      string.match(/[0-9]*$/)
-
-    # adds an id to a node
-    addID = (dict, id) -> 
-      dict['_id'] = id
-      dict
-
-    ### makes queries of database to build a JSON formatted for D3JS viz of the entire Neo4j database
-      that is stored in the displaydata variable.  Method then runs argument onSuccess(displaydata)
-    ###
-    getvizjson = (onSuccess, request, response)->
-      console.log "making getvizjson"
-      graphDb.cypher.execute("start n=node(*) return n;").then(
-        (noderes)->
-          console.log "Query Executed"
-
-          ### Display an example of what is returned by the database for each node. E.g.
-
-          { outgoing_relationships: 'http://localhost:7474/db/data/node/312/relationships/out',
-            labels: 'http://localhost:7474/db/data/node/312/labels',
-            data: { propertyExample: 'valueExample' },
-            all_typed_relationships: 'http://localhost:7474/db/data/node/312/relationships/all/{-list|&|types}',
-            traverse: 'http://localhost:7474/db/data/node/312/traverse/{returnType}',
-            self: 'http://localhost:7474/db/data/node/312',
-            property: 'http://localhost:7474/db/data/node/312/properties/{key}',
-            outgoing_typed_relationships: 'http://localhost:7474/db/data/node/312/relationships/out/{-list|&|types}',
-            properties: 'http://localhost:7474/db/data/node/312/properties',
-            incoming_relationships: 'http://localhost:7474/db/data/node/312/relationships/in',
-            extensions: {},
-            create_relationship: 'http://localhost:7474/db/data/node/312/relationships',
-            paged_traverse: 'http://localhost:7474/db/data/node/312/paged/traverse/{returnType}{?pageSize,leaseTime}'
-            all_relationships: 'http://localhost:7474/db/data/node/312/relationships/all',
-            incoming_typed_relationships: 'http://localhost:7474/db/data/node/312/relationships/in/{-list|&|types}' }  
-
-          ###
-          console.log noderes.data[0]
-           
-          ### Extract the ID's off all the nodes.  These are then reindexed for the d3js viz format.
-          E.g.
-            self: 'http://localhost:7474/db/data/node/312'
-          ###
-          nodeids=(trim(num[0]["self"]) for num in noderes.data)
-
-          ### Generate reindexing array ###
-          `var nodeconvert = {};
-          for (i = 0; i < nodeids.length; i++) {
-            nodeconvert[nodeids[i]+'']=i;            
-          }`
-
-          ### Get all the data for all the nodes, i.e. all the properties and values, e.g
-            data: { propertyExample: 'valueExample' }
-          ###
-          nodedata=(ntmp[0]["data"] for ntmp in noderes.data)
-          `for (i=0; i < nodeids.length; i++) {
-             nodedata[i]["_id"] = nodeids[i]+'';
-          }`
-          graphDb.cypher.execute("start n=rel(*) return n;").then(
-            (arrres)->
-              console.log "Query Executed"
-
-              ### Display an example of what is returned by the database for each arrow. E.g.
-
-              { start: 'http://localhost:7474/db/data/node/314',
-                data: {},
-                self: 'http://localhost:7474/db/data/relationshi
-                property: 'http://localhost:7474/db/data/relatio
-                properties: 'http://localhost:7474/db/data/relat
-                type: 'RELATED_TO',
-                extensions: {},
-                end: 'http://localhost:7474/db/data/node/316' }
-
-              ###
-              console.log arrres.data[0]
-              arrdata=({source:nodeconvert[trim(ntmp[0]["start"])],target:nodeconvert[trim(ntmp[0]["end"])]} for ntmp in arrres.data)
-              displaydata = [nodes:nodedata,links:arrdata][0]
-              
-              ###  Code to write the full database data to a file.  Currently inactive. ###
-              ###
-              `fs = require('fs');
-              fs.writeFile('.\\static\\test.json', JSON.stringify(displaydata), function (err) {
-                if (err) throw err;
-                console.log('.json SAVED!');
-              });`
-              ###
-
-              ### Render the index.jade and pass it the displaydata, which is a
-              JSON formatted for D3JS viz of the entire Neo4j database ###
-              onSuccess(displaydata)
-          )
-      )
-
     app.get('/', (request,response)->
-      inputer = (builder)->response.render('index.jade', displaydata:builder)
-      getvizjson inputer, request, response
+      response.render('index.jade')
     )
 
+    app.get('/test', (request,response)->
+      response.render('test.jade')
+    )
 
     ###  Responds with a JSON formatted for D3JS viz of the entire Neo4j database ###
     app.get('/json',(request,response)->
@@ -130,22 +39,6 @@ module.exports = class MyApp
           console.log "get_nodes Lookup Executed"
           nodeList = (addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
           response.json nodeList
-      )
-    )
-
-    ###  Post function to test lookup by Node id that will return the value of the property 
-      "Info", which will eventually go in the Infobox.  
-    ###
-    app.post('/search_id', (request,response)->
-      console.log "Search Query Requested"
-      searchid = request.body.nodeid
-      cypherQuery = "start n=node("+searchid+") return n;"
-      console.log "Executing " + cypherQuery
-      graphDb.cypher.execute(cypherQuery).then(
-        (noderes)->
-          console.log "Node ID Lookup Executed"
-          selectedINFO=noderes.data[0][0]["data"]
-          response.json selectedINFO["Info"]
       )
     )
 
@@ -172,11 +65,51 @@ module.exports = class MyApp
           nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
           nodeID = noderes.data[0][0]["self"].slice(nodeIDstart)
           console.log "Node Creation Done, ID = " + nodeID
-          response.send nodeID
+          newNode = noderes.data[0][0]["data"]
+          newNode['_id'] = nodeID
+          console.log "newNode: ", newNode
+          response.send newNode
+      )
+    )
+
+    ### Creates a link using a Cypher query ###
+    # request should be of the form {properties: {name:type , key1:val1 ...}, source: sourceNode, target: targeNode}
+    app.post('/create_link', (request, response) ->
+      console.log "Link Creation Requested"
+      sourceNode = request.body.source
+      targetNode = request.body.target
+      console.log "sourceNode", sourceNode
+      console.log "targetNode", targetNode
+      cypherQuery = "start n=node(" + sourceNode['_id'] + "), m=node(" + targetNode['_id'] + ") create (n)-[r:" + request.body.properties.name
+      if request.body.properties isnt undefined
+        cypherQuery += " {"
+        for property, value of request.body.properties
+          cypherQuery += "#{property}:'#{value}', "
+        cypherQuery = cypherQuery.substring(0,cypherQuery.length-2) + "}"
+      cypherQuery +="]->(m) return r;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (relres) ->
+          #console.log "res Data", relres.data[0][0]
+          relIDstart = relres.data[0][0]["self"].lastIndexOf('/') + 1
+          newRelID = relres.data[0][0]["self"].slice(relIDstart)
+          newLink = relres.data[0][0]["data"]
+          newLink['_id'] = newRelID
+          newLink.source = sourceNode
+          newLink.start = sourceNode['_id']
+          newLink.target = targetNode
+          newLink.end = targetNode['_id']
+          newLink.strength = 1
+          console.log "here is the new link", newLink
+          response.send newLink
+        (relres) ->
+          console.log relres
+          response.send "error"
       )
     )
 
     ### Creates a relationship using a Cypher query ###
+    # request should be of the form {properties: {key1:val1 , ...}, from: node_id, to: node_id, type: type}
     app.post('/create_rel', (request, response) ->
       console.log "Relationship Creation Requested"
       cypherQuery = "start n=node(" + request.body.from + "), m=node(" + request.body.to + ") create (n)-[r:" + request.body.type
@@ -237,7 +170,10 @@ module.exports = class MyApp
           nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
           nodeID = noderes.data[0][0]["self"].slice(nodeIDstart)
           console.log "Node Edit Done, ID = " + nodeID
-          response.json noderes.data[0][0]["data"]
+          savedNode = noderes.data[0][0]["data"]
+          savedNode['_id'] = nodeID
+          console.log "savedNode: ", savedNode
+          response.json savedNode
         (noderes) ->
           console.log "Node Edit Failed"
           response.send "error"
@@ -250,7 +186,7 @@ module.exports = class MyApp
     ###
     app.post('/delete_node', (request,response)->
       console.log "Node Deletion Requested"
-      cypherQuery = "start n=node(" + request.body.nodeid + ") delete n;"
+      cypherQuery = "start n=node(" + request.body['_id'] + ") delete n;"
       console.log "Executing " + cypherQuery
       graphDb.cypher.execute(cypherQuery).then(
         (noderes) ->
@@ -262,6 +198,26 @@ module.exports = class MyApp
       )
     )
 
+
+    ###
+    Deletes a node AND ALL LINKS TO IT
+    ###
+    app.post('/delete_node_full', (request,response)->
+      console.log "Node Deletion Requested"
+      cypherQuery = "start n=node("+ request.body['_id'] + ") match (n)-[r]-(m) delete r"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes) -> 
+          console.log "Links Deleted"
+          cypherQuery = "start n=node(" + request.body['_id'] + ") delete n;"
+          console.log "Executing " + cypherQuery
+          graphDb.cypher.execute(cypherQuery).then(
+            (noderes) ->
+              console.log "Links and Node Deleted"
+              response.send "success"
+          )
+        ) 
+    )
 
     ###
     Collects data from an arrow so it can be edited  
@@ -327,108 +283,6 @@ module.exports = class MyApp
       )
     )
 
-    ###
-    Parses a syntax markup query to create a node
-    ###
-    app.post('/submit', (request,response)->
-      console.log "Textin Query Requested"
-      console.log request.body
-      console.log request.body.text
-
-      ###Parse the input query into key value pairs###
-      strsplit=request.body.text.split("#");
-      strsplit[0]=strsplit[0].replace(/:/," #description ");### The : is shorthand for #description ###
-      text=strsplit.join("#")
-
-      pattern = new RegExp(/#([a-zA-Z0-9]+) ([^#]+)/g)
-      dict = {}
-      match = {}
-      dict[match[1].trim()]=match[2].trim() while match = pattern.exec(text)
-
-      console.log "This is the dictionary", dict
-
-      ###The first entry becomes the name###
-      dict["name"]=text.split("#")[0].trim()
-      console.log "This is the title", text.split("#")[0].trim()
-      console.log dict
-
-      console.log "Node Creation Requested"
-      cypherQuery = "create (n"
-      console.log dict
-      if JSON.stringify(dict) isnt '{}'
-        cypherQuery += " {"
-        for property, value of dict
-          cypherQuery += "#{property}:'#{value}', "
-        cypherQuery = cypherQuery.substring(0,cypherQuery.length-2) + "}"
-      cypherQuery += ") return n;"
-      console.log "Executing " + cypherQuery
-      ###
-      Problem: this does not allow properties to have spaces in them,
-      e.g. "firstname: 'Will'" works but "first name: 'Will'" does not
-      It seems like this problem could be avoided if Neo4js supported
-      parameters in Cypher, but it does not, as far as I can see.
-      ###
-      graphDb.cypher.execute(cypherQuery).then(
-        (noderes) ->
-          nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
-          nodeID = noderes.data[0][0]["self"].slice(nodeIDstart)
-          console.log "Node Creation Done, ID = " + nodeID
-          newNode = noderes.data[0][0]["data"]
-          newNode['_id']=nodeID
-          response.send newNode
-      )
-    )
-
-    ###
-    Parses a syntax markup query to create an arrow
-    ###
-    app.post('/submitarrow', (request,response)->
-      console.log "Arrow create query Requested"
-      console.log request.body
-      console.log request.body.text
-
-      ###Parse the input query into key value pairs###
-      strsplit=request.body.text.split("#");
-      strsplit[0]=strsplit[0].replace(/:/," #description ");### The : is shorthand for #description ###
-      text=strsplit.join("#")
-
-      pattern = new RegExp(/#([a-zA-Z0-9]+) ([^#]+)/g)
-      dict = {}
-      match = {}
-      dict[match[1].trim()]=match[2].trim() while match = pattern.exec(text)
-
-      console.log "This is the dictionary", dict
-
-      ###The first entry becomes the arrow's type###
-      console.log "This is the arrow type", text.split("#")[0].trim()
-      if text.split("#")[0].trim() is ''
-        dict["type"]="none";
-      else
-        dict["type"]=text.split("#")[0].trim()
-      console.log "This is the arrow type", dict["type"]
-      console.log dict
-
-      console.log "Relationship Creation Requested"
-      cypherQuery = "start n=node(" + request.body.from + "), m=node(" + request.body.to + ") create (n)-[r:" + dict.type
-      if dict isnt undefined
-        cypherQuery += " {"
-        for property, value of dict
-          cypherQuery += "#{property}:'#{value}', "
-        cypherQuery = cypherQuery.substring(0,cypherQuery.length-2) + "}"
-      cypherQuery +="]->(m) return r;"
-      console.log "Executing " + cypherQuery
-      graphDb.cypher.execute(cypherQuery).then(
-        (relres) ->
-          console.log relres.data[0][0]
-          relIDstart = relres.data[0][0]["self"].lastIndexOf('/') + 1
-          response.send relres.data[0][0]["self"].slice(relIDstart)
-        (relres) ->
-          console.log relres
-          response.send "error"
-      )
-
-    )
-
     app.get('/node_names', (request,response)->
       graphDb.cypher.execute("start n=node(*) return n;").then(
         (noderes)->
@@ -439,26 +293,21 @@ module.exports = class MyApp
           )
     )
 
-    ###
-    get_node_names returns a list of all the node names
-    ###
-    app.get('/get_node_names', (request,response)->
-      inputer = (builder)->response.json (node['name'] for node in builder["nodes"] when typeof node['name'] isnt "undefined")
-      getvizjson inputer, request, response
-    )
-
     # adds a default strength value to a relationship 
     # TODO: (should only do this if there isnt one already)
-    addStrength = (dict,start,end) -> 
+    addStrength = (dict,start,end,id) -> 
       dict['strength'] = 1
       dict['start'] = start
       dict['end'] = end
+      dict['_id'] = id
       dict
 
     app.post('/get_links', (request,response)->
       console.log "GET LINKS REQUESTED"
       node= request.body.node
       nodes= request.body.nodes
+
+      if !(nodes?) then response.send "error"
 
       nodeIndexes = (k["_id"] for k in nodes)
 
@@ -469,8 +318,9 @@ module.exports = class MyApp
       graphDb.cypher.execute(cypherQuery).then(
         (relres) ->
           console.log "Get Links executed"
+          #console.log trim(link[0][0].self)[0]
 
-          allSpokes = (addStrength(link[0][0].data, trim(link[0][0].start)[0], trim(link[0][0].end)[0]) for link in relres.data)
+          allSpokes = (addStrength(link[0][0].data, trim(link[0][0].start)[0], trim(link[0][0].end)[0], trim(link[0][0].self)[0]) for link in relres.data)
 
           getLink = (nID) -> 
             spoke for spoke in allSpokes when spoke.start is nID or spoke.end is nID
@@ -478,7 +328,6 @@ module.exports = class MyApp
           relList = ((if (getLink(n)[0]?) then getLink(n)[0] else {strength:0}) for n in nodeIndexes)
           response.json relList
 
-          
         (relres) ->
           console.log "Node not found"
           response.send "error"
@@ -520,3 +369,42 @@ module.exports = class MyApp
 
     port = process.env.PORT || 3000
     app.listen port, -> console.log("Listening on " + port)
+
+    #Trims a url i.e. 'http://localhost:7474/db/data/node/312' -> 312
+    trim = (string)->
+      string.match(/[0-9]*$/)
+
+    # adds an id to a node
+    addID = (dict, id) -> 
+      dict['_id'] = id
+      dict
+
+    ### makes queries of database to build a JSON formatted for D3JS viz of the entire Neo4j database
+      that is stored in the displaydata variable.
+    ###
+    getvizjson = (callback, request, response)->
+      console.log "making getvizjson"
+      graphDb.cypher.execute("start n=node(*) return n;").then(
+        (noderes)->
+          console.log "Query Executed"           
+          # Extract the ID's off all the nodes.  These are then reindexed for the d3js viz format.
+          nodeids=(trim(num[0]["self"]) for num in noderes.data)
+          ### Generate reindexing array ###
+          `var nodeconvert = {};
+          for (i = 0; i < nodeids.length; i++) {
+            nodeconvert[nodeids[i]+'']=i;            
+          }`
+          # Get all the data for all the nodes, i.e. all the properties and values, e.g
+          nodedata=(ntmp[0]["data"] for ntmp in noderes.data)
+          `for (i=0; i < nodeids.length; i++) {
+             nodedata[i]["_id"] = nodeids[i]+'';
+          }`
+          graphDb.cypher.execute("start n=rel(*) return n;").then(
+            (arrres)->
+              console.log "Query Executed"
+              arrdata=({source:nodeconvert[trim(ntmp[0]["start"])],target:nodeconvert[trim(ntmp[0]["end"])]} for ntmp in arrres.data)
+              displaydata = [nodes:nodedata,links:arrdata][0]
+
+              callback displaydata
+          )
+      )

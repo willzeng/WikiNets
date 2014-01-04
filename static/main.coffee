@@ -58,7 +58,7 @@ require ["Celestrium"], (Celestrium) ->
     # stores the actual nodes and links of the graph
     GraphModel:
       nodeHash: (node) -> node['_id']
-      linkHash: (link) -> link.source['_id']+link.target['_id']
+      linkHash: (link) -> if link['_id']? then link['_id'] else 0
       # nodeAttributes: 
       #   'text': getValue = (node) -> node.text
       #   'name': getValue = (node) -> node.name
@@ -69,11 +69,20 @@ require ["Celestrium"], (Celestrium) ->
     GraphView: {}
       
     # allows nodes to be selected
-    NodeSelection:
-      onClick: doWikiNetsSelection
+    NodeSelection: {}
 
     # provides functions to get nodes and links
     "local/WikiNetsDataProvider": {}
+
+    "local/Neo4jDataController": {}
+
+    "local/NodeEdit": {}
+
+    "local/Create": {}
+
+    #"local/SyntaxCreate": {}    
+
+    #NodeDetails: {}
 
     "Sliders": {}
 
@@ -84,9 +93,13 @@ require ["Celestrium"], (Celestrium) ->
     "NodeSearch": 
       prefetch: "/get_node_names"
 
-    NodeDetails: {}
-
     MiniMap: {}  
+
+    Stats: {}
+
+    "local/OverlayCreate": {}
+
+    "local/TopBarCreate": {}
 
   # initialize the plugins and execute a callback once done
   Celestrium.init plugins, (instances) ->

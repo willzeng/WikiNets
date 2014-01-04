@@ -53,22 +53,29 @@
           return node['_id'];
         },
         linkHash: function(link) {
-          return link.source['_id'] + link.target['_id'];
+          if (link['_id'] != null) {
+            return link['_id'];
+          } else {
+            return 0;
+          }
         }
       },
       GraphView: {},
-      NodeSelection: {
-        onClick: doWikiNetsSelection
-      },
+      NodeSelection: {},
       "local/WikiNetsDataProvider": {},
+      "local/Neo4jDataController": {},
+      "local/NodeEdit": {},
+      "local/Create": {},
       "Sliders": {},
       "ForceSliders": {},
       "LinkDistribution": {},
       "NodeSearch": {
         prefetch: "/get_node_names"
       },
-      NodeDetails: {},
-      MiniMap: {}
+      MiniMap: {},
+      Stats: {},
+      "local/OverlayCreate": {},
+      "local/TopBarCreate": {}
     };
     return Celestrium.init(plugins, function(instances) {
       var loadEverything, makeDisplayable;
