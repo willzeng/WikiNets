@@ -2,169 +2,17 @@
 meta(charset='utf-8')
 html
   head
-    title WikiNets
-    link(rel='stylesheet', type='text/css', href='style.css')
+    title WikiNets2
     
-    link(rel='stylesheet/less', type='text/css', href='celestrium_code/less/celestrium-defaults.less')
-    script(type='text/javascript', src='/celestrium_code/lib/less.js')
-
-    script(type='text/javascript', src='jquery-1.10.2.js')
-    script(type='text/javascript', src='d3.v3.min.js')
-    script(type='text/javascript', src='fisheye.js')
-
-    script(type='text/javascript', src='jquery.typeahead.js')
+    link(rel='stylesheet/less', type='text/css', href='wikinets-defaults.less')
 
     script(type='text/javascript', data-main="main", src="/celestrium_code/lib/require.js")
 
-
   body
-
     #buildbar
 
       #header
         h1(style='margin-bottom: 5px; margin-left: 10px;')
           a(href='http://thewikinetsproject.wordpress.com/') WikiNets
 
-      #tabs_wrapper
-        #original_tabs
-          ul#tabs
-            li.active
-              a(href='#create', rel='create') Create
-            li
-              a(href='#syntax', rel='syntax') Syntax Create
-            li
-              a(href='#edit', rel='edit') Edit
-            li
-              a(href='#explore', rel='explore') Explore
-
-        #original_tabs_content
-
-          #create.tab_content(style='display:block;')
-            ul#enn_1.submenu
-              li Create node:
-                form#create-node
-                  span#writerootObj
-                input#moreFields(type='button', value='+', onclick='moreFields("writerootObj","readrootObj","NodeProperty")')
-                input#createObj(type='button', value='Create node')
-                #readrootObj(style='display: none;')
-                  input.propertyNode(style='width:80px', name='propertyNode', value='propertyEx')
-                  input.valueNode(style='width:80px', name='valueNode', value='valueEx')
-                  input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
-                  br
-              li  Create arrow:
-                form#create-rel
-                  div
-                    input#from(style='width:80px', name='from', value='from: node ID')
-                    input#to(style='width:80px', name='to', value='to: node ID')
-                    input#rel-type(style='width:80px', name='rel-type', value='type')
-                  span#writerootArr
-                input#moreFields(type='button', value='+', onclick='moreFields("writerootArr","readrootArr","ArrProperty")')
-                input#createArr(type='button', value='Create arrow')
-                #readrootArr(style='display: none;')
-                  input.propertyArr(style='width:80px', name='propertyArr', value='property')
-                  input.valueArr(style='width:80px', name='valueArr', value='value')
-                  input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
-                  br
-
-          #syntax.tab_content
-            input#createNodeButton(type="submit",value="New Node")
-            input#createArrowButton(type="submit",value="New Arrow")
-
-            #buildNodeArea(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;')
-              ul#querybox
-              p(style='width:100%', id='searchAddNodeFieldLabel') (Source) Node
-              br
-              //#nodeKeyValues(style='width:300px; display:none')
-    
-              textarea#searchAddNodeField(name="textin", rows="6", cols="27")
-              input#queryform(type="submit",value="Create Node")
-
-              #stopeEditButtonHolder(style="display:none")
-                input#stopeEditNodeButton(type="submit",value="Stop Editing This Node")
-              //#editButtonHolder(style="display:none")
-              //  input#editNodeButton(type="submit",value="Edit This Node")
-
-            #syntaxNodeInfo(style="display:none")
-
-            #buildArrowArea(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;')
-              ul#arrowquerybox
-              p(style='width:100%') Arrow
-              textarea#searchAddArrowField(name="textin", rows="6", cols="27")
-              input#arrowqueryform(type="submit",value="Create Arrow")
-
-            #buildTargetArea(style='font-size:12px;color:#3b5d14;background:white;font-weight:bold;padding:4px;display:none;')
-              p(style='width:100%', id='buildTargetAreaLabel') (Target) Node
-              input#buildTargetAreaField(type="text", name="textin", rows="6", cols="27")
-              input#targetQueryForm(type="submit",value="Create (Target) Node")
-
-            
-
-
-          #edit.tab_content
-            li
-              | Please select a node.
-              form#SelectNodeForm
-                input#SelectNodeID(name="SelectNodeID")
-                input#SelectNode(type="submit", value="Select Node")
-              #edit-menu-inputs(style='display: none;')
-                #readrootEdit(style='display: none;')
-                  input.propertyEdit(style='width:80px', name='propertyEdit', value='')
-                  input.valueEdit(style='width:80px', name='valueEdit', value='')
-                  input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
-                  br
-                form#edit-node
-                  span#writerootEdit
-                input#moreFields(type='button', value='+', onclick='moreFields("writerootEdit","readrootEdit","EditProperty")')
-                div(style='float: right;')
-                  input#DeleteNode(type='button', value='Delete Node')
-                  input#EditNode(type='button', value='Save Node')
-            li
-              | Please select an arrow.
-              form#SelectArrowForm
-                input#SelectArrowID(name="SelectArrowID")
-                input#SelectArrow(type="submit", value="Select Arrow")
-              #edit-arrow-menu-inputs(style='display: none;')
-                #readrootEditArrow(style='display: none;')
-                  input.propertyEditArrow(style='width:80px', name='propertyEditArrow', value='')
-                  input.valueEditArrow(style='width:80px', name='valueEditArrow', value='')
-                  input(type='button', value='x', onclick='this.parentNode.parentNode.removeChild(this.parentNode);')
-                  br
-                form#edit-arrow
-                  div
-                    #edit-from from: node ID
-                    #edit-to to: node ID
-                    #edit-rel-type type
-                  span#writerootEditArrow
-                  input#moreFields(type='button', value='+', onclick='moreFields("writerootEditArrow","readrootEditArrow","EditArrowProperty")')
-                  div(style='float: right;')
-                    input#DeleteArrow(type='button', value='Delete Arrow')
-                    input#EditArrow(type='button', value='Save Arrow')
-
-          #explore.tab_content
-            form(method="post",action="/search_id")
-              input#searchBox(type="text") 
-              input#getNode(type="submit",value="Get Node")
-            #SearchOutput
-            // these currently don't do anything
-            //br
-            //div Toggle
-            //#togglebox
-            br
-            #titler
-              p#selectednamebox No Node Selected
-            #subgraphcontainer
-            #nodeKeyValues
-            #editButtonHolder(style="display:none")
-              input#editNodeButton(type="button",value="Edit This Node")
-
-    #maingraph(style="height:800px; width:800px; position:absolute; top: 40px; left:340px;")
-
-
-    script(type='text/javascript', src='wikiscript.js')
-
-    //#footer(style='clear: both; text-align: center; font-size: 12px; font-weight: bold;')
-    //  a(href='http://thewikinetsproject.wordpress.com') About
-    //  | |
-    //  a(href='http://thewikinetsproject.wordpress.com/about/') Contact
-
-
+    #maingraph
