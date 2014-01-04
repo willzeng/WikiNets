@@ -61,9 +61,7 @@
         }
       },
       GraphView: {},
-      NodeSelection: {
-        onClick: doWikiNetsSelection
-      },
+      NodeSelection: {},
       "local/WikiNetsDataProvider": {},
       "local/Neo4jDataController": {},
       "local/NodeEdit": {},
