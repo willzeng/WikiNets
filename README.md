@@ -1,12 +1,12 @@
 This is the code for WikiNets. Feel free to contribute. It's available under a GNU GPL v3 license, the text of which is bundled, but in short: you're free to take this code and modify it as you wish, on the condition that you declare any changes you make, and pass on this freedom and responsibility in any release of your altered code. Also you should generally be nice.
 
 Stable Version
-wikinets-demo.herokuapp.com
+http://wikinets-demo.herokuapp.com
 
 Edge:
-wikinets-edge.herokuapp.com
+http://wikinets-edge.herokuapp.com
 
-thewikinetsproject.wordpress.com
+http://thewikinetsproject.wordpress.com
 
 WikiNets can be set to work with a local WikiNet on your machine or with a WikiNet in the cloud.
 
@@ -28,8 +28,8 @@ LOCAL OPTION:
 
 To Run on a local WikiNet, you will need to install a copy of Neo4j:
   Install neo4j http://www.neo4j.org/download
+  Linux http://www.neo4j.org/download/linux:
 
-    Linux http://www.neo4j.org/download/linux:
     # start root shell
     sudo -s
     # Import our signing key
