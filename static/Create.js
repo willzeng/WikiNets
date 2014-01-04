@@ -48,13 +48,11 @@
         $nodeCreate.click(this.createNode);
         $linkCreateSelectSourceButton = $("<input id=\"LinkCreateSource\" type=\"button\" value=\"Source:\" />").appendTo("#LinkCreateSelectSource");
         $linkCreateSelectSourceButton.click(function() {
-          console.log("selecting source");
           $("#LinkCreateSourceValue").replaceWith("<span id=\"LinkCreateSourceValue\" style=\"font-style:italic;\">Selecting</span>");
           return _this.selectingSource = true;
         });
         $linkCreateSelectTargetButton = $("<input id=\"LinkCreateTarget\" type=\"button\" value=\"Target:\" />").appendTo("#LinkCreateSelectTarget");
         $linkCreateSelectTargetButton.click(function() {
-          console.log("selecting target");
           $("#LinkCreateTargetValue").replaceWith("<span id=\"LinkCreateTargetValue\" style=\"font-style:italic;\">Selecting</span>");
           return _this.selectingTarget = true;
         });
@@ -68,15 +66,12 @@
         selectingSource = false;
         selectingTarget = false;
         this.graphView.on("enter:node:click", function(node) {
-          console.log("node selected");
           if (_this.selectingSource) {
-            console.log("Source: " + node["_id"]);
             $("#LinkCreateSourceValue").replaceWith("<span id=\"LinkCreateSourceValue\">" + node["text"] + " (id: " + node["_id"] + ")</span>");
             _this.selectingSource = false;
             _this.source = node;
           }
           if (_this.selectingTarget) {
-            console.log("Target: " + node["_id"]);
             $("#LinkCreateTargetValue").replaceWith("<span id=\"LinkCreateTargetValue\">" + node["text"] + " (id: " + node["_id"] + ")</span>");
             _this.selectingTarget = false;
             return _this.target = node;
@@ -122,7 +117,6 @@
       Create.prototype.createNode = function() {
         var nodeObject,
           _this = this;
-        console.log("create node called");
         nodeObject = this.assign_properties("NodeCreate");
         if (nodeObject[0]) {
           $('.NodeCreateDiv').each(function(i, obj) {
@@ -137,7 +131,6 @@
       Create.prototype.createLink = function() {
         var linkObject, linkProperties,
           _this = this;
-        console.log("create link called");
         if (this.source === void 0 || this.target === void 0 || this.selectingSource || this.selectingTarget) {
           alert("Please select a source and a target.");
           return false;
@@ -145,16 +138,13 @@
         if (this.is_illegal($("#LinkCreateType").val(), "Relationship type")) {
           return false;
         }
-        console.log("source, target, type are OK");
         linkObject = {
           source: this.source,
           target: this.target
         };
-        console.log(linkObject);
         linkProperties = this.assign_properties("LinkCreate");
         linkProperties[1]["name"] = $("#LinkCreateType").val();
         if (linkProperties[0]) {
-          console.log("properties are OK");
           $('.LinkCreateDiv').each(function(i, obj) {
             return $(this)[0].parentNode.removeChild($(this)[0]);
           });
@@ -165,10 +155,8 @@
           $("#LinkCreateType").val("");
           $("#LinkCreateType").attr("placeholder", "Type");
           linkObject["properties"] = linkProperties[1];
-          console.log(linkObject);
           return this.dataController.linkAdd(linkObject, function(linkres) {
             var allNodes, n, newLink, _i, _j, _len, _len1;
-            console.log("called dataController.linkAdd");
             newLink = linkres;
             allNodes = _this.graphModel.getNodes();
             for (_i = 0, _len = allNodes.length; _i < _len; _i++) {
@@ -191,7 +179,7 @@
       Create.prototype.assign_properties = function(form_name, is_illegal) {
         var propertyObject, submitOK;
         if (is_illegal == null) {
-          is_illegal = this.is_illegal;
+          is_illegal = this.dataController.is_illegal;
         }
         submitOK = true;
         propertyObject = {};
@@ -209,23 +197,6 @@
           }
         });
         return [submitOK, propertyObject];
-      };
-
-      Create.prototype.is_illegal = function(property, type) {
-        var reserved_keys;
-        reserved_keys = ["_id", "text"];
-        if (property === '') {
-          alert(type + " name must not be empty.");
-          return true;
-        } else if (/^.*[^a-zA-Z0-9_].*$/.test(property)) {
-          alert(type + " name '" + property + "' illegal: " + type + " names must only contain alphanumeric characters and underscore.");
-          return true;
-        } else if (reserved_keys.indexOf(property) !== -1) {
-          alert(type + " name illegal: '" + property + "' is a reserved term.");
-          return true;
-        } else {
-          return false;
-        }
       };
 
       return Create;

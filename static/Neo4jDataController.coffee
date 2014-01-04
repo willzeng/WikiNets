@@ -13,9 +13,38 @@ define ["DataController"], (DataController) ->
     nodeDelete: (node, callback) ->
       $.post "/delete_node", @filterNode(node), callback
 
+    #should delete a node from the database even when there are remaining links
+    nodeDeleteFull: (node, callback) ->
+      $.post "/delete_node_full", @filterNode(node), callback
+
     #should edit oldNode into newNode
-    nodeEdit: (oldNode, newNode) ->
-      $.post "/edit_node", @filterNode(node), callback
+    # Send this to the server to edit: {nodeid: selected_node, properties: nodeObject[1], remove: deleted_props}
+    nodeEdit: (oldNode, newNode, callback) ->
+      oldNode = @filterNode(oldNode)
+      #console.log "oldnode: ", oldNode, "and newNode", newNode
+
+      #check which properties have changed and which ones are being deleted
+      deleted_props = []
+      for property,value of oldNode 
+        if newNode[property]?
+          if oldNode[property] == newNode[property] #don't have to re-set property value if it hasn't changed
+            delete newNode[property]
+        else
+          #this is a list of properties that are being deleted
+          deleted_props.push property
+
+      # ask for confirmation before deleting properties
+      # (two different messages in the interest of grammar)
+      if (((deleted_props.length is 1) and (!(confirm("Are you sure you want to delete the following property? " + deleted_props)))) || ((deleted_props.length > 1) && (!(confirm("Are you sure you want to delete the following properties? " + deleted_props)))))
+        alert "Cancelled saving of node " + oldNode['_id'] + "." 
+        return false
+
+      $.post '/edit_node', {nodeid: oldNode['_id'], properties: newNode, remove: deleted_props}, (data) ->
+        if data == "error"
+          alert "Failed to save changes to node " + oldNode['_id'] + "."
+        else
+          alert("Saved changes to node " + oldNode['_id'] + ".")
+          callback(data)
 
     #should add a link to the database
     linkAdd: (link, callback) ->
@@ -34,9 +63,24 @@ define ["DataController"], (DataController) ->
 
     #filters out the d3 properties added to nodes
     filterNode: (node) ->
-      blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight"]
+      blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "text"]
       filteredNode = {}
       _.each node, (value, property) ->
         filteredNode[property] = value if blacklist.indexOf(property) < 0
       filteredNode
+
+    # checks whether property names will break the cypher queries or are any of
+    # the reserved terms
+    is_illegal: (property, type) ->
+      reserved_keys = ["_id", "text"]
+      if (property == '') then (
+        alert type + " name must not be empty." 
+        return true
+      ) else if (/^.*[^a-zA-Z0-9_].*$/.test(property)) then (
+        alert(type + " name '" + property + "' illegal: " + type + " names must only contain alphanumeric characters and underscore.")
+        return true
+      ) else if (reserved_keys.indexOf(property) != -1) then (
+        alert(type + " name illegal: '" + property + "' is a reserved term.")
+        return true
+      ) else false
 

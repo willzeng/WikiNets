@@ -1,42 +1,3 @@
-###Some Examples of what are returned from Cypher Queries:
-
-An example of what is returned by the database for each node. E.g.
-
-  { outgoing_relationships: 'http://localhost:7474/db/data/node/312/relationships/out',
-    labels: 'http://localhost:7474/db/data/node/312/labels',
-    data: { propertyExample: 'valueExample' },
-    all_typed_relationships: 'http://localhost:7474/db/data/node/312/relationships/all/{-list|&|types}',
-    traverse: 'http://localhost:7474/db/data/node/312/traverse/{returnType}',
-    self: 'http://localhost:7474/db/data/node/312',
-    property: 'http://localhost:7474/db/data/node/312/properties/{key}',
-    outgoing_typed_relationships: 'http://localhost:7474/db/data/node/312/relationships/out/{-list|&|types}',
-    properties: 'http://localhost:7474/db/data/node/312/properties',
-    incoming_relationships: 'http://localhost:7474/db/data/node/312/relationships/in',
-    extensions: {},
-    create_relationship: 'http://localhost:7474/db/data/node/312/relationships',
-    paged_traverse: 'http://localhost:7474/db/data/node/312/paged/traverse/{returnType}{?pageSize,leaseTime}'
-    all_relationships: 'http://localhost:7474/db/data/node/312/relationships/all',
-    incoming_typed_relationships: 'http://localhost:7474/db/data/node/312/relationships/in/{-list|&|types}' }  
-
-An example of what is returned by the database for each arrow. E.g.
-
-  { start: 'http://localhost:7474/db/data/node/314',
-    data: {},
-    self: 'http://localhost:7474/db/data/relationshi
-    property: 'http://localhost:7474/db/data/relatio
-    properties: 'http://localhost:7474/db/data/relat
-    type: 'RELATED_TO',
-    extensions: {},
-    end: 'http://localhost:7474/db/data/node/316' }
-
-Code to write the full database data to a file.  Currently inactive.
-`fs = require('fs');
-fs.writeFile('.\\static\\test.json', JSON.stringify(displaydata), function (err) {
-  if (err) throw err;
-  console.log('.json SAVED!');
-});`
-
-###
 express = require 'express'
 
 module.exports = class MyApp
@@ -78,22 +39,6 @@ module.exports = class MyApp
           console.log "get_nodes Lookup Executed"
           nodeList = (addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
           response.json nodeList
-      )
-    )
-
-    ###  Post function to test lookup by Node id that will return the value of the property 
-      "Info", which will eventually go in the Infobox.  
-    ###
-    app.post('/search_id', (request,response)->
-      console.log "Search Query Requested"
-      searchid = request.body.nodeid
-      cypherQuery = "start n=node("+searchid+") return n;"
-      console.log "Executing " + cypherQuery
-      graphDb.cypher.execute(cypherQuery).then(
-        (noderes)->
-          console.log "Node ID Lookup Executed"
-          selectedINFO=noderes.data[0][0]["data"]
-          response.json selectedINFO["Info"]
       )
     )
 
@@ -225,7 +170,10 @@ module.exports = class MyApp
           nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
           nodeID = noderes.data[0][0]["self"].slice(nodeIDstart)
           console.log "Node Edit Done, ID = " + nodeID
-          response.json noderes.data[0][0]["data"]
+          savedNode = noderes.data[0][0]["data"]
+          savedNode['_id'] = nodeID
+          console.log "savedNode: ", savedNode
+          response.json savedNode
         (noderes) ->
           console.log "Node Edit Failed"
           response.send "error"
@@ -238,7 +186,7 @@ module.exports = class MyApp
     ###
     app.post('/delete_node', (request,response)->
       console.log "Node Deletion Requested"
-      cypherQuery = "start n=node(" + request.body.nodeid + ") delete n;"
+      cypherQuery = "start n=node(" + request.body['_id'] + ") delete n;"
       console.log "Executing " + cypherQuery
       graphDb.cypher.execute(cypherQuery).then(
         (noderes) ->
@@ -250,6 +198,26 @@ module.exports = class MyApp
       )
     )
 
+
+    ###
+    Deletes a node AND ALL LINKS TO IT
+    ###
+    app.post('/delete_node_full', (request,response)->
+      console.log "Node Deletion Requested"
+      cypherQuery = "start n=node("+ request.body['_id'] + ") match (n)-[r]-(m) delete r"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes) -> 
+          console.log "Links Deleted"
+          cypherQuery = "start n=node(" + request.body['_id'] + ") delete n;"
+          console.log "Executing " + cypherQuery
+          graphDb.cypher.execute(cypherQuery).then(
+            (noderes) ->
+              console.log "Links and Node Deleted"
+              response.send "success"
+          )
+        ) 
+    )
 
     ###
     Collects data from an arrow so it can be edited  
@@ -315,108 +283,6 @@ module.exports = class MyApp
       )
     )
 
-    ###
-    Parses a syntax markup query to create a node
-    ###
-    app.post('/submit', (request,response)->
-      console.log "Textin Query Requested"
-      console.log request.body
-      console.log request.body.text
-
-      ###Parse the input query into key value pairs###
-      strsplit=request.body.text.split("#");
-      strsplit[0]=strsplit[0].replace(/:/," #description ");### The : is shorthand for #description ###
-      text=strsplit.join("#")
-
-      pattern = new RegExp(/#([a-zA-Z0-9]+) ([^#]+)/g)
-      dict = {}
-      match = {}
-      dict[match[1].trim()]=match[2].trim() while match = pattern.exec(text)
-
-      console.log "This is the dictionary", dict
-
-      ###The first entry becomes the name###
-      dict["name"]=text.split("#")[0].trim()
-      console.log "This is the title", text.split("#")[0].trim()
-      console.log dict
-
-      console.log "Node Creation Requested"
-      cypherQuery = "create (n"
-      console.log dict
-      if JSON.stringify(dict) isnt '{}'
-        cypherQuery += " {"
-        for property, value of dict
-          cypherQuery += "#{property}:'#{value}', "
-        cypherQuery = cypherQuery.substring(0,cypherQuery.length-2) + "}"
-      cypherQuery += ") return n;"
-      console.log "Executing " + cypherQuery
-      ###
-      Problem: this does not allow properties to have spaces in them,
-      e.g. "firstname: 'Will'" works but "first name: 'Will'" does not
-      It seems like this problem could be avoided if Neo4js supported
-      parameters in Cypher, but it does not, as far as I can see.
-      ###
-      graphDb.cypher.execute(cypherQuery).then(
-        (noderes) ->
-          nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
-          nodeID = noderes.data[0][0]["self"].slice(nodeIDstart)
-          console.log "Node Creation Done, ID = " + nodeID
-          newNode = noderes.data[0][0]["data"]
-          newNode['_id']=nodeID
-          response.send newNode
-      )
-    )
-
-    ###
-    Parses a syntax markup query to create an arrow
-    ###
-    app.post('/submitarrow', (request,response)->
-      console.log "Arrow create query Requested"
-      console.log request.body
-      console.log request.body.text
-
-      ###Parse the input query into key value pairs###
-      strsplit=request.body.text.split("#");
-      strsplit[0]=strsplit[0].replace(/:/," #description ");### The : is shorthand for #description ###
-      text=strsplit.join("#")
-
-      pattern = new RegExp(/#([a-zA-Z0-9]+) ([^#]+)/g)
-      dict = {}
-      match = {}
-      dict[match[1].trim()]=match[2].trim() while match = pattern.exec(text)
-
-      console.log "This is the dictionary", dict
-
-      ###The first entry becomes the arrow's type###
-      console.log "This is the arrow type", text.split("#")[0].trim()
-      if text.split("#")[0].trim() is ''
-        dict["type"]="none";
-      else
-        dict["type"]=text.split("#")[0].trim()
-      console.log "This is the arrow type", dict["type"]
-      console.log dict
-
-      console.log "Relationship Creation Requested"
-      cypherQuery = "start n=node(" + request.body.from + "), m=node(" + request.body.to + ") create (n)-[r:" + dict.type
-      if dict isnt undefined
-        cypherQuery += " {"
-        for property, value of dict
-          cypherQuery += "#{property}:'#{value}', "
-        cypherQuery = cypherQuery.substring(0,cypherQuery.length-2) + "}"
-      cypherQuery +="]->(m) return r;"
-      console.log "Executing " + cypherQuery
-      graphDb.cypher.execute(cypherQuery).then(
-        (relres) ->
-          console.log relres.data[0][0]
-          relIDstart = relres.data[0][0]["self"].lastIndexOf('/') + 1
-          response.send relres.data[0][0]["self"].slice(relIDstart)
-        (relres) ->
-          console.log relres
-          response.send "error"
-      )
-
-    )
-
     app.get('/node_names', (request,response)->
       graphDb.cypher.execute("start n=node(*) return n;").then(
         (noderes)->
@@ -425,14 +291,6 @@ module.exports = class MyApp
           #nodesNamesAndIds = (n[0]['data']['name'] for n in noderes.data)
           response.json nodesNamesAndIds
           )
-    )
-
-    ###
-    get_node_names returns a list of all the node names
-    ###
-    app.get('/get_node_names', (request,response)->
-      inputer = (builder)->response.json (node['name'] for node in builder["nodes"] when typeof node['name'] isnt "undefined")
-      getvizjson inputer, request, response
     )
 
     # adds a default strength value to a relationship 
@@ -448,6 +306,8 @@ module.exports = class MyApp
       console.log "GET LINKS REQUESTED"
       node= request.body.node
       nodes= request.body.nodes
+
+      if !(nodes?) then response.send "error"
 
       nodeIndexes = (k["_id"] for k in nodes)
 

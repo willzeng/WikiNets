@@ -57,14 +57,12 @@ define [], () ->
 
       $linkCreateSelectSourceButton = $("<input id=\"LinkCreateSource\" type=\"button\" value=\"Source:\" />").appendTo("#LinkCreateSelectSource")
       $linkCreateSelectSourceButton.click(() =>
-        console.log "selecting source"
         $("#LinkCreateSourceValue").replaceWith("<span id=\"LinkCreateSourceValue\" style=\"font-style:italic;\">Selecting</span>")
         @selectingSource = true
         )
 
       $linkCreateSelectTargetButton = $("<input id=\"LinkCreateTarget\" type=\"button\" value=\"Target:\" />").appendTo("#LinkCreateSelectTarget")
       $linkCreateSelectTargetButton.click(() =>
-        console.log "selecting target"
         $("#LinkCreateTargetValue").replaceWith("<span id=\"LinkCreateTargetValue\" style=\"font-style:italic;\">Selecting</span>")
         @selectingTarget = true
         )
@@ -82,14 +80,11 @@ define [], () ->
       selectingTarget = false
 
       @graphView.on "enter:node:click", (node) =>
-        console.log "node selected"
         if @selectingSource
-          console.log "Source: " + node["_id"]
           $("#LinkCreateSourceValue").replaceWith("<span id=\"LinkCreateSourceValue\">" + node["text"] + " (id: " + node["_id"] + ")</span>")
           @selectingSource = false
           @source = node
         if @selectingTarget
-          console.log "Target: " + node["_id"]
           $("#LinkCreateTargetValue").replaceWith("<span id=\"LinkCreateTargetValue\">" + node["text"] + " (id: " + node["_id"] + ")</span>")
           @selectingTarget = false
           @target = node
@@ -121,7 +116,6 @@ define [], () ->
 
 
     createNode: =>
-      console.log "create node called"
       # check property names and assign property-value pairs to nodeObject;
       # first component of nodeObject is boolean result of whether all
       # properties are legal, second component is dictionary of properties to
@@ -138,7 +132,6 @@ define [], () ->
 
 
     createLink: =>
-      console.log "create link called"
       # relationships must have a beginning and end node (given by ID) and a
       # type; beginning and end node IDs must be numbers; relationship type
       # must obey same rules as property names
@@ -149,11 +142,9 @@ define [], () ->
         return false
       if @is_illegal($("#LinkCreateType").val(), "Relationship type")
         return false
-      console.log "source, target, type are OK"
       linkObject =
         source: @source
         target: @target 
-      console.log linkObject
   
       # check property names and assign property-value pairs
       # first component of relProperties is boolean result of whether all
@@ -165,7 +156,6 @@ define [], () ->
       # if all property names were fine, remove the on-the-fly created input
       # fields and submit the data to the server to actually create the link
       if (linkProperties[0]) then (
-        console.log "properties are OK"
         $('.LinkCreateDiv').each( (i, obj) ->
           $(this)[0].parentNode.removeChild $(this)[0]
         )
@@ -176,9 +166,7 @@ define [], () ->
         $("#LinkCreateType").val("")
         $("#LinkCreateType").attr("placeholder", "Type")
         linkObject["properties"] = linkProperties[1]
-        console.log linkObject
         @dataController.linkAdd(linkObject, (linkres)=> 
-          console.log "called dataController.linkAdd"
           newLink = linkres
           allNodes = @graphModel.getNodes()
           newLink.source = n for n in allNodes when n['_id'] is linkObject.source['_id']
@@ -193,7 +181,7 @@ define [], () ->
     # returns: submitOK: a boolean indicating whether the property names were all
     #                    legal
     #          propertyObject: a dictionary of property-value pairs
-    assign_properties: (form_name, is_illegal = @is_illegal) => 
+    assign_properties: (form_name, is_illegal = @dataController.is_illegal) => 
         submitOK = true
         propertyObject = {}
         $("." + form_name + "Div").each (i, obj) ->
@@ -214,20 +202,3 @@ define [], () ->
             else
               propertyObject[property] = value.replace(/'/g, "\\'")
         [submitOK, propertyObject];
-
-
-    # checks whether property names will break the cypher queries or are any of
-    # the reserved terms
-    is_illegal: (property, type) ->
-      reserved_keys = ["_id", "text"]
-      if (property == '') then (
-        alert type + " name must not be empty." 
-        return true
-      ) else if (/^.*[^a-zA-Z0-9_].*$/.test(property)) then (
-        alert(type + " name '" + property + "' illegal: " + type + " names must only contain alphanumeric characters and underscore.")
-        return true
-      ) else if (reserved_keys.indexOf(property) != -1) then (
-        alert(type + " name illegal: '" + property + "' is a reserved term.")
-        return true
-      ) else false
-
