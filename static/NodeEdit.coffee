@@ -30,6 +30,7 @@ define [], () ->
         $nodeDiv = $("<div class=\"node-profile\"/>").appendTo($container)
         $("<div class=\"node-profile-title\">#{node['text']}</div>").appendTo $nodeDiv
         _.each node, (value, property) ->
+          value += ""
           if blacklist.indexOf(property) < 0
             if value?
               makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi,"<a href=\"$1\">$1</a>")

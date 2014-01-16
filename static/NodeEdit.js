@@ -44,6 +44,7 @@
           $("<div class=\"node-profile-title\">" + node['text'] + "</div>").appendTo($nodeDiv);
           _.each(node, function(value, property) {
             var makeLinks;
+            value += "";
             if (blacklist.indexOf(property) < 0) {
               if (value != null) {
                 makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi, "<a href=\"$1\">$1</a>");
