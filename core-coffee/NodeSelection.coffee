@@ -23,9 +23,6 @@ define [], () ->
       # handle selecting and deselecting nodes
       @graphView.on "enter:node:click", (datum) =>
         @toggleSelection datum
-        
-        #calls an onClick optional method passed to constructor
-        if @options.onClick? then @options.onClick(datum['text'])
       
       @graphView.on "enter:node:dblclick", (datum) =>
         @selectConnectedComponent datum
