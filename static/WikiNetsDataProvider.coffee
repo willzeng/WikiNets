@@ -70,3 +70,8 @@ define ["DataProvider"], (DataProvider) ->
         celNodes = makeDisplayable(n) for n in data
 
         callback data
+
+
+    getEverything: (callback) ->
+      $.get('/get_nodes', callback)
+

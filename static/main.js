@@ -74,8 +74,8 @@
       },
       MiniMap: {},
       Stats: {},
-      "local/OverlayCreate": {},
-      "local/TopBarCreate": {}
+      "local/TopBarCreate": {},
+      "local/ShowAll": {}
     };
     return Celestrium.init(plugins, function(instances) {
       var loadEverything, makeDisplayable;

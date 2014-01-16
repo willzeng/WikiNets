@@ -85,6 +85,10 @@ all nodes in the graph are added.
         });
       };
 
+      WikiNetsDataProvider.prototype.getEverything = function(callback) {
+        return $.get('/get_nodes', callback);
+      };
+
       return WikiNetsDataProvider;
 
     })(DataProvider);
