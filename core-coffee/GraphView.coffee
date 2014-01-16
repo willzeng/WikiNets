@@ -175,8 +175,8 @@ define [], () ->
       nodeEnter.append("text")
            .attr("dx", 12)
            .attr("dy", ".35em")
-           .text((d) ->
-            d.text
+           .text((d) =>
+            @findText(d)
           )
 
       nodeEnter.append("circle")
@@ -255,3 +255,12 @@ define [], () ->
 
     getLinkFilter: ->
       return @linkFilter
+
+    #TODO MAKE THIS GENERIC
+    findText: (node) ->
+      if node.name?
+        node.name
+      else if node.title?
+        node.title
+      else
+        ''
