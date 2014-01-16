@@ -1,5 +1,6 @@
 body {
     font-family: "Trebuchet MS";
+    overflow: hidden;
 }
 
 /* plugin container */
@@ -9,9 +10,10 @@ body {
     padding: 2px;
     box-sizing: border-box;
     right: 10px;
-    overflow: hidden;
+    overflow: scroll;
     min-width: 240px;
-    min-height: 600px;
+    height: 100%;
+    max-height: 100%;
 
     .plugin-wrapper {
         width: 100%;
@@ -181,27 +183,22 @@ body {
     }
 }
 
-/* cdf */
-.link-cdf {
+/* pdf */
+.link-pdf {
     margin-left: auto;
     margin-right: auto;
     width: 200px;
     .threshold-line {
-        stroke: steelblue;
-        stroke-width: 3px;
+        stroke: #000;
+        stroke-width: 2px;
         cursor: ew-resize;
     }
     &.drag {
         cursor: ew-resize;
-        .threshold-line {
-            &:hover {
-                stroke: #FFF;
-            }
-        }
     }
 }
 
-.cdf {
+.pdf {
     margin-left: auto;
     margin-right: auto;
     width: 200px;

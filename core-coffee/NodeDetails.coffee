@@ -3,11 +3,14 @@ define [], () ->
 
   class NodeDetailsView extends Backbone.View
 
+    constructor: (@options) ->
+      super()
+
     init: (instances) ->
       @selection = instances["NodeSelection"]
       @selection.on "change", @update.bind(this)
-      @listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
-      instances["Layout"].addPlugin @el, 'Node Details'
+      @listenTo instances["KeyListener"], "down:80", () => @$el.toggle() #down on 'p'
+      instances["Layout"].addPlugin @el, @options.pluginOrder, 'Node Details'
       @$el.toggle()
 
     update: ->

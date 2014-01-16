@@ -9,7 +9,8 @@ define [], () ->
     initialize: (args) ->
       @plugin = args.plugin
       @pluginName = args.name
-      @collapsed = false
+      @init_state = args.init_state
+      if args.init_state? then @collapsed = args.init_state else @collapsed = true
       @render()
 
     events:
@@ -45,7 +46,6 @@ define [], () ->
       @content = $("<div class=\"plugin-content\"></div>")
       @content.append @plugin
 
-
       @$el.append @controls
       @$el.append @content
 
@@ -54,8 +54,10 @@ define [], () ->
 
     constructor: (@options) ->
       super(@options)
+
     init: () ->
-      @pluginWrappers = []
+      # a dictionary of lists, so we can order plugins
+      @pluginWrappers = {}
 
       # TODO: find somewhere to put these
       # @bottom = $("<div class=\"plugin-view\" id=\"bottom-center-outer-container\"><button id=\"toggle\">Show/Hide</button></div>")
@@ -70,22 +72,36 @@ define [], () ->
       # @pluginWrappers.push @bottomRightWrapper
 
       @render()
+
     render: ->
       @pluginContainer = $("<div class=\"plugin-container\"/>")
       @$el.append @pluginContainer
       return this
 
     renderPlugins: ->
-      for pluginWrapper in @pluginWrappers
-        @pluginContainer.append pluginWrapper.el
+      keys = _.keys(@pluginWrappers).sort()
+      _.each keys, (key, i) =>
+        pluginWrappersList = @pluginWrappers[key]
+        _.each pluginWrappersList, (pluginWrapper) =>
+          @pluginContainer.append pluginWrapper.el
+          if !pluginWrapper.init_state
+            pluginWrapper.collapse pluginWrapper.$el.find('.plugin-content')
+
 
     addCenter: (el) ->
       @$el.append el
 
-    addPlugin: (plugin, name="Plugin") ->
+
+    addPlugin: (plugin, pluginOrder, name="Plugin", defaultView) ->
+      pluginOrder ?= Number.MAX_VALUE
       pluginWrapper = new PluginWrapper(
         plugin: plugin
         name: name
+        order: pluginOrder
+        init_state: defaultView
         )
-      @pluginWrappers.push pluginWrapper
+      if _.has @pluginWrappers, pluginOrder
+        @pluginWrappers[pluginOrder].push pluginWrapper
+      else
+        @pluginWrappers[pluginOrder] = [pluginWrapper]
       @renderPlugins()

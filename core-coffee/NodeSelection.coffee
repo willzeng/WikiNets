@@ -4,7 +4,7 @@ define [], () ->
   class Selection extends Backbone.View
 
     constructor: (@options) ->
-     super()
+      super()
 
     init: (instances) ->
 
@@ -22,29 +22,12 @@ define [], () ->
       @listenTo @keyListener, "down:13", @removeSelectionCompliment     #ENTR
 
       # handle selecting and deselecting nodes
-      clickSemaphore = 0
-      @graphView.on "enter:node", (nodeEnterSelection) =>
-        nodeEnterSelection.on("click", (datum, index) =>
 
-          #calls an onClick optional method passed to the constructor
-          @options.onClick(datum['text'])
-
-          # ignore drag
-          return  if d3.event.defaultPrevented
-          datum.fixed = true
-          clickSemaphore += 1
-          savedClickSemaphore = clickSemaphore
-          setTimeout (=>
-            if clickSemaphore is savedClickSemaphore
-              @toggleSelection datum
-              datum.fixed = false
-            else
-              # increment so second click isn't registered as a click
-              clickSemaphore += 1
-              datum.fixed = false
-          ), 250
-        ).on "dblclick", (datum, index) =>
-          @selectConnectedComponent datum
+      @graphView.on "enter:node:click", (datum) =>
+        @toggleSelection datum
+      
+      @graphView.on "enter:node:dblclick", (datum) =>
+        @selectConnectedComponent datum
 
     renderSelection: () ->
       nodeSelection = @graphView.getNodeSelection()

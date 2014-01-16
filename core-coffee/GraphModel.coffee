@@ -20,10 +20,13 @@ define [], () ->
       # ignore if node is already in this graph
       return  if @get("nodeSet")[@get("nodeHash")(node)]
 
+      #map some chosen property to the displayed text field.
+      node.text ?= node.name
+
       # modify node to have attribute accessor functions
-      # nodeAttributes = @get("nodeAttributes")
-      # node.getAttributeValue = (attr) ->
-      #    nodeAttributes[attr].getValue node
+      #nodeAttributes = @get("nodeAttributes")
+      #node.getAttributeValue = (attr) ->
+      #  nodeAttributes[attr].getValue node
 
       # commit this node to this graph
       @get("nodeSet")[@get("nodeHash")(node)] = true
@@ -31,6 +34,8 @@ define [], () ->
       @pushDatum "nodes", node
 
     putLink: (link) ->
+      link.strength ?= 1
+      if link.strength is 1 then link.strength = Math.random()*0.8+0.2
       @pushDatum "links", link
       @trigger "add:link", link
 
@@ -56,7 +61,6 @@ define [], () ->
       nodeWasRemoved = (node) ->
         _.some removed, (n) ->
           _.isEqual n, node
-
       linkFilter = (link) ->
         not nodeWasRemoved(link.source) and not nodeWasRemoved(link.target)
       removed = []

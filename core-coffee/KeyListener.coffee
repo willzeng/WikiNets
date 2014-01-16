@@ -6,7 +6,7 @@ define [], () ->
     constructor: (target) ->
       _.extend this, Backbone.Events
       state = {}
-      watch = [17, 65, 27, 46, 13, 16, 80, 187, 191]
+      watch = [13, 17, 65, 27, 46, 13, 16, 80, 187, 191]
 
       # this ignores keypresses from inputs
       $(window).keydown (e) =>
