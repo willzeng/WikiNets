@@ -133,7 +133,7 @@
         node = this.nodeSelection = d3.select(this.el).select(".nodeContainer").selectAll(".node").data(nodes, this.model.get("nodeHash"));
         nodeEnter = node.enter().append("g").attr("class", "node").call(this.force.drag);
         nodeEnter.append("text").attr("dx", 12).attr("dy", ".35em").text(function(d) {
-          return d.text;
+          return _this.findText(d);
         });
         nodeEnter.append("circle").attr("r", 5).attr("cx", 0).attr("cy", 0);
         clickSemaphore = 0;
@@ -231,6 +231,16 @@
 
       GraphView.prototype.getLinkFilter = function() {
         return this.linkFilter;
+      };
+
+      GraphView.prototype.findText = function(node) {
+        if (node.name != null) {
+          return node.name;
+        } else if (node.title != null) {
+          return node.title;
+        } else {
+          return '';
+        }
       };
 
       return GraphView;

@@ -33,12 +33,10 @@ define [], () ->
 
 
     update: ->
-
       #Clear the workspace and setup a new one
       @$el.empty()
       @frame = d3.select(@el).append("svg:svg").attr("width", @miniMapWidth)
                 .attr("height", @miniMapHeight);
-
 
       if @mostRecentNode isnt undefined
 
@@ -120,3 +118,4 @@ define [], () ->
             .attr("x", sub_width/2+5)
             .attr("y", sub_height/2-1+central_width/2)
             .text(@mostRecentNode.text)
+

@@ -22,7 +22,6 @@ define [], () ->
       @listenTo @keyListener, "down:13", @removeSelectionCompliment     #ENTR
 
       # handle selecting and deselecting nodes
-
       @graphView.on "enter:node:click", (datum) =>
         @toggleSelection datum
       
