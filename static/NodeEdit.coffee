@@ -42,8 +42,7 @@ define [], () ->
           @editNode(node, $nodeDiv, blacklist)
           )
           
-          
-    ## most of this is not working yet
+
     editNode: (node, nodeDiv, blacklist) ->
           console.log "Editing node: " + node['_id']
           nodeInputNumber = 0
