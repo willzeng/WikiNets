@@ -78,17 +78,13 @@
       "local/ShowAll": {}
     };
     return Celestrium.init(plugins, function(instances) {
-      var loadEverything, makeDisplayable;
-      makeDisplayable = function(n) {
-        n['text'] = n.name;
-        return n;
-      };
+      var loadEverything;
       loadEverything = function(nodes) {
         var node, _i, _len, _results;
         _results = [];
         for (_i = 0, _len = nodes.length; _i < _len; _i++) {
           node = nodes[_i];
-          _results.push(instances["GraphModel"].putNode(makeDisplayable(node)));
+          _results.push(instances["GraphModel"].putNode(node));
         }
         return _results;
       };

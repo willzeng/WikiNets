@@ -106,13 +106,8 @@ require ["Celestrium"], (Celestrium) ->
   # initialize the plugins and execute a callback once done
   Celestrium.init plugins, (instances) ->
 
-    #TODO MAKE THIS GENERIC
-    makeDisplayable = (n) ->  
-      n['text'] = n.name
-      n
-
     loadEverything = (nodes) -> 
-      instances["GraphModel"].putNode makeDisplayable(node) for node in nodes
+      instances["GraphModel"].putNode node for node in nodes
 
     #Prepopulate the GraphModel with all the nodes and links
     $.get('/get_nodes', loadEverything)
