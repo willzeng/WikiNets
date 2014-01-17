@@ -39,9 +39,10 @@
         $container = $("<div class=\"node-profile-helper\"/>").appendTo(this.$el);
         blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight"];
         return _.each(selectedNodes, function(node) {
-          var $nodeDiv, $nodeEdit;
+          var $nodeDiv, $nodeEdit, header;
           $nodeDiv = $("<div class=\"node-profile\"/>").appendTo($container);
-          $("<div class=\"node-profile-title\">" + node['text'] + "</div>").appendTo($nodeDiv);
+          header = _this.findHeader(node);
+          $("<div class=\"node-profile-title\">" + header + "</div>").appendTo($nodeDiv);
           _.each(node, function(value, property) {
             var makeLinks;
             value += "";
@@ -180,6 +181,16 @@
           }
         });
         return [submitOK, propertyObject];
+      };
+
+      NodeEdit.prototype.findHeader = function(node) {
+        if (node.name != null) {
+          return node.name;
+        } else if (node.title != null) {
+          return node.title;
+        } else {
+          return '';
+        }
       };
 
       return NodeEdit;

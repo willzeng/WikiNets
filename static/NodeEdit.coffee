@@ -28,7 +28,8 @@ define [], () ->
       blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight"]
       _.each selectedNodes, (node) =>
         $nodeDiv = $("<div class=\"node-profile\"/>").appendTo($container)
-        $("<div class=\"node-profile-title\">#{node['text']}</div>").appendTo $nodeDiv
+        header = @findHeader(node)
+        $("<div class=\"node-profile-title\">#{header}</div>").appendTo $nodeDiv
         _.each node, (value, property) ->
           value += ""
           if blacklist.indexOf(property) < 0
@@ -147,3 +148,11 @@ define [], () ->
             else
               propertyObject[property] = value.replace(/'/g, "\\'")
         [submitOK, propertyObject]
+
+    findHeader: (node) ->
+      if node.name?
+        node.name
+      else if node.title?
+        node.title
+      else
+        ''
