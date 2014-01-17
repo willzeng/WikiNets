@@ -33,9 +33,6 @@
         if (this.get("nodeSet")[this.get("nodeHash")(node)]) {
           return;
         }
-        if (node.text == null) {
-          node.text = node.name;
-        }
         this.get("nodeSet")[this.get("nodeHash")(node)] = true;
         this.trigger("add:node", node);
         return this.pushDatum("nodes", node);
