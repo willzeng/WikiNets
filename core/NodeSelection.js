@@ -110,34 +110,36 @@
       };
 
       Selection.prototype.selectConnectedComponent = function(node) {
-        var allTrue, graph, lookup, newSelected, seen, visit;
-        visit = function(text) {
-          if (!_.has(seen, text)) {
-            seen[text] = 1;
-            return _.each(graph[text], function(ignore, neighborText) {
-              return visit(neighborText);
+        var allTrue, graph, lookup, newSelected, seen, visit,
+          _this = this;
+        this.nodeHash = this.graphModel.get("nodeHash");
+        visit = function(id) {
+          if (!_.has(seen, id)) {
+            seen[id] = 1;
+            return _.each(graph[id], function(ignore, neighborID) {
+              return visit(neighborID);
             });
           }
         };
         graph = {};
         lookup = {};
         _.each(this.graphModel.getNodes(), function(node) {
-          graph[node.text] = {};
-          return lookup[node.text] = node;
+          graph[_this.nodeHash(node)] = {};
+          return lookup[_this.nodeHash(node)] = node;
         });
         _.each(this.linkFilter.filter(this.graphModel.getLinks()), function(link) {
-          graph[link.source.text][link.target.text] = 1;
-          return graph[link.target.text][link.source.text] = 1;
+          graph[_this.nodeHash(link.source)][_this.nodeHash(link.target)] = 1;
+          return graph[_this.nodeHash(link.target)][_this.nodeHash(link.source)] = 1;
         });
         seen = {};
-        visit(node.text);
+        visit(this.nodeHash(node));
         allTrue = true;
-        _.each(seen, function(ignore, text) {
-          return allTrue = allTrue && lookup[text].selected;
+        _.each(seen, function(ignore, id) {
+          return allTrue = allTrue && lookup[id].selected;
         });
         newSelected = !allTrue;
-        _.each(seen, function(ignore, text) {
-          return lookup[text].selected = newSelected;
+        _.each(seen, function(ignore, id) {
+          return lookup[id].selected = newSelected;
         });
         this.trigger("change");
         return this.renderSelection();
