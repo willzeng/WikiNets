@@ -300,7 +300,13 @@ module.exports = class MyApp
           nodeData = (n[0].data for n in noderes.data)
           keys = []
           ((keys.push key for key,value of n when not (key in keys)) for n in nodeData)
-          response.json keys
+          values = {}
+          for key in keys
+            do (key) =>
+              values[key] = []
+              (values[key].push n[key] for n in nodeData when not ((n[key] is undefined) or (n[key] in values[key])))
+              console.log key
+          response.json [keys, values]
           )
     )
 

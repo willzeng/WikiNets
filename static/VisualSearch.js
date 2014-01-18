@@ -30,7 +30,8 @@
         $container = $("<div id=\"visual-search-container\"/>").appendTo(this.$el);
         $input = $("<div class=\"visual_search\" />").appendTo($container);
         $.get("/get_all_node_keys", function(data) {
-          _this.keys = data;
+          _this.keys = data[0];
+          _this.values = data[1];
           console.log(_this.keys);
           $(document).ready(function() {
             var visualSearch;
@@ -45,7 +46,7 @@
                   return callback(_this.keys);
                 },
                 valueMatches: function(facet, searchTerm, callback) {
-                  return {};
+                  return callback(_this.values[facet]);
                 }
               }
             });

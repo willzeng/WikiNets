@@ -19,16 +19,17 @@ define [], () ->
       $container = $("<div id=\"visual-search-container\"/>").appendTo @$el
       $input = $("<div class=\"visual_search\" />").appendTo $container
       $.get "/get_all_node_keys", (data) =>
-        @keys = data
+        @keys = data[0]
+        @values = data[1]
         console.log @keys
         $(document).ready(() =>
           visualSearch = VS.init({
             container : $('.visual_search')
             query     : ''
             callbacks :
-              search       : (query, searchCollection) -> {}
+              search       : (query, searchCollection) => {}
               facetMatches : (callback) => callback @keys
-              valueMatches : (facet, searchTerm, callback) -> {}
+              valueMatches : (facet, searchTerm, callback) => callback @values[facet]
           })
           #console.log "Initializing Search Box"
         )
