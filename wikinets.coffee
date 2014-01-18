@@ -293,6 +293,17 @@ module.exports = class MyApp
           )
     )
 
+    app.get('/get_all_node_keys', (request,response)->
+      graphDb.cypher.execute("start n=node(*) return n;").then(
+        (noderes)->
+          console.log "Get All Node Keys: Query Executed"
+          nodeData = (n[0].data for n in noderes.data)
+          keys = []
+          ((keys.push key for key,value of n when not (key in keys)) for n in nodeData)
+          response.json keys
+          )
+    )
+
     # adds a default strength value to a relationship 
     # TODO: (should only do this if there isnt one already)
     addStrength = (dict,start,end,id) -> 
