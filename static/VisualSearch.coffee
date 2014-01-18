@@ -1,5 +1,5 @@
-# provides an search box which can add nodes to the graph
-# using visualsearch
+# provides a search box which can add nodes to the graph
+# using VisualSearch
 define [], () ->
 
   class VisualSearchBox extends Backbone.View
@@ -16,7 +16,7 @@ define [], () ->
       instances["Layout"].addPlugin @el, @options.pluginOrder, 'Visual Search', true
 
     render: ->
-      $container = $("<div />").addClass("visual-search-container")
+      $container = $("<div id=\"visual-search-container\"/>").appendTo @$el
 #      $input = $("<div />").addClass("visual_search")
       $.get "/get_all_node_keys", (data) =>
         @properties = "["+ ("'"+key+"'" for key in data) + "]"
@@ -40,7 +40,6 @@ define [], () ->
       console.log "Rendering Visual Search plugin"
 
 #      $container.append $input
-      @$el.append $container
 
 #      $(document).ready(()->
 #        visualSearch = VS.init({

@@ -27,7 +27,7 @@
       VisualSearchBox.prototype.render = function() {
         var $container,
           _this = this;
-        $container = $("<div />").addClass("visual-search-container");
+        $container = $("<div id=\"visual-search-container\"/>").appendTo(this.$el);
         $.get("/get_all_node_keys", function(data) {
           var $script, key;
           _this.properties = "[" + ((function() {
@@ -43,7 +43,6 @@
           return $script = $("<div class=\"visual_search\"></div>\n<script type=\"text/javascript\" charset=\"utf-8\">\n  $(document).ready(function() {\n    var visualSearch = VS.init({\n      container : $('.visual_search'),\n      query     : '',\n      callbacks : {\n        search       : function(query, searchCollection) {},\n        facetMatches : function(callback) {callback(" + _this.properties + ");},\n        valueMatches : function(facet, searchTerm, callback) {}\n      }\n    });\n  });\n</script>").appendTo($container);
         });
         console.log("Rendering Visual Search plugin");
-        this.$el.append($container);
         return this;
       };
 
