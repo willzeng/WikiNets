@@ -69,9 +69,7 @@
       "Sliders": {},
       "ForceSliders": {},
       "LinkDistribution": {},
-      "NodeSearch": {
-        prefetch: "/node_names"
-      },
+      "local/VisualSearch": {},
       MiniMap: {},
       Stats: {},
       "local/TopBarCreate": {},

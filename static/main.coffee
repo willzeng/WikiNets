@@ -90,8 +90,9 @@ require ["Celestrium"], (Celestrium) ->
 
     "LinkDistribution": {}
 
-    "NodeSearch": 
-      prefetch: "/node_names"
+    #"NodeSearch": 
+    #  prefetch: "/node_names"
+    "local/VisualSearch": {}
 
     MiniMap: {}  
 
