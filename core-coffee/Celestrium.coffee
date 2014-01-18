@@ -17,6 +17,12 @@ requirejs.config
   shim:
     "../lib/jquery.typeahead": ["../lib/jquery"]
     "../lib/backbone": ["../lib/underscore"]
+    "../lib/backbone-0.9.10": ["../lib/underscore"]
+    "../lib/visualsearch":
+      deps: ["../lib/jquery", "../lib/jquery.ui.autocomplete", "../lib/jquery.ui.core", "../lib/jquery.ui.menu", "../lib/jquery.ui.position", "../lib/jquery.ui.widget", "../lib/underscore", "../lib/backbone-0.9.10"]
+      exports: 'VS'
+    "../lib/jquery.ui.autocomplete": ["../lib/jquery.ui.core", "../lib/jquery.ui.menu", "../lib/jquery.ui.position", "../lib/jquery.ui.widget"]
+    "../lib/jquery.ui.menu": ["../lib/jquery.ui.core", "../lib/jquery.ui.position", "../lib/jquery.ui.widget"]
 
 globalLibs = [
   '../lib/jquery',
@@ -24,7 +30,8 @@ globalLibs = [
   '../lib/underscore',
   '../lib/backbone',
   '../lib/d3',
-  '../lib/less'
+  '../lib/less',
+  '../lib/visualsearch'
 ]
 
 define globalLibs, () ->
