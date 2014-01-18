@@ -92,26 +92,28 @@ define [], () ->
     # using links meeting current Connectivity criteria
     selectConnectedComponent: (node) ->
 
-      visit = (text) ->
-        unless _.has(seen, text)
-          seen[text] = 1
-          _.each graph[text], (ignore, neighborText) ->
-            visit neighborText
+      @nodeHash = @graphModel.get("nodeHash")
+
+      visit = (id) ->
+        unless _.has(seen, id)
+          seen[id] = 1
+          _.each graph[id], (ignore, neighborID) ->
+            visit neighborID
 
       # create adjacency list version of graph
       graph = {}
       lookup = {}
-      _.each @graphModel.getNodes(), (node) ->
-        graph[node.text] = {}
-        lookup[node.text] = node
+      _.each @graphModel.getNodes(), (node) =>
+        graph[@nodeHash(node)] = {}
+        lookup[@nodeHash(node)] = node
 
-      _.each @linkFilter.filter(@graphModel.getLinks()), (link) ->
-        graph[link.source.text][link.target.text] = 1
-        graph[link.target.text][link.source.text] = 1
+      _.each @linkFilter.filter(@graphModel.getLinks()), (link) =>
+        graph[@nodeHash(link.source)][@nodeHash(link.target)] = 1
+        graph[@nodeHash(link.target)][@nodeHash(link.source)] = 1
 
       # perform DFS to compile connected component
       seen = {}
-      visit node.text
+      visit @nodeHash(node)
 
       # toggle selection appropriately
       # selection before ==> selection after
@@ -119,12 +121,12 @@ define [], () ->
       #       some ==> all
       #       all  ==> none
       allTrue = true
-      _.each seen, (ignore, text) ->
-        allTrue = allTrue and lookup[text].selected
+      _.each seen, (ignore, id) ->
+        allTrue = allTrue and lookup[id].selected
 
       newSelected = not allTrue
-      _.each seen, (ignore, text) ->
-        lookup[text].selected = newSelected
+      _.each seen, (ignore, id) ->
+        lookup[id].selected = newSelected
 
       # notify listeners of change
       @trigger "change"
