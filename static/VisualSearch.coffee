@@ -17,42 +17,23 @@ define [], () ->
 
     render: ->
       $container = $("<div id=\"visual-search-container\"/>").appendTo @$el
-#      $input = $("<div />").addClass("visual_search")
+      $input = $("<div class=\"visual_search\" />").appendTo $container
       $.get "/get_all_node_keys", (data) =>
-        @properties = "["+ ("'"+key+"'" for key in data) + "]"
-        console.log @properties
-        $script = $("""
-        <div class="visual_search"></div>
-        <script type="text/javascript" charset="utf-8">
-          $(document).ready(function() {
-            var visualSearch = VS.init({
-              container : $('.visual_search'),
-              query     : '',
-              callbacks : {
-                search       : function(query, searchCollection) {},
-                facetMatches : function(callback) {callback(#{@properties});},
-                valueMatches : function(facet, searchTerm, callback) {}
-              }
-            });
-          });
-        </script>
-        """).appendTo($container)
-      console.log "Rendering Visual Search plugin"
-
-#      $container.append $input
-
-#      $(document).ready(()->
-#        visualSearch = VS.init({
-#          container : $('.visual_search'),
-#          query     : '',
-#          callbacks : {
-#            search       : (query, searchCollection) -> {},
-#            facetMatches : (callback) -> {},
-#            valueMatches : (facet, searchTerm, callback) -> {}
-#          }
-#        })
-#      )
-
+        @keys = data
+        console.log @keys
+        $(document).ready(() =>
+          visualSearch = VS.init({
+            container : $('.visual_search')
+            query     : ''
+            callbacks :
+              search       : (query, searchCollection) -> {}
+              facetMatches : (callback) => callback @keys
+              valueMatches : (facet, searchTerm, callback) -> {}
+          })
+          #console.log "Initializing Search Box"
+        )
+        return data
+      #console.log "Rendering Visual Search plugin"
       return this
 
     addNode: (e, datum) ->

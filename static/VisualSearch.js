@@ -25,24 +25,33 @@
       };
 
       VisualSearchBox.prototype.render = function() {
-        var $container,
+        var $container, $input,
           _this = this;
         $container = $("<div id=\"visual-search-container\"/>").appendTo(this.$el);
+        $input = $("<div class=\"visual_search\" />").appendTo($container);
         $.get("/get_all_node_keys", function(data) {
-          var $script, key;
-          _this.properties = "[" + ((function() {
-            var _i, _len, _results;
-            _results = [];
-            for (_i = 0, _len = data.length; _i < _len; _i++) {
-              key = data[_i];
-              _results.push("'" + key + "'");
-            }
-            return _results;
-          })()) + "]";
-          console.log(_this.properties);
-          return $script = $("<div class=\"visual_search\"></div>\n<script type=\"text/javascript\" charset=\"utf-8\">\n  $(document).ready(function() {\n    var visualSearch = VS.init({\n      container : $('.visual_search'),\n      query     : '',\n      callbacks : {\n        search       : function(query, searchCollection) {},\n        facetMatches : function(callback) {callback(" + _this.properties + ");},\n        valueMatches : function(facet, searchTerm, callback) {}\n      }\n    });\n  });\n</script>").appendTo($container);
+          _this.keys = data;
+          console.log(_this.keys);
+          $(document).ready(function() {
+            var visualSearch;
+            return visualSearch = VS.init({
+              container: $('.visual_search'),
+              query: '',
+              callbacks: {
+                search: function(query, searchCollection) {
+                  return {};
+                },
+                facetMatches: function(callback) {
+                  return callback(_this.keys);
+                },
+                valueMatches: function(facet, searchTerm, callback) {
+                  return {};
+                }
+              }
+            });
+          });
+          return data;
         });
-        console.log("Rendering Visual Search plugin");
         return this;
       };
 
