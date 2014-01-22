@@ -92,10 +92,20 @@
           }
           if (neighbors.length > 0) {
             for (k = _l = 0, _ref2 = neighbors.length - 1; 0 <= _ref2 ? _l <= _ref2 : _l >= _ref2; k = 0 <= _ref2 ? ++_l : --_l) {
-              this.frame.append("text").attr("fill", "black").attr("font-size", minimap_text_size).attr("x", minimap_scalar * Math.sin(2 * k * Math.PI / neighbors.length) + sub_width / 2 + 5).attr("y", minimap_scalar * Math.cos(2 * k * Math.PI / neighbors.length) + sub_height / 2 + central_width / 2 + 5).text(neighbors[k].text);
+              this.frame.append("text").attr("fill", "black").attr("font-size", minimap_text_size).attr("x", minimap_scalar * Math.sin(2 * k * Math.PI / neighbors.length) + sub_width / 2 + 5).attr("y", minimap_scalar * Math.cos(2 * k * Math.PI / neighbors.length) + sub_height / 2 + central_width / 2 + 5).text(this.findHeader(neighbors[k]));
             }
           }
-          return this.frame.append("text").attr("fill", "black").attr("font-size", minimap_text_size).attr("x", sub_width / 2 + 5).attr("y", sub_height / 2 - 1 + central_width / 2).text(this.mostRecentNode.text);
+          return this.frame.append("text").attr("fill", "black").attr("font-size", minimap_text_size).attr("x", sub_width / 2 + 5).attr("y", sub_height / 2 - 1 + central_width / 2).text(this.findHeader(this.mostRecentNode));
+        }
+      };
+
+      MiniMap.prototype.findHeader = function(node) {
+        if (node.name != null) {
+          return node.name;
+        } else if (node.title != null) {
+          return node.title;
+        } else {
+          return '';
         }
       };
 
