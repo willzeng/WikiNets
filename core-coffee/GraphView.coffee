@@ -147,7 +147,9 @@ define [], () ->
       link.exit().remove()
       link.attr "stroke-width", (link) => 5 * (@linkStrength link)
       node = @nodeSelection = d3.select(@el).select(".nodeContainer").selectAll(".node").data(nodes, @model.get("nodeHash"))
-      nodeEnter = node.enter().append("g").attr("class", "node").call(@force.drag)
+      #disable node dragging
+      #nodeEnter = node.enter().append("g").attr("class", "node").call(@force.drag)
+      nodeEnter = node.enter().append("g").attr("class", "node")
       nodeEnter.append("text")
            .attr("dx", 12)
            .attr("dy", ".35em")
