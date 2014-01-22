@@ -3,7 +3,7 @@ define [], () ->
 
   class LinkFilter extends Backbone.Model
     initialize: () ->
-      @set "threshold", 0.75
+      @set "threshold", 0
     filter: (links) ->
       return _.filter links, (link) =>
         return link.strength > @get("threshold")

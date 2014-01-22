@@ -14,7 +14,7 @@
       }
 
       LinkFilter.prototype.initialize = function() {
-        return this.set("threshold", 0.75);
+        return this.set("threshold", 0);
       };
 
       LinkFilter.prototype.filter = function(links) {
