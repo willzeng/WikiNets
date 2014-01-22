@@ -25,8 +25,7 @@ define [], () ->
         @searchNodes @searchQuery
         )
       $.get "/get_all_node_keys", (data) =>
-        @keys = data[0]
-        @values = data[1]
+        @keys = data
         #console.log @keys
         $(document).ready(() =>
           visualSearch = VS.init({
@@ -37,7 +36,8 @@ define [], () ->
                 @searchQuery = {}
                 @searchQuery[facet] = searchCollection.find(facet) for facet in @keys when (searchCollection.count(facet)!=0)
               facetMatches : (callback) => callback @keys
-              valueMatches : (facet, searchTerm, callback) => callback @values[facet]
+              valueMatches : (facet, searchTerm, callback) =>
+                $.post "/get_all_key_values", {property: facet}, (data) -> callback data
           })
         )
         return data
