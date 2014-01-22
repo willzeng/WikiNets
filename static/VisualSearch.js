@@ -37,8 +37,7 @@
           return _this.searchNodes(_this.searchQuery);
         });
         $.get("/get_all_node_keys", function(data) {
-          _this.keys = data[0];
-          _this.values = data[1];
+          _this.keys = data;
           $(document).ready(function() {
             var visualSearch;
             return visualSearch = VS.init({
@@ -59,10 +58,17 @@
                   return _results;
                 },
                 facetMatches: function(callback) {
-                  return callback(_this.keys);
+                  return $.get("/get_all_node_keys", function(data) {
+                    _this.keys = data;
+                    return callback(data);
+                  });
                 },
                 valueMatches: function(facet, searchTerm, callback) {
-                  return callback(_this.values[facet]);
+                  return $.post("/get_all_key_values", {
+                    property: facet
+                  }, function(data) {
+                    return callback(data);
+                  });
                 }
               }
             });

@@ -302,13 +302,22 @@ module.exports = class MyApp
           nodeData = (n[0].data for n in noderes.data)
           keys = []
           ((keys.push key for key,value of n when not (key in keys)) for n in nodeData)
-          values = {}
-          for key in keys
-            do (key) =>
-              values[key] = []
-              (values[key].push n[key] for n in nodeData when not ((n[key] is undefined) or (n[key] in values[key])))
-              console.log key
-          response.json [keys, values]
+          response.json keys.sort()
+          )
+    )
+
+    # gets a list of all values occuring in the database for a given node property
+    # and returns them as an alphabetically sorted list
+    app.post('/get_all_key_values', (request,response)->
+      cypherQuery = "start n=node(*) where has(n." + request.body.property + ") return n;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes)->
+          console.log "Get All Key values: Query Executed"
+          nodeData = (n[0].data for n in noderes.data)
+          values = []
+          (values.push n[request.body.property] for n in nodeData when not (n[request.body.property] in values))
+          response.json values.sort()
           )
     )
 
