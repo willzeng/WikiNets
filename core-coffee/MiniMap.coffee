@@ -87,7 +87,9 @@ define [], () ->
         #Draws the central node in the minimap as a light blue square
         @frame.append("circle")
               .attr("class", "node")
-              .attr("fill", if @mostRecentNode.selected then "lightblue" else "black")
+              .attr("stroke", "darkgrey")
+              .attr("stroke-width", 3)
+              .attr("fill", if @mostRecentNode.selected then "steelblue" else "white")
               .attr("cx", sub_width/2+central_width/2).attr("cy", sub_height/2+central_width/2).attr("r", central_width)
               .on("click", () =>
                 @selection.toggleSelection(@mostRecentNode)
@@ -99,7 +101,9 @@ define [], () ->
             @frame.append("circle")
               .attr("class", "node")
               .attr("r", circle_sizer)
-              .attr("fill", if neighbors[k].selected then "lightblue" else "black")
+              .attr("stroke", "darkgrey")
+              .attr("stroke-width", 3)
+              .attr("fill", if neighbors[k].selected then "steelblue" else "white")
               .attr("cx", minimap_scalar*Math.sin(2*k*Math.PI/neighbors.length)+sub_width/2+central_width/2)
               .attr("cy",  minimap_scalar*Math.cos(2*k*Math.PI/neighbors.length)+sub_height/2+central_width/2)
               .data([neighbors[k]])

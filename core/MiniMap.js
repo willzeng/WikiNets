@@ -86,12 +86,12 @@
             /* should eventually implement directed arrows here*/
 
           }
-          this.frame.append("circle").attr("class", "node").attr("fill", this.mostRecentNode.selected ? "lightblue" : "black").attr("cx", sub_width / 2 + central_width / 2).attr("cy", sub_height / 2 + central_width / 2).attr("r", central_width).on("click", function() {
+          this.frame.append("circle").attr("class", "node").attr("stroke", "darkgrey").attr("stroke-width", 3).attr("fill", this.mostRecentNode.selected ? "steelblue" : "white").attr("cx", sub_width / 2 + central_width / 2).attr("cy", sub_height / 2 + central_width / 2).attr("r", central_width).on("click", function() {
             return _this.selection.toggleSelection(_this.mostRecentNode);
           });
           if (neighbors.length > 0) {
             for (k = _k = 0, _ref1 = neighbors.length - 1; 0 <= _ref1 ? _k <= _ref1 : _k >= _ref1; k = 0 <= _ref1 ? ++_k : --_k) {
-              this.frame.append("circle").attr("class", "node").attr("r", circle_sizer).attr("fill", neighbors[k].selected ? "lightblue" : "black").attr("cx", minimap_scalar * Math.sin(2 * k * Math.PI / neighbors.length) + sub_width / 2 + central_width / 2).attr("cy", minimap_scalar * Math.cos(2 * k * Math.PI / neighbors.length) + sub_height / 2 + central_width / 2).data([neighbors[k]]).on("click", function(node) {
+              this.frame.append("circle").attr("class", "node").attr("r", circle_sizer).attr("stroke", "darkgrey").attr("stroke-width", 3).attr("fill", neighbors[k].selected ? "steelblue" : "white").attr("cx", minimap_scalar * Math.sin(2 * k * Math.PI / neighbors.length) + sub_width / 2 + central_width / 2).attr("cy", minimap_scalar * Math.cos(2 * k * Math.PI / neighbors.length) + sub_height / 2 + central_width / 2).data([neighbors[k]]).on("click", function(node) {
                 if (_this.mostRecentNode.selected && !d3.event.shiftKey && !d3.event.ctrlKey) {
                   _this.selection.toggleSelection(_this.mostRecentNode);
                 }

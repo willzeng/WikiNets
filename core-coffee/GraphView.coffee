@@ -84,6 +84,7 @@ define [], () ->
              .style("fill-opacity", "0%")
 
       # Panning on Drag
+      
       # lock infrastracture to ignore zoom changes that would
       # typically occur when dragging a node
       translateLock = false
@@ -127,9 +128,6 @@ define [], () ->
       #Center node on shift+click
       @addCentering(@workspace, @zoom)
 
-      #hack fixing multi-eval of Update and hence Start bug:
-      #clearTimeout(@tickTimer)
-      #@tickTimer=setTimeout( () => 
 
       nodes = @model.get("nodes")
       links = @model.get("links")
@@ -158,7 +156,7 @@ define [], () ->
           )
 
       nodeEnter.append("circle")
-           .attr("r", 5)
+           .attr("r", 8)
            .attr("cx", 0)
            .attr("cy", 0)
       
@@ -200,12 +198,6 @@ define [], () ->
         node.attr "transform", (d) ->
           "translate(#{d.x},#{d.y})"
 
-
-        #fast forward rendering
-        #@forwardAlpha(@force,.005,2000)
-        
-      #, 5)
-
     addCentering: (workspace, zoom) ->
       width = $(@el).width()
       height = $(@el).height() 
@@ -219,8 +211,8 @@ define [], () ->
         translateParams = [(width/2 -x)/scale,(height/2-y)/scale]
         #update translate values
         zoom.translate([translateParams[0], translateParams[1]])
-        workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
-    
+        #workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
+        workspace.transition().attr("transform", "translate(#{translateParams}) scale(#{scale})").ease("linear")
 
     #fast-forward force graph rendering to prevent bouncing http://stackoverflow.com/questions/13463053/calm-down-initial-tick-of-a-force-layout  
     forwardAlpha: (layout, alpha, max) ->

@@ -135,7 +135,7 @@
         nodeEnter.append("text").attr("dx", 12).attr("dy", ".35em").text(function(d) {
           return _this.findText(d);
         });
-        nodeEnter.append("circle").attr("r", 5).attr("cx", 0).attr("cy", 0);
+        nodeEnter.append("circle").attr("r", 8).attr("cx", 0).attr("cy", 0);
         clickSemaphore = 0;
         nodeEnter.on("click", function(datum, index) {
           var savedClickSemaphore, shifted;
@@ -196,7 +196,7 @@
           scale = zoom.scale();
           translateParams = [(width / 2 - x) / scale, (height / 2 - y) / scale];
           zoom.translate([translateParams[0], translateParams[1]]);
-          return workspace.transition().ease("linear").attr("transform", "translate(" + translateParams + ") scale(" + scale + ")");
+          return workspace.transition().attr("transform", "translate(" + translateParams + ") scale(" + scale + ")").ease("linear");
         });
       };
 
