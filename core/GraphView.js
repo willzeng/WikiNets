@@ -104,13 +104,13 @@
             return _this.trigger("view:click");
           }
         });
+        this.addCentering();
         return this;
       };
 
       GraphView.prototype.update = function() {
         var clickSemaphore, filteredLinks, link, linkEnter, links, node, nodeEnter, nodes,
           _this = this;
-        this.addCentering(this.workspace, this.zoom);
         nodes = this.model.get("nodes");
         links = this.model.get("links");
         filteredLinks = this.linkFilter ? this.linkFilter.filter(links) : links;
@@ -184,7 +184,7 @@
         });
       };
 
-      GraphView.prototype.addCentering = function(workspace, zoom) {
+      GraphView.prototype.addCentering = function() {
         var height, translateParams, width;
         width = $(this.el).width();
         height = $(this.el).height();
@@ -193,23 +193,11 @@
           var scale, x, y;
           x = node.x;
           y = node.y;
-          scale = zoom.scale();
+          scale = this.zoom.scale();
           translateParams = [(width / 2 - x) / scale, (height / 2 - y) / scale];
-          zoom.translate([translateParams[0], translateParams[1]]);
-          return workspace.transition().attr("transform", "translate(" + translateParams + ") scale(" + scale + ")").ease("linear");
+          this.zoom.translate([translateParams[0], translateParams[1]]);
+          return this.workspace.transition().ease("linear").attr("transform", "translate(" + translateParams + ") scale(" + scale + ")");
         });
-      };
-
-      GraphView.prototype.forwardAlpha = function(layout, alpha, max) {
-        var i, _results;
-        alpha = alpha || 0;
-        max = max || 1000;
-        i = 0;
-        _results = [];
-        while (layout.alpha() > alpha && i++ < max) {
-          _results.push(layout.tick());
-        }
-        return _results;
       };
 
       GraphView.prototype.drawXHairs = function(x, y, obj) {

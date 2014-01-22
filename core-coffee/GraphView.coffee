@@ -121,13 +121,12 @@ define [], () ->
         if e.which is 3 then @trigger "view:rightclick"
         else @trigger "view:click"
 
+      #Center node on shift+click
+      @addCentering()
+
       return this
 
     update: ->
-      #Center node on shift+click
-      @addCentering(@workspace, @zoom)
-
-
       nodes = @model.get("nodes")
       links = @model.get("links")
       filteredLinks = if @linkFilter then @linkFilter.filter(links) else links
@@ -197,7 +196,7 @@ define [], () ->
         node.attr "transform", (d) ->
           "translate(#{d.x},#{d.y})"
 
-    addCentering: (workspace, zoom) ->
+    addCentering: () ->
       width = $(@el).width()
       height = $(@el).height() 
 
@@ -206,20 +205,20 @@ define [], () ->
       @on "enter:node:shift:click", (node) ->
         x = node.x
         y = node.y
-        scale = zoom.scale()
+        scale = @zoom.scale()
         translateParams = [(width/2 -x)/scale,(height/2-y)/scale]
+        #translateParams = [x,y]
         #update translate values
-        zoom.translate([translateParams[0], translateParams[1]])
-        #workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
-        workspace.transition().attr("transform", "translate(#{translateParams}) scale(#{scale})").ease("linear")
+        @zoom.translate([translateParams[0], translateParams[1]])
+        @workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
 
     #fast-forward force graph rendering to prevent bouncing http://stackoverflow.com/questions/13463053/calm-down-initial-tick-of-a-force-layout  
-    forwardAlpha: (layout, alpha, max) ->
-      alpha = alpha || 0
-      max = max || 1000
-      i = 0
-      while layout.alpha() > alpha && i++ < max
-        layout.tick()
+    # forwardAlpha: (layout, alpha, max) ->
+    #   alpha = alpha || 0
+    #   max = max || 1000
+    #   i = 0
+    #   while layout.alpha() > alpha && i++ < max
+    #     layout.tick()
 
     drawXHairs: (x,y,obj) ->
       obj.append("line")
