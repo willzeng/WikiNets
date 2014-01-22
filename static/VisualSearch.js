@@ -58,7 +58,10 @@
                   return _results;
                 },
                 facetMatches: function(callback) {
-                  return callback(_this.keys);
+                  return $.get("/get_all_node_keys", function(data) {
+                    _this.keys = data;
+                    return callback(data);
+                  });
                 },
                 valueMatches: function(facet, searchTerm, callback) {
                   return $.post("/get_all_key_values", {
