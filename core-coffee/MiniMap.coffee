@@ -107,8 +107,7 @@ define [], () ->
               .attr("font-size", minimap_text_size)
               .attr("x", minimap_scalar*Math.sin(2*k*Math.PI/neighbors.length)+sub_width/2+5)
               .attr("y", minimap_scalar*Math.cos(2*k*Math.PI/neighbors.length)+sub_height/2+central_width/2+5)
-              .text(
-               neighbors[k].text
+              .text( @findHeader(neighbors[k])
               ) for k in [0..(neighbors.length-1)]
 
         #Draws the text label on the central node in the minimap
@@ -117,5 +116,12 @@ define [], () ->
             .attr("font-size", minimap_text_size)
             .attr("x", sub_width/2+5)
             .attr("y", sub_height/2-1+central_width/2)
-            .text(@mostRecentNode.text)
+            .text(@findHeader(@mostRecentNode))
 
+    findHeader: (node) ->
+      if node.name?
+        node.name
+      else if node.title?
+        node.title
+      else
+        ''
