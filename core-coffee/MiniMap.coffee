@@ -9,12 +9,14 @@ define [], () ->
     init: (instances) ->    
       @graphView = instances['GraphView']
       @graphView.on("enter:node:click", (datum) =>
-        @mostRecentNode = datum
-        @update()
+        @chooseCenter(datum)
         )
 
       @model = instances["GraphModel"]
       @model.on "change", @update.bind(this)
+
+      @selection = instances["NodeSelection"]
+      @selection.on "change", @update.bind(this)
       
       instances["Layout"].addPlugin @el, @options.pluginOrder, 'MiniMap', true
 
@@ -36,7 +38,7 @@ define [], () ->
       #Clear the workspace and setup a new one
       @$el.empty()
       @frame = d3.select(@el).append("svg:svg").attr("width", @miniMapWidth)
-                .attr("height", @miniMapHeight);
+                .attr("height", @miniMapHeight)
 
       if @mostRecentNode isnt undefined
 
@@ -52,7 +54,7 @@ define [], () ->
         neighbors.push link.source for link in allLinks when @model.get("nodeHash")(link.target) is centerID
         
         # This is the width of the center node of the minimap
-        central_width=10;
+        central_width=14;
         # The radius of the circle for each neighbor
         circle_sizer=10;
         # padding around the minimap
@@ -83,40 +85,52 @@ define [], () ->
             #.attr("marker-end", "url(#subNetTriangle)")
 
         #Draws the central node in the minimap as a light blue square
-        @frame.append("rect")
-          .attr("x", sub_width/2).attr("y", sub_height/2).attr("width", central_width)
-          .attr("height", central_width).attr("fill", "lightblue");
-        
+        @frame.append("circle")
+              .attr("class", "node")
+              .attr("fill", if @mostRecentNode.selected then "lightblue" else "black")
+              .attr("cx", sub_width/2+central_width/2).attr("cy", sub_height/2+central_width/2).attr("r", central_width)
+              .on("click", () =>
+                @selection.toggleSelection(@mostRecentNode)
+              )
+
         #Draws the neighbors in the minimap as red circles
         if neighbors.length > 0
-          @frame.append("circle")
-            .attr("class", "node")
-            .attr("_id", @model.get("nodeHash")(neighbors[k]))
-            .attr("r", circle_sizer)
-            .attr("fill", "pink")
-            .attr("cx", minimap_scalar*Math.sin(2*k*Math.PI/neighbors.length)+sub_width/2+central_width/2)
-            .attr("cy",  minimap_scalar*Math.cos(2*k*Math.PI/neighbors.length)+sub_height/2+central_width/2
-            ) for k in [0..(neighbors.length-1)]
-            #.on("click", (d)-> console.log "id: ", d['_id']) Could later add functionality to allow selection 
-            # using the Minimap
+          for k in [0..(neighbors.length-1)]
+            @frame.append("circle")
+              .attr("class", "node")
+              .attr("r", circle_sizer)
+              .attr("fill", if neighbors[k].selected then "lightblue" else "black")
+              .attr("cx", minimap_scalar*Math.sin(2*k*Math.PI/neighbors.length)+sub_width/2+central_width/2)
+              .attr("cy",  minimap_scalar*Math.cos(2*k*Math.PI/neighbors.length)+sub_height/2+central_width/2)
+              .data([neighbors[k]])
+              .on("click", (node) =>
+                if @mostRecentNode.selected and !d3.event.shiftKey and !d3.event.ctrlKey then @selection.toggleSelection(@mostRecentNode)
+                @selection.toggleSelection(node)
+                if !d3.event.shiftKey then @chooseCenter(node)
+              ) 
 
         #Draws the text labels on the neighors in the minimap
         if neighbors.length > 0
           @frame.append("text")
               .attr("fill", "black")
               .attr("font-size", minimap_text_size)
-              .attr("x", minimap_scalar*Math.sin(2*k*Math.PI/neighbors.length)+sub_width/2+5)
-              .attr("y", minimap_scalar*Math.cos(2*k*Math.PI/neighbors.length)+sub_height/2+central_width/2+5)
+              .attr("x", minimap_scalar*Math.sin(2*k*Math.PI/neighbors.length)+sub_width/2+16)
+              .attr("y", minimap_scalar*Math.cos(2*k*Math.PI/neighbors.length)+sub_height/2+central_width/2-12)
               .text( @findHeader(neighbors[k])
               ) for k in [0..(neighbors.length-1)]
+
 
         #Draws the text label on the central node in the minimap
         @frame.append("text")
             .attr("fill", "black")
             .attr("font-size", minimap_text_size)
-            .attr("x", sub_width/2+5)
-            .attr("y", sub_height/2-1+central_width/2)
+            .attr("x", sub_width/2+16)
+            .attr("y", sub_height/2-1+central_width/2-12)
             .text(@findHeader(@mostRecentNode))
+
+    chooseCenter: (node)->
+      @mostRecentNode = node
+      @update()
 
     findHeader: (node) ->
       if node.name?
