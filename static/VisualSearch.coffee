@@ -9,6 +9,7 @@ define [], () ->
 
     init: (instances) ->
       @graphModel = instances["GraphModel"]
+      @selection = instances["NodeSelection"]
       @listenTo instances["KeyListener"], "down:191", (e) =>
         @$("input").focus()
         e.preventDefault()
@@ -47,5 +48,8 @@ define [], () ->
       return this
 
     searchNodes: (searchQuery) =>
-      $.post "/search_nodes", searchQuery, (nodes) => @graphModel.putNode(node) for node in nodes
+      $.post "/search_nodes", searchQuery, (nodes) =>
+        for node in nodes
+          @graphModel.putNode(node)
+          @selection.toggleSelection(node)
 

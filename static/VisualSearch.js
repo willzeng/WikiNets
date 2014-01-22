@@ -18,6 +18,7 @@
       VisualSearchBox.prototype.init = function(instances) {
         var _this = this;
         this.graphModel = instances["GraphModel"];
+        this.selection = instances["NodeSelection"];
         this.listenTo(instances["KeyListener"], "down:191", function(e) {
           _this.$("input").focus();
           return e.preventDefault();
@@ -85,7 +86,8 @@
           _results = [];
           for (_i = 0, _len = nodes.length; _i < _len; _i++) {
             node = nodes[_i];
-            _results.push(_this.graphModel.putNode(node));
+            _this.graphModel.putNode(node);
+            _results.push(_this.selection.toggleSelection(node));
           }
           return _results;
         });
