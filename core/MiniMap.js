@@ -22,7 +22,7 @@
         });
         this.model = instances["GraphModel"];
         this.model.on("change", this.update.bind(this));
-        instances["Layout"].addPlugin(this.el, this.options.pluginOrder, 'MiniMap');
+        instances["Layout"].addPlugin(this.el, this.options.pluginOrder, 'MiniMap', true);
         return this.render();
       };
 
