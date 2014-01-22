@@ -84,7 +84,6 @@ define [], () ->
              .style("fill-opacity", "0%")
 
       # Panning on Drag
-      
       # lock infrastracture to ignore zoom changes that would
       # typically occur when dragging a node
       translateLock = false
