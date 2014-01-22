@@ -18,29 +18,31 @@ define [], () ->
     render: ->
       $container = $("<div id=\"visual-search-container\"/>").appendTo @$el
       $input = $("<div class=\"visual_search\" />").appendTo $container
+      $button = $("<input type=\"button\" value=\"Go!\" />").appendTo $container
+      @searchQuery = {}
+      $button.click(() =>
+        #console.log @searchQuery
+        @searchNodes @searchQuery
+        )
       $.get "/get_all_node_keys", (data) =>
         @keys = data[0]
         @values = data[1]
-        console.log @keys
+        #console.log @keys
         $(document).ready(() =>
           visualSearch = VS.init({
             container : $('.visual_search')
             query     : ''
             callbacks :
-              search       : (query, searchCollection) => {}
+              search       : (query, searchCollection) =>
+                @searchQuery = {}
+                @searchQuery[facet] = searchCollection.find(facet) for facet in @keys when (searchCollection.count(facet)!=0)
               facetMatches : (callback) => callback @keys
               valueMatches : (facet, searchTerm, callback) => callback @values[facet]
           })
-          #console.log "Initializing Search Box"
         )
         return data
-      #console.log "Rendering Visual Search plugin"
       return this
 
-    addNode: (e, datum) ->
-      newNode = {text: datum.value, '_id': -1} #TODO FIX THIS BY CHANGING THE NODEHASH FOR WIKINETS
-      h = @graphModel.get("nodeHash")
-      newNodeHash = h(newNode)
-      @graphModel.putNode newNode  unless _.some @graphModel.get("nodes"), (node) ->
-        h(node) is newNodeHash
-      $(e.target).blur()
+    searchNodes: (searchQuery) =>
+      $.post "/search_nodes", searchQuery, (nodes) => @graphModel.putNode(node) for node in nodes
+

@@ -293,6 +293,8 @@ module.exports = class MyApp
           )
     )
 
+    # gets a list of all node properties occuring in the database
+    # for each of those properties, it also gets a list of all values, though that should be moved to a separate query
     app.get('/get_all_node_keys', (request,response)->
       graphDb.cypher.execute("start n=node(*) return n;").then(
         (noderes)->
@@ -307,6 +309,23 @@ module.exports = class MyApp
               (values[key].push n[key] for n in nodeData when not ((n[key] is undefined) or (n[key] in values[key])))
               console.log key
           response.json [keys, values]
+          )
+    )
+
+    # returns all nodes matching the property-value pairs given in the request body
+    app.post('/search_nodes', (request,response)->
+      console.log "Searching nodes"
+      cypherQuery = "start n=node(*) where "
+      if JSON.stringify(request.body) isnt '{}'
+        for property, value of request.body
+          cypherQuery += "n.#{property} = '#{value}' and "
+        cypherQuery = cypherQuery.substring(0,cypherQuery.length-4)
+      cypherQuery += " return n;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes)->
+          nodeList = (addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
+          response.json nodeList
           )
     )
 
