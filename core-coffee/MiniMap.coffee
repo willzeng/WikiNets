@@ -16,7 +16,7 @@ define [], () ->
       @model = instances["GraphModel"]
       @model.on "change", @update.bind(this)
       
-      instances["Layout"].addPlugin @el, @options.pluginOrder, 'MiniMap'
+      instances["Layout"].addPlugin @el, @options.pluginOrder, 'MiniMap', true
 
       @render()
 
