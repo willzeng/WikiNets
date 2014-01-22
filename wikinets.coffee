@@ -46,7 +46,7 @@ module.exports = class MyApp
     app.post('/create_node', (request, response) ->
       console.log "Node Creation Requested"
       cypherQuery = "create (n"
-      console.log request.body
+      #console.log request.body
       if JSON.stringify(request.body) isnt '{}'
         cypherQuery += " {"
         for property, value of request.body
@@ -293,13 +293,30 @@ module.exports = class MyApp
           )
     )
 
+    app.get('/get_all_node_keys', (request,response)->
+      graphDb.cypher.execute("start n=node(*) return n;").then(
+        (noderes)->
+          console.log "Get All Node Keys: Query Executed"
+          nodeData = (n[0].data for n in noderes.data)
+          keys = []
+          ((keys.push key for key,value of n when not (key in keys)) for n in nodeData)
+          values = {}
+          for key in keys
+            do (key) =>
+              values[key] = []
+              (values[key].push n[key] for n in nodeData when not ((n[key] is undefined) or (n[key] in values[key])))
+              console.log key
+          response.json [keys, values]
+          )
+    )
+
     # adds a default strength value to a relationship 
     # TODO: (should only do this if there isnt one already)
     addStrength = (dict,start,end,id) -> 
       dict['strength'] = 1
       dict['start'] = start
       dict['end'] = end
-      dict['_id'] = id
+      dict['_id'] = id+"" #make sure that the added id is a string
       dict
 
     app.post('/get_links', (request,response)->
@@ -313,7 +330,6 @@ module.exports = class MyApp
 
       cypherQuery = "START n=node("+node["_id"]+"), m=node("+nodeIndexes+") MATCH p=(n)-[]-(m) RETURN relationships(p);"
 
-      console.log cypherQuery
       console.log "Executing " + cypherQuery
       graphDb.cypher.execute(cypherQuery).then(
         (relres) ->
@@ -376,7 +392,7 @@ module.exports = class MyApp
 
     # adds an id to a node
     addID = (dict, id) -> 
-      dict['_id'] = id
+      dict['_id'] = id+"" #make sure that the added id is a string
       dict
 
     ### makes queries of database to build a JSON formatted for D3JS viz of the entire Neo4j database
