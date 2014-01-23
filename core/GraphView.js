@@ -109,7 +109,7 @@
       };
 
       GraphView.prototype.update = function() {
-        var clickSemaphore, filteredLinks, link, linkEnter, links, node, nodeEnter, nodes,
+        var clickSemaphore, filteredLinks, getColor, link, linkEnter, links, node, nodeEnter, nodes,
           _this = this;
         nodes = this.model.get("nodes");
         links = this.model.get("links");
@@ -135,7 +135,16 @@
         nodeEnter.append("text").attr("dx", 12).attr("dy", ".35em").text(function(d) {
           return _this.findText(d);
         });
-        nodeEnter.append("circle").attr("r", 8).attr("cx", 0).attr("cy", 0);
+        getColor = function(node) {
+          if (node.color != null) {
+            return node.color;
+          } else {
+            return "darkgrey";
+          }
+        };
+        nodeEnter.append("circle").attr("r", 8).attr("cx", 0).attr("cy", 0).attr("stroke", function(d) {
+          return getColor(d);
+        }).attr("fill", "white").attr("stroke-width", 3);
         clickSemaphore = 0;
         nodeEnter.on("click", function(datum, index) {
           var savedClickSemaphore, shifted;
