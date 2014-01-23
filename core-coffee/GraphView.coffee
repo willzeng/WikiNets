@@ -152,15 +152,16 @@ define [], () ->
            .text((d) =>
             @findText(d)
           )
-
+      getColor = (node) =>
+        if node.color? then node.color else "darkgrey"
+        
       nodeEnter.append("circle")
            .attr("r", 8)
            .attr("cx", 0)
            .attr("cy", 0)
-           .attr("stroke", "darkgrey")
+           .attr("stroke", (d) => getColor(d))
            .attr("fill", "white")
            .attr("stroke-width", 3)
-
       
       clickSemaphore = 0
       nodeEnter.on("click", (datum, index) =>
