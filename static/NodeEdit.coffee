@@ -48,7 +48,9 @@ define [], () ->
           console.log "Editing node: " + node['_id']
           nodeInputNumber = 0
           
-          nodeDiv.html("<div class=\"node-profile-title\">Editing #{node['text']} (id: #{node['_id']})</div><form id=\"Node#{node['_id']}EditForm\"></form>")
+          header = @findHeader(node)
+
+          nodeDiv.html("<div class=\"node-profile-title\">Editing #{header} (id: #{node['_id']})</div><form id=\"Node#{node['_id']}EditForm\"></form>")
           _.each node, (value, property) ->
             if blacklist.indexOf(property) < 0 and ["_id", "text"].indexOf(property) < 0
               newEditingFields = """
@@ -77,18 +79,19 @@ define [], () ->
                 @graphModel.filterNodes (node) ->
                   !(savedNode['_id'] == node['_id'])
                 @graphModel.putNode(savedNode)
+                @selection.toggleSelection(savedNode)
                 @cancelEditing(savedNode, nodeDiv, blacklist)
               )
 
           $nodeDelete = $("<input name=\"NodeDeleteButton\" type=\"button\" value=\"Delete\">").appendTo(nodeDiv)
           $nodeDelete.click () => 
-            if confirm("Are you sure you want to delete this node?") then @deleteNode(node, () => @cancelEditing(node, nodeDiv, blacklist))
+            if confirm("Are you sure you want to delete this node?") then @deleteNode(node, () => @selection.toggleSelection(node))
 
           $nodeCancel =  $("<input name=\"NodeCancelButton\" type=\"button\" value=\"Cancel\">").appendTo(nodeDiv)
           $nodeCancel.click () => @cancelEditing(node, nodeDiv, blacklist)
 
     cancelEditing: (node, nodeDiv, blacklist) =>
-      nodeDiv.html("<div class=\"node-profile-title\">#{node['text']}</div>")
+      nodeDiv.html("<div class=\"node-profile-title\">#{@findHeader(node)}</div>")
       _.each node, (value, property) ->
         $("<div class=\"node-profile-property\">#{property}:  #{value}</div>").appendTo nodeDiv  if blacklist.indexOf(property) < 0
       $nodeEdit = $("<input id=\"NodeEditButton#{node['_id']}\" class=\"NodeEditButton\" type=\"button\" value=\"Edit this node\">").appendTo nodeDiv
@@ -104,6 +107,7 @@ define [], () ->
               console.log "Node Deleted"
               @graphModel.filterNodes (node) ->
                 !(delNode['_id'] == node['_id'])
+              callback()
         else
           console.log "Node Deleted"
           @graphModel.filterNodes (node) ->

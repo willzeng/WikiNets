@@ -63,11 +63,12 @@
       };
 
       NodeEdit.prototype.editNode = function(node, nodeDiv, blacklist) {
-        var $nodeCancel, $nodeDelete, $nodeMoreFields, $nodeSave, nodeInputNumber,
+        var $nodeCancel, $nodeDelete, $nodeMoreFields, $nodeSave, header, nodeInputNumber,
           _this = this;
         console.log("Editing node: " + node['_id']);
         nodeInputNumber = 0;
-        nodeDiv.html("<div class=\"node-profile-title\">Editing " + node['text'] + " (id: " + node['_id'] + ")</div><form id=\"Node" + node['_id'] + "EditForm\"></form>");
+        header = this.findHeader(node);
+        nodeDiv.html("<div class=\"node-profile-title\">Editing " + header + " (id: " + node['_id'] + ")</div><form id=\"Node" + node['_id'] + "EditForm\"></form>");
         _.each(node, function(value, property) {
           var newEditingFields;
           if (blacklist.indexOf(property) < 0 && ["_id", "text"].indexOf(property) < 0) {
@@ -93,6 +94,7 @@
                 return !(savedNode['_id'] === node['_id']);
               });
               _this.graphModel.putNode(savedNode);
+              _this.selection.toggleSelection(savedNode);
               return _this.cancelEditing(savedNode, nodeDiv, blacklist);
             });
           }
@@ -101,7 +103,7 @@
         $nodeDelete.click(function() {
           if (confirm("Are you sure you want to delete this node?")) {
             return _this.deleteNode(node, function() {
-              return _this.cancelEditing(node, nodeDiv, blacklist);
+              return _this.selection.toggleSelection(node);
             });
           }
         });
@@ -114,7 +116,7 @@
       NodeEdit.prototype.cancelEditing = function(node, nodeDiv, blacklist) {
         var $nodeEdit,
           _this = this;
-        nodeDiv.html("<div class=\"node-profile-title\">" + node['text'] + "</div>");
+        nodeDiv.html("<div class=\"node-profile-title\">" + (this.findHeader(node)) + "</div>");
         _.each(node, function(value, property) {
           if (blacklist.indexOf(property) < 0) {
             return $("<div class=\"node-profile-property\">" + property + ":  " + value + "</div>").appendTo(nodeDiv);
@@ -133,9 +135,10 @@
             if (confirm("Could not delete node. There might be links remaining on this node. Do you want to delete the node (and all links to it) anyway?")) {
               return _this.dataController.nodeDeleteFull(delNode, function(responseFull) {
                 console.log("Node Deleted");
-                return _this.graphModel.filterNodes(function(node) {
+                _this.graphModel.filterNodes(function(node) {
                   return !(delNode['_id'] === node['_id']);
                 });
+                return callback();
               });
             }
           } else {
