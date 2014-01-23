@@ -157,6 +157,10 @@ define [], () ->
            .attr("r", 8)
            .attr("cx", 0)
            .attr("cy", 0)
+           .attr("stroke", "darkgrey")
+           .attr("fill", "white")
+           .attr("stroke-width", 3)
+
       
       clickSemaphore = 0
       nodeEnter.on("click", (datum, index) =>
@@ -256,3 +260,7 @@ define [], () ->
         node.title
       else
         ''
+
+
+
+
