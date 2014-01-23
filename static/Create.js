@@ -67,12 +67,12 @@
         selectingTarget = false;
         this.graphView.on("enter:node:click", function(node) {
           if (_this.selectingSource) {
-            $("#LinkCreateSourceValue").replaceWith("<span id=\"LinkCreateSourceValue\">" + node["text"] + " (id: " + node["_id"] + ")</span>");
+            $("#LinkCreateSourceValue").replaceWith("<span id=\"LinkCreateSourceValue\">" + _this.graphView.findText(node) + " (id: " + node["_id"] + ")</span>");
             _this.selectingSource = false;
             _this.source = node;
           }
           if (_this.selectingTarget) {
-            $("#LinkCreateTargetValue").replaceWith("<span id=\"LinkCreateTargetValue\">" + node["text"] + " (id: " + node["_id"] + ")</span>");
+            $("#LinkCreateTargetValue").replaceWith("<span id=\"LinkCreateTargetValue\">" + _this.graphView.findText(node) + " (id: " + node["_id"] + ")</span>");
             _this.selectingTarget = false;
             return _this.target = node;
           }
@@ -135,7 +135,7 @@
           alert("Please select a source and a target.");
           return false;
         }
-        if (this.is_illegal($("#LinkCreateType").val(), "Relationship type")) {
+        if (this.dataController.is_illegal($("#LinkCreateType").val(), "Relationship type")) {
           return false;
         }
         linkObject = {

@@ -81,11 +81,11 @@ define [], () ->
 
       @graphView.on "enter:node:click", (node) =>
         if @selectingSource
-          $("#LinkCreateSourceValue").replaceWith("<span id=\"LinkCreateSourceValue\">" + node["text"] + " (id: " + node["_id"] + ")</span>")
+          $("#LinkCreateSourceValue").replaceWith("<span id=\"LinkCreateSourceValue\">" + @graphView.findText(node) + " (id: " + node["_id"] + ")</span>")
           @selectingSource = false
           @source = node
         if @selectingTarget
-          $("#LinkCreateTargetValue").replaceWith("<span id=\"LinkCreateTargetValue\">" + node["text"] + " (id: " + node["_id"] + ")</span>")
+          $("#LinkCreateTargetValue").replaceWith("<span id=\"LinkCreateTargetValue\">" + @graphView.findText(node) + " (id: " + node["_id"] + ")</span>")
           @selectingTarget = false
           @target = node
 
@@ -140,7 +140,7 @@ define [], () ->
       if @source == undefined or @target == undefined or @selectingSource or @selectingTarget
         alert "Please select a source and a target."
         return false
-      if @is_illegal($("#LinkCreateType").val(), "Relationship type")
+      if @dataController.is_illegal($("#LinkCreateType").val(), "Relationship type")
         return false
       linkObject =
         source: @source
