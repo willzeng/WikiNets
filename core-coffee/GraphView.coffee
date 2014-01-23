@@ -127,6 +127,7 @@ define [], () ->
       return this
 
     update: ->
+      colors = ["aqua", "black", "blue", "darkblue", "fuchsia", "darkgray", "darkgrey", "green", "darkgreen", "lime", "maroon", "navy", "olive", "orange", "purple", "red", "darkred", "silver", "teal", "white", "yellow"]
       nodes = @model.get("nodes")
       links = @model.get("links")
       filteredLinks = if @linkFilter then @linkFilter.filter(links) else links
@@ -153,16 +154,20 @@ define [], () ->
             @findText(d)
           )
       getColor = (node) =>
-        if node.color? then node.color else "darkgrey"
-        
+        if node.color in colors then node.color else "darkgrey"
+
+      getVotes = (node) =>
+        if node.votes? then 2+node.votes/25 else 8
+
       nodeEnter.append("circle")
-           .attr("r", 8)
+           .attr("r", (d) => getVotes(d))
            .attr("cx", 0)
            .attr("cy", 0)
            .attr("stroke", (d) => getColor(d))
            .attr("fill", "white")
            .attr("stroke-width", 3)
-      
+
+
       clickSemaphore = 0
       nodeEnter.on("click", (datum, index) =>
         #ignore drag
