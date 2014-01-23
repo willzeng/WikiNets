@@ -125,4 +125,5 @@ define [], () ->
       ###The first entry becomes the name###
       dict["name"]=text.split("#")[0].trim()
       console.log "This is the title", text.split("#")[0].trim()
+      if dict.name is "" then dict.name = "link"
       dict
