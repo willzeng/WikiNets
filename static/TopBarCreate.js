@@ -34,21 +34,23 @@
         $nodeSide = $('<div id="nodeside" style="float:left;">').appendTo($container);
         $nodeHolder = $('<textarea placeholder="Add Node" id="nodeHolder" name="textin" rows="1" cols="35"></textarea>').appendTo($nodeSide);
         this.$sourceWrapper = $('<div class="source-container">').appendTo($nodeSide);
-        $sourceInput = $('<textarea placeholder="Node : A node\'s description #key1 value1 #key2 value2" id="nodeContent" name="textin" rows="10" cols="35"></textarea><br>').appendTo(this.$sourceWrapper);
+        $sourceInput = $('<textarea placeholder="Node : A node\'s description #key1 value1 #key2 value2" id="nodeContent" name="textin" rows="5" cols="35"></textarea><br>').appendTo(this.$sourceWrapper);
         $createSourceNodeButton = $('<input id="queryform" type="button" value="Create Node">').appendTo(this.$sourceWrapper);
         $createSourceNodeButton.click(function() {
           _this.buildNode(_this.parseSyntax($sourceInput.val()));
-          return $sourceInput.val('');
+          $sourceInput.val('');
+          return $sourceInput.focus();
         });
         $linkSide = $('<div id="linkside" style="float:right;">').appendTo($container);
         $linkHolder = $('<textarea placeholder="Add Link" id="nodeHolder" name="textin" rows="1" cols="35"></textarea><br>').appendTo($linkSide);
         this.$linkWrapper = $('<div id="source-container">').appendTo($linkSide);
-        $linkInput = $('<textarea placeholder="Link : A link\'s description #key1 value1 #key2 value2" id="linkInputField" name="textin" rows="10" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
+        $linkInput = $('<textarea placeholder="Link : A link\'s description #key1 value1 #key2 value2" id="linkInputField" name="textin" rows="5" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
         $createLinkButton = $('<input id="queryform" type="submit" value="Create Link"><br>').appendTo(this.$linkWrapper);
         $linkingInstructions = $('<span id="toplink-instructions">').appendTo($container);
         $createLinkButton.click(function() {
           _this.buildLink(_this.parseSyntax($linkInput.val()));
           $linkInput.val('');
+          $linkInput.blur();
           _this.$linkWrapper.hide();
           return $('#toplink-instructions').replaceWith('<span id="toplink-instructions">Click a Node to select source</span>');
         });

@@ -33,13 +33,14 @@ define [], () ->
 
       @$sourceWrapper = $('<div class="source-container">').appendTo $nodeSide
       #$nodeTitleArea = $('<textarea placeholder="Title" id="nodeTitle" name="textin" rows="1" cols="35"></textarea><br>').appendTo @$sourceWrapper
-      $sourceInput = $('<textarea placeholder="Node : A node\'s description #key1 value1 #key2 value2" id="nodeContent" name="textin" rows="10" cols="35"></textarea><br>').appendTo @$sourceWrapper
+      $sourceInput = $('<textarea placeholder="Node : A node\'s description #key1 value1 #key2 value2" id="nodeContent" name="textin" rows="5" cols="35"></textarea><br>').appendTo @$sourceWrapper
 
       $createSourceNodeButton = $('<input id="queryform" type="button" value="Create Node">').appendTo @$sourceWrapper
 
       $createSourceNodeButton.click () => 
         @buildNode(@parseSyntax($sourceInput.val()))
         $sourceInput.val('')
+        $sourceInput.focus()
 
       $linkSide = $('<div id="linkside" style="float:right;">').appendTo $container
 
@@ -47,7 +48,7 @@ define [], () ->
 
       @$linkWrapper = $('<div id="source-container">').appendTo $linkSide
       #$linkTitleArea = $('<textarea placeholder="Title" id="nodeTitle" name="textin" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
-      $linkInput = $('<textarea placeholder="Link : A link\'s description #key1 value1 #key2 value2" id="linkInputField" name="textin" rows="10" cols="35"></textarea><br>').appendTo @$linkWrapper
+      $linkInput = $('<textarea placeholder="Link : A link\'s description #key1 value1 #key2 value2" id="linkInputField" name="textin" rows="5" cols="35"></textarea><br>').appendTo @$linkWrapper
 
       $createLinkButton = $('<input id="queryform" type="submit" value="Create Link"><br>').appendTo @$linkWrapper
 
@@ -56,6 +57,7 @@ define [], () ->
       $createLinkButton.click () =>
         @buildLink(@parseSyntax($linkInput.val()))
         $linkInput.val('')
+        $linkInput.blur()
         @$linkWrapper.hide()
         $('#toplink-instructions').replaceWith('<span id="toplink-instructions">Click a Node to select source</span>')
 
