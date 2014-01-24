@@ -18,17 +18,29 @@ body {
     z-index: 1000;
 }
 
-#header h1 {
-    font-family:'Helvetica Neue';
-    font-weight:200;
-    text-decoration:none;
-    font-size:16pt;
-    margin-top:5px;
-    a {
+#buildbar {
+    background:#022D3C;
+    border-bottom:5px solid rgb(0,40,53);
+
+    #header h1 {
+        font-family:'Helvetica Neue';
+        font-weight:100;
         text-decoration:none;
-        color:steelblue;
+        font-size:16pt;
+        padding-top:7px;
+        margin-top:0px;
+        padding-bottom:5px;
+        margin-bottom:0px;
+        margin-left:20px;
+        letter-spacing: 1px;
+        a {
+            text-decoration:none;
+            color:white;
+        }
     }
 }
+
+
 
 
 #notepad{
@@ -44,12 +56,26 @@ body {
 
 #topbarcreate {
     position: absolute;
-    top: 50px;
+    top: 6px;
     left: 50%;
     margin: 0 0 0 -250px;
-    background-color: #fff;
-    opacity: 0.9;
+    opacity: 1;
     z-index: 100;
+    height:24px;
+
+    #nodeside,#linkside {
+        background-color: #022D3C;
+        padding:0px 5px 0px 5px;
+        border-bottom:5px solid rgb(0,40,53);
+        border-radius:5px;
+        #source-container,.source-container{
+        }
+        textarea {
+            padding:4px;
+            border-radius:5px;
+            outline:none;
+        }
+    }
 }
 
 #toplink-instructions{
@@ -61,25 +87,27 @@ body {
 /* plugin container */
 .plugin-container {
     position: fixed;
+    right:0px;
     z-index: 10;
     padding: 2px;
     box-sizing: border-box;
-    left: 10px;
     overflow: scroll;
     width: 250px;
     height: 100%;
     max-height: 100%;
+    background:white;
+    opacity:0.7;
 
     .plugin-wrapper {
         width: 100%;
         padding-top: 2px;
         padding-bottom: 2px;
         .plugin-controls {
-            background-color: steelblue;
-            padding: 2px;
+            background-color: #023749;
+            padding: 4px;
         }
         .header {
-            color: lightgrey;
+            color: white;
             &:hover {
                 cursor: pointer;
             }
@@ -177,9 +205,9 @@ body {
 
 /*graph workspace */
 .node circle {stroke: darkgrey; fill:white; stroke-width:3;}
-.node.selected circle {fill: steelblue;}
+.node.selected circle {fill:steelblue}
 .node text {opacity: 0.5; }
-.node:hover text {opacity: 1; }
+.node:hover text {opacity: 1;  }
 .link {stroke: gray; opacity: 0.5;}
 
 .nodeContainer {
@@ -198,7 +226,9 @@ body {
         &:hover {
             text {
                 opacity: 1;
+
             }
+            cursor:pointer;
         }
     }
 }

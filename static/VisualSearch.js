@@ -30,7 +30,7 @@
       VisualSearchBox.prototype.render = function() {
         var $button, $container, $input,
           _this = this;
-        $container = $("<div id=\"visual-search-container\"/>").appendTo(this.$el);
+        $container = $("<div id=\"visual-search-container\" style='padding-top:2px'/>").appendTo(this.$el);
         $input = $("<div class=\"visual_search\" />").appendTo($container);
         $button = $("<input type=\"button\" value=\"Go!\" />").appendTo($container);
         this.searchQuery = {};
