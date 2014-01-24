@@ -62,7 +62,7 @@
         initialWindowHeight = $(window).height();
         this.initialWindowWidth = initialWindowWidth;
         this.initialWindowHeight = initialWindowHeight;
-        this.force = d3.layout.force().size([initialWindowWidth, initialWindowHeight]).charge(-500).gravity(0.2);
+        this.force = d3.layout.force().size([initialWindowWidth, initialWindowHeight]).charge(-2000).gravity(0.2);
         this.linkStrength = function(link) {
           return (link.strength - _this.linkFilter.get("threshold")) / (1.0 - _this.linkFilter.get("threshold"));
         };
@@ -109,7 +109,7 @@
       };
 
       GraphView.prototype.update = function() {
-        var clickSemaphore, filteredLinks, link, linkEnter, links, node, nodeEnter, nodes,
+        var clickSemaphore, filteredLinks, getColor, getSize, link, linkEnter, links, node, nodeEnter, nodes,
           _this = this;
         nodes = this.model.get("nodes");
         links = this.model.get("links");
@@ -126,16 +126,36 @@
           }
         });
         this.force.start();
+        getSize = function(node) {
+          if (node.votes != null) {
+            return 2 + node.votes / 15;
+          } else {
+            return 8;
+          }
+        };
         link.exit().remove();
         link.attr("stroke-width", function(link) {
           return 5 * (_this.linkStrength(link));
         });
         node = this.nodeSelection = d3.select(this.el).select(".nodeContainer").selectAll(".node").data(nodes, this.model.get("nodeHash"));
-        nodeEnter = node.enter().append("g").attr("class", "node");
-        nodeEnter.append("text").attr("dx", 12).attr("dy", ".35em").text(function(d) {
+        nodeEnter = node.enter().append("g").attr("class", "node").call(this.force.drag);
+        nodeEnter.append("text").attr("dx", function(d) {
+          return 4 + getSize(d);
+        }).attr("dy", ".35em").text(function(d) {
           return _this.findText(d);
         });
-        nodeEnter.append("circle").attr("r", 8).attr("cx", 0).attr("cy", 0);
+        getColor = function(node) {
+          if (node.color != null) {
+            return node.color;
+          } else {
+            return "darkgrey";
+          }
+        };
+        nodeEnter.append("circle").attr("r", function(d) {
+          return getSize(d);
+        }).attr("cx", 0).attr("cy", 0).attr("stroke", function(d) {
+          return getColor(d);
+        }).attr("fill", "white").attr("stroke-width", 3);
         clickSemaphore = 0;
         nodeEnter.on("click", function(datum, index) {
           var savedClickSemaphore, shifted;
