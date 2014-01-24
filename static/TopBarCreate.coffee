@@ -55,7 +55,10 @@ define [], () ->
       $linkingInstructions = $('<span id="toplink-instructions">').appendTo $container
 
       $createLinkButton.click () =>
-        @buildLink(@parseSyntax($linkInput.val()))
+        @buildLink(
+          tlink = @parseSyntax($linkInput.val())
+          if tlink.name is "" then tlink.name = "link"
+        )
         $linkInput.val('')
         $linkInput.blur()
         @$linkWrapper.hide()
@@ -129,5 +132,4 @@ define [], () ->
       ###The first entry becomes the name###
       dict["name"]=text.split('#')[0].trim()
       console.log "This is the title", text.split('#')[0].trim()
-      if dict.name is "" then dict.name = "link"
       dict
