@@ -35,7 +35,7 @@ define [], () ->
       @initialWindowHeight = initialWindowHeight
       @force = d3.layout.force()
         .size([initialWindowWidth, initialWindowHeight])
-        .charge(-500)
+        .charge(-2000)
         .gravity(0.2)
       @linkStrength = (link) =>
         return (link.strength - @linkFilter.get("threshold")) / (1.0 - @linkFilter.get("threshold"))
@@ -140,6 +140,9 @@ define [], () ->
           'url(#Triangle2)' if link.direction is 'backward' or link.direction is 'bidirectional'
       @force.start()
       
+      getSize = (node) =>
+        if node.votes? then 2+node.votes/15 else 8
+
       link.exit().remove()
       link.attr "stroke-width", (link) => 5 * (@linkStrength link)
       node = @nodeSelection = d3.select(@el).select(".nodeContainer").selectAll(".node").data(nodes, @model.get("nodeHash"))
@@ -147,16 +150,19 @@ define [], () ->
       nodeEnter = node.enter().append("g").attr("class", "node").call(@force.drag)
       #nodeEnter = node.enter().append("g").attr("class", "node")
       nodeEnter.append("text")
-           .attr("dx", 12)
+           .attr("dx", (d) -> 4+getSize(d))
            .attr("dy", ".35em")
            .text((d) =>
             @findText(d)
           )
+
       getColor = (node) =>
         if node.color? then node.color else "darkgrey"
+
+
         
       nodeEnter.append("circle")
-           .attr("r", 8)
+           .attr("r", (d) => getSize(d))
            .attr("cx", 0)
            .attr("cy", 0)
            .attr("stroke", (d) => getColor(d))
