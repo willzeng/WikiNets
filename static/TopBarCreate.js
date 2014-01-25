@@ -48,11 +48,12 @@
         $createLinkButton = $('<input id="queryform" type="submit" value="Create Link"><br>').appendTo(this.$linkWrapper);
         $linkingInstructions = $('<span id="toplink-instructions">').appendTo($container);
         $createLinkButton.click(function() {
-          _this.buildLink(_this.parseSyntax($linkInput.val()));
+          var tlink;
+          _this.buildLink(tlink = _this.parseSyntax($linkInput.val()), tlink.name === "" ? tlink.name = "link" : void 0);
           $linkInput.val('');
           $linkInput.blur();
           _this.$linkWrapper.hide();
-          return $('#toplink-instructions').replaceWith('<span id="toplink-instructions">Click a Node to select source</span>');
+          return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:yellow; font-size:20px">Click two Nodes to link them.</span>');
         });
         this.$sourceWrapper.hide();
         this.$linkWrapper.hide();
@@ -106,7 +107,7 @@
             } else {
               _this.tempLink.source = node;
               _this.sourceSet = true;
-              return $('#toplink-instructions').replaceWith('<span id="toplink-instructions">Click a Node to select target</span>');
+              return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:yellow; font-size:20px">Click two Nodes to link them.</span>');
             }
           }
         });
@@ -148,9 +149,6 @@
 
         dict["name"] = text.split('#')[0].trim();
         console.log("This is the title", text.split('#')[0].trim());
-        if (dict.name === "") {
-          dict.name = "link";
-        }
         return dict;
       };
 

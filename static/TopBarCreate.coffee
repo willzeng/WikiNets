@@ -62,7 +62,7 @@ define [], () ->
         $linkInput.val('')
         $linkInput.blur()
         @$linkWrapper.hide()
-        $('#toplink-instructions').replaceWith('<span id="toplink-instructions">Click a Node to select source</span>')
+        $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:yellow; font-size:20px">Click two Nodes to link them.</span>')
 
       @$sourceWrapper.hide()
       @$linkWrapper.hide()
@@ -103,7 +103,7 @@ define [], () ->
           else
             @tempLink.source = node
             @sourceSet = true
-            $('#toplink-instructions').replaceWith('<span id="toplink-instructions">Click a Node to select target</span>')
+            $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:yellow; font-size:20px">Click two Nodes to link them.</span>')
 
       @$el.appendTo @graphView.$el.parent()
 
