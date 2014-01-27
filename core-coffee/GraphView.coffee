@@ -127,6 +127,7 @@ define [], () ->
       return this
 
     update: ->
+      colors = ["aqua", "black", "blue", "darkblue", "fuchsia", "darkgray", "darkgrey", "green", "darkgreen", "lime", "maroon", "navy", "olive", "orange", "purple", "red", "darkred", "silver", "teal", "white", "yellow"]
       nodes = @model.get("nodes")
       links = @model.get("links")
       filteredLinks = if @linkFilter then @linkFilter.filter(links) else links
@@ -168,7 +169,8 @@ define [], () ->
            .attr("stroke", (d) => getColor(d))
            .attr("fill", "white")
            .attr("stroke-width", 3)
-      
+
+
       clickSemaphore = 0
       nodeEnter.on("click", (datum, index) =>
         #ignore drag
