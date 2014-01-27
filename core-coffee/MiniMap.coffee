@@ -40,7 +40,7 @@ define [], () ->
       @frame = d3.select(@el).append("svg:svg").attr("width", @miniMapWidth)
                 .attr("height", @miniMapHeight)
 
-      if @mostRecentNode isnt undefined
+      if (@mostRecentNode isnt undefined) and (@mostRecentNode in @model.getNodes())
 
         centerID = @model.get("nodeHash")(@mostRecentNode)
     
