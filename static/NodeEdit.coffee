@@ -11,6 +11,7 @@ define [], () ->
       @dataController = instances['local/Neo4jDataController']
 
       @graphModel = instances['GraphModel']
+      @graphModel.on "change", @update.bind(this)
 
       @selection = instances["NodeSelection"]
       @selection.on "change", @update.bind(this)
