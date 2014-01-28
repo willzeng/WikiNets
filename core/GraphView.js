@@ -71,7 +71,7 @@
         zoom = d3.behavior.zoom();
         this.zoom = zoom;
         defs = svg.append("defs");
-        defs.append("marker").attr("id", "Triangle").attr("viewBox", "0 0 20 15").attr("refX", "15").attr("refY", "5").attr("markerUnits", "userSpaceOnUse").attr("markerWidth", "20").attr("markerHeight", "15").attr("orient", "auto").append("path").attr("d", "M 0 0 L 10 5 L 0 10 z");
+        defs.append("marker").attr("id", "Triangle").attr("viewBox", "0 0 20 15").attr("refX", "20").attr("refY", "5").attr("markerUnits", "userSpaceOnUse").attr("markerWidth", "20").attr("markerHeight", "15").attr("orient", "auto").append("path").attr("d", "M 0 0 L 10 5 L 0 10 z");
         defs.append("marker").attr("id", "Triangle2").attr("viewBox", "0 0 20 15").attr("refX", "-5").attr("refY", "5").attr("markerUnits", "userSpaceOnUse").attr("markerWidth", "20").attr("markerHeight", "15").attr("orient", "auto").append("path").attr("d", "M 10 0 L 0 5 L 10 10 z");
         zoomCapture = svg.append("g");
         zoomCapture.append("svg:rect").attr("width", "100%").attr("height", "100%").style("fill-opacity", "0%");
@@ -109,17 +109,16 @@
       };
 
       GraphView.prototype.update = function() {
-        var clickSemaphore, filteredLinks, getColor, getSize, link, linkEnter, links, node, nodeEnter, nodes,
+        var clickSemaphore, colors, filteredLinks, getColor, getSize, link, linkEnter, links, node, nodeEnter, nodes,
           _this = this;
+        colors = ["aqua", "black", "blue", "darkblue", "fuchsia", "darkgray", "darkgrey", "green", "darkgreen", "lime", "maroon", "navy", "olive", "orange", "purple", "red", "darkred", "silver", "teal", "white", "yellow"];
         nodes = this.model.get("nodes");
         links = this.model.get("links");
         filteredLinks = this.linkFilter ? this.linkFilter.filter(links) : links;
         this.force.nodes(nodes).links(filteredLinks).start();
         link = this.linkSelection = d3.select(this.el).select(".linkContainer").selectAll(".link").data(filteredLinks, this.model.get("linkHash"));
         linkEnter = link.enter().append("line").attr("class", "link").attr('marker-end', function(link) {
-          if (link.direction === 'forward' || link.direction === 'bidirectional') {
-            return 'url(#Triangle)';
-          }
+          return 'url(#Triangle)';
         }).attr('marker-start', function(link) {
           if (link.direction === 'backward' || link.direction === 'bidirectional') {
             return 'url(#Triangle2)';
