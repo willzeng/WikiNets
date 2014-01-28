@@ -308,6 +308,8 @@ module.exports = class MyApp
 
     # gets a list of all values occuring in the database for a given node property
     # and returns them as an alphabetically sorted list
+    # - will have to add a limit to number of results for large databases
+    # - should also add a cutoff for very long value strings
     app.post('/get_all_key_values', (request,response)->
       cypherQuery = "start n=node(*) where has(n." + request.body.property + ") return n;"
       console.log "Executing " + cypherQuery
@@ -315,8 +317,8 @@ module.exports = class MyApp
         (noderes)->
           console.log "Get All Key values: Query Executed"
           nodeData = (n[0].data for n in noderes.data)
-          values = []
-          (values.push n[request.body.property] for n in nodeData when not (n[request.body.property] in values))
+          values = ['(any)']
+          (values.push shorten(n[request.body.property]) for n in nodeData when not (shorten(n[request.body.property]) in values))
           response.json values.sort()
           )
     )
@@ -327,9 +329,14 @@ module.exports = class MyApp
       cypherQuery = "start n=node(*) where "
       if JSON.stringify(request.body) isnt '{}'
         for property, value of request.body
-          cypherQuery += "n.#{property} = '#{value}' and "
+          if value is '(any)'
+            cypherQuery += "has(n.#{property}) and "
+          else if value.substr(-3) is '...'
+            cypherQuery += "n.#{property} =~ '#{value.slice(0,-2)}*' and "
+          else
+            cypherQuery += "n.#{property} = '#{value}' and "
         cypherQuery = cypherQuery.substring(0,cypherQuery.length-4)
-      cypherQuery += " return n;"
+      cypherQuery += "return n;"
       console.log "Executing " + cypherQuery
       graphDb.cypher.execute(cypherQuery).then(
         (noderes)->
@@ -417,6 +424,15 @@ module.exports = class MyApp
     #Trims a url i.e. 'http://localhost:7474/db/data/node/312' -> 312
     trim = (string)->
       string.match(/[0-9]*$/)
+
+    #Shortens a string to the first maxLength-3 characters, replacing the rest with "..."
+    # if it is longer than maxLength characters
+    shorten = (string) ->
+      maxLength = 30
+      if string.length > maxLength
+        string.substring(0,maxLength-3) + "..."
+      else
+        string
 
     # adds an id to a node
     addID = (dict, id) -> 
