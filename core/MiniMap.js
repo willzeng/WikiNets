@@ -36,10 +36,13 @@
       };
 
       MiniMap.prototype.update = function() {
-        var allLinks, centerID, central_width, circle_sizer, k, link, minimap_padding, minimap_scalar, minimap_text_size, neighbors, sub_height, sub_width, _i, _j, _k, _l, _len, _ref, _ref1, _ref2, _ref3,
+        var allLinks, centerID, central_width, circle_sizer, defs, k, link, minimap_padding, minimap_scalar, minimap_text_size, neighbors, sub_height, sub_width, _i, _j, _k, _l, _len, _ref, _ref1, _ref2, _ref3,
           _this = this;
         this.$el.empty();
         this.frame = d3.select(this.el).append("svg:svg").attr("width", this.miniMapWidth).attr("height", this.miniMapHeight);
+        defs = this.frame.append("defs");
+        defs.append("marker").attr("id", "Triangle3").attr("viewBox", "0 0 20 15").attr("refX", "20").attr("refY", "5").attr("markerUnits", "userSpaceOnUse").attr("markerWidth", "20").attr("markerHeight", "15").attr("orient", "auto").append("path").attr("d", "M 0 0 L 10 5 L 0 10 z");
+        defs.append("marker").attr("id", "Triangle4").attr("viewBox", "0 0 20 15").attr("refX", "-15").attr("refY", "5").attr("markerUnits", "userSpaceOnUse").attr("markerWidth", "20").attr("markerHeight", "15").attr("orient", "auto").append("path").attr("d", "M 10 0 L 0 5 L 10 10 z");
         if ((this.mostRecentNode !== void 0) && (_ref = this.mostRecentNode, __indexOf.call(this.model.getNodes(), _ref) >= 0)) {
           centerID = this.model.get("nodeHash")(this.mostRecentNode);
           allLinks = (function() {
@@ -60,7 +63,7 @@
             for (_i = 0, _len = allLinks.length; _i < _len; _i++) {
               link = allLinks[_i];
               if (this.model.get("nodeHash")(link.source) === centerID) {
-                _results.push(link.target);
+                _results.push([link.target, 'outward']);
               }
             }
             return _results;
@@ -68,7 +71,7 @@
           for (_i = 0, _len = allLinks.length; _i < _len; _i++) {
             link = allLinks[_i];
             if (this.model.get("nodeHash")(link.target) === centerID) {
-              neighbors.push(link.source);
+              neighbors.push([link.source, 'inward']);
             }
           }
           central_width = 14;
@@ -80,7 +83,15 @@
           sub_height = this.miniMapHeight;
           if (neighbors.length > 0) {
             for (k = _j = 0, _ref1 = neighbors.length - 1; 0 <= _ref1 ? _j <= _ref1 : _j >= _ref1; k = 0 <= _ref1 ? ++_j : --_j) {
-              this.frame.append("line").attr("x1", sub_width / 2 + central_width / 2).attr("y1", sub_height / 2 + central_width / 2).attr("x2", minimap_scalar * Math.sin(2 * k * Math.PI / neighbors.length) + sub_width / 2 + central_width / 2).attr("y2", minimap_scalar * Math.cos(2 * k * Math.PI / neighbors.length) + sub_height / 2 + central_width / 2).style("stroke", "lightgrey").style("stroke-width", "2").on("click", function(d_2, i_2) {
+              this.frame.append("line").attr("x1", sub_width / 2 + central_width / 2).attr("y1", sub_height / 2 + central_width / 2).attr("x2", minimap_scalar * Math.sin(2 * k * Math.PI / neighbors.length) + sub_width / 2 + central_width / 2).attr("y2", minimap_scalar * Math.cos(2 * k * Math.PI / neighbors.length) + sub_height / 2 + central_width / 2).style("stroke", "gray").style("stroke-width", "2").style("opacity", "0.5").attr('marker-end', function() {
+                if (neighbors[k][1] === 'outward') {
+                  return 'url(#Triangle3)';
+                }
+              }).attr('marker-start', function() {
+                if (neighbors[k][1] === 'inward') {
+                  return 'url(#Triangle4)';
+                }
+              }).on("click", function(d_2, i_2) {
                 return alert("You clicked a link!", d_2, i_2);
               });
             }
@@ -92,7 +103,7 @@
           });
           if (neighbors.length > 0) {
             for (k = _k = 0, _ref2 = neighbors.length - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; k = 0 <= _ref2 ? ++_k : --_k) {
-              this.frame.append("circle").attr("class", "node").attr("r", circle_sizer).attr("stroke", "darkgrey").attr("stroke-width", 3).attr("fill", neighbors[k].selected ? "steelblue" : "white").attr("cx", minimap_scalar * Math.sin(2 * k * Math.PI / neighbors.length) + sub_width / 2 + central_width / 2).attr("cy", minimap_scalar * Math.cos(2 * k * Math.PI / neighbors.length) + sub_height / 2 + central_width / 2).data([neighbors[k]]).on("click", function(node) {
+              this.frame.append("circle").attr("class", "node").attr("r", circle_sizer).attr("stroke", "darkgrey").attr("stroke-width", 3).attr("fill", neighbors[k][0].selected ? "steelblue" : "white").attr("cx", minimap_scalar * Math.sin(2 * k * Math.PI / neighbors.length) + sub_width / 2 + central_width / 2).attr("cy", minimap_scalar * Math.cos(2 * k * Math.PI / neighbors.length) + sub_height / 2 + central_width / 2).data([neighbors[k][0]]).on("click", function(node) {
                 if (_this.mostRecentNode.selected && !d3.event.shiftKey && !d3.event.ctrlKey) {
                   _this.selection.toggleSelection(_this.mostRecentNode);
                 }
@@ -105,7 +116,7 @@
           }
           if (neighbors.length > 0) {
             for (k = _l = 0, _ref3 = neighbors.length - 1; 0 <= _ref3 ? _l <= _ref3 : _l >= _ref3; k = 0 <= _ref3 ? ++_l : --_l) {
-              this.frame.append("text").attr("fill", "black").attr("font-size", minimap_text_size).attr("x", minimap_scalar * Math.sin(2 * k * Math.PI / neighbors.length) + sub_width / 2 + 16).attr("y", minimap_scalar * Math.cos(2 * k * Math.PI / neighbors.length) + sub_height / 2 + central_width / 2 - 12).text(this.findHeader(neighbors[k]));
+              this.frame.append("text").attr("fill", "black").attr("font-size", minimap_text_size).attr("x", minimap_scalar * Math.sin(2 * k * Math.PI / neighbors.length) + sub_width / 2 + 16).attr("y", minimap_scalar * Math.cos(2 * k * Math.PI / neighbors.length) + sub_height / 2 + central_width / 2 - 12).text(this.findHeader(neighbors[k][0]));
             }
           }
           return this.frame.append("text").attr("fill", "black").attr("font-size", minimap_text_size).attr("x", sub_width / 2 + 16).attr("y", sub_height / 2 - 1 + central_width / 2 - 12).text(this.findHeader(this.mostRecentNode));

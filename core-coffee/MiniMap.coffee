@@ -40,6 +40,35 @@ define [], () ->
       @frame = d3.select(@el).append("svg:svg").attr("width", @miniMapWidth)
                 .attr("height", @miniMapHeight)
 
+      # create arrowhead definitions
+      defs = @frame.append("defs")
+
+      defs
+        .append("marker")
+        .attr("id", "Triangle3")
+        .attr("viewBox", "0 0 20 15")
+        .attr("refX", "20")
+        .attr("refY", "5")
+        .attr("markerUnits", "userSpaceOnUse")
+        .attr("markerWidth", "20")
+        .attr("markerHeight", "15")
+        .attr("orient", "auto")
+        .append("path")
+          .attr("d", "M 0 0 L 10 5 L 0 10 z")
+
+      defs
+        .append("marker")
+        .attr("id", "Triangle4")
+        .attr("viewBox", "0 0 20 15")
+        .attr("refX", "-15")
+        .attr("refY", "5")
+        .attr("markerUnits", "userSpaceOnUse")
+        .attr("markerWidth", "20")
+        .attr("markerHeight", "15")
+        .attr("orient", "auto")
+        .append("path")
+          .attr("d", "M 10 0 L 0 5 L 10 10 z")
+
       if (@mostRecentNode isnt undefined) and (@mostRecentNode in @model.getNodes())
 
         centerID = @model.get("nodeHash")(@mostRecentNode)
@@ -48,10 +77,10 @@ define [], () ->
         allLinks = (link for link in @model.getLinks() when link.strength > 0)
 
         #Find neighbors with arrows directed out
-        neighbors = (link.target for link in allLinks when @model.get("nodeHash")(link.source) is centerID)
+        neighbors = ([link.target, 'outward'] for link in allLinks when @model.get("nodeHash")(link.source) is centerID)
         
         #Add neighbors with arrows directed in
-        neighbors.push link.source for link in allLinks when @model.get("nodeHash")(link.target) is centerID
+        neighbors.push [link.source, 'inward'] for link in allLinks when @model.get("nodeHash")(link.target) is centerID
         
         # This is the width of the center node of the minimap
         central_width=14;
@@ -75,8 +104,13 @@ define [], () ->
             .attr("y1", sub_height/2+central_width/2)
             .attr("x2", minimap_scalar*Math.sin(2*k*Math.PI/neighbors.length)+sub_width/2+central_width/2)
             .attr("y2", minimap_scalar*Math.cos(2*k*Math.PI/neighbors.length)+sub_height/2+central_width/2)
-            .style("stroke", "lightgrey")
+            .style("stroke", "gray")
             .style("stroke-width", "2")
+            .style("opacity", "0.5")
+            .attr 'marker-end', () ->
+              'url(#Triangle3)' if neighbors[k][1] is 'outward'
+            .attr 'marker-start', () ->
+              'url(#Triangle4)' if neighbors[k][1] is 'inward'
             .on("click", (d_2, i_2) ->
               # Need to add actual functionality here once it's available
               alert("You clicked a link!", d_2, i_2)
@@ -103,10 +137,10 @@ define [], () ->
               .attr("r", circle_sizer)
               .attr("stroke", "darkgrey")
               .attr("stroke-width", 3)
-              .attr("fill", if neighbors[k].selected then "steelblue" else "white")
+              .attr("fill", if neighbors[k][0].selected then "steelblue" else "white")
               .attr("cx", minimap_scalar*Math.sin(2*k*Math.PI/neighbors.length)+sub_width/2+central_width/2)
               .attr("cy",  minimap_scalar*Math.cos(2*k*Math.PI/neighbors.length)+sub_height/2+central_width/2)
-              .data([neighbors[k]])
+              .data([neighbors[k][0]])
               .on("click", (node) =>
                 if @mostRecentNode.selected and !d3.event.shiftKey and !d3.event.ctrlKey then @selection.toggleSelection(@mostRecentNode)
                 @selection.toggleSelection(node)
@@ -120,7 +154,7 @@ define [], () ->
               .attr("font-size", minimap_text_size)
               .attr("x", minimap_scalar*Math.sin(2*k*Math.PI/neighbors.length)+sub_width/2+16)
               .attr("y", minimap_scalar*Math.cos(2*k*Math.PI/neighbors.length)+sub_height/2+central_width/2-12)
-              .text( @findHeader(neighbors[k])
+              .text( @findHeader(neighbors[k][0])
               ) for k in [0..(neighbors.length-1)]
 
 
