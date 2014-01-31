@@ -7,7 +7,8 @@ define [], () ->
       super()
 
     init: (instances) ->
-
+      
+      #require plugins
       @dataController = instances['local/Neo4jDataController']
 
       @graphModel = instances['GraphModel']
@@ -17,9 +18,7 @@ define [], () ->
       @selection.on "change", @update.bind(this)
       @listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
       instances["Layout"].addPlugin @el, @options.pluginOrder, 'Node Edit', true
-      #@$el.toggle()
 
-      #require plugins
       @Create = instances['local/Create']
 
     update: ->
@@ -51,6 +50,8 @@ define [], () ->
     editNode: (node, nodeDiv, blacklist) ->
           console.log "Editing node: " + node['_id']
           nodeInputNumber = 0
+
+          #TODO these color settings should probably go in a settings plugin
           origColor = "#A9A9A9" #TODO: map this to the CSS file color choice for node color
           colors = ["darkgray", "aqua", "black", "blue", "darkblue", "fuchsia", "green", "darkgreen", "lime", "maroon", "navy", "olive", "orange", "purple", "red", "silver", "teal", "yellow"]
           hexColors = ["#A9A9A9","#00FFFF","#000000","#0000FF", "#00008B","#FF00FF","#008000","#006400","#00FF00","#800000","#000080","#808000","#FFA500","#800080","#FF0000","#C0C0C0","#008080","#FFFF00"]
@@ -175,8 +176,6 @@ define [], () ->
               submitOK = false
             else
               propertyObject[property] = value.replace(/'/g, "\\'")
-
-            
 
         [submitOK, propertyObject]
 
