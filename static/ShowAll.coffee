@@ -27,6 +27,11 @@ define [], () ->
         @graphModel.filterNodes (node) -> false
         )
 
+      $expandSelectionButton = $("<input type=\"button\" id=\"expandSelectionButton\" value=\"Expand Selection\"></input>").appendTo container
+      $expandSelectionButton.click(() =>
+        @expandSelection()
+        )
+
       $selectAllButton = $("<input type=\"button\" id=\"selectAllButton\" value=\"Select All\"></input>").appendTo container
       $selectAllButton.click(() =>
         @selection.selectAll()
@@ -49,3 +54,9 @@ define [], () ->
 
     loadAllNodes: (nodes) =>
       @graphModel.putNode node for node in nodes
+
+
+    expandSelection: () =>
+      @dataProvider.getLinkedNodes @selection.getSelectedNodes(), (nodes) =>
+          _.each nodes, (node) =>
+            @graphModel.putNode node if @dataProvider.nodeFilter node

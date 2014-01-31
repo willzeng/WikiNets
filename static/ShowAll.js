@@ -11,6 +11,7 @@
 
       function ShowAll(options) {
         this.options = options;
+        this.expandSelection = __bind(this.expandSelection, this);
         this.loadAllNodes = __bind(this.loadAllNodes, this);
         ShowAll.__super__.constructor.call(this);
       }
@@ -24,7 +25,7 @@
       };
 
       ShowAll.prototype.render = function() {
-        var $chooseSelectButton, $clearAllButton, $clearSelectedButton, $deselectAllButton, $selectAllButton, $showAllButton, container,
+        var $chooseSelectButton, $clearAllButton, $clearSelectedButton, $deselectAllButton, $expandSelectionButton, $selectAllButton, $showAllButton, container,
           _this = this;
         container = $("<div />").addClass("show-all-container").appendTo(this.$el);
         $showAllButton = $("<input type=\"button\" id=\"showAllButton\" value=\"Show All\"></input>").appendTo(container);
@@ -36,6 +37,10 @@
           return _this.graphModel.filterNodes(function(node) {
             return false;
           });
+        });
+        $expandSelectionButton = $("<input type=\"button\" id=\"expandSelectionButton\" value=\"Expand Selection\"></input>").appendTo(container);
+        $expandSelectionButton.click(function() {
+          return _this.expandSelection();
         });
         $selectAllButton = $("<input type=\"button\" id=\"selectAllButton\" value=\"Select All\"></input>").appendTo(container);
         $selectAllButton.click(function() {
@@ -63,6 +68,17 @@
           _results.push(this.graphModel.putNode(node));
         }
         return _results;
+      };
+
+      ShowAll.prototype.expandSelection = function() {
+        var _this = this;
+        return this.dataProvider.getLinkedNodes(this.selection.getSelectedNodes(), function(nodes) {
+          return _.each(nodes, function(node) {
+            if (_this.dataProvider.nodeFilter(node)) {
+              return _this.graphModel.putNode(node);
+            }
+          });
+        });
       };
 
       return ShowAll;
