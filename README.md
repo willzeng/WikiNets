@@ -50,3 +50,7 @@ To Run on a local WikiNet, you will need to install a copy of Neo4j:
 
   sh server.sh
   Browse to localhost:3000
+
+
+  For sublime 3 text highlighting for coffee:
+  https://github.com/aponxi/sublime-better-coffeescript

@@ -2,7 +2,8 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   define([], function() {
     var NodeEdit;
@@ -52,7 +53,9 @@
               } else {
                 makeLinks = value;
               }
-              return $("<div class=\"node-profile-property\">" + property + ":  " + makeLinks + "</div>").appendTo($nodeDiv);
+              if (property !== "color") {
+                return $("<div class=\"node-profile-property\">" + property + ":  " + makeLinks + "</div>").appendTo($nodeDiv);
+              }
             }
           });
           $nodeEdit = $("<input id=\"NodeEditButton" + node['_id'] + "\" class=\"NodeEditButton\" type=\"button\" value=\"Edit this node\">").appendTo($nodeDiv);
@@ -63,19 +66,37 @@
       };
 
       NodeEdit.prototype.editNode = function(node, nodeDiv, blacklist) {
-        var $nodeCancel, $nodeDelete, $nodeMoreFields, $nodeSave, header, nodeInputNumber,
+        var $nodeCancel, $nodeDelete, $nodeMoreFields, $nodeSave, colorEditingField, colors, header, hexColors, nodeInputNumber, origColor,
           _this = this;
         console.log("Editing node: " + node['_id']);
         nodeInputNumber = 0;
+        origColor = "#A9A9A9";
+        colors = ["darkgray", "aqua", "black", "blue", "darkblue", "fuchsia", "green", "darkgreen", "lime", "maroon", "navy", "olive", "orange", "purple", "red", "silver", "teal", "yellow"];
+        hexColors = ["#A9A9A9", "#00FFFF", "#000000", "#0000FF", "#00008B", "#FF00FF", "#008000", "#006400", "#00FF00", "#800000", "#000080", "#808000", "#FFA500", "#800080", "#FF0000", "#C0C0C0", "#008080", "#FFFF00"];
         header = this.findHeader(node);
         nodeDiv.html("<div class=\"node-profile-title\">Editing " + header + " (id: " + node['_id'] + ")</div><form id=\"Node" + node['_id'] + "EditForm\"></form>");
         _.each(node, function(value, property) {
           var newEditingFields;
-          if (blacklist.indexOf(property) < 0 && ["_id", "text"].indexOf(property) < 0) {
+          if (blacklist.indexOf(property) < 0 && ["_id", "text"].indexOf(property) < 0 && property !== "color") {
             newEditingFields = "<div id=\"Node" + node['_id'] + "EditDiv" + nodeInputNumber + "\" class=\"Node" + node['_id'] + "EditDiv\">\n  <input style=\"width:80px\" id=\"Node" + node['_id'] + "EditProperty" + nodeInputNumber + "\" value=\"" + property + "\" class=\"propertyNode" + node['_id'] + "Edit\"/> \n  <input style=\"width:80px\" id=\"Node" + node['_id'] + "EditValue" + nodeInputNumber + "\" value=\"" + value + "\" class=\"valueNode" + node['_id'] + "Edit\"/> \n  <input type=\"button\" id=\"removeNode" + node['_id'] + "Edit" + nodeInputNumber + "\" value=\"x\" onclick=\"this.parentNode.parentNode.removeChild(this.parentNode);\">\n</div>";
             $(newEditingFields).appendTo("#Node" + node['_id'] + "EditForm");
             return nodeInputNumber = nodeInputNumber + 1;
+          } else if (property === "color") {
+            if (__indexOf.call(colors, value) >= 0) {
+              return origColor = hexColors[colors.indexOf(value)];
+            } else if (__indexOf.call(hexColors, origColor) >= 0) {
+              return origColor = value;
+            }
           }
+        });
+        colorEditingField = '\
+            <form action="#" method="post">\
+                <div class="controlset">Color<input id="color' + node['_id'] + '" name="color' + node['_id'] + '" type="text" value="' + origColor + '"/></div>\
+            </form>\
+          ';
+        $(colorEditingField).appendTo(nodeDiv);
+        $("#color" + node['_id']).colorPicker({
+          showHexField: false
         });
         $nodeMoreFields = $("<input id=\"moreNode" + node['_id'] + "EditFields\" type=\"button\" value=\"+\">").appendTo(nodeDiv);
         $nodeMoreFields.click(function() {
@@ -85,7 +106,7 @@
         $nodeSave = $("<input name=\"nodeSaveButton\" type=\"button\" value=\"Save\">").appendTo(nodeDiv);
         $nodeSave.click(function() {
           var newNode, newNodeObj;
-          newNodeObj = _this.assign_properties("Node" + node['_id'] + "Edit");
+          newNodeObj = _this.assign_properties("Node" + node['_id'] + "Edit", $("#color" + node['_id']).val());
           if (newNodeObj[0]) {
             newNode = newNodeObj[1];
             newNode['_id'] = node['_id'];
@@ -163,13 +184,14 @@
         return $("#" + name + "Form").append($row);
       };
 
-      NodeEdit.prototype.assign_properties = function(form_name, is_illegal) {
+      NodeEdit.prototype.assign_properties = function(form_name, colorValue, is_illegal) {
         var propertyObject, submitOK;
         if (is_illegal == null) {
           is_illegal = this.dataController.is_illegal;
         }
         submitOK = true;
         propertyObject = {};
+        propertyObject["color"] = colorValue;
         $("." + form_name + "Div").each(function(i, obj) {
           var property, value;
           property = $(this).children(".property" + form_name).val();

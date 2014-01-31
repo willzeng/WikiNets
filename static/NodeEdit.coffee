@@ -37,7 +37,10 @@ define [], () ->
               makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi,"<a href=\"$1\">$1</a>")
             else
               makeLinks = value
-            $("<div class=\"node-profile-property\">#{property}:  #{makeLinks}</div>").appendTo $nodeDiv  
+            if property!="color"
+              $("<div class=\"node-profile-property\">#{property}:  #{makeLinks}</div>").appendTo $nodeDiv  
+        
+
         $nodeEdit = $("<input id=\"NodeEditButton#{node['_id']}\" class=\"NodeEditButton\" type=\"button\" value=\"Edit this node\">").appendTo $nodeDiv
         $nodeEdit.click(() =>
           @editNode(node, $nodeDiv, blacklist)
@@ -47,12 +50,15 @@ define [], () ->
     editNode: (node, nodeDiv, blacklist) ->
           console.log "Editing node: " + node['_id']
           nodeInputNumber = 0
+          origColor = "#A9A9A9" #TODO: map this to the CSS file color choice for node color
+          colors = ["darkgray", "aqua", "black", "blue", "darkblue", "fuchsia", "green", "darkgreen", "lime", "maroon", "navy", "olive", "orange", "purple", "red", "silver", "teal", "yellow"]
+          hexColors = ["#A9A9A9","#00FFFF","#000000","#0000FF", "#00008B","#FF00FF","#008000","#006400","#00FF00","#800000","#000080","#808000","#FFA500","#800080","#FF0000","#C0C0C0","#008080","#FFFF00"]
           
           header = @findHeader(node)
 
           nodeDiv.html("<div class=\"node-profile-title\">Editing #{header} (id: #{node['_id']})</div><form id=\"Node#{node['_id']}EditForm\"></form>")
           _.each node, (value, property) ->
-            if blacklist.indexOf(property) < 0 and ["_id", "text"].indexOf(property) < 0
+            if blacklist.indexOf(property) < 0 and ["_id", "text"].indexOf(property) < 0 and property!="color"
               newEditingFields = """
                 <div id=\"Node#{node['_id']}EditDiv#{nodeInputNumber}\" class=\"Node#{node['_id']}EditDiv\">
                   <input style=\"width:80px\" id=\"Node#{node['_id']}EditProperty#{nodeInputNumber}\" value=\"#{property}\" class=\"propertyNode#{node['_id']}Edit\"/> 
@@ -62,16 +68,32 @@ define [], () ->
               """
               $(newEditingFields).appendTo("#Node#{node['_id']}EditForm")
               nodeInputNumber = nodeInputNumber + 1
-          
+            else if property == "color"
+            	if value in colors 
+                origColor = hexColors[colors.indexOf(value)]
+              else if origColor in hexColors 
+                origColor = value
+
+          colorEditingField = '
+            <form action="#" method="post">
+                <div class="controlset">Color<input id="color'+node['_id']+'" name="color'+node['_id']+'" type="text" value="'+origColor+'"/></div>
+            </form>
+          '
+          $(colorEditingField).appendTo(nodeDiv)
+
+          $("#color#{node['_id']}").colorPicker {showHexField: false} 
+
+
           $nodeMoreFields = $("<input id=\"moreNode#{node['_id']}EditFields\" type=\"button\" value=\"+\">").appendTo(nodeDiv)
           $nodeMoreFields.click(() =>
             @addField(nodeInputNumber, "Node#{node['_id']}Edit")
             nodeInputNumber = nodeInputNumber+1
-            )
-            
+          )
+
+
           $nodeSave = $("<input name=\"nodeSaveButton\" type=\"button\" value=\"Save\">").appendTo(nodeDiv)
           $nodeSave.click () => 
-            newNodeObj = @assign_properties("Node#{node['_id']}Edit")
+            newNodeObj = @assign_properties("Node#{node['_id']}Edit", $("#color"+node['_id']).val())
             if newNodeObj[0]
               newNode = newNodeObj[1]
               newNode['_id'] = node['_id']
@@ -131,9 +153,10 @@ define [], () ->
     # returns: submitOK: a boolean indicating whether the property names were all
     #                    legal
     #          propertyObject: a dictionary of property-value pairs
-    assign_properties: (form_name, is_illegal = @dataController.is_illegal) => 
+    assign_properties: (form_name, colorValue, is_illegal = @dataController.is_illegal) => 
         submitOK = true
         propertyObject = {}
+        propertyObject["color"] = colorValue
         $("."+ form_name + "Div").each (i, obj) ->
             property = $(this).children(".property" + form_name).val()
             value = $(this).children(".value" + form_name).val()
@@ -151,6 +174,9 @@ define [], () ->
               submitOK = false
             else
               propertyObject[property] = value.replace(/'/g, "\\'")
+
+            
+
         [submitOK, propertyObject]
 
     findHeader: (node) ->
