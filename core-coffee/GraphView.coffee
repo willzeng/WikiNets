@@ -127,7 +127,7 @@ define [], () ->
       return this
 
     update: ->
-      colors = ["aqua", "black", "blue", "darkblue", "fuchsia", "darkgray", "darkgrey", "green", "darkgreen", "lime", "lightgreen", "maroon", "navy", "olive", "orange", "purple", "red", "darkred", "silver", "teal", "white", "yellow"]
+      #colors = ["aqua", "black", "blue", "darkblue", "fuchsia", "darkgray", "green", "darkgreen", "lime", "maroon", "navy", "olive", "orange", "purple", "red", "silver", "teal", "yellow"]
       nodes = @model.get("nodes")
       links = @model.get("links")
       filteredLinks = if @linkFilter then @linkFilter.filter(links) else links
@@ -158,7 +158,7 @@ define [], () ->
           )
 
       getColor = (node) =>
-        if node.color in colors then node.color else "darkgrey"
+        if node.color? then node.color else "darkgrey"
 
 
         

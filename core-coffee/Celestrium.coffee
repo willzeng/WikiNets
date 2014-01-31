@@ -31,7 +31,8 @@ globalLibs = [
   '../lib/backbone',
   '../lib/d3',
   '../lib/less',
-  '../lib/visualsearch'
+  '../lib/visualsearch',
+  '../lib/colorPicker/jquery.colorPicker'
 ]
 
 define globalLibs, () ->
