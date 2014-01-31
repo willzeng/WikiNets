@@ -51,7 +51,7 @@ define [], () ->
         .append("marker")
         .attr("id", "Triangle")
         .attr("viewBox", "0 0 20 15")
-        .attr("refX", "15")
+        .attr("refX", "20")
         .attr("refY", "5")
         .attr("markerUnits", "userSpaceOnUse")
         .attr("markerWidth", "20")
@@ -136,7 +136,7 @@ define [], () ->
       linkEnter = link.enter().append("line")
         .attr("class", "link")
         .attr 'marker-end', (link) ->
-          'url(#Triangle)' if link.direction is 'forward' or link.direction is 'bidirectional'
+          'url(#Triangle)' #if link.direction is 'forward' or link.direction is 'bidirectional'
         .attr 'marker-start', (link) ->
           'url(#Triangle2)' if link.direction is 'backward' or link.direction is 'bidirectional'
       @force.start()
