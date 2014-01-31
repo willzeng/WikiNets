@@ -55,11 +55,14 @@ define [], () ->
       $linkingInstructions = $('<span id="toplink-instructions">').appendTo $container
 
       $createLinkButton.click () =>
-        @buildLink(@parseSyntax($linkInput.val()))
+        @buildLink(
+          tlink = @parseSyntax($linkInput.val())
+          if tlink.name is "" then tlink.name = "link"
+        )
         $linkInput.val('')
         $linkInput.blur()
         @$linkWrapper.hide()
-        $('#toplink-instructions').replaceWith('<span id="toplink-instructions">Click a Node to select source</span>')
+        $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:yellow; font-size:20px">Click two Nodes to link them.</span>')
 
       @$sourceWrapper.hide()
       @$linkWrapper.hide()
@@ -100,7 +103,7 @@ define [], () ->
           else
             @tempLink.source = node
             @sourceSet = true
-            $('#toplink-instructions').replaceWith('<span id="toplink-instructions">Click a Node to select target</span>')
+            $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:yellow; font-size:20px">Click two Nodes to link them.</span>')
 
       @$el.appendTo @graphView.$el.parent()
 
@@ -129,5 +132,4 @@ define [], () ->
       ###The first entry becomes the name###
       dict["name"]=text.split('#')[0].trim()
       console.log "This is the title", text.split('#')[0].trim()
-      if dict.name is "" then dict.name = "link"
       dict

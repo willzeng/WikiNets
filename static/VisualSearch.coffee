@@ -35,7 +35,7 @@ define [], () ->
             callbacks :
               search       : (query, searchCollection) =>
                 @searchQuery = {}
-                @searchQuery[facet] = searchCollection.find(facet) for facet in @keys when (searchCollection.count(facet)!=0)
+                searchCollection.each((term) => @searchQuery[term.attributes.category] = term.attributes.value)
               facetMatches : (callback) =>
                 $.get "/get_all_node_keys", (data) =>
                   @keys = data

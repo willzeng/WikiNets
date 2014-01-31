@@ -19,16 +19,39 @@
         this.render();
         this.graphModel = instances["GraphModel"];
         this.dataProvider = instances["local/WikiNetsDataProvider"];
-        return instances["Layout"].addPlugin(this.el, this.options.pluginOrder, 'ShowAll', true);
+        this.selection = instances["NodeSelection"];
+        return instances["Layout"].addPlugin(this.el, this.options.pluginOrder, 'Explorations', true);
       };
 
       ShowAll.prototype.render = function() {
-        var $showAllButton, container,
+        var $chooseSelectButton, $clearAllButton, $clearSelectedButton, $deselectAllButton, $selectAllButton, $showAllButton, container,
           _this = this;
         container = $("<div />").addClass("show-all-container").appendTo(this.$el);
-        $showAllButton = $("<input type=\"button\" value=\"Show All\"></input>").appendTo(container);
-        return $showAllButton.click(function() {
+        $showAllButton = $("<input type=\"button\" id=\"showAllButton\" value=\"Show All\"></input>").appendTo(container);
+        $showAllButton.click(function() {
           return _this.dataProvider.getEverything(_this.loadAllNodes);
+        });
+        $clearAllButton = $("<input type=\"button\" id=\"clearAllButton\" value=\"Clear All\"></input>").appendTo(container);
+        $clearAllButton.click(function() {
+          return _this.graphModel.filterNodes(function(node) {
+            return false;
+          });
+        });
+        $selectAllButton = $("<input type=\"button\" id=\"selectAllButton\" value=\"Select All\"></input>").appendTo(container);
+        $selectAllButton.click(function() {
+          return _this.selection.selectAll();
+        });
+        $deselectAllButton = $("<input type=\"button\" id=\"deselectAllButton\" value=\"Deselect All\"></input>").appendTo(container);
+        $deselectAllButton.click(function() {
+          return _this.selection.deselectAll();
+        });
+        $clearSelectedButton = $("<input type=\"button\" id=\"clearSelectedButton\" value=\"Clear Selection\"></input>").appendTo(container);
+        $clearSelectedButton.click(function() {
+          return _this.selection.removeSelection();
+        });
+        $chooseSelectButton = $("<input type=\"button\" id=\"chooseSelectButton\" value=\"Choose Selection\"></input>").appendTo(container);
+        return $chooseSelectButton.click(function() {
+          return _this.selection.removeSelectionCompliment();
         });
       };
 

@@ -23,6 +23,7 @@
         var _this = this;
         this.dataController = instances['local/Neo4jDataController'];
         this.graphModel = instances['GraphModel'];
+        this.graphModel.on("change", this.update.bind(this));
         this.selection = instances["NodeSelection"];
         this.selection.on("change", this.update.bind(this));
         this.listenTo(instances["KeyListener"], "down:80", function() {
@@ -49,7 +50,7 @@
             value += "";
             if (blacklist.indexOf(property) < 0) {
               if (value != null) {
-                makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi, "<a href=\"$1\">$1</a>");
+                makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi, "<a href=\"$1\" target=\"_blank\" style=\"target-new: tab;\">$1</a>");
               } else {
                 makeLinks = value;
               }

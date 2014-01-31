@@ -11,6 +11,7 @@ define [], () ->
       @dataController = instances['local/Neo4jDataController']
 
       @graphModel = instances['GraphModel']
+      @graphModel.on "change", @update.bind(this)
 
       @selection = instances["NodeSelection"]
       @selection.on "change", @update.bind(this)
@@ -34,7 +35,7 @@ define [], () ->
           value += ""
           if blacklist.indexOf(property) < 0
             if value?
-              makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi,"<a href=\"$1\">$1</a>")
+              makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi,"<a href=\"$1\" target=\"_blank\" style=\"target-new: tab;\">$1</a>")
             else
               makeLinks = value
             if property!="color"

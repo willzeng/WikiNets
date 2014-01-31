@@ -46,17 +46,10 @@
               query: '',
               callbacks: {
                 search: function(query, searchCollection) {
-                  var facet, _i, _len, _ref, _results;
                   _this.searchQuery = {};
-                  _ref = _this.keys;
-                  _results = [];
-                  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                    facet = _ref[_i];
-                    if (searchCollection.count(facet) !== 0) {
-                      _results.push(_this.searchQuery[facet] = searchCollection.find(facet));
-                    }
-                  }
-                  return _results;
+                  return searchCollection.each(function(term) {
+                    return _this.searchQuery[term.attributes.category] = term.attributes.value;
+                  });
                 },
                 facetMatches: function(callback) {
                   return $.get("/get_all_node_keys", function(data) {
