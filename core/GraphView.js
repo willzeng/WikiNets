@@ -109,9 +109,8 @@
       };
 
       GraphView.prototype.update = function() {
-        var clickSemaphore, colors, filteredLinks, getColor, getSize, link, linkEnter, links, node, nodeEnter, nodes,
+        var clickSemaphore, filteredLinks, getColor, getSize, link, linkEnter, links, node, nodeEnter, nodes,
           _this = this;
-        colors = ["aqua", "black", "blue", "darkblue", "fuchsia", "darkgray", "darkgrey", "green", "darkgreen", "lime", "maroon", "navy", "olive", "orange", "purple", "red", "darkred", "silver", "teal", "white", "yellow"];
         nodes = this.model.get("nodes");
         links = this.model.get("links");
         filteredLinks = this.linkFilter ? this.linkFilter.filter(links) : links;
