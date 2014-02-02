@@ -174,7 +174,7 @@ define [], () ->
       clickSemaphore = 0
       nodeEnter.on("click", (datum, index) =>
         #ignore drag
-        return  if d3.event.defaultPrevented
+        #return  if d3.event.defaultPrevented
         if d3.event.shiftKey then shifted = true else shifted = false
         datum.fixed = true
         clickSemaphore += 1
