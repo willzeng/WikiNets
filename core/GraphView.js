@@ -157,9 +157,6 @@
         clickSemaphore = 0;
         nodeEnter.on("click", function(datum, index) {
           var savedClickSemaphore, shifted;
-          if (d3.event.defaultPrevented) {
-            return;
-          }
           if (d3.event.shiftKey) {
             shifted = true;
           } else {
