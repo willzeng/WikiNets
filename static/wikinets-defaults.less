@@ -310,15 +310,45 @@ body {
 /* node profiles */
 .node-profile-helper {
     max-height: 50%;
+    max-width: 70%;
     overflow: scroll;
     .node-profile {
         background-color: #ccc;
         border: 1px solid white;
-        padding: 2px;
-        margin: 2px;
+        padding: 10px;
+        margin: 4px;
         .node-profile-property {
             font-size: 12px;
-        }
+        };
     }
 }
 
+
+/* listview profiles */
+.listview-profile-helper {
+    max-width: 80%;
+    overflow: scroll;
+    float: left;
+    height:600px;
+    .node-profile {
+        background-color: #ccc;
+        border: 1px solid white;
+        padding: 10px;
+        margin: 4px;
+        .node-profile-property {
+            font-size: 12px;
+        };
+        .NodeEditButton{
+            padding: 2px;
+            margin: 4px;
+        };
+        .node-profile-neighbor {
+            position: relative;
+            font-size: 12px;
+            background-color: steelblue;
+            color: white;
+            padding:6px;
+            margin: 6px;
+        }
+    }
+}

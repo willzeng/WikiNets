@@ -61,19 +61,20 @@
         }
       },
       GraphView: {},
+      "local/Neo4jDataController": {},
+      "local/ListView": {},
       NodeSelection: {},
       "local/WikiNetsDataProvider": {},
-      "local/Neo4jDataController": {},
       "local/NodeEdit": {},
+      "local/ShowAll": {},
       "local/Create": {},
-      "Sliders": {},
-      "ForceSliders": {},
-      "LinkDistribution": {},
       "local/VisualSearch": {},
       MiniMap: {},
       Stats: {},
       "local/TopBarCreate": {},
-      "local/ShowAll": {}
+      "Sliders": {},
+      "ForceSliders": {},
+      "LinkDistribution": {}
     };
     return Celestrium.init(plugins, function(instances) {
       var loadEverything;

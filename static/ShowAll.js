@@ -21,13 +21,25 @@
         this.graphModel = instances["GraphModel"];
         this.dataProvider = instances["local/WikiNetsDataProvider"];
         this.selection = instances["NodeSelection"];
-        return instances["Layout"].addPlugin(this.el, this.options.pluginOrder, 'Explorations', true);
+        instances["Layout"].addPlugin(this.el, this.options.pluginOrder, 'Explorations', true);
+        this.graphView = instances["GraphView"];
+        return this.listView = instances["local/ListView"];
       };
 
       ShowAll.prototype.render = function() {
-        var $chooseSelectButton, $clearAllButton, $clearSelectedButton, $deselectAllButton, $expandSelectionButton, $pinSelectedButton, $selectAllButton, $showAllButton, $unpinAllButton, $unpinSelectedButton, container,
+        var $chooseSelectButton, $clearAllButton, $clearSelectedButton, $deselectAllButton, $expandSelectionButton, $graphViewButton, $listViewButton, $pinSelectedButton, $selectAllButton, $showAllButton, $unpinAllButton, $unpinSelectedButton, container,
           _this = this;
         container = $("<div />").addClass("show-all-container").appendTo(this.$el);
+        $listViewButton = $("<input type=\"button\" id=\"listViewButton\" value=\"List View\"></input>").appendTo(container);
+        $listViewButton.click(function() {
+          $(_this.listView.el).show();
+          return $(_this.graphView.el).hide();
+        });
+        $graphViewButton = $("<input type=\"button\" id=\"graphViewButton\" value=\"Graph View\"></input>").appendTo(container);
+        $graphViewButton.click(function() {
+          $(_this.listView.el).hide();
+          return $(_this.graphView.el).show();
+        });
         $showAllButton = $("<input type=\"button\" id=\"showAllButton\" value=\"Show All\"></input>").appendTo(container);
         $showAllButton.click(function() {
           return _this.dataProvider.getEverything(_this.loadAllNodes);

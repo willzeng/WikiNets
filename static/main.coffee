@@ -67,6 +67,10 @@ require ["Celestrium"], (Celestrium) ->
 
     # renders the graph using d3's force directedlayout
     GraphView: {}
+
+    "local/Neo4jDataController": {}
+
+    "local/ListView": {}
       
     # allows nodes to be selected
     NodeSelection: {}
@@ -74,21 +78,15 @@ require ["Celestrium"], (Celestrium) ->
     # provides functions to get nodes and links
     "local/WikiNetsDataProvider": {}
 
-    "local/Neo4jDataController": {}
-
     "local/NodeEdit": {}
+
+    "local/ShowAll": {}
 
     "local/Create": {}
 
     #"local/SyntaxCreate": {}    
 
     #NodeDetails: {}
-
-    "Sliders": {}
-
-    "ForceSliders": {}
-
-    "LinkDistribution": {}
 
     #"NodeSearch": 
     #  prefetch: "/node_names"
@@ -102,7 +100,11 @@ require ["Celestrium"], (Celestrium) ->
 
     "local/TopBarCreate": {}
 
-    "local/ShowAll": {}
+    "Sliders": {}
+
+    "ForceSliders": {}
+
+    "LinkDistribution": {}
 
   # initialize the plugins and execute a callback once done
   Celestrium.init plugins, (instances) ->

@@ -20,6 +20,8 @@ define [], () ->
       @tempLink = {};
       @render()
 
+      instances["Layout"].addCenter @el
+
       @selection = instances["NodeSelection"]
       @selection.on "change", @update.bind(this)
 
@@ -104,8 +106,6 @@ define [], () ->
             @tempLink.source = node
             @sourceSet = true
             $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:yellow; font-size:20px">Click two Nodes to link them.</span>')
-
-      @$el.appendTo @graphView.$el.parent()
 
     update: (node) ->
       @selection.getSelectedNodes()

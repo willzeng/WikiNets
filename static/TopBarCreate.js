@@ -23,6 +23,7 @@
         this.sourceSet = false;
         this.tempLink = {};
         this.render();
+        instances["Layout"].addCenter(this.el);
         this.selection = instances["NodeSelection"];
         return this.selection.on("change", this.update.bind(this));
       };
@@ -77,7 +78,7 @@
             return $linkHolder.show();
           }
         });
-        this.graphView.on("enter:node:click", function(node) {
+        return this.graphView.on("enter:node:click", function(node) {
           var link;
           if (_this.buildingLink) {
             if (_this.sourceSet) {
@@ -111,7 +112,6 @@
             }
           }
         });
-        return this.$el.appendTo(this.graphView.$el.parent());
       };
 
       TopBarCreate.prototype.update = function(node) {

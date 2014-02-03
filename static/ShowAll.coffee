@@ -14,8 +14,23 @@ define [], () ->
       @selection = instances["NodeSelection"]
       instances["Layout"].addPlugin @el, @options.pluginOrder, 'Explorations', true
 
+      @graphView = instances["GraphView"]
+      @listView = instances["local/ListView"]
+
     render: ->
       container = $("<div />").addClass("show-all-container").appendTo(@$el)
+
+      $listViewButton = $("<input type=\"button\" id=\"listViewButton\" value=\"List View\"></input>").appendTo container
+      $listViewButton.click(() =>
+        $(@listView.el).show()
+        $(@graphView.el).hide()
+        )
+
+      $graphViewButton = $("<input type=\"button\" id=\"graphViewButton\" value=\"Graph View\"></input>").appendTo container
+      $graphViewButton.click(() =>
+        $(@listView.el).hide()
+        $(@graphView.el).show()
+        )
 
       $showAllButton = $("<input type=\"button\" id=\"showAllButton\" value=\"Show All\"></input>").appendTo container
       $showAllButton.click(() =>
