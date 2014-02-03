@@ -127,7 +127,7 @@ define [], () ->
 
     update: =>
 
-      @loadtime = 1400 #loadtime before nodes become fixed in ms
+      @loadtime = 4000 #loadtime before nodes become fixed in ms
 
       #colors = ["aqua", "black", "blue", "darkblue", "fuchsia", "darkgray", "green", "darkgreen", "lime", "maroon", "navy", "olive", "orange", "purple", "red", "silver", "teal", "yellow"]
       nodes = @model.get("nodes")

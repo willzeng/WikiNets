@@ -113,7 +113,7 @@
       GraphView.prototype.update = function() {
         var clickSemaphore, filteredLinks, getColor, getSize, link, linkEnter, links, node, nodeEnter, nodes,
           _this = this;
-        this.loadtime = 1500;
+        this.loadtime = 4000;
         nodes = this.model.get("nodes");
         links = this.model.get("links");
         filteredLinks = this.linkFilter ? this.linkFilter.filter(links) : links;
