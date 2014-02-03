@@ -17,10 +17,9 @@ define [], () ->
 
     init: (instances) ->
       @model = instances["GraphModel"]
-      @model.on "change", @update.bind(this)
+      @model.on "change", @update
       @render()
       instances["Layout"].addCenter @el
-
 
     initialize: (options) ->
       # filter between model and visible graph
@@ -126,7 +125,10 @@ define [], () ->
 
       return this
 
-    update: ->
+    update: =>
+
+      @loadtime = 1400 #loadtime before nodes become fixed in ms
+
       #colors = ["aqua", "black", "blue", "darkblue", "fuchsia", "darkgray", "green", "darkgreen", "lime", "maroon", "navy", "olive", "orange", "purple", "red", "silver", "teal", "yellow"]
       nodes = @model.get("nodes")
       links = @model.get("links")
@@ -139,7 +141,7 @@ define [], () ->
           'url(#Triangle)' #if link.direction is 'forward' or link.direction is 'bidirectional'
         .attr 'marker-start', (link) ->
           'url(#Triangle2)' if link.direction is 'backward' or link.direction is 'bidirectional'
-      @force.start()
+      
       
       getSize = (node) =>
         if node.votes? then 2+node.votes/15 else 8
@@ -160,8 +162,6 @@ define [], () ->
       getColor = (node) =>
         if node.color? then node.color else "darkgrey"
 
-
-        
       nodeEnter.append("circle")
            .attr("r", (d) => getSize(d))
            .attr("cx", 0)
@@ -170,11 +170,10 @@ define [], () ->
            .attr("fill", "white")
            .attr("stroke-width", 3)
 
-
       clickSemaphore = 0
       nodeEnter.on("click", (datum, index) =>
         #ignore drag
-        #return  if d3.event.defaultPrevented
+        return  if d3.event.defaultPrevented
         if d3.event.shiftKey then shifted = true else shifted = false
         datum.fixed = true
         clickSemaphore += 1
@@ -195,6 +194,8 @@ define [], () ->
       @trigger "enter:node", nodeEnter
       @trigger "enter:link", linkEnter
       node.exit().remove()
+      
+      @force.start()
       @force.on "tick", ->
         link.attr("x1", (d) ->
           d.source.x
@@ -205,9 +206,13 @@ define [], () ->
         ).attr("y2", (d) ->
           d.target.y
         )
-
         node.attr "transform", (d) ->
           "translate(#{d.x},#{d.y})"
+
+      @nodeEnter = nodeEnter
+      setTimeout (()=> 
+        nodeEnter.each (d)->d.fixed = true
+        ), @loadtime
 
     addCentering: () ->
       width = $(@el).width()
