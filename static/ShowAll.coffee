@@ -47,9 +47,19 @@ define [], () ->
         @selection.removeSelection()
         )
 
-      $chooseSelectButton = $("<input type=\"button\" id=\"chooseSelectButton\" value=\"Choose Selection\"></input>").appendTo container
+      $chooseSelectButton = $("<input type=\"button\" id=\"chooseSelectButton\" value=\"Clear Unselected\"></input>").appendTo container
       $chooseSelectButton.click(() =>
         @selection.removeSelectionCompliment()
+        )
+
+      $unpinLayoutButton = $("<input type=\"button\" id=\"reLayoutButton\" value=\"Un-pin Layout\"></input>").appendTo container
+      $unpinLayoutButton.click(() =>
+        node.fixed = false for node in @graphModel.getNodes()
+        )
+
+      $pinLayoutButton = $("<input type=\"button\" id=\"reLayoutButton\" value=\"Pin Layout\"></input>").appendTo container
+      $pinLayoutButton.click(() =>
+        node.fixed = true for node in @graphModel.getNodes()
         )
 
     loadAllNodes: (nodes) =>

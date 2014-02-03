@@ -62,6 +62,7 @@ module.exports = class MyApp
       ###
       graphDb.cypher.execute(cypherQuery).then(
         (noderes) ->
+          console.log "query"
           nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
           nodeID = noderes.data[0][0]["self"].slice(nodeIDstart)
           console.log "Node Creation Done, ID = " + nodeID

@@ -25,7 +25,7 @@
       };
 
       ShowAll.prototype.render = function() {
-        var $chooseSelectButton, $clearAllButton, $clearSelectedButton, $deselectAllButton, $expandSelectionButton, $selectAllButton, $showAllButton, container,
+        var $chooseSelectButton, $clearAllButton, $clearSelectedButton, $deselectAllButton, $expandSelectionButton, $pinLayoutButton, $selectAllButton, $showAllButton, $unpinLayoutButton, container,
           _this = this;
         container = $("<div />").addClass("show-all-container").appendTo(this.$el);
         $showAllButton = $("<input type=\"button\" id=\"showAllButton\" value=\"Show All\"></input>").appendTo(container);
@@ -54,9 +54,31 @@
         $clearSelectedButton.click(function() {
           return _this.selection.removeSelection();
         });
-        $chooseSelectButton = $("<input type=\"button\" id=\"chooseSelectButton\" value=\"Choose Selection\"></input>").appendTo(container);
-        return $chooseSelectButton.click(function() {
+        $chooseSelectButton = $("<input type=\"button\" id=\"chooseSelectButton\" value=\"Clear Unselected\"></input>").appendTo(container);
+        $chooseSelectButton.click(function() {
           return _this.selection.removeSelectionCompliment();
+        });
+        $unpinLayoutButton = $("<input type=\"button\" id=\"reLayoutButton\" value=\"Un-pin Layout\"></input>").appendTo(container);
+        $unpinLayoutButton.click(function() {
+          var node, _i, _len, _ref, _results;
+          _ref = _this.graphModel.getNodes();
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            node = _ref[_i];
+            _results.push(node.fixed = false);
+          }
+          return _results;
+        });
+        $pinLayoutButton = $("<input type=\"button\" id=\"reLayoutButton\" value=\"Pin Layout\"></input>").appendTo(container);
+        return $pinLayoutButton.click(function() {
+          var node, _i, _len, _ref, _results;
+          _ref = _this.graphModel.getNodes();
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            node = _ref[_i];
+            _results.push(node.fixed = true);
+          }
+          return _results;
         });
       };
 
