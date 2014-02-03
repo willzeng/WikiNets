@@ -45,8 +45,10 @@
         if (link.strength === 1) {
           link.strength = Math.random() * 0.8 + 0.2;
         }
-        this.pushDatum("links", link);
-        return this.trigger("add:link", link);
+        if (link.strength !== 0) {
+          this.pushDatum("links", link);
+          return this.trigger("add:link", link);
+        }
       };
 
       GraphModel.prototype.pushDatum = function(attr, datum) {
