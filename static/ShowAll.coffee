@@ -52,14 +52,24 @@ define [], () ->
         @selection.removeSelectionCompliment()
         )
 
-      $unpinLayoutButton = $("<input type=\"button\" id=\"reLayoutButton\" value=\"Un-pin Layout\"></input>").appendTo container
-      $unpinLayoutButton.click(() =>
+      $unpinAllButton = $("<input type=\"button\" id=\"unpinAllButton\" value=\"Un-pin Layout\"></input>").appendTo container
+      $unpinAllButton.click(() =>
         node.fixed = false for node in @graphModel.getNodes()
         )
 
-      $pinLayoutButton = $("<input type=\"button\" id=\"reLayoutButton\" value=\"Pin Layout\"></input>").appendTo container
-      $pinLayoutButton.click(() =>
+      $unpinAllButton = $("<input type=\"button\" id=\"unpinAllButton\" value=\"Pin Layout\"></input>").appendTo container
+      $unpinAllButton.click(() =>
         node.fixed = true for node in @graphModel.getNodes()
+        )
+
+      $unpinSelectedButton = $("<input type=\"button\" id=\"unpinSelectedButton\" value=\"Un-Pin Selected\"></input>").appendTo container
+      $unpinSelectedButton.click(() =>
+        node.fixed = false for node in @selection.getSelectedNodes()
+        )
+
+      $pinSelectedButton = $("<input type=\"button\" id=\"unpinSelectedButton\" value=\"Pin Selected\"></input>").appendTo container
+      $pinSelectedButton.click(() =>
+        node.fixed = true for node in @selection.getSelectedNodes()
         )
 
     loadAllNodes: (nodes) =>

@@ -25,7 +25,7 @@
       };
 
       ShowAll.prototype.render = function() {
-        var $chooseSelectButton, $clearAllButton, $clearSelectedButton, $deselectAllButton, $expandSelectionButton, $pinLayoutButton, $selectAllButton, $showAllButton, $unpinLayoutButton, container,
+        var $chooseSelectButton, $clearAllButton, $clearSelectedButton, $deselectAllButton, $expandSelectionButton, $pinSelectedButton, $selectAllButton, $showAllButton, $unpinAllButton, $unpinSelectedButton, container,
           _this = this;
         container = $("<div />").addClass("show-all-container").appendTo(this.$el);
         $showAllButton = $("<input type=\"button\" id=\"showAllButton\" value=\"Show All\"></input>").appendTo(container);
@@ -58,8 +58,8 @@
         $chooseSelectButton.click(function() {
           return _this.selection.removeSelectionCompliment();
         });
-        $unpinLayoutButton = $("<input type=\"button\" id=\"reLayoutButton\" value=\"Un-pin Layout\"></input>").appendTo(container);
-        $unpinLayoutButton.click(function() {
+        $unpinAllButton = $("<input type=\"button\" id=\"unpinAllButton\" value=\"Un-pin Layout\"></input>").appendTo(container);
+        $unpinAllButton.click(function() {
           var node, _i, _len, _ref, _results;
           _ref = _this.graphModel.getNodes();
           _results = [];
@@ -69,10 +69,32 @@
           }
           return _results;
         });
-        $pinLayoutButton = $("<input type=\"button\" id=\"reLayoutButton\" value=\"Pin Layout\"></input>").appendTo(container);
-        return $pinLayoutButton.click(function() {
+        $unpinAllButton = $("<input type=\"button\" id=\"unpinAllButton\" value=\"Pin Layout\"></input>").appendTo(container);
+        $unpinAllButton.click(function() {
           var node, _i, _len, _ref, _results;
           _ref = _this.graphModel.getNodes();
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            node = _ref[_i];
+            _results.push(node.fixed = true);
+          }
+          return _results;
+        });
+        $unpinSelectedButton = $("<input type=\"button\" id=\"unpinSelectedButton\" value=\"Un-Pin Selected\"></input>").appendTo(container);
+        $unpinSelectedButton.click(function() {
+          var node, _i, _len, _ref, _results;
+          _ref = _this.selection.getSelectedNodes();
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            node = _ref[_i];
+            _results.push(node.fixed = false);
+          }
+          return _results;
+        });
+        $pinSelectedButton = $("<input type=\"button\" id=\"unpinSelectedButton\" value=\"Pin Selected\"></input>").appendTo(container);
+        return $pinSelectedButton.click(function() {
+          var node, _i, _len, _ref, _results;
+          _ref = _this.selection.getSelectedNodes();
           _results = [];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             node = _ref[_i];
