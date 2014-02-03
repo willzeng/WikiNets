@@ -51,12 +51,14 @@ all nodes in the graph are added.
 
 
       WikiNetsDataProvider.prototype.getLinks = function(node, nodes, callback) {
-        return $.post("/get_links", {
-          'node': node,
-          'nodes': nodes
-        }, function(data) {
-          return callback(data);
-        });
+        if (nodes.length > 0) {
+          return $.post("/get_links", {
+            'node': node,
+            'nodes': nodes
+          }, function(data) {
+            return callback(data);
+          });
+        }
       };
 
       /*
