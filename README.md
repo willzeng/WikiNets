@@ -26,7 +26,7 @@ To Run:
 
 LOCAL OPTION:
 
-To Run on a local WikiNet, you will need to install a copy of Neo4j:
+To Run on a local WikiNet, you will need to install a copy of Neo4j (version 2.0.0-RC1 or higher):
   Install neo4j http://www.neo4j.org/download
   Linux http://www.neo4j.org/download/linux:
 
