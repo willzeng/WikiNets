@@ -41,12 +41,12 @@ define ["DataProvider"], (DataProvider) ->
     getLinks: (node, nodes, callback) ->
       #console.log "NODE: ", node
       #console.log "NODES: ", nodes"
-
-      $.post "/get_links", {'node': node, 'nodes': nodes}, (data) -> 
-        # console.log "NODE: ", node
-        # console.log "NODES: ", nodes
-        # console.log "THE get_links POST DATA: ", data
-        callback data
+      if nodes.length > 0
+        $.post "/get_links", {'node': node, 'nodes': nodes}, (data) -> 
+          # console.log "NODE: ", node
+          # console.log "NODES: ", nodes
+          # console.log "THE get_links POST DATA: ", data
+          callback data
 
 
     ###
