@@ -16,42 +16,70 @@ define [], () ->
       @listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
       instances["Layout"].addCenter @el
 
-      $@el.hide()
+      $(@el).hide()
 
     update: ->
       @$el.empty()
       allNodes = @graphModel.getNodes()
-      allLinks = @graphModel.getLinks()
-      nodeHash = @graphModel.get("nodeHash")
 
       $container = $("<div class=\"listview-profile-helper\"/>").appendTo(@$el)
-      blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight"]
       _.each allNodes, (node) =>
-        $nodeDiv = $("<div class=\"node-profile\"/>").appendTo($container)
-        header = @findHeader(node)
-        $("<div class=\"node-profile-title\">#{header}</div>").appendTo $nodeDiv
-        _.each node, (value, property) ->
-          value += ""
-          if blacklist.indexOf(property) < 0
-            if value?
-              makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi,"<a href=\"$1\" target=\"_blank\" style=\"target-new: tab;\">$1</a>")
-            else
-              makeLinks = value
-            if property!="color"
-              $("<div class=\"node-profile-property\">#{property}:  #{makeLinks}</div>").appendTo $nodeDiv  
-        
-        $nodeEdit = $("<input id=\"NodeEditButton#{node['_id']}\" class=\"NodeEditButton\" type=\"button\" value=\"Edit this node\"><br>").appendTo $nodeDiv
-        $nodeEdit.click(() =>
-          @editNode(node, $nodeDiv, blacklist)
-          )
+        @addNode(node, $container)
 
-        neighbors = (link.target for link in allLinks when nodeHash(link.source) is nodeHash(node))
-        _.each neighbors, (neighbor) =>
-          $nButton = $("<span class=\"node-profile-neighbor\">#{@findHeader(neighbor)}</span>").appendTo $nodeDiv
+    addNode: (node, parent) =>
+      blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight"]
 
-        neighbors = (link.source for link in allLinks when nodeHash(link.target) is nodeHash(node))
-        _.each neighbors, (neighbor) =>
-          $nButton = $("<span class=\"node-profile-neighbor\">#{@findHeader(neighbor)}</span>").appendTo $nodeDiv
+      $nodeDiv = $("<div class=\"node-profile\"/>").appendTo(parent)
+      header = @findHeader(node)
+      $("<div class=\"node-profile-title\">#{header}</div>").appendTo $nodeDiv
+      _.each node, (value, property) ->
+        value += ""
+        if blacklist.indexOf(property) < 0
+          if value?
+            makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi,"<a href=\"$1\" target=\"_blank\" style=\"target-new: tab;\">$1</a>")
+          else
+            makeLinks = value
+          if property!="color"
+            $("<div class=\"node-profile-property\">#{property}:  #{makeLinks}</div>").appendTo $nodeDiv  
+      
+      $nodeEdit = $("<input id=\"NodeEditButton#{node['_id']}\" class=\"NodeEditButton\" type=\"button\" value=\"Edit this node\"><br>").appendTo $nodeDiv
+      $nodeEdit.click(() =>
+        @editNode(node, $nodeDiv, blacklist)
+        )
+
+      allLinks = @graphModel.getLinks()
+      nodeHash = @graphModel.get("nodeHash")
+      neighbors = (link.target for link in allLinks when nodeHash(link.source) is nodeHash(node))
+      _.each neighbors, (neighbor) =>
+        $nButton = $("<span class=\"node-profile-neighbor\">#{@findHeader(neighbor)}</span>").appendTo $nodeDiv
+        $nButton.click () =>
+          @addNode(neighbor, $nodeDiv)
+        $linkProfile = $("<div class=\"node-profile\">")
+        $linkProfile.appendTo $nButton
+        link = link for link in allLinks when (nodeHash(link.source) is nodeHash(node)) and (nodeHash(link.target) is nodeHash(neighbor))
+        _.each link, (value, property) ->
+          $("<div class=\"node-profile-property\">#{property}:  #{value}</div>").appendTo $linkProfile
+        $linkProfile.hide()
+        $nButton.mouseenter () =>
+          $linkProfile.show()
+        $nButton.mouseleave () =>
+          $linkProfile.hide()
+
+      neighbors = (link.source for link in allLinks when nodeHash(link.target) is nodeHash(node))
+      _.each neighbors, (neighbor) =>
+        $nButton = $("<span class=\"node-profile-neighbor\">#{@findHeader(neighbor)}</span>").appendTo $nodeDiv
+        $nButton.click () =>
+          @addNode(neighbor, $nodeDiv)
+        $linkProfile = $("<div class=\"node-profile\">")
+        $linkProfile.appendTo $nButton
+        link = link for link in allLinks when (nodeHash(link.source) is nodeHash(node)) and (nodeHash(link.target) is nodeHash(neighbor))
+        _.each link, (value, property) ->
+          $("<div class=\"node-profile-property\">#{property}:  #{value}</div>").appendTo $linkProfile
+        $linkProfile.hide()
+        $nButton.mouseenter () =>
+          $linkProfile.show()
+        $nButton.mouseleave () =>
+          $linkProfile.hide()
 
     editNode: (node, nodeDiv, blacklist) ->
           console.log "Editing node: " + node['_id']

@@ -16,6 +16,7 @@
         this.addField = __bind(this.addField, this);
         this.deleteNode = __bind(this.deleteNode, this);
         this.cancelEditing = __bind(this.cancelEditing, this);
+        this.addNode = __bind(this.addNode, this);
         ListView.__super__.constructor.call(this);
       }
 
@@ -27,70 +28,118 @@
         this.listenTo(instances["KeyListener"], "down:80", function() {
           return _this.$el.toggle();
         });
-        return instances["Layout"].addCenter(this.el);
+        instances["Layout"].addCenter(this.el);
+        return $(this.el).hide();
       };
 
       ListView.prototype.update = function() {
-        var $container, allLinks, allNodes, blacklist, nodeHash,
+        var $container, allNodes,
           _this = this;
         this.$el.empty();
         allNodes = this.graphModel.getNodes();
+        $container = $("<div class=\"listview-profile-helper\"/>").appendTo(this.$el);
+        return _.each(allNodes, function(node) {
+          return _this.addNode(node, $container);
+        });
+      };
+
+      ListView.prototype.addNode = function(node, parent) {
+        var $nodeDiv, $nodeEdit, allLinks, blacklist, header, link, neighbors, nodeHash,
+          _this = this;
+        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight"];
+        $nodeDiv = $("<div class=\"node-profile\"/>").appendTo(parent);
+        header = this.findHeader(node);
+        $("<div class=\"node-profile-title\">" + header + "</div>").appendTo($nodeDiv);
+        _.each(node, function(value, property) {
+          var makeLinks;
+          value += "";
+          if (blacklist.indexOf(property) < 0) {
+            if (value != null) {
+              makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi, "<a href=\"$1\" target=\"_blank\" style=\"target-new: tab;\">$1</a>");
+            } else {
+              makeLinks = value;
+            }
+            if (property !== "color") {
+              return $("<div class=\"node-profile-property\">" + property + ":  " + makeLinks + "</div>").appendTo($nodeDiv);
+            }
+          }
+        });
+        $nodeEdit = $("<input id=\"NodeEditButton" + node['_id'] + "\" class=\"NodeEditButton\" type=\"button\" value=\"Edit this node\"><br>").appendTo($nodeDiv);
+        $nodeEdit.click(function() {
+          return _this.editNode(node, $nodeDiv, blacklist);
+        });
         allLinks = this.graphModel.getLinks();
         nodeHash = this.graphModel.get("nodeHash");
-        $container = $("<div class=\"listview-profile-helper\"/>").appendTo(this.$el);
-        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight"];
-        return _.each(allNodes, function(node) {
-          var $nodeDiv, $nodeEdit, header, link, neighbors;
-          $nodeDiv = $("<div class=\"node-profile\"/>").appendTo($container);
-          header = _this.findHeader(node);
-          $("<div class=\"node-profile-title\">" + header + "</div>").appendTo($nodeDiv);
-          _.each(node, function(value, property) {
-            var makeLinks;
-            value += "";
-            if (blacklist.indexOf(property) < 0) {
-              if (value != null) {
-                makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi, "<a href=\"$1\" target=\"_blank\" style=\"target-new: tab;\">$1</a>");
-              } else {
-                makeLinks = value;
-              }
-              if (property !== "color") {
-                return $("<div class=\"node-profile-property\">" + property + ":  " + makeLinks + "</div>").appendTo($nodeDiv);
-              }
+        neighbors = (function() {
+          var _i, _len, _results;
+          _results = [];
+          for (_i = 0, _len = allLinks.length; _i < _len; _i++) {
+            link = allLinks[_i];
+            if (nodeHash(link.source) === nodeHash(node)) {
+              _results.push(link.target);
             }
+          }
+          return _results;
+        })();
+        _.each(neighbors, function(neighbor) {
+          var $linkProfile, $nButton, _i, _len;
+          $nButton = $("<span class=\"node-profile-neighbor\">" + (_this.findHeader(neighbor)) + "</span>").appendTo($nodeDiv);
+          $nButton.click(function() {
+            return _this.addNode(neighbor, $nodeDiv);
           });
-          $nodeEdit = $("<input id=\"NodeEditButton" + node['_id'] + "\" class=\"NodeEditButton\" type=\"button\" value=\"Edit this node\"><br>").appendTo($nodeDiv);
-          $nodeEdit.click(function() {
-            return _this.editNode(node, $nodeDiv, blacklist);
-          });
-          neighbors = (function() {
-            var _i, _len, _results;
-            _results = [];
-            for (_i = 0, _len = allLinks.length; _i < _len; _i++) {
-              link = allLinks[_i];
-              if (nodeHash(link.source) === nodeHash(node)) {
-                _results.push(link.target);
-              }
+          $linkProfile = $("<div class=\"node-profile\">");
+          $linkProfile.appendTo($nButton);
+          for (_i = 0, _len = allLinks.length; _i < _len; _i++) {
+            link = allLinks[_i];
+            if ((nodeHash(link.source) === nodeHash(node)) && (nodeHash(link.target) === nodeHash(neighbor))) {
+              link = link;
             }
-            return _results;
-          })();
-          _.each(neighbors, function(neighbor) {
-            var $nButton;
-            return $nButton = $("<span class=\"node-profile-neighbor\">" + (_this.findHeader(neighbor)) + "</span>").appendTo($nodeDiv);
+          }
+          _.each(link, function(value, property) {
+            return $("<div class=\"node-profile-property\">" + property + ":  " + value + "</div>").appendTo($linkProfile);
           });
-          neighbors = (function() {
-            var _i, _len, _results;
-            _results = [];
-            for (_i = 0, _len = allLinks.length; _i < _len; _i++) {
-              link = allLinks[_i];
-              if (nodeHash(link.target) === nodeHash(node)) {
-                _results.push(link.source);
-              }
+          $linkProfile.hide();
+          $nButton.mouseenter(function() {
+            return $linkProfile.show();
+          });
+          return $nButton.mouseleave(function() {
+            return $linkProfile.hide();
+          });
+        });
+        neighbors = (function() {
+          var _i, _len, _results;
+          _results = [];
+          for (_i = 0, _len = allLinks.length; _i < _len; _i++) {
+            link = allLinks[_i];
+            if (nodeHash(link.target) === nodeHash(node)) {
+              _results.push(link.source);
             }
-            return _results;
-          })();
-          return _.each(neighbors, function(neighbor) {
-            var $nButton;
-            return $nButton = $("<span class=\"node-profile-neighbor\">" + (_this.findHeader(neighbor)) + "</span>").appendTo($nodeDiv);
+          }
+          return _results;
+        })();
+        return _.each(neighbors, function(neighbor) {
+          var $linkProfile, $nButton, _i, _len;
+          $nButton = $("<span class=\"node-profile-neighbor\">" + (_this.findHeader(neighbor)) + "</span>").appendTo($nodeDiv);
+          $nButton.click(function() {
+            return _this.addNode(neighbor, $nodeDiv);
+          });
+          $linkProfile = $("<div class=\"node-profile\">");
+          $linkProfile.appendTo($nButton);
+          for (_i = 0, _len = allLinks.length; _i < _len; _i++) {
+            link = allLinks[_i];
+            if ((nodeHash(link.source) === nodeHash(node)) && (nodeHash(link.target) === nodeHash(neighbor))) {
+              link = link;
+            }
+          }
+          _.each(link, function(value, property) {
+            return $("<div class=\"node-profile-property\">" + property + ":  " + value + "</div>").appendTo($linkProfile);
+          });
+          $linkProfile.hide();
+          $nButton.mouseenter(function() {
+            return $linkProfile.show();
+          });
+          return $nButton.mouseleave(function() {
+            return $linkProfile.hide();
           });
         });
       };
