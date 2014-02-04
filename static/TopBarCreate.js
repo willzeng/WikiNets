@@ -29,48 +29,55 @@
       };
 
       TopBarCreate.prototype.render = function() {
-        var $container, $createLinkButton, $createSourceNodeButton, $linkHolder, $linkInput, $linkSide, $linkingInstructions, $nodeHolder, $nodeSide, $sourceInput,
+        var $container, $createLinkButton, $createnodeNodeButton, $linkHolder, $linkInputDesc, $linkInputName, $linkInputUrl, $linkSide, $linkingInstructions, $nodeHolder, $nodeInputDesc, $nodeInputName, $nodeInputUrl, $nodeSide,
           _this = this;
         $container = $('<div id="topbarcreate">').appendTo(this.$el);
         $nodeSide = $('<div id="nodeside" style="float:left;">').appendTo($container);
         $nodeHolder = $('<textarea placeholder="Add Node" id="nodeHolder" name="textin" rows="1" cols="35"></textarea>').appendTo($nodeSide);
-        this.$sourceWrapper = $('<div class="source-container">').appendTo($nodeSide);
-        $sourceInput = $('<textarea placeholder="Node : A node\'s description #key1 value1 #key2 value2" id="nodeContent" name="textin" rows="5" cols="35"></textarea><br>').appendTo(this.$sourceWrapper);
-        $createSourceNodeButton = $('<input id="queryform" type="button" value="Create Node">').appendTo(this.$sourceWrapper);
-        $createSourceNodeButton.click(function() {
-          _this.buildNode(_this.parseSyntax($sourceInput.val()));
-          $sourceInput.val('');
-          return $sourceInput.focus();
+        this.$nodeWrapper = $('<div class="source-container">').appendTo($nodeSide);
+        $nodeInputName = $('<textarea placeholder=\"Node Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
+        $nodeInputUrl = $('<textarea placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
+        $nodeInputDesc = $('<textarea placeholder="Description #key1 value1 #key2 value2" rows="5" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
+        $createnodeNodeButton = $('<input id="queryform" type="button" value="Create Node">').appendTo(this.$nodeWrapper);
+        $createnodeNodeButton.click(function() {
+          _this.buildNode(_this.parseSyntax($nodeInputName.val() + " : " + $nodeInputDesc.val() + " #url " + $nodeInputUrl.val()));
+          $nodeInputName.val('');
+          $nodeInputUrl.val('');
+          $nodeInputDesc.val('');
+          return $nodeInputName.focus();
         });
         $linkSide = $('<div id="linkside" style="float:right;">').appendTo($container);
         $linkHolder = $('<textarea placeholder="Add Link" id="nodeHolder" name="textin" rows="1" cols="35"></textarea><br>').appendTo($linkSide);
         this.$linkWrapper = $('<div id="source-container">').appendTo($linkSide);
-        $linkInput = $('<textarea placeholder="Link : A link\'s description #key1 value1 #key2 value2" id="linkInputField" name="textin" rows="5" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
+        $linkInputName = $('<textarea placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
+        $linkInputUrl = $('<textarea placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
+        $linkInputDesc = $('<textarea placeholder="Description #key1 value1 #key2 value2" rows="5" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
         $createLinkButton = $('<input id="queryform" type="submit" value="Create Link"><br>').appendTo(this.$linkWrapper);
         $linkingInstructions = $('<span id="toplink-instructions">').appendTo($container);
         $createLinkButton.click(function() {
           var tlink;
-          _this.buildLink(tlink = _this.parseSyntax($linkInput.val()), tlink.name === "" ? tlink.name = "link" : void 0);
-          $linkInput.val('');
-          $linkInput.blur();
+          _this.buildLink(tlink = _this.parseSyntax($linkInputName.val() + " : " + $linkInputDesc.val() + " #url " + $linkInputUrl.val()));
+          $linkInputName.val('');
+          $linkInputUrl.val('');
+          $linkInputDesc.val('');
           _this.$linkWrapper.hide();
           return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:yellow; font-size:20px">Click two Nodes to link them.</span>');
         });
-        this.$sourceWrapper.hide();
+        this.$nodeWrapper.hide();
         this.$linkWrapper.hide();
         $nodeHolder.focus(function() {
-          _this.$sourceWrapper.show();
-          $sourceInput.focus();
+          _this.$nodeWrapper.show();
+          $nodeInputName.focus();
           return $nodeHolder.hide();
         });
         $linkHolder.focus(function() {
           _this.$linkWrapper.show();
-          $linkInput.focus();
+          $linkInputName.focus();
           return $linkHolder.hide();
         });
         this.graphView.on("view:click", function() {
-          if (_this.$sourceWrapper.is(':visible')) {
-            _this.$sourceWrapper.hide();
+          if (_this.$nodeWrapper.is(':visible')) {
+            _this.$nodeWrapper.hide();
             $nodeHolder.show();
           }
           if (_this.$linkWrapper.is(':visible')) {

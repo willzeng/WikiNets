@@ -33,16 +33,20 @@ define [], () ->
 
       $nodeHolder = $('<textarea placeholder="Add Node" id="nodeHolder" name="textin" rows="1" cols="35"></textarea>').appendTo $nodeSide
 
-      @$sourceWrapper = $('<div class="source-container">').appendTo $nodeSide
-      #$nodeTitleArea = $('<textarea placeholder="Title" id="nodeTitle" name="textin" rows="1" cols="35"></textarea><br>').appendTo @$sourceWrapper
-      $sourceInput = $('<textarea placeholder="Node : A node\'s description #key1 value1 #key2 value2" id="nodeContent" name="textin" rows="5" cols="35"></textarea><br>').appendTo @$sourceWrapper
+      @$nodeWrapper = $('<div class="source-container">').appendTo $nodeSide
 
-      $createSourceNodeButton = $('<input id="queryform" type="button" value="Create Node">').appendTo @$sourceWrapper
+      $nodeInputName = $('<textarea placeholder=\"Node Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
+      $nodeInputUrl = $('<textarea placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
+      $nodeInputDesc = $('<textarea placeholder="Description #key1 value1 #key2 value2" rows="5" cols="35"></textarea><br>').appendTo @$nodeWrapper
 
-      $createSourceNodeButton.click () => 
-        @buildNode(@parseSyntax($sourceInput.val()))
-        $sourceInput.val('')
-        $sourceInput.focus()
+      $createnodeNodeButton = $('<input id="queryform" type="button" value="Create Node">').appendTo @$nodeWrapper
+
+      $createnodeNodeButton.click () => 
+        @buildNode(@parseSyntax($nodeInputName.val()+" : "+$nodeInputDesc.val()+" #url "+$nodeInputUrl.val()))
+        $nodeInputName.val('')
+        $nodeInputUrl.val('')
+        $nodeInputDesc.val('')
+        $nodeInputName.focus()
 
       $linkSide = $('<div id="linkside" style="float:right;">').appendTo $container
 
@@ -50,7 +54,10 @@ define [], () ->
 
       @$linkWrapper = $('<div id="source-container">').appendTo $linkSide
       #$linkTitleArea = $('<textarea placeholder="Title" id="nodeTitle" name="textin" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
-      $linkInput = $('<textarea placeholder="Link : A link\'s description #key1 value1 #key2 value2" id="linkInputField" name="textin" rows="5" cols="35"></textarea><br>').appendTo @$linkWrapper
+      # $linkInput = $('<textarea placeholder="Link : A link\'s description #key1 value1 #key2 value2" id="linkInputField" name="textin" rows="5" cols="35"></textarea><br>').appendTo @$linkWrapper
+      $linkInputName = $('<textarea placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
+      $linkInputUrl = $('<textarea placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
+      $linkInputDesc = $('<textarea placeholder="Description #key1 value1 #key2 value2" rows="5" cols="35"></textarea><br>').appendTo @$linkWrapper
 
       $createLinkButton = $('<input id="queryform" type="submit" value="Create Link"><br>').appendTo @$linkWrapper
 
@@ -58,30 +65,33 @@ define [], () ->
 
       $createLinkButton.click () =>
         @buildLink(
-          tlink = @parseSyntax($linkInput.val())
-          if tlink.name is "" then tlink.name = "link"
+          tlink = @parseSyntax($linkInputName.val()+" : "+$linkInputDesc.val()+" #url "+$linkInputUrl.val())
+          # if tlink.name is "" then tlink.name = "link"
+          # console.log $linkInputName.val()+" : "+$linkInputDesc.val()+" #url "+$linkInputUrl.val()
         )
-        $linkInput.val('')
-        $linkInput.blur()
+        $linkInputName.val('')
+        $linkInputUrl.val('')
+        $linkInputDesc.val('')
+        # $linkInput.blur()
         @$linkWrapper.hide()
         $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:yellow; font-size:20px">Click two Nodes to link them.</span>')
 
-      @$sourceWrapper.hide()
+      @$nodeWrapper.hide()
       @$linkWrapper.hide()
 
       $nodeHolder.focus () =>
-        @$sourceWrapper.show()
-        $sourceInput.focus()
+        @$nodeWrapper.show()
+        $nodeInputName.focus()
         $nodeHolder.hide()
 
       $linkHolder.focus () =>
         @$linkWrapper.show()
-        $linkInput.focus()
+        $linkInputName.focus()
         $linkHolder.hide()
 
       @graphView.on "view:click", () => 
-        if @$sourceWrapper.is(':visible')
-          @$sourceWrapper.hide()
+        if @$nodeWrapper.is(':visible')
+          @$nodeWrapper.hide()
           $nodeHolder.show()
         if @$linkWrapper.is(':visible')
           @$linkWrapper.hide()
