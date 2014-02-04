@@ -27,50 +27,50 @@
       };
 
       ShowAll.prototype.render = function() {
-        var $chooseSelectButton, $clearAllButton, $clearSelectedButton, $deselectAllButton, $expandSelectionButton, $graphViewButton, $listViewButton, $pinSelectedButton, $selectAllButton, $showAllButton, $unpinAllButton, $unpinSelectedButton, container,
+        var $chooseSelectButton, $clearAllButton, $clearSelectedButton, $container, $deselectAllButton, $expandSelectionButton, $graphViewButton, $listViewButton, $pinSelectedButton, $selectAllButton, $showAllButton, $unpinAllButton, $unpinSelectedButton,
           _this = this;
-        container = $("<div />").addClass("show-all-container").appendTo(this.$el);
-        $listViewButton = $("<input type=\"button\" id=\"listViewButton\" value=\"List View\"></input>").appendTo(container);
+        $container = $("<div id=\"show-all-container\">").appendTo(this.$el);
+        $listViewButton = $("<input type=\"button\" id=\"listViewButton\" value=\"List View\"></input>").appendTo($container);
         $listViewButton.click(function() {
           $(_this.listView.el).show();
           return $(_this.graphView.el).hide();
         });
-        $graphViewButton = $("<input type=\"button\" id=\"graphViewButton\" value=\"Graph View\"></input>").appendTo(container);
+        $graphViewButton = $("<input type=\"button\" id=\"graphViewButton\" value=\"Graph View\"></input>").appendTo($container);
         $graphViewButton.click(function() {
           $(_this.listView.el).hide();
           return $(_this.graphView.el).show();
         });
-        $showAllButton = $("<input type=\"button\" id=\"showAllButton\" value=\"Show All\"></input>").appendTo(container);
+        $showAllButton = $("<input type=\"button\" id=\"showAllButton\" value=\"Show All\"></input>").appendTo($container);
         $showAllButton.click(function() {
           return _this.dataProvider.getEverything(_this.loadAllNodes);
         });
-        $clearAllButton = $("<input type=\"button\" id=\"clearAllButton\" value=\"Clear All\"></input>").appendTo(container);
+        $clearAllButton = $("<input type=\"button\" id=\"clearAllButton\" value=\"Clear All\"></input>").appendTo($container);
         $clearAllButton.click(function() {
           return _this.graphModel.filterNodes(function(node) {
             return false;
           });
         });
-        $expandSelectionButton = $("<input type=\"button\" id=\"expandSelectionButton\" value=\"Expand Selection\"></input>").appendTo(container);
+        $expandSelectionButton = $("<input type=\"button\" id=\"expandSelectionButton\" value=\"Expand Selection\"></input>").appendTo($container);
         $expandSelectionButton.click(function() {
           return _this.expandSelection();
         });
-        $selectAllButton = $("<input type=\"button\" id=\"selectAllButton\" value=\"Select All\"></input>").appendTo(container);
+        $selectAllButton = $("<input type=\"button\" id=\"selectAllButton\" value=\"Select All\"></input>").appendTo($container);
         $selectAllButton.click(function() {
           return _this.selection.selectAll();
         });
-        $deselectAllButton = $("<input type=\"button\" id=\"deselectAllButton\" value=\"Deselect All\"></input>").appendTo(container);
+        $deselectAllButton = $("<input type=\"button\" id=\"deselectAllButton\" value=\"Deselect All\"></input>").appendTo($container);
         $deselectAllButton.click(function() {
           return _this.selection.deselectAll();
         });
-        $clearSelectedButton = $("<input type=\"button\" id=\"clearSelectedButton\" value=\"Clear Selection\"></input>").appendTo(container);
+        $clearSelectedButton = $("<input type=\"button\" id=\"clearSelectedButton\" value=\"Clear Selection\"></input>").appendTo($container);
         $clearSelectedButton.click(function() {
           return _this.selection.removeSelection();
         });
-        $chooseSelectButton = $("<input type=\"button\" id=\"chooseSelectButton\" value=\"Clear Unselected\"></input>").appendTo(container);
+        $chooseSelectButton = $("<input type=\"button\" id=\"chooseSelectButton\" value=\"Clear Unselected\"></input>").appendTo($container);
         $chooseSelectButton.click(function() {
           return _this.selection.removeSelectionCompliment();
         });
-        $unpinAllButton = $("<input type=\"button\" id=\"unpinAllButton\" value=\"Un-pin Layout\"></input>").appendTo(container);
+        $unpinAllButton = $("<input type=\"button\" id=\"unpinAllButton\" value=\"Un-pin Layout\"></input>").appendTo($container);
         $unpinAllButton.click(function() {
           var node, _i, _len, _ref, _results;
           _ref = _this.graphModel.getNodes();
@@ -81,7 +81,7 @@
           }
           return _results;
         });
-        $unpinAllButton = $("<input type=\"button\" id=\"unpinAllButton\" value=\"Pin Layout\"></input>").appendTo(container);
+        $unpinAllButton = $("<input type=\"button\" id=\"unpinAllButton\" value=\"Pin Layout\"></input>").appendTo($container);
         $unpinAllButton.click(function() {
           var node, _i, _len, _ref, _results;
           _ref = _this.graphModel.getNodes();
@@ -92,7 +92,7 @@
           }
           return _results;
         });
-        $unpinSelectedButton = $("<input type=\"button\" id=\"unpinSelectedButton\" value=\"Un-Pin Selected\"></input>").appendTo(container);
+        $unpinSelectedButton = $("<input type=\"button\" id=\"unpinSelectedButton\" value=\"Un-Pin Selected\"></input>").appendTo($container);
         $unpinSelectedButton.click(function() {
           var node, _i, _len, _ref, _results;
           _ref = _this.selection.getSelectedNodes();
@@ -103,7 +103,7 @@
           }
           return _results;
         });
-        $pinSelectedButton = $("<input type=\"button\" id=\"unpinSelectedButton\" value=\"Pin Selected\"></input>").appendTo(container);
+        $pinSelectedButton = $("<input type=\"button\" id=\"unpinSelectedButton\" value=\"Pin Selected\"></input>").appendTo($container);
         return $pinSelectedButton.click(function() {
           var node, _i, _len, _ref, _results;
           _ref = _this.selection.getSelectedNodes();
