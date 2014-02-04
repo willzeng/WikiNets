@@ -21,7 +21,7 @@
         this.graphModel = instances["GraphModel"];
         this.dataProvider = instances["local/WikiNetsDataProvider"];
         this.selection = instances["NodeSelection"];
-        instances["Layout"].addPlugin(this.el, this.options.pluginOrder, 'Explorations', true);
+        $(this.el).appendTo($('#toolBox'));
         this.graphView = instances["GraphView"];
         return this.listView = instances["local/ListView"];
       };

@@ -20,7 +20,8 @@ define [], () ->
       @tempLink = {};
       @render()
 
-      instances["Layout"].addCenter @el
+      #instances["Layout"].addCenter @el
+      $(@el).appendTo $('#createBox')
 
       @selection = instances["NodeSelection"]
       @selection.on "change", @update.bind(this)

@@ -4,23 +4,27 @@ html
   head
     title WikiNets
     
-    link(rel='stylesheet/less', type='text/css', href='wikinets-defaults.less')
+    link(rel='stylesheet/less', type='text/css', href='wikinets-defaults-v2.less')
     link(rel='stylesheet', type='text/css', href='/celestrium_code/lib/visualsearch-datauri.css', media='screen')
     link(rel="stylesheet", href="colorPicker.css", type="text/css")
     
     script(type='text/javascript', data-main="main", src="/celestrium_code/lib/require.js")
 
   body
-    #buildbar
+    #topbar
+      #omniBox
 
-      #header
-        h1(style='')
-          a(href='http://www.wikinets.co.uk/') WikiNets \(Alpha\)
+      #createBox
+
+      #loginBox
+
+    #maingraph
+
+      #toolBox
 
       //- div(style='float:left;font-size:14px;margin-left:20px;width:200px;position:fixed;top:50px;z-index: 10;background:white;opactity:0.95;')
       //-   h4 Some instructions.
       //-   p Click on a node to select it.
       //-   p Use the boxes in the top to add new nodes and new links between nodes.
 
-    #maingraph
 

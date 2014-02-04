@@ -23,7 +23,7 @@
         this.sourceSet = false;
         this.tempLink = {};
         this.render();
-        instances["Layout"].addCenter(this.el);
+        $(this.el).appendTo($('#createBox'));
         this.selection = instances["NodeSelection"];
         return this.selection.on("change", this.update.bind(this));
       };

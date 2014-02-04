@@ -46,10 +46,10 @@ require ["Celestrium"], (Celestrium) ->
   plugins =
 
     # organizes where things are displayed on the screen
-    Layout:
+    #Layout:
 
       # el is it's container element
-      el: document.querySelector("#maingraph")
+    #  el: document.querySelector("#maingraph")
 
     # listens for keystroke on the dom element it's given
     KeyListener:
@@ -80,9 +80,8 @@ require ["Celestrium"], (Celestrium) ->
 
     "local/NodeEdit": {}
 
-    "local/ShowAll": {}
 
-    "local/Create": {}
+    #"local/Create": {}
 
     #"local/SyntaxCreate": {}    
 
@@ -94,17 +93,19 @@ require ["Celestrium"], (Celestrium) ->
 
     MiniMap: {}  
 
-    Stats: {}
+    "local/ShowAll": {}
+
+    #Stats: {}
 
     #"local/OverlayCreate": {}
 
     "local/TopBarCreate": {}
 
-    "Sliders": {}
+    #"Sliders": {}
 
-    "ForceSliders": {}
+    #"ForceSliders": {}
 
-    "LinkDistribution": {}
+    #"LinkDistribution": {}
 
   # initialize the plugins and execute a callback once done
   Celestrium.init plugins, (instances) ->

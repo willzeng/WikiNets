@@ -12,7 +12,10 @@ define [], () ->
       @graphModel = instances["GraphModel"]
       @dataProvider = instances["local/WikiNetsDataProvider"]
       @selection = instances["NodeSelection"]
-      instances["Layout"].addPlugin @el, @options.pluginOrder, 'Explorations', true
+      
+      #instances["Layout"].addPlugin @el, @options.pluginOrder, 'Explorations', true
+      $(@el).appendTo $('#toolBox')
+
 
       @graphView = instances["GraphView"]
       @listView = instances["local/ListView"]

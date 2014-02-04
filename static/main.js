@@ -44,9 +44,6 @@
       });
     };
     plugins = {
-      Layout: {
-        el: document.querySelector("#maingraph")
-      },
       KeyListener: document.querySelector("body"),
       GraphModel: {
         nodeHash: function(node) {
@@ -66,15 +63,10 @@
       NodeSelection: {},
       "local/WikiNetsDataProvider": {},
       "local/NodeEdit": {},
-      "local/ShowAll": {},
-      "local/Create": {},
       "local/VisualSearch": {},
       MiniMap: {},
-      Stats: {},
-      "local/TopBarCreate": {},
-      "Sliders": {},
-      "ForceSliders": {},
-      "LinkDistribution": {}
+      "local/ShowAll": {},
+      "local/TopBarCreate": {}
     };
     return Celestrium.init(plugins, function(instances) {
       var loadEverything;

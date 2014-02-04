@@ -24,7 +24,7 @@
           return e.preventDefault();
         });
         this.render();
-        return instances["Layout"].addPlugin(this.el, this.options.pluginOrder, 'Visual Search', true);
+        return $(this.el).appendTo($('#omniBox'));
       };
 
       VisualSearchBox.prototype.render = function() {

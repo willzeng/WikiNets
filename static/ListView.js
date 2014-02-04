@@ -28,7 +28,7 @@
         this.listenTo(instances["KeyListener"], "down:80", function() {
           return _this.$el.toggle();
         });
-        instances["Layout"].addCenter(this.el);
+        $(this.el).appendTo($('#maingraph'));
         return $(this.el).hide();
       };
 

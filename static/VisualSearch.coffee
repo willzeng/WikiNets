@@ -14,7 +14,8 @@ define [], () ->
         @$("input").focus()
         e.preventDefault()
       @render()
-      instances["Layout"].addPlugin @el, @options.pluginOrder, 'Visual Search', true
+      #instances["Layout"].addPlugin @el, @options.pluginOrder, 'Visual Search', true
+      $(@el).appendTo $('#omniBox')
 
     render: ->
       $container = $("<div id=\"visual-search-container\" style='padding-top:2px'/>").appendTo @$el

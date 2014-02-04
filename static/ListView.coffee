@@ -14,7 +14,8 @@ define [], () ->
       @graphModel.on "change", @update.bind(this)
 
       @listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
-      instances["Layout"].addCenter @el
+      #instances["Layout"].addCenter @el
+      $(@el).appendTo $('#maingraph')
 
       $(@el).hide()
 
