@@ -250,9 +250,17 @@
 
       GraphView.prototype.findText = function(node) {
         if (node.name != null) {
-          return node.name;
+          if (node.name.length > 20) {
+            return node.name.substring(0, 18) + "...";
+          } else {
+            return node.name;
+          }
         } else if (node.title != null) {
-          return node.title;
+          if (node.title.length > 20) {
+            return node.title.substring(0, 18) + "...";
+          } else {
+            return node.title;
+          }
         } else {
           return '';
         }
