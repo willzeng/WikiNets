@@ -209,7 +209,8 @@ body {
 .node.selected circle {fill:steelblue}
 .node text {opacity: 0.5; }
 .node:hover text {opacity: 1;  }
-.link {stroke: gray; opacity: 0.5;}
+.link {opacity: 0.5;}
+.link.selected {stroke: steelblue;}
 
 .nodeContainer {
     .node {
@@ -236,8 +237,9 @@ body {
 
 .linkContainer {
     .link {
-        stroke: gray;
-        opacity: 0.5;
+        &.selected {
+             stroke: steelblue;
+        }
     }
 }
 
