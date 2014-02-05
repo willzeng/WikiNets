@@ -74,11 +74,16 @@ require ["Celestrium"], (Celestrium) ->
       
     # allows nodes to be selected
     NodeSelection: {}
+      
+    # allows links to be selected
+    LinkSelection: {}
 
     # provides functions to get nodes and links
     "local/WikiNetsDataProvider": {}
 
     "local/NodeEdit": {}
+
+    "local/LinkEdit": {}
 
     "local/ShowAll": {}
 
