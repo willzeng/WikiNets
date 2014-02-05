@@ -72,6 +72,24 @@ define [], () ->
         .append("path")
           .attr("d", "M 10 0 L 0 5 L 10 10 z")
 
+      gradient=defs.append("radialGradient");
+
+      gradient
+        .attr("id","gradFill")
+        .attr("cx","50%")
+        .attr("cy","50%")
+        .attr("r","75%")
+        .attr("fx","50%")
+        .attr("fy","50%")
+        .append("stop")
+          .attr("offset","0%")
+          .attr("style","stop-color:steelblue;stop-opacity:1");
+      gradient
+       .append("stop")
+          .attr("offset","100%")
+          .attr("style","stop-color:rgb(255,255,255);stop-opacity:1");
+
+
       # outermost wrapper - this is used to capture all zoom events
       zoomCapture = svg.append("g")
 
