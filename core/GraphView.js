@@ -119,12 +119,17 @@
         filteredLinks = this.linkFilter ? this.linkFilter.filter(links) : links;
         this.force.nodes(nodes).links(filteredLinks).start();
         link = this.linkSelection = d3.select(this.el).select(".linkContainer").selectAll(".link").data(filteredLinks, this.model.get("linkHash"));
-        linkEnter = link.enter().append("line").attr("class", "link").attr('marker-end', function(link) {
+        linkEnter = link.enter().append("line").attr("class", "link").attr("stroke", "grey").attr('marker-end', function(link) {
           return 'url(#Triangle)';
         }).attr('marker-start', function(link) {
           if (link.direction === 'backward' || link.direction === 'bidirectional') {
             return 'url(#Triangle2)';
           }
+        });
+        linkEnter.on("click", function(datum, index) {
+          return _this.trigger("enter:link:click", datum);
+        }).on("dblclick", function(datum, index) {
+          return _this.trigger("enter:link:dblclick", datum);
         });
         getSize = function(node) {
           if (node.votes != null) {

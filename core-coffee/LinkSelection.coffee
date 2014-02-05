@@ -27,8 +27,8 @@ define [], () ->
       @graphView.on "enter:link:click", (datum) =>
         @toggleSelection datum
       
-      @graphView.on "enter:link:dblclick", (datum) =>
-        @selectConnectedComponent datum
+      #@graphView.on "enter:link:dblclick", (datum) =>
+      #  @selectConnectedComponent datum
 
     renderSelection: () ->
       linkSelection = @graphView.getLinkSelection()

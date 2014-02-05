@@ -137,10 +137,18 @@ define [], () ->
       link = @linkSelection = d3.select(@el).select(".linkContainer").selectAll(".link").data(filteredLinks, @model.get("linkHash"))
       linkEnter = link.enter().append("line")
         .attr("class", "link")
+        .attr("stroke", "grey")
         .attr 'marker-end', (link) ->
           'url(#Triangle)' #if link.direction is 'forward' or link.direction is 'bidirectional'
         .attr 'marker-start', (link) ->
           'url(#Triangle2)' if link.direction is 'backward' or link.direction is 'bidirectional'
+
+
+      linkEnter.on("click", (datum, index) =>
+        @trigger "enter:link:click", datum
+        )
+        .on "dblclick", (datum, index) =>
+          @trigger "enter:link:dblclick", datum
       
       
       getSize = (node) =>
