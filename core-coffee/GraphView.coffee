@@ -269,9 +269,15 @@ define [], () ->
     #TODO MAKE THIS GENERIC
     findText: (node) ->
       if node.name?
-        node.name
+        if (node.name.length>20)
+          node.name.substring(0,18)+ "..."
+        else
+          node.name
       else if node.title?
-        node.title
+        if (node.title.length>20)
+          node.title.substring(0,18)+ "..."
+        else
+          node.title
       else
         ''
 
