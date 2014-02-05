@@ -27,12 +27,11 @@ define [], () ->
       @$el.empty()
       selectedLinks = @selection.getSelectedLinks()
       $container = $("<div class=\"node-profile-helper\"/>").appendTo(@$el)
-      blacklist = ["selected", "source", "target", "strength"]
+      blacklist = ["selected", "source", "target", "strength", "_type"]
       # not sure whether "strength" should be in the blacklist or not...?
       _.each selectedLinks, (link) =>
-        console.log link
         $linkDiv = $("<div class=\"node-profile\"/>").appendTo($container)
-        header = @findHeader(link)
+        header = link._type
         $("<div class=\"node-profile-title\">#{header}</div>").appendTo $linkDiv
         _.each link, (value, property) =>
           value += ""
@@ -47,14 +46,3 @@ define [], () ->
               makeLinks = value
             $("<div class=\"node-profile-property\">#{property}: #{makeLinks}</div>").appendTo $linkDiv
 
-    findHeader: (link) =>
-      # header should be of form "(startnode) -TYPE- (endnode)"
-      if link.type?
-        #@graphView.findText(link.source) + " -" + link.type + "- " + @graphView.findText(link.target)
-        link.type
-      else if link.name?
-        #@graphView.findText(link.source) + " -" + link.name + "- " + @graphView.findText(link.target)
-        link.name
-      else
-        #@graphView.findText(link.source) + " -- " + @graphView.findText(link.target)
-        ''
