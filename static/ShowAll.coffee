@@ -87,6 +87,21 @@ define [], () ->
         node.fixed = true for node in @selection.getSelectedNodes()
         )
 
+      $showLearningButton = $("<input type=\"button\" id=\"showLearningButton\" value=\"Learning\"></input>").appendTo container
+      $showLearningButton.click(() =>
+        @searchNodes({Theme:"Learning"})
+        )
+
+      $showStudentLifeButton = $("<input type=\"button\" id=\"showStudentLifeButton\" value=\"Student Life\"></input>").appendTo container
+      $showStudentLifeButton.click(() =>
+        @searchNodes({Theme:"Student Life"})
+        )
+            
+      $showResearchButton = $("<input type=\"button\" id=\"showResearchButton\" value=\"Research\"></input>").appendTo container
+      $showResearchButton.click(() =>
+        @searchNodes({Theme:"Research"})
+        )
+
     loadAllNodes: (nodes) =>
       @graphModel.putNode node for node in nodes
 
@@ -95,3 +110,10 @@ define [], () ->
       @dataProvider.getLinkedNodes @selection.getSelectedNodes(), (nodes) =>
           _.each nodes, (node) =>
             @graphModel.putNode node if @dataProvider.nodeFilter node
+
+    searchNodes: (searchQuery) =>
+      $.post "/search_nodes", searchQuery, (nodes) =>
+        console.log "made it here: " + searchQuery[0]
+        for node in nodes
+          @graphModel.putNode(node)
+          @selection.toggleSelection(node)
