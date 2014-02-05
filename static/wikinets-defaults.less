@@ -206,7 +206,7 @@ body {
 
 /*graph workspace */
 /*.node circle {stroke: darkgrey; fill:white; stroke-width:3;}*/
-.node.selected circle {fill:steelblue}
+.node.selected circle {fill:url("#gradFill")}
 .node text {opacity: 0.5; }
 .node:hover text {opacity: 1;  }
 .link {stroke: gray; opacity: 0.5;}
@@ -221,7 +221,7 @@ body {
         }
         &.selected {
             circle {
-                fill: steelblue;
+                fill: url("#gradFill");
             }
         }
         &:hover {
