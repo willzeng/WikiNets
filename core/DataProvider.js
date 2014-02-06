@@ -23,8 +23,13 @@
           nodes = _this.graphModel.getNodes();
           return _this.getLinks(node, nodes, function(links) {
             return _.each(links, function(link, i) {
-              link.source = node;
-              link.target = nodes[i];
+              if (link.start === node['_id']) {
+                link.source = node;
+                link.target = nodes[i];
+              } else {
+                link.source = nodes[i];
+                link.target = node;
+              }
               if (_this.linkFilter(link)) {
                 return _this.graphModel.putLink(link);
               }
