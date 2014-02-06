@@ -396,7 +396,7 @@ module.exports = class MyApp
     app.post('/get_linked_nodes', (request,response)->
       
       console.log "GET LINKED NODES REQUESTED"
-      console.log request
+      #console.log request
       nodes= request.body.nodes
       console.log "NODES: ", nodes
 
