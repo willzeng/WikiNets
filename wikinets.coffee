@@ -268,18 +268,18 @@ module.exports = class MyApp
 
 
     ###
-    Deletes an arrow 
+    Deletes a link 
     ###
-    app.post('/delete_arrow', (request,response)->
-      console.log "Arrow Deletion Requested"
-      cypherQuery = "start r=rel(" + request.body.id + ") delete r;"
+    app.post('/delete_link', (request,response)->
+      console.log "Link Deletion Requested"
+      cypherQuery = "start r=rel(" + request.body['_id'] + ") delete r;"
       console.log "Executing " + cypherQuery
       graphDb.cypher.execute(cypherQuery).then(
         (noderes) ->
-          console.log "Arrow Deleted"
+          console.log "Link Deleted"
           response.send "success"
         (noderes) ->
-          console.log "Could Not Delete Arrow"
+          console.log "Could Not Delete Link"
           response.send "error"
       )
     )

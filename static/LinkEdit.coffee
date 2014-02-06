@@ -30,11 +30,9 @@ define [], () ->
       blacklist = ["selected", "source", "target", "strength", "_type"]
       # not sure whether "strength" should be in the blacklist or not...?
       _.each selectedLinks, (link) =>
+        console.log link
         $linkDiv = $("<div class=\"node-profile\"/>").appendTo($container)
-        header = link._type
-        # would be nice to have something of the form (start)-TYPE-(end) as header
-        # but not sure how to make it look nice and understandable
-        # unless we encourage people to name links so that "start_node_header link_type end_node_header" is grammatical
+        header = @findHeader(link)
         $("<div class=\"node-profile-title\">#{header}</div>").appendTo $linkDiv
         _.each link, (value, property) =>
           value += ""
@@ -55,11 +53,10 @@ define [], () ->
           @editLink(link, $linkDiv, blacklist)
           )
 
-    editLink: (link, linkDiv, blacklist) ->
+    editLink: (link, linkDiv, blacklist) =>
           console.log "Editing link: " + link['_id']
           linkInputNumber = 0
-          header = link._type
-          linkDiv.html("<div class=\"node-profile-title\">Editing #{header} (id: #{link['_id']}; start: #{link.start}, end: #{link.end})</div><form id=\"Link#{link['_id']}EditForm\"></form>")
+          linkDiv.html("<div class=\"node-profile-title\">Editing #{@findHeader(link)}</div><form id=\"Link#{link['_id']}EditForm\"></form>")
           _.each link, (value, property) ->
             if blacklist.indexOf(property) < 0 and ["_id", "Last_Edit_Date", "Creation_Date", "start", "end"].indexOf(property) <0
               newEditingFields = """
@@ -79,6 +76,37 @@ define [], () ->
           )
 
 
+          $linkSave = $("<input name=\"LinkSaveButton\" type=\"button\" value=\"Save\">").appendTo(linkDiv)
+          $linkSave.click () => 
+            newLinkObj = @assign_properties("Link#{link['_id']}Edit")
+            if newLinkObj[0]
+              newLink = newLinkObj[1]
+              newLink['_id'] = link['_id']
+              @dataController.linkEdit(link,newLink, (savedLink) =>           
+                @graphModel.filterLinks (link) ->
+                  !(savedLink['_id'] == link['_id'])
+                @graphModel.putLink(savedLink)
+                @selection.toggleSelection(savedLink)
+                @cancelEditing(savedLink, linkDiv, blacklist)
+              )
+
+          $linkDelete = $("<input name=\"LinkDeleteButton\" type=\"button\" value=\"Delete\">").appendTo(linkDiv)
+          $linkDelete.click () => 
+            if confirm("Are you sure you want to delete this link?") then @deleteLink(link, () => @selection.toggleSelection(link))
+
+          $linkCancel =  $("<input name=\"LinkCancelButton\" type=\"button\" value=\"Cancel\">").appendTo(linkDiv)
+          $linkCancel.click () => @cancelEditing(link, linkDiv, blacklist)
+
+    cancelEditing: (link, linkDiv, blacklist) =>
+      linkDiv.html("<div class=\"node-profile-title\">#{@findHeader(link)}</div>")
+      _.each link, (value, property) ->
+        $("<div class=\"node-profile-property\">#{property}:  #{value}</div>").appendTo linkDiv  if blacklist.indexOf(property) < 0
+      $linkEdit = $("<input id=\"LinkEditButton#{link['_id']}\" class=\"NodeEditButton\" type=\"button\" value=\"Edit this link\">").appendTo linkDiv
+      $linkEdit.click(() =>
+        @editLink(link, linkDiv, blacklist)
+        )
+
+
 
     # this is just duplicated from NodeEdit
     addField: (inputIndex, name, defaultKey, defaultValue) =>
@@ -92,3 +120,26 @@ define [], () ->
           </div>
       """
       $("##{name}Form").append $row
+
+
+    deleteLink: (delLink, callback)=>
+      @dataController.linkDelete delLink, (response) =>
+        if response == "error"
+          console.log "Could not delete Link."
+        else
+          console.log "Link Deleted"
+          @graphModel.filterLinks (link) ->
+            !(delLink['_id'] == link['_id'])
+          callback()
+
+
+    findHeader: (link) =>
+      if @graphView.findText(link.source) and @graphView.findText(link.target)
+        "(" + @graphView.findText(link.source) + ") - " + link._type + " - (" + @graphView.findText(link.target) + ")"
+      else if @graphView.findText(link.source)
+        "(" + @graphView.findText(link.source) + ") - " + link._type + " - (" + link.end + ")"
+      else if @graphView.findText(link.target)
+        "(" + link.start + ") - " + link._type + " - (" + @graphView.findText(link.target) + ")"
+      else
+        "(" + link.start + ") - " + link._type + " - (" + link.end + ")"
+

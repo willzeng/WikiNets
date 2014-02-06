@@ -11,7 +11,11 @@
 
       function LinkEdit(options) {
         this.options = options;
+        this.findHeader = __bind(this.findHeader, this);
+        this.deleteLink = __bind(this.deleteLink, this);
         this.addField = __bind(this.addField, this);
+        this.cancelEditing = __bind(this.cancelEditing, this);
+        this.editLink = __bind(this.editLink, this);
         LinkEdit.__super__.constructor.call(this);
       }
 
@@ -39,8 +43,9 @@
         blacklist = ["selected", "source", "target", "strength", "_type"];
         return _.each(selectedLinks, function(link) {
           var $linkDiv, $linkEdit, header;
+          console.log(link);
           $linkDiv = $("<div class=\"node-profile\"/>").appendTo($container);
-          header = link._type;
+          header = _this.findHeader(link);
           $("<div class=\"node-profile-title\">" + header + "</div>").appendTo($linkDiv);
           _.each(link, function(value, property) {
             var makeLinks;
@@ -66,12 +71,11 @@
       };
 
       LinkEdit.prototype.editLink = function(link, linkDiv, blacklist) {
-        var $linkMoreFields, header, linkInputNumber,
+        var $linkCancel, $linkDelete, $linkMoreFields, $linkSave, linkInputNumber,
           _this = this;
         console.log("Editing link: " + link['_id']);
         linkInputNumber = 0;
-        header = link._type;
-        linkDiv.html("<div class=\"node-profile-title\">Editing " + header + " (id: " + link['_id'] + "; start: " + link.start + ", end: " + link.end + ")</div><form id=\"Link" + link['_id'] + "EditForm\"></form>");
+        linkDiv.html("<div class=\"node-profile-title\">Editing " + (this.findHeader(link)) + "</div><form id=\"Link" + link['_id'] + "EditForm\"></form>");
         _.each(link, function(value, property) {
           var newEditingFields;
           if (blacklist.indexOf(property) < 0 && ["_id", "Last_Edit_Date", "Creation_Date", "start", "end"].indexOf(property) < 0) {
@@ -81,9 +85,53 @@
           }
         });
         $linkMoreFields = $("<input id=\"moreLink" + link['_id'] + "EditFields\" type=\"button\" value=\"+\">").appendTo(linkDiv);
-        return $linkMoreFields.click(function() {
+        $linkMoreFields.click(function() {
           _this.addField(linkInputNumber, "Link" + link['_id'] + "Edit");
           return linkInputNumber = linkInputNumber + 1;
+        });
+        $linkSave = $("<input name=\"LinkSaveButton\" type=\"button\" value=\"Save\">").appendTo(linkDiv);
+        $linkSave.click(function() {
+          var newLink, newLinkObj;
+          newLinkObj = _this.assign_properties("Link" + link['_id'] + "Edit");
+          if (newLinkObj[0]) {
+            newLink = newLinkObj[1];
+            newLink['_id'] = link['_id'];
+            return _this.dataController.linkEdit(link, newLink, function(savedLink) {
+              _this.graphModel.filterLinks(function(link) {
+                return !(savedLink['_id'] === link['_id']);
+              });
+              _this.graphModel.putLink(savedLink);
+              _this.selection.toggleSelection(savedLink);
+              return _this.cancelEditing(savedLink, linkDiv, blacklist);
+            });
+          }
+        });
+        $linkDelete = $("<input name=\"LinkDeleteButton\" type=\"button\" value=\"Delete\">").appendTo(linkDiv);
+        $linkDelete.click(function() {
+          if (confirm("Are you sure you want to delete this link?")) {
+            return _this.deleteLink(link, function() {
+              return _this.selection.toggleSelection(link);
+            });
+          }
+        });
+        $linkCancel = $("<input name=\"LinkCancelButton\" type=\"button\" value=\"Cancel\">").appendTo(linkDiv);
+        return $linkCancel.click(function() {
+          return _this.cancelEditing(link, linkDiv, blacklist);
+        });
+      };
+
+      LinkEdit.prototype.cancelEditing = function(link, linkDiv, blacklist) {
+        var $linkEdit,
+          _this = this;
+        linkDiv.html("<div class=\"node-profile-title\">" + (this.findHeader(link)) + "</div>");
+        _.each(link, function(value, property) {
+          if (blacklist.indexOf(property) < 0) {
+            return $("<div class=\"node-profile-property\">" + property + ":  " + value + "</div>").appendTo(linkDiv);
+          }
+        });
+        $linkEdit = $("<input id=\"LinkEditButton" + link['_id'] + "\" class=\"NodeEditButton\" type=\"button\" value=\"Edit this link\">").appendTo(linkDiv);
+        return $linkEdit.click(function() {
+          return _this.editLink(link, linkDiv, blacklist);
         });
       };
 
@@ -97,6 +145,33 @@
         }
         $row = $("<div id=\"" + name + "Div" + inputIndex + "\" class=\"" + name + "Div\">\n<input style=\"width:80px\" name=\"property" + name + inputIndex + "\" placeholder=\"" + defaultKey + "\" class=\"property" + name + "\">\n<input style=\"width:80px\" name=\"value" + name + inputIndex + "\" placeholder=\"" + defaultValue + "\" class=\"value" + name + "\">\n<input type=\"button\" id=\"remove" + name + inputIndex + "\" value=\"x\" onclick=\"this.parentNode.parentNode.removeChild(this.parentNode);\">\n</div>");
         return $("#" + name + "Form").append($row);
+      };
+
+      LinkEdit.prototype.deleteLink = function(delLink, callback) {
+        var _this = this;
+        return this.dataController.linkDelete(delLink, function(response) {
+          if (response === "error") {
+            return console.log("Could not delete Link.");
+          } else {
+            console.log("Link Deleted");
+            _this.graphModel.filterLinks(function(link) {
+              return !(delLink['_id'] === link['_id']);
+            });
+            return callback();
+          }
+        });
+      };
+
+      LinkEdit.prototype.findHeader = function(link) {
+        if (this.graphView.findText(link.source) && this.graphView.findText(link.target)) {
+          return "(" + this.graphView.findText(link.source) + ") - " + link._type + " - (" + this.graphView.findText(link.target) + ")";
+        } else if (this.graphView.findText(link.source)) {
+          return "(" + this.graphView.findText(link.source) + ") - " + link._type + " - (" + link.end + ")";
+        } else if (this.graphView.findText(link.target)) {
+          return "(" + link.start + ") - " + link._type + " - (" + this.graphView.findText(link.target) + ")";
+        } else {
+          return "(" + link.start + ") - " + link._type + " - (" + link.end + ")";
+        }
       };
 
       return LinkEdit;

@@ -68,8 +68,8 @@
         return $.post("/create_link", link, callback);
       };
 
-      Neo4jDataController.prototype.linkDelete = function(link) {
-        return $.post("/delete_arrow", link, callback);
+      Neo4jDataController.prototype.linkDelete = function(link, callback) {
+        return $.post("/delete_link", link, callback);
       };
 
       Neo4jDataController.prototype.linkEdit = function(oldLink, newLink) {

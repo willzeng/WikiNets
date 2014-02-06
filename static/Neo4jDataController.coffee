@@ -54,8 +54,8 @@ define ["DataController"], (DataController) ->
       $.post "/create_link", link, callback
 
     #should delete a link from the database
-    linkDelete: (link) ->
-      $.post "/delete_arrow", link, callback
+    linkDelete: (link, callback) ->
+      $.post "/delete_link", link, callback
 
     #should edit oldLink into newLink
     linkEdit: (oldLink, newLink) ->
