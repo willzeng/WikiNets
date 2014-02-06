@@ -209,7 +209,8 @@ body {
 .node.selected circle {fill:url("#gradFill")}
 .node text {opacity: 0.5; }
 .node:hover text {opacity: 1;  }
-.link {stroke: gray; opacity: 0.5;}
+.link {opacity: 0.5;}
+.link.selected {stroke: steelblue;}
 
 .nodeContainer {
     .node {
@@ -236,8 +237,9 @@ body {
 
 .linkContainer {
     .link {
-        stroke: gray;
-        opacity: 0.5;
+        &.selected {
+             stroke: steelblue;
+        }
     }
 }
 
@@ -310,13 +312,13 @@ body {
 /* node profiles */
 .node-profile-helper {
     max-height: 50%;
-    max-width: 70%;
+    max-width: 100%;
     overflow: scroll;
     .node-profile {
         background-color: #ccc;
         border: 1px solid white;
-        padding: 10px;
-        margin: 4px;
+        padding: 2px;
+        margin: 2px;
         .node-profile-property {
             font-size: 12px;
         };

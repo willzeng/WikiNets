@@ -11,6 +11,7 @@
 
       function ShowAll(options) {
         this.options = options;
+        this.searchNodes = __bind(this.searchNodes, this);
         this.expandSelection = __bind(this.expandSelection, this);
         this.loadAllNodes = __bind(this.loadAllNodes, this);
         ShowAll.__super__.constructor.call(this);
@@ -27,7 +28,7 @@
       };
 
       ShowAll.prototype.render = function() {
-        var $chooseSelectButton, $clearAllButton, $clearSelectedButton, $deselectAllButton, $expandSelectionButton, $graphViewButton, $listViewButton, $pinSelectedButton, $selectAllButton, $showAllButton, $unpinAllButton, $unpinSelectedButton, container,
+        var $chooseSelectButton, $clearAllButton, $clearSelectedButton, $deselectAllButton, $expandSelectionButton, $graphViewButton, $listViewButton, $pinSelectedButton, $selectAllButton, $showAllButton, $showLearningButton, $showResearchButton, $showStudentLifeButton, $unpinAllButton, $unpinSelectedButton, container,
           _this = this;
         container = $("<div />").addClass("show-all-container").appendTo(this.$el);
         $listViewButton = $("<input type=\"button\" id=\"listViewButton\" value=\"List View\"></input>").appendTo(container);
@@ -104,7 +105,7 @@
           return _results;
         });
         $pinSelectedButton = $("<input type=\"button\" id=\"unpinSelectedButton\" value=\"Pin Selected\"></input>").appendTo(container);
-        return $pinSelectedButton.click(function() {
+        $pinSelectedButton.click(function() {
           var node, _i, _len, _ref, _results;
           _ref = _this.selection.getSelectedNodes();
           _results = [];
@@ -113,6 +114,24 @@
             _results.push(node.fixed = true);
           }
           return _results;
+        });
+        $showLearningButton = $("<input type=\"button\" id=\"showLearningButton\" value=\"Learning\"></input>").appendTo(container);
+        $showLearningButton.click(function() {
+          return _this.searchNodes({
+            Theme: "Learning"
+          });
+        });
+        $showStudentLifeButton = $("<input type=\"button\" id=\"showStudentLifeButton\" value=\"Student Life\"></input>").appendTo(container);
+        $showStudentLifeButton.click(function() {
+          return _this.searchNodes({
+            Theme: "Student Life"
+          });
+        });
+        $showResearchButton = $("<input type=\"button\" id=\"showResearchButton\" value=\"Research\"></input>").appendTo(container);
+        return $showResearchButton.click(function() {
+          return _this.searchNodes({
+            Theme: "Research"
+          });
         });
       };
 
@@ -134,6 +153,21 @@
               return _this.graphModel.putNode(node);
             }
           });
+        });
+      };
+
+      ShowAll.prototype.searchNodes = function(searchQuery) {
+        var _this = this;
+        return $.post("/search_nodes", searchQuery, function(nodes) {
+          var node, _i, _len, _results;
+          console.log("made it here: " + searchQuery[0]);
+          _results = [];
+          for (_i = 0, _len = nodes.length; _i < _len; _i++) {
+            node = nodes[_i];
+            _this.graphModel.putNode(node);
+            _results.push(_this.selection.toggleSelection(node));
+          }
+          return _results;
         });
       };
 

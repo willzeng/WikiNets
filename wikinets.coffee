@@ -348,11 +348,12 @@ module.exports = class MyApp
 
     # adds a default strength value to a relationship 
     # TODO: (should only do this if there isnt one already)
-    addStrength = (dict,start,end,id) -> 
+    addStrength = (dict,start,end,id, type) -> 
       dict['strength'] = 1
       dict['start'] = start
       dict['end'] = end
       dict['_id'] = id+"" #make sure that the added id is a string
+      dict['_type'] = type
       dict
 
     app.post('/get_links', (request,response)->
@@ -372,7 +373,7 @@ module.exports = class MyApp
           console.log "Get Links executed"
           #console.log trim(link[0][0].self)[0]
 
-          allSpokes = (addStrength(link[0][0].data, trim(link[0][0].start)[0], trim(link[0][0].end)[0], trim(link[0][0].self)[0]) for link in relres.data)
+          allSpokes = (addStrength(link[0][0].data, trim(link[0][0].start)[0], trim(link[0][0].end)[0], trim(link[0][0].self)[0], link[0][0].type) for link in relres.data)
 
           getLink = (nID) -> 
             spoke for spoke in allSpokes when spoke.start is nID or spoke.end is nID
