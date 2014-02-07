@@ -23,6 +23,8 @@ define [], () ->
 
       @Create = instances['local/Create']
 
+      @nodeEdit = instances['local/NodeEdit']
+
     update: ->
       @$el.empty()
       selectedLinks = @selection.getSelectedLinks()
@@ -71,23 +73,30 @@ define [], () ->
 
           $linkMoreFields = $("<input id=\"moreLink#{link['_id']}EditFields\" type=\"button\" value=\"+\">").appendTo(linkDiv)
           $linkMoreFields.click(() =>
-            @addField(linkInputNumber, "Link#{link['_id']}Edit")
+            @nodeEdit.addField(linkInputNumber, "Link#{link['_id']}Edit")
             linkInputNumber = linkInputNumber+1
           )
 
 
           $linkSave = $("<input name=\"LinkSaveButton\" type=\"button\" value=\"Save\">").appendTo(linkDiv)
           $linkSave.click () => 
-            newLinkObj = @assign_properties("Link#{link['_id']}Edit")
+            newLinkObj = @nodeEdit.assign_properties("Link#{link['_id']}Edit")
             if newLinkObj[0]
               newLink = newLinkObj[1]
               newLink['_id'] = link['_id']
-              @dataController.linkEdit(link,newLink, (savedLink) =>           
+              @dataController.linkEdit(link, newLink, (savedLink) =>
+                savedLink['_id'] = link['_id']
+                savedLink['_type'] = link['_type']
+                savedLink['start'] = link['start']
+                savedLink['end'] = link['end']
+                savedLink['source'] = link['source']
+                savedLink['target'] = link['target']
+                savedLink['strength'] = link['strength']
+                #console.log savedLink    
                 @graphModel.filterLinks (link) ->
-                  !(savedLink['_id'] == link['_id'])
+                  not (savedLink['_id'] == link['_id'])
                 @graphModel.putLink(savedLink)
                 @selection.toggleSelection(savedLink)
-                @cancelEditing(savedLink, linkDiv, blacklist)
               )
 
           $linkDelete = $("<input name=\"LinkDeleteButton\" type=\"button\" value=\"Delete\">").appendTo(linkDiv)
@@ -107,25 +116,10 @@ define [], () ->
         )
 
 
-
-    # this is just duplicated from NodeEdit
-    addField: (inputIndex, name, defaultKey, defaultValue) =>
-      if !(defaultKey?) then defaultKey = "propertyEx"
-      if !(defaultValue?) then defaultValue = "valueEx"
-      $row = $ """
-          <div id="#{name}Div#{inputIndex}" class="#{name}Div">
-          <input style="width:80px" name="property#{name}#{inputIndex}" placeholder="#{defaultKey}" class="property#{name}">
-          <input style="width:80px" name="value#{name}#{inputIndex}" placeholder="#{defaultValue}" class="value#{name}">
-          <input type="button" id="remove#{name}#{inputIndex}" value="x" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">
-          </div>
-      """
-      $("##{name}Form").append $row
-
-
     deleteLink: (delLink, callback)=>
       @dataController.linkDelete delLink, (response) =>
         if response == "error"
-          console.log "Could not delete Link."
+          alert "Could not delete Link."
         else
           console.log "Link Deleted"
           @graphModel.filterLinks (link) ->

@@ -238,9 +238,9 @@ module.exports = class MyApp
       )
     )
 
-    ### Edits an arrow using a Cypher query ###
-    app.post('/edit_arrow', (request, response) ->
-      console.log "Arrow Edit Requested"
+    ### Edits a link using a Cypher query ###
+    app.post('/edit_link', (request, response) ->
+      console.log "Link Edit Requested"
       cypherQuery = "start r=rel(" + request.body.id + ") "
       if request.body.properties isnt undefined
         cypherQuery += "set r."
@@ -258,10 +258,10 @@ module.exports = class MyApp
         (noderes) ->
           nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
           nodeID = noderes.data[0][0]["self"].slice(nodeIDstart)
-          console.log "Arrow Edit Done, ID = " + nodeID
+          console.log "Link Edit Done, ID = " + nodeID
           response.json noderes.data[0][0]["data"]
         (noderes) ->
-          console.log "Arrow Edit Failed"
+          console.log "Link Edit Failed"
           response.send "error"
       )
     )

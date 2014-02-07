@@ -13,7 +13,6 @@
         this.options = options;
         this.findHeader = __bind(this.findHeader, this);
         this.deleteLink = __bind(this.deleteLink, this);
-        this.addField = __bind(this.addField, this);
         this.cancelEditing = __bind(this.cancelEditing, this);
         this.editLink = __bind(this.editLink, this);
         LinkEdit.__super__.constructor.call(this);
@@ -31,7 +30,8 @@
           return _this.$el.toggle();
         });
         instances["Layout"].addPlugin(this.el, this.options.pluginOrder, 'Link Edit', true);
-        return this.Create = instances['local/Create'];
+        this.Create = instances['local/Create'];
+        return this.nodeEdit = instances['local/NodeEdit'];
       };
 
       LinkEdit.prototype.update = function() {
@@ -86,23 +86,29 @@
         });
         $linkMoreFields = $("<input id=\"moreLink" + link['_id'] + "EditFields\" type=\"button\" value=\"+\">").appendTo(linkDiv);
         $linkMoreFields.click(function() {
-          _this.addField(linkInputNumber, "Link" + link['_id'] + "Edit");
+          _this.nodeEdit.addField(linkInputNumber, "Link" + link['_id'] + "Edit");
           return linkInputNumber = linkInputNumber + 1;
         });
         $linkSave = $("<input name=\"LinkSaveButton\" type=\"button\" value=\"Save\">").appendTo(linkDiv);
         $linkSave.click(function() {
           var newLink, newLinkObj;
-          newLinkObj = _this.assign_properties("Link" + link['_id'] + "Edit");
+          newLinkObj = _this.nodeEdit.assign_properties("Link" + link['_id'] + "Edit");
           if (newLinkObj[0]) {
             newLink = newLinkObj[1];
             newLink['_id'] = link['_id'];
             return _this.dataController.linkEdit(link, newLink, function(savedLink) {
+              savedLink['_id'] = link['_id'];
+              savedLink['_type'] = link['_type'];
+              savedLink['start'] = link['start'];
+              savedLink['end'] = link['end'];
+              savedLink['source'] = link['source'];
+              savedLink['target'] = link['target'];
+              savedLink['strength'] = link['strength'];
               _this.graphModel.filterLinks(function(link) {
                 return !(savedLink['_id'] === link['_id']);
               });
               _this.graphModel.putLink(savedLink);
-              _this.selection.toggleSelection(savedLink);
-              return _this.cancelEditing(savedLink, linkDiv, blacklist);
+              return _this.selection.toggleSelection(savedLink);
             });
           }
         });
@@ -135,23 +141,11 @@
         });
       };
 
-      LinkEdit.prototype.addField = function(inputIndex, name, defaultKey, defaultValue) {
-        var $row;
-        if (!(defaultKey != null)) {
-          defaultKey = "propertyEx";
-        }
-        if (!(defaultValue != null)) {
-          defaultValue = "valueEx";
-        }
-        $row = $("<div id=\"" + name + "Div" + inputIndex + "\" class=\"" + name + "Div\">\n<input style=\"width:80px\" name=\"property" + name + inputIndex + "\" placeholder=\"" + defaultKey + "\" class=\"property" + name + "\">\n<input style=\"width:80px\" name=\"value" + name + inputIndex + "\" placeholder=\"" + defaultValue + "\" class=\"value" + name + "\">\n<input type=\"button\" id=\"remove" + name + inputIndex + "\" value=\"x\" onclick=\"this.parentNode.parentNode.removeChild(this.parentNode);\">\n</div>");
-        return $("#" + name + "Form").append($row);
-      };
-
       LinkEdit.prototype.deleteLink = function(delLink, callback) {
         var _this = this;
         return this.dataController.linkDelete(delLink, function(response) {
           if (response === "error") {
-            return console.log("Could not delete Link.");
+            return alert("Could not delete Link.");
           } else {
             console.log("Link Deleted");
             _this.graphModel.filterLinks(function(link) {

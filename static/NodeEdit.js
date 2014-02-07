@@ -107,9 +107,10 @@
         $nodeSave = $("<input name=\"nodeSaveButton\" type=\"button\" value=\"Save\">").appendTo(nodeDiv);
         $nodeSave.click(function() {
           var newNode, newNodeObj;
-          newNodeObj = _this.assign_properties("Node" + node['_id'] + "Edit", $("#color" + node['_id']).val());
+          newNodeObj = _this.assign_properties("Node" + node['_id'] + "Edit");
           if (newNodeObj[0]) {
             newNode = newNodeObj[1];
+            newNode['color'] = $("#color" + node['_id']).val();
             newNode['_id'] = node['_id'];
             return _this.dataController.nodeEdit(node, newNode, function(savedNode) {
               _this.graphModel.filterNodes(function(node) {
@@ -185,14 +186,13 @@
         return $("#" + name + "Form").append($row);
       };
 
-      NodeEdit.prototype.assign_properties = function(form_name, colorValue, is_illegal) {
+      NodeEdit.prototype.assign_properties = function(form_name, is_illegal) {
         var editDate, propertyObject, submitOK;
         if (is_illegal == null) {
           is_illegal = this.dataController.is_illegal;
         }
         submitOK = true;
         propertyObject = {};
-        propertyObject["color"] = colorValue;
         editDate = new Date();
         propertyObject["Last_Edit_Date"] = editDate;
         $("." + form_name + "Div").each(function(i, obj) {
