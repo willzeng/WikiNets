@@ -20,17 +20,22 @@
           return _this.popout();
         });
         this.$el.appendTo($('#maingraph'));
-        this.$blur = $('<div id="blur">').appendTo($('#maingraph')).hide();
+        this.$blur = $('<div id="blur"><div>').appendTo(this.$el);
         this.createPopout();
-        return this.$el.toggle();
+        return this.$el.hide();
       };
 
       NodeCreationPopout.prototype.createPopout = function() {
         var $nodeCreateButton, $nodeInputDesc, $nodeInputName, $nodeInputUrl, $nodeTitle,
           _this = this;
-        this.$el.attr('id', 'create-node-popout');
-        this.$formWrapper = $('<div class="form">').appendTo(this.$el);
-        $nodeTitle = $('<h2>Create a Node!</h2>').appendTo(this.$formWrapper);
+        this.$el.attr('class', 'modal-container');
+        this.$modal = $('<div></div>').appendTo(this.$el);
+        this.$modal.attr({
+          id: 'create-node-popout',
+          "class": 'modal'
+        });
+        this.$formWrapper = $('<div class="form">').appendTo(this.$modal);
+        $nodeTitle = $('<h1 class="modal-title">Create a Node!</h1>').appendTo(this.$formWrapper);
         $nodeInputName = $('<input id="popout-node-input-name" placeholder=\"Node Name [optional]\" type="name" class="form-control" /><br />').appendTo(this.$formWrapper);
         $nodeInputUrl = $('<input placeholder="Url [optional]" class="form-control"><br>').appendTo(this.$formWrapper);
         $nodeInputDesc = $('<textarea placeholder="Description #key1 value1 #key2 value2" rows="20" class="form-control"></textarea><br>').appendTo(this.$formWrapper);
@@ -48,13 +53,11 @@
 
       NodeCreationPopout.prototype.popout = function() {
         this.$el.fadeIn();
-        this.$blur.fadeIn();
         return $('#popout-node-input-name').focus();
       };
 
       NodeCreationPopout.prototype.popdown = function() {
-        this.$el.fadeOut();
-        return this.$blur.fadeOut();
+        return this.$el.fadeOut();
       };
 
       NodeCreationPopout.prototype.createnode = function(content) {
