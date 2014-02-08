@@ -238,9 +238,9 @@ module.exports = class MyApp
       )
     )
 
-    ### Edits an arrow using a Cypher query ###
-    app.post('/edit_arrow', (request, response) ->
-      console.log "Arrow Edit Requested"
+    ### Edits a link using a Cypher query ###
+    app.post('/edit_link', (request, response) ->
+      console.log "Link Edit Requested"
       cypherQuery = "start r=rel(" + request.body.id + ") "
       if request.body.properties isnt undefined
         cypherQuery += "set r."
@@ -258,28 +258,28 @@ module.exports = class MyApp
         (noderes) ->
           nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
           nodeID = noderes.data[0][0]["self"].slice(nodeIDstart)
-          console.log "Arrow Edit Done, ID = " + nodeID
+          console.log "Link Edit Done, ID = " + nodeID
           response.json noderes.data[0][0]["data"]
         (noderes) ->
-          console.log "Arrow Edit Failed"
+          console.log "Link Edit Failed"
           response.send "error"
       )
     )
 
 
     ###
-    Deletes an arrow 
+    Deletes a link 
     ###
-    app.post('/delete_arrow', (request,response)->
-      console.log "Arrow Deletion Requested"
-      cypherQuery = "start r=rel(" + request.body.id + ") delete r;"
+    app.post('/delete_link', (request,response)->
+      console.log "Link Deletion Requested"
+      cypherQuery = "start r=rel(" + request.body['_id'] + ") delete r;"
       console.log "Executing " + cypherQuery
       graphDb.cypher.execute(cypherQuery).then(
         (noderes) ->
-          console.log "Arrow Deleted"
+          console.log "Link Deleted"
           response.send "success"
         (noderes) ->
-          console.log "Could Not Delete Arrow"
+          console.log "Could Not Delete Link"
           response.send "error"
       )
     )
@@ -348,11 +348,12 @@ module.exports = class MyApp
 
     # adds a default strength value to a relationship 
     # TODO: (should only do this if there isnt one already)
-    addStrength = (dict,start,end,id) -> 
+    addStrength = (dict,start,end,id, type) -> 
       dict['strength'] = 1
       dict['start'] = start
       dict['end'] = end
       dict['_id'] = id+"" #make sure that the added id is a string
+      dict['_type'] = type
       dict
 
     app.post('/get_links', (request,response)->
@@ -372,7 +373,7 @@ module.exports = class MyApp
           console.log "Get Links executed"
           #console.log trim(link[0][0].self)[0]
 
-          allSpokes = (addStrength(link[0][0].data, trim(link[0][0].start)[0], trim(link[0][0].end)[0], trim(link[0][0].self)[0]) for link in relres.data)
+          allSpokes = (addStrength(link[0][0].data, trim(link[0][0].start)[0], trim(link[0][0].end)[0], trim(link[0][0].self)[0], link[0][0].type) for link in relres.data)
 
           getLink = (nID) -> 
             spoke for spoke in allSpokes when spoke.start is nID or spoke.end is nID
@@ -395,7 +396,7 @@ module.exports = class MyApp
     app.post('/get_linked_nodes', (request,response)->
       
       console.log "GET LINKED NODES REQUESTED"
-      console.log request
+      #console.log request
       nodes= request.body.nodes
       console.log "NODES: ", nodes
 

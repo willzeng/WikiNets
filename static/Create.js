@@ -177,12 +177,14 @@
       };
 
       Create.prototype.assign_properties = function(form_name, is_illegal) {
-        var propertyObject, submitOK;
+        var createDate, propertyObject, submitOK;
         if (is_illegal == null) {
           is_illegal = this.dataController.is_illegal;
         }
         submitOK = true;
         propertyObject = {};
+        createDate = new Date();
+        propertyObject["Creation_Date"] = createDate;
         $("." + form_name + "Div").each(function(i, obj) {
           var property, value;
           property = $(this).children(".property" + form_name).val();

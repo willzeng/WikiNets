@@ -39,7 +39,7 @@ define [], () ->
               makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi,"<a href=\"$1\" target=\"_blank\" style=\"target-new: tab;\">$1</a>")
             else
               makeLinks = value
-            if property!="color"
+            if property!="color" and property!="Last_Edit_Date" and property!="Creation_Date"
               $("<div class=\"node-profile-property\">#{property}:  #{makeLinks}</div>").appendTo $nodeDiv  
         
 
@@ -62,7 +62,7 @@ define [], () ->
 
           nodeDiv.html("<div class=\"node-profile-title\">Editing #{header} (id: #{node['_id']})</div><form id=\"Node#{node['_id']}EditForm\"></form>")
           _.each node, (value, property) ->
-            if blacklist.indexOf(property) < 0 and ["_id", "text"].indexOf(property) < 0 and property!="color"
+            if blacklist.indexOf(property) < 0 and ["_id", "text"].indexOf(property) < 0 and property!="color" and property!="Last_Edit_Date" and property !="Creation_Date"
               newEditingFields = """
                 <div id=\"Node#{node['_id']}EditDiv#{nodeInputNumber}\" class=\"Node#{node['_id']}EditDiv\">
                   <input style=\"width:80px\" id=\"Node#{node['_id']}EditProperty#{nodeInputNumber}\" value=\"#{property}\" class=\"propertyNode#{node['_id']}Edit\"/> 
@@ -97,9 +97,10 @@ define [], () ->
 
           $nodeSave = $("<input name=\"nodeSaveButton\" type=\"button\" value=\"Save\">").appendTo(nodeDiv)
           $nodeSave.click () => 
-            newNodeObj = @assign_properties("Node#{node['_id']}Edit", $("#color"+node['_id']).val())
+            newNodeObj = @assign_properties("Node#{node['_id']}Edit")
             if newNodeObj[0]
               newNode = newNodeObj[1]
+              newNode['color'] = $("#color"+node['_id']).val()
               newNode['_id'] = node['_id']
               @dataController.nodeEdit(node,newNode, (savedNode) =>           
                 @graphModel.filterNodes (node) ->
@@ -157,10 +158,11 @@ define [], () ->
     # returns: submitOK: a boolean indicating whether the property names were all
     #                    legal
     #          propertyObject: a dictionary of property-value pairs
-    assign_properties: (form_name, colorValue, is_illegal = @dataController.is_illegal) => 
+    assign_properties: (form_name, is_illegal = @dataController.is_illegal) => 
         submitOK = true
         propertyObject = {}
-        propertyObject["color"] = colorValue
+        editDate = new Date()
+        propertyObject["Last_Edit_Date"]=editDate
         $("."+ form_name + "Div").each (i, obj) ->
             property = $(this).children(".property" + form_name).val()
             value = $(this).children(".value" + form_name).val()

@@ -139,7 +139,7 @@
       };
 
       TopBarCreate.prototype.parseSyntax = function(input) {
-        var dict, match, pattern, strsplit, text;
+        var createDate, dict, match, pattern, strsplit, text;
         console.log("input", input);
         strsplit = input.split('#');
         strsplit[0] = strsplit[0].replace(/:/, " #description ");
@@ -156,6 +156,8 @@
 
         dict["name"] = text.split('#')[0].trim();
         console.log("This is the title", text.split('#')[0].trim());
+        createDate = new Date();
+        dict["Creation_Date"] = createDate;
         return dict;
       };
 

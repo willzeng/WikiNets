@@ -54,7 +54,7 @@
               } else {
                 makeLinks = value;
               }
-              if (property !== "color") {
+              if (property !== "color" && property !== "Last_Edit_Date" && property !== "Creation_Date") {
                 return $("<div class=\"node-profile-property\">" + property + ":  " + makeLinks + "</div>").appendTo($nodeDiv);
               }
             }
@@ -78,7 +78,7 @@
         nodeDiv.html("<div class=\"node-profile-title\">Editing " + header + " (id: " + node['_id'] + ")</div><form id=\"Node" + node['_id'] + "EditForm\"></form>");
         _.each(node, function(value, property) {
           var newEditingFields;
-          if (blacklist.indexOf(property) < 0 && ["_id", "text"].indexOf(property) < 0 && property !== "color") {
+          if (blacklist.indexOf(property) < 0 && ["_id", "text"].indexOf(property) < 0 && property !== "color" && property !== "Last_Edit_Date" && property !== "Creation_Date") {
             newEditingFields = "<div id=\"Node" + node['_id'] + "EditDiv" + nodeInputNumber + "\" class=\"Node" + node['_id'] + "EditDiv\">\n  <input style=\"width:80px\" id=\"Node" + node['_id'] + "EditProperty" + nodeInputNumber + "\" value=\"" + property + "\" class=\"propertyNode" + node['_id'] + "Edit\"/> \n  <input style=\"width:80px\" id=\"Node" + node['_id'] + "EditValue" + nodeInputNumber + "\" value=\"" + value + "\" class=\"valueNode" + node['_id'] + "Edit\"/> \n  <input type=\"button\" id=\"removeNode" + node['_id'] + "Edit" + nodeInputNumber + "\" value=\"x\" onclick=\"this.parentNode.parentNode.removeChild(this.parentNode);\">\n</div>";
             $(newEditingFields).appendTo("#Node" + node['_id'] + "EditForm");
             return nodeInputNumber = nodeInputNumber + 1;
@@ -107,9 +107,10 @@
         $nodeSave = $("<input name=\"nodeSaveButton\" type=\"button\" value=\"Save\">").appendTo(nodeDiv);
         $nodeSave.click(function() {
           var newNode, newNodeObj;
-          newNodeObj = _this.assign_properties("Node" + node['_id'] + "Edit", $("#color" + node['_id']).val());
+          newNodeObj = _this.assign_properties("Node" + node['_id'] + "Edit");
           if (newNodeObj[0]) {
             newNode = newNodeObj[1];
+            newNode['color'] = $("#color" + node['_id']).val();
             newNode['_id'] = node['_id'];
             return _this.dataController.nodeEdit(node, newNode, function(savedNode) {
               _this.graphModel.filterNodes(function(node) {
@@ -185,14 +186,15 @@
         return $("#" + name + "Form").append($row);
       };
 
-      NodeEdit.prototype.assign_properties = function(form_name, colorValue, is_illegal) {
-        var propertyObject, submitOK;
+      NodeEdit.prototype.assign_properties = function(form_name, is_illegal) {
+        var editDate, propertyObject, submitOK;
         if (is_illegal == null) {
           is_illegal = this.dataController.is_illegal;
         }
         submitOK = true;
         propertyObject = {};
-        propertyObject["color"] = colorValue;
+        editDate = new Date();
+        propertyObject["Last_Edit_Date"] = editDate;
         $("." + form_name + "Div").each(function(i, obj) {
           var property, value;
           property = $(this).children(".property" + form_name).val();

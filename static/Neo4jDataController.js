@@ -68,12 +68,40 @@
         return $.post("/create_link", link, callback);
       };
 
-      Neo4jDataController.prototype.linkDelete = function(link) {
-        return $.post("/delete_arrow", link, callback);
+      Neo4jDataController.prototype.linkDelete = function(link, callback) {
+        return $.post("/delete_link", link, callback);
       };
 
-      Neo4jDataController.prototype.linkEdit = function(oldLink, newLink) {
-        return $.post("/edit_arrow", link, callback);
+      Neo4jDataController.prototype.linkEdit = function(oldLink, newLink, callback) {
+        var deleted_props, property, value;
+        oldLink = this.filterLink(oldLink);
+        deleted_props = [];
+        for (property in oldLink) {
+          value = oldLink[property];
+          if (newLink[property] != null) {
+            if (oldLink[property] === newLink[property]) {
+              delete newLink[property];
+            }
+          } else {
+            deleted_props.push(property);
+          }
+        }
+        if (((deleted_props.length === 1) && (!(confirm("Are you sure you want to delete the following property? " + deleted_props)))) || ((deleted_props.length > 1) && (!(confirm("Are you sure you want to delete the following properties? " + deleted_props))))) {
+          alert("Cancelled saving of link " + oldLink['_id'] + ".");
+          return false;
+        }
+        return $.post('/edit_link', {
+          id: oldLink['_id'],
+          properties: newLink,
+          remove: deleted_props
+        }, function(data) {
+          if (data === "error") {
+            return alert("Failed to save changes to link " + oldLink['_id'] + ".");
+          } else {
+            alert("Saved changes to link " + oldLink['_id'] + ".");
+            return callback(data);
+          }
+        });
       };
 
       Neo4jDataController.prototype.filterNode = function(node) {
@@ -88,9 +116,21 @@
         return filteredNode;
       };
 
+      Neo4jDataController.prototype.filterLink = function(link) {
+        var blacklist, filteredLink;
+        blacklist = ["_type", "end", "selected", "source", "start", "strength", "target"];
+        filteredLink = {};
+        _.each(link, function(value, property) {
+          if (blacklist.indexOf(property) < 0) {
+            return filteredLink[property] = value;
+          }
+        });
+        return filteredLink;
+      };
+
       Neo4jDataController.prototype.is_illegal = function(property, type) {
         var reserved_keys;
-        reserved_keys = ["_id", "text"];
+        reserved_keys = ["_id", "text", "_type", "Last_Edit_Date", "Creation_Date"];
         if (property === '') {
           alert(type + " name must not be empty.");
           return true;

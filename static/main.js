@@ -61,8 +61,10 @@
       "local/Neo4jDataController": {},
       "local/ListView": {},
       NodeSelection: {},
+      LinkSelection: {},
       "local/WikiNetsDataProvider": {},
       "local/NodeEdit": {},
+
       "local/VisualSearch": {},
       MiniMap: {},
       "local/ShowAll": {},
