@@ -24,7 +24,7 @@
         this.model.on("change", this.update.bind(this));
         this.selection = instances["NodeSelection"];
         this.selection.on("change", this.update.bind(this));
-        instances["Layout"].addPlugin(this.el, this.options.pluginOrder, 'MiniMap', true);
+        $(this.el).appendTo($("#toolBox"));
         return this.render();
       };
 

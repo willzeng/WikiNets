@@ -19,7 +19,9 @@ define [], () ->
       @model = instances["GraphModel"]
       @model.on "change", @update
       @render()
-      instances["Layout"].addCenter @el
+      #instances["Layout"].addCenter @el
+
+      $(@el).appendTo $('#maingraph')
 
     initialize: (options) ->
       # filter between model and visible graph
@@ -127,7 +129,7 @@ define [], () ->
 
     update: =>
 
-      @loadtime = 4000 #loadtime before nodes become fixed in ms
+      @loadtime = 15000 #loadtime before nodes become fixed in ms
 
       #colors = ["aqua", "black", "blue", "darkblue", "fuchsia", "darkgray", "green", "darkgreen", "lime", "maroon", "navy", "olive", "orange", "purple", "red", "silver", "teal", "yellow"]
       nodes = @model.get("nodes")

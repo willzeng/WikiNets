@@ -18,7 +18,8 @@ define [], () ->
       @selection = instances["NodeSelection"]
       @selection.on "change", @update.bind(this)
       
-      instances["Layout"].addPlugin @el, @options.pluginOrder, 'MiniMap', true
+      #instances["Layout"].addPlugin @el, @options.pluginOrder, 'MiniMap', true
+      $(@el).appendTo $("#toolBox")
 
       @render()
 

@@ -49,7 +49,7 @@
         this.model = instances["GraphModel"];
         this.model.on("change", this.update);
         this.render();
-        return instances["Layout"].addCenter(this.el);
+        return $(this.el).appendTo($('#maingraph'));
       };
 
       GraphView.prototype.initialize = function(options) {
@@ -113,7 +113,7 @@
       GraphView.prototype.update = function() {
         var clickSemaphore, filteredLinks, getColor, getSize, link, linkEnter, links, node, nodeEnter, nodes,
           _this = this;
-        this.loadtime = 4000;
+        this.loadtime = 15000;
         nodes = this.model.get("nodes");
         links = this.model.get("links");
         filteredLinks = this.linkFilter ? this.linkFilter.filter(links) : links;
