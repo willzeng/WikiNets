@@ -11,37 +11,235 @@ body {
     width: 100%;
     height: 100%;
     background-color: #000;
-    /*filter: alpha(opacity=50);
-    -moz-opacity:0.5;
-    -khtml-opacity:0.5;*/
     opacity: 0.5;
     z-index: 1000;
 }
 
-#buildbar {
-    background:#555555;
-    border-bottom:5px solid #333;
+.toolboxpopout {
+    position:fixed;
+    bottom:45px;
+    right:60px;
+    padding:10px;
+    display:none;
+    border:1px solid gray;
+    border-bottom:0px;
+}
 
-    #header h1 {
-        font-family:'Helvetica Neue';
-        font-weight:100;
-        text-decoration:none;
-        font-size:16pt;
-        padding-top:7px;
-        margin-top:0px;
-        padding-bottom:5px;
-        margin-bottom:0px;
-        margin-left:20px;
-        letter-spacing: 1px;
-        a {
-            text-decoration:none;
-            color:white;
-        }
+#toolbox {
+    position:fixed;
+    bottom:0px;
+    right:20px;
+    width:auto;
+    height:auto;
+    border:1px solid gray;
+    border-bottom:0px;
+    background:white;
+
+    div {
+        width:24px;
+        float:left;
+        height:24px;
+        margin-left:10px;
+        margin-top:10px;
+        margin-bottom:10px;
+        cursor:pointer;
+        background-repeat:no-repeat;
+    }
+    #help:hover{
+        background:url("images/icons/black/question_mark_12x24.png") !important;
+        background-repeat:no-repeat !important;
+    }
+    #help {
+        padding-right:12px;
+        border-right:1px solid grey;
+        background-repeat:no-repeat !important;
+    }
+    #sliders:hover{
+        background:url("images/icons/black/equalizer_24x24.png") !important;
+    }
+    #listview:hover{
+        background:url("images/icons/black/list_nested_24x21.png") !important;
+    }
+    #graphview:hover{
+        background:url("images/icons/black/share_24x24.png") !important;
+    }
+    #undo:hover{
+        background:url("images/icons/black/undo_24x24.png") !important;
+    }
+    #minimap:hover{
+        background:url("images/icons/black/sun_stroke_24x24.png") !important;
+    }
+    #settings:hover{
+        background:url("images/icons/black/cog_24x24.png") !important;    
     }
 }
 
 
+#toolbox div:last-child{
+    margin-right:10px;
+}
 
+
+#navigation {
+    position:fixed;
+    right:20px;
+    bottom:60px;
+    width:30px;
+    height:auto;
+
+    div {
+        width:24px;
+        height:24px;
+        cursor:pointer;
+        background-repeat:no-repeat;
+        margin-top:10px;
+    }
+    #zoomout{
+        height:6px;
+    }
+    #zoomin:hover{
+        background:url("images/icons/black/plus_24x24.png")  !important;    
+    }
+    #zoomout:hover{
+        background:url("images/icons/black/minus_24x6.png") !important;    
+    }
+}
+
+#maingraph {
+    position:fixed;
+    top:0px;
+    height:100%;
+    width:100%;
+}
+
+#buildbar {
+    vertical-align: middle;
+    display:inline;
+
+    #visual-search-container{
+        width:auto;
+        display:inline;
+
+        input[type="button"]{
+            background:blue;
+            height:30px;
+            width:60px;
+            -webkit-font-smoothing: antialiased;
+            -webkit-transition-delay: 0s;
+            -webkit-transition-duration: 0.1s;
+            -webkit-transition-property: all;
+            -webkit-transition-timing-function: linear;
+            background-color: rgb(0, 104, 153);
+            background-image: linear-gradient(rgb(10, 177, 255), rgb(0, 104, 153));
+            background-repeat: repeat-x;
+            border-bottom-color: rgb(0, 85, 125);
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+            border-left-color: rgb(0, 104, 153);
+            border-left-style: solid;
+            border-left-width: 1px;
+            border-right-color: rgb(0, 104, 153);
+            border-right-style: solid;
+            border-right-width: 1px;
+            border-top-color: rgb(0, 104, 153);
+            border-top-style: solid;
+            border-top-width: 1px;
+            box-shadow: rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+            color: rgb(255, 255, 255);
+            float: left;
+            cursor:pointer;
+            font-size: 16px;
+            border-bottom-right-radius:3px;
+            border-top-right-radius:3px;
+
+            padding-bottom: 4px;
+            padding-top: 4px;
+            text-rendering: auto;
+            text-shadow: rgba(0, 0, 0, 0.360784) 0px -1px 0px;
+            transition-delay: 0s;
+            transition-duration: 0.1s;
+            transition-property: all;
+            transition-timing-function: linear;
+            vertical-align: baseline;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+        
+        input[type="button"]:hover{
+            -webkit-appearance: none;
+            -webkit-box-shadow: rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+            -webkit-font-smoothing: antialiased;
+            -webkit-transition-delay: 0s;
+            -webkit-transition-duration: 0.1s;
+            -webkit-transition-property: all;
+            -webkit-transition-timing-function: linear;
+            background-color: rgb(0, 104, 153);
+            background-image: linear-gradient(rgb(10, 177, 255), rgb(0, 104, 153));
+            background-repeat: repeat-x;
+
+            text-decoration: none;
+            text-rendering: auto;
+            text-shadow: rgba(0, 0, 0, 0.360784) 0px -1px 0px;
+            transition-delay: 0s;
+            transition-duration: 0.1s;
+            transition-property: all;
+            transition-timing-function: linear;
+            vertical-align: baseline;
+        }
+        input[type="button"]:active{
+            background-image: linear-gradient(rgb(0, 104, 153),rgb(10, 177, 255));
+            background-repeat: repeat-x;
+
+        }
+
+        .visual_search{
+            width:230px;
+            float:left;
+        }
+
+        .VS-search-box{
+
+            border-bottom-left-radius:3px;
+            border-top-left-radius:3px;
+            border-bottom-right-radius:0px;
+            border-top-right-radius:0px;
+            border-width:1px;
+            background: white !important;
+            border:1px solid rgb(204, 204, 204);
+            -webkit-box-shadow:none;
+            color: rgb(55, 55, 55);
+
+            .VS-search-inner div input {
+                padding-top:7px;
+                padding-left:7px;
+            }
+        }
+    }
+
+    #vsplug {
+        float:left;
+        width:310px;
+    }
+
+    h1 {
+        font-family:'Helvetica Neue';
+        font-weight:100;
+        text-decoration:none;
+        float:left;
+        font-size:16pt;
+        padding-top:2px;
+        margin-top:0px;
+        margin-bottom:0px;
+        letter-spacing: 1px;
+        width:auto;
+        margin-left:20px;
+        margin-right:10px;
+
+        a {
+            text-decoration:none;
+            color:black;
+        }
+    }
+}
 
 #notepad{
     position: absolute;
@@ -55,25 +253,42 @@ body {
 }
 
 #topbarcreate {
-    position: absolute;
-    top: 6px;
-    left: 50%;
-    margin: 0 0 0 -250px;
     opacity: 1;
-    z-index: 100;
+    z-index: 9999;
     height:24px;
+    margin:10px;
+
 
     #nodeside,#linkside {
-        background-color: #555555;
-        padding:0px 5px 0px 5px;
-        border-bottom:5px solid #333;
+        opacity:0.95;
+        padding:0px;
         border-radius:5px;
+        width:auto;
+        float:right;
+        margin-right:10px;
         #source-container,.source-container{
         }
         textarea {
+            background:white;
             padding:4px;
+            padding-top:7px;
+            padding-bottom:1px;
+            padding-left:7px;
             border-radius:5px;
+            min-height:20px;
             outline:none;
+            font-size:16px;
+            margin:0px;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+            background-color: white;
+            border-radius:3px;
+            border:1px solid rgb(204, 204, 204);
+            color: rgb(55, 55, 55);
+            font-size: 12px;
+            line-height: 14px;
+            outline:none;
+            vertical-align: baseline;
         }
     }
 }

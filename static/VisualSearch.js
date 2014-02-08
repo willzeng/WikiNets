@@ -16,7 +16,8 @@
       }
 
       VisualSearchBox.prototype.init = function(instances) {
-        var _this = this;
+        var x,
+          _this = this;
         this.graphModel = instances["GraphModel"];
         this.selection = instances["NodeSelection"];
         this.listenTo(instances["KeyListener"], "down:191", function(e) {
@@ -24,7 +25,8 @@
           return e.preventDefault();
         });
         this.render();
-        return $(this.el).appendTo($('#omniBox'));
+        $(this.el).attr('id', 'vsplug').appendTo($('#buildbar'));
+        return console.log(x = this.el);
       };
 
       VisualSearchBox.prototype.render = function() {
@@ -32,7 +34,7 @@
           _this = this;
         $container = $("<div id=\"visual-search-container\" style='padding-top:2px'/>").appendTo(this.$el);
         $input = $("<div class=\"visual_search\" />").appendTo($container);
-        $button = $("<input type=\"button\" value=\"Go!\" />").appendTo($container);
+        $button = $("<input type=\"button\" value=\"Go\" style='float:left' />").appendTo($container);
         this.searchQuery = {};
         $button.click(function() {
           return _this.searchNodes(_this.searchQuery);

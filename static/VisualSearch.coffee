@@ -15,12 +15,13 @@ define [], () ->
         e.preventDefault()
       @render()
       #instances["Layout"].addPlugin @el, @options.pluginOrder, 'Visual Search', true
-      $(@el).appendTo $('#omniBox')
+      $(@el).attr('id','vsplug').appendTo $('#buildbar')
+      console.log x=@el
 
     render: ->
       $container = $("<div id=\"visual-search-container\" style='padding-top:2px'/>").appendTo @$el
       $input = $("<div class=\"visual_search\" />").appendTo $container
-      $button = $("<input type=\"button\" value=\"Go!\" />").appendTo $container
+      $button = $("<input type=\"button\" value=\"Go\" style='float:left' />").appendTo $container
       @searchQuery = {}
       $button.click(() =>
         #console.log @searchQuery

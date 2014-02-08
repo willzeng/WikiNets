@@ -23,7 +23,7 @@
         this.sourceSet = false;
         this.tempLink = {};
         this.render();
-        $(this.el).appendTo($('#createBox'));
+        $(this.el).appendTo($('#buildbar'));
         this.selection = instances["NodeSelection"];
         return this.selection.on("change", this.update.bind(this));
       };
@@ -32,7 +32,7 @@
         var $container, $createLinkButton, $createnodeNodeButton, $linkHolder, $linkInputDesc, $linkInputName, $linkInputUrl, $linkSide, $linkingInstructions, $nodeHolder, $nodeInputDesc, $nodeInputName, $nodeInputUrl, $nodeSide,
           _this = this;
         $container = $('<div id="topbarcreate">').appendTo(this.$el);
-        $nodeSide = $('<div id="nodeside" style="float:left;">').appendTo($container);
+        $nodeSide = $('<div id="nodeside">').appendTo($container);
         $nodeHolder = $('<textarea placeholder="Add Node" id="nodeHolder" name="textin" rows="1" cols="35"></textarea>').appendTo($nodeSide);
         this.$nodeWrapper = $('<div class="source-container">').appendTo($nodeSide);
         $nodeInputName = $('<textarea placeholder=\"Node Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
@@ -46,12 +46,12 @@
           $nodeInputDesc.val('');
           return $nodeInputName.focus();
         });
-        $linkSide = $('<div id="linkside" style="float:right;">').appendTo($container);
+        $linkSide = $('<div id="linkside">').appendTo($container);
         $linkHolder = $('<textarea placeholder="Add Link" id="nodeHolder" name="textin" rows="1" cols="35"></textarea><br>').appendTo($linkSide);
         this.$linkWrapper = $('<div id="source-container">').appendTo($linkSide);
         $linkInputName = $('<textarea placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
         $linkInputUrl = $('<textarea placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
-        $linkInputDesc = $('<textarea placeholder="Description #key1 value1 #key2 value2" rows="5" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
+        $linkInputDesc = $('<textarea placeholder="Description\n #key1 value1 #key2 value2" rows="5" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
         $createLinkButton = $('<input id="queryform" type="submit" value="Create Link"><br>').appendTo(this.$linkWrapper);
         $linkingInstructions = $('<span id="toplink-instructions">').appendTo($container);
         $createLinkButton.click(function() {

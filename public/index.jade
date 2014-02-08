@@ -4,27 +4,40 @@ html
   head
     title WikiNets
     
-    link(rel='stylesheet/less', type='text/css', href='wikinets-defaults-v2.less')
+    link(rel='stylesheet/less', type='text/css', href='wikinets-defaults.less')
     link(rel='stylesheet', type='text/css', href='/celestrium_code/lib/visualsearch-datauri.css', media='screen')
     link(rel="stylesheet", href="colorPicker.css", type="text/css")
     
     script(type='text/javascript', data-main="main", src="/celestrium_code/lib/require.js")
 
   body
+
+
     #maingraph
+
+    #buildbar
+ 
+      h1(style='')
+        a(href='http://www.wikinets.co.uk/') W
 
       #topbar
         #omniBox
 
-        #createBox
-
         #loginBox
 
-      #toolBox
 
-      //- div(style='float:left;font-size:14px;margin-left:20px;width:200px;position:fixed;top:50px;z-index: 10;background:white;opactity:0.95;')
-      //-   h4 Some instructions.
-      //-   p Click on a node to select it.
-      //-   p Use the boxes in the top to add new nodes and new links between nodes.
+    #toolbox
+      div(style="background:url('images/icons/gray_dark/cog_24x24.png')",class="toolboxitempopout",id="settings")
+      div(style="width:12px;background:url('images/icons/gray_dark/question_mark_12x24.png')",class="toolboxitempopout",id="help")
+      div(style="background:url('images/icons/gray_dark/equalizer_24x24.png')",class="toolboxitempopout",id="sliders")
+      div(style="height:21px;background:url('images/icons/gray_dark/list_nested_24x21.png')",id="listview")
+      div(style="background:url('images/icons/gray_dark/share_24x24.png')",id="graphview")
+      div(style="background:url('images/icons/gray_dark/undo_24x24.png')",id="undo")
+      div(style="background:url('images/icons/gray_dark/sun_stroke_24x24.png')",class="toolboxitempopout",id="minimap")
+    
+
+    #navigation
+      div(style="background:url('images/icons/gray_dark/plus_24x24.png')",id="zoomin")
+      div(style="background:url('images/icons/gray_dark/minus_24x6.png')",id="zoomout")
 
 

@@ -20,8 +20,8 @@ define [], () ->
       @tempLink = {};
       @render()
 
-      #instances["Layout"].addCenter @el
-      $(@el).appendTo $('#createBox')
+      $(@el).appendTo $('#buildbar')
+
 
       @selection = instances["NodeSelection"]
       @selection.on "change", @update.bind(this)
@@ -30,7 +30,7 @@ define [], () ->
 
       $container = $('<div id="topbarcreate">').appendTo @$el
 
-      $nodeSide = $('<div id="nodeside" style="float:left;">').appendTo $container
+      $nodeSide = $('<div id="nodeside">').appendTo $container
 
       $nodeHolder = $('<textarea placeholder="Add Node" id="nodeHolder" name="textin" rows="1" cols="35"></textarea>').appendTo $nodeSide
 
@@ -49,7 +49,7 @@ define [], () ->
         $nodeInputDesc.val('')
         $nodeInputName.focus()
 
-      $linkSide = $('<div id="linkside" style="float:right;">').appendTo $container
+      $linkSide = $('<div id="linkside">').appendTo $container
 
       $linkHolder = $('<textarea placeholder="Add Link" id="nodeHolder" name="textin" rows="1" cols="35"></textarea><br>').appendTo $linkSide
 
@@ -58,7 +58,7 @@ define [], () ->
       # $linkInput = $('<textarea placeholder="Link : A link\'s description #key1 value1 #key2 value2" id="linkInputField" name="textin" rows="5" cols="35"></textarea><br>').appendTo @$linkWrapper
       $linkInputName = $('<textarea placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
       $linkInputUrl = $('<textarea placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
-      $linkInputDesc = $('<textarea placeholder="Description #key1 value1 #key2 value2" rows="5" cols="35"></textarea><br>').appendTo @$linkWrapper
+      $linkInputDesc = $('<textarea placeholder="Description\n #key1 value1 #key2 value2" rows="5" cols="35"></textarea><br>').appendTo @$linkWrapper
 
       $createLinkButton = $('<input id="queryform" type="submit" value="Create Link"><br>').appendTo @$linkWrapper
 
