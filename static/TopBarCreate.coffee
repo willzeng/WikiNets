@@ -75,7 +75,7 @@ define [], () ->
         $linkInputDesc.val('')
         # $linkInput.blur()
         @$linkWrapper.hide()
-        $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:yellow; font-size:20px">Click two Nodes to link them.</span>')
+        $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click two Nodes to link them.</span>')
 
       @$nodeWrapper.hide()
       @$linkWrapper.hide()
@@ -116,7 +116,7 @@ define [], () ->
           else
             @tempLink.source = node
             @sourceSet = true
-            $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:yellow; font-size:20px">Click two Nodes to link them.</span>')
+            $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click two Nodes to link them.</span>')
 
     update: (node) ->
       @selection.getSelectedNodes()

@@ -61,7 +61,7 @@
           $linkInputUrl.val('');
           $linkInputDesc.val('');
           _this.$linkWrapper.hide();
-          return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:yellow; font-size:20px">Click two Nodes to link them.</span>');
+          return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click two Nodes to link them.</span>');
         });
         this.$nodeWrapper.hide();
         this.$linkWrapper.hide();
@@ -115,7 +115,7 @@
             } else {
               _this.tempLink.source = node;
               _this.sourceSet = true;
-              return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:yellow; font-size:20px">Click two Nodes to link them.</span>');
+              return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click two Nodes to link them.</span>');
             }
           }
         });
