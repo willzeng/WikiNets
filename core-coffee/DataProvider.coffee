@@ -14,8 +14,12 @@ define [], () ->
         nodes = @graphModel.getNodes()
         @getLinks node, nodes, (links) =>
           _.each links, (link, i) =>
-            link.source = node
-            link.target = nodes[i]
+            if link.start == node['_id']
+              link.source = node
+              link.target = nodes[i]
+            else
+              link.source = nodes[i]
+              link.target = node
             @graphModel.putLink link if @linkFilter link
 
     # should call callback with a respective array of links from node to nodes

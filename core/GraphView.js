@@ -58,7 +58,7 @@
       };
 
       GraphView.prototype.render = function() {
-        var currentZoom, defs, initialWindowHeight, initialWindowWidth, linkContainer, nodeContainer, svg, translateLock, workspace, zoom, zoomCapture,
+        var currentZoom, defs, gradient, initialWindowHeight, initialWindowWidth, linkContainer, nodeContainer, svg, translateLock, workspace, zoom, zoomCapture,
           _this = this;
         initialWindowWidth = $(window).width();
         initialWindowHeight = $(window).height();
@@ -75,6 +75,9 @@
         defs = svg.append("defs");
         defs.append("marker").attr("id", "Triangle").attr("viewBox", "0 0 20 15").attr("refX", "20").attr("refY", "5").attr("markerUnits", "userSpaceOnUse").attr("markerWidth", "20").attr("markerHeight", "15").attr("orient", "auto").append("path").attr("d", "M 0 0 L 10 5 L 0 10 z");
         defs.append("marker").attr("id", "Triangle2").attr("viewBox", "0 0 20 15").attr("refX", "-5").attr("refY", "5").attr("markerUnits", "userSpaceOnUse").attr("markerWidth", "20").attr("markerHeight", "15").attr("orient", "auto").append("path").attr("d", "M 10 0 L 0 5 L 10 10 z");
+        gradient = defs.append("radialGradient");
+        gradient.attr("id", "gradFill").attr("cx", "50%").attr("cy", "50%").attr("r", "75%").attr("fx", "50%").attr("fy", "50%").append("stop").attr("offset", "0%").attr("style", "stop-color:steelblue;stop-opacity:1");
+        gradient.append("stop").attr("offset", "100%").attr("style", "stop-color:rgb(255,255,255);stop-opacity:1");
         zoomCapture = svg.append("g");
         zoomCapture.append("svg:rect").attr("width", "100%").attr("height", "100%").style("fill-opacity", "0%");
         translateLock = false;
@@ -119,12 +122,17 @@
         filteredLinks = this.linkFilter ? this.linkFilter.filter(links) : links;
         this.force.nodes(nodes).links(filteredLinks).start();
         link = this.linkSelection = d3.select(this.el).select(".linkContainer").selectAll(".link").data(filteredLinks, this.model.get("linkHash"));
-        linkEnter = link.enter().append("line").attr("class", "link").attr('marker-end', function(link) {
+        linkEnter = link.enter().append("line").attr("class", "link").attr("stroke", "grey").attr('marker-end', function(link) {
           return 'url(#Triangle)';
         }).attr('marker-start', function(link) {
           if (link.direction === 'backward' || link.direction === 'bidirectional') {
             return 'url(#Triangle2)';
           }
+        });
+        linkEnter.on("click", function(datum, index) {
+          return _this.trigger("enter:link:click", datum);
+        }).on("dblclick", function(datum, index) {
+          return _this.trigger("enter:link:dblclick", datum);
         });
         getSize = function(node) {
           if (node.votes != null) {
@@ -250,9 +258,17 @@
 
       GraphView.prototype.findText = function(node) {
         if (node.name != null) {
-          return node.name;
+          if (node.name.length > 20) {
+            return node.name.substring(0, 18) + "...";
+          } else {
+            return node.name;
+          }
         } else if (node.title != null) {
-          return node.title;
+          if (node.title.length > 20) {
+            return node.title.substring(0, 18) + "...";
+          } else {
+            return node.title;
+          }
         } else {
           return '';
         }

@@ -74,6 +74,24 @@ define [], () ->
         .append("path")
           .attr("d", "M 10 0 L 0 5 L 10 10 z")
 
+      gradient=defs.append("radialGradient");
+
+      gradient
+        .attr("id","gradFill")
+        .attr("cx","50%")
+        .attr("cy","50%")
+        .attr("r","75%")
+        .attr("fx","50%")
+        .attr("fy","50%")
+        .append("stop")
+          .attr("offset","0%")
+          .attr("style","stop-color:steelblue;stop-opacity:1");
+      gradient
+       .append("stop")
+          .attr("offset","100%")
+          .attr("style","stop-color:rgb(255,255,255);stop-opacity:1");
+
+
       # outermost wrapper - this is used to capture all zoom events
       zoomCapture = svg.append("g")
 
@@ -139,10 +157,18 @@ define [], () ->
       link = @linkSelection = d3.select(@el).select(".linkContainer").selectAll(".link").data(filteredLinks, @model.get("linkHash"))
       linkEnter = link.enter().append("line")
         .attr("class", "link")
+        .attr("stroke", "grey")
         .attr 'marker-end', (link) ->
           'url(#Triangle)' #if link.direction is 'forward' or link.direction is 'bidirectional'
         .attr 'marker-start', (link) ->
           'url(#Triangle2)' if link.direction is 'backward' or link.direction is 'bidirectional'
+
+
+      linkEnter.on("click", (datum, index) =>
+        @trigger "enter:link:click", datum
+        )
+        .on "dblclick", (datum, index) =>
+          @trigger "enter:link:dblclick", datum
       
       
       getSize = (node) =>
@@ -271,9 +297,15 @@ define [], () ->
     #TODO MAKE THIS GENERIC
     findText: (node) ->
       if node.name?
-        node.name
+        if (node.name.length>20)
+          node.name.substring(0,18)+ "..."
+        else
+          node.name
       else if node.title?
-        node.title
+        if (node.title.length>20)
+          node.title.substring(0,18)+ "..."
+        else
+          node.title
       else
         ''
 
