@@ -582,3 +582,48 @@ body {
         }
     }
 }
+
+#create-node-popout {
+    width: 800px;
+    background-color: blue;
+    z-index: 5000;
+    position: absolute;
+    top: 50px;
+    left: 200px;
+    border: #f9f9f9;
+    .form {
+        padding: 15px;
+    }
+    .textarea {
+        height: auto;
+    }
+}
+
+.form-control {
+    width: 90%;
+    display: block;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.428571429;
+    color: #555555;
+    background-color: #ffffff;
+    background-image: none;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+#blur {
+    filter: alpha(opacity=75);
+    opacity: .75;
+    background-color: #c0c0c0;
+    position: absolute;
+    top: 0px; 
+    left: 0px;
+    width: 100%; 
+    height: 100%;
+}

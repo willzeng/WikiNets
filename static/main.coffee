@@ -112,6 +112,8 @@ require ["Celestrium"], (Celestrium) ->
 
     "ForceSliders": {}
 
+    "local/NodeCreationPopout": {}
+
     #"LinkDistribution": {}
 
   # initialize the plugins and execute a callback once done

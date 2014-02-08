@@ -22,7 +22,6 @@ define [], () ->
 
       $(@el).appendTo $('#buildbar')
 
-
       @selection = instances["NodeSelection"]
       @selection.on "change", @update.bind(this)
 
@@ -48,6 +47,14 @@ define [], () ->
         $nodeInputUrl.val('')
         $nodeInputDesc.val('')
         $nodeInputName.focus()
+ 
+      # popout button for more detailed node creation
+      $openPopoutButton = $('<input id="popout-button" type="button" value="popout">').appendTo @$nodeWrapper
+
+      $openPopoutButton.click () =>
+        @trigger 'popout:open'
+        @$nodeWrapper.hide()
+        $nodeHolder.show()
 
       $linkSide = $('<div id="linkside">').appendTo $container
 
