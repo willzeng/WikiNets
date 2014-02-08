@@ -24,8 +24,10 @@
         this.model.on("change", this.update.bind(this));
         this.selection = instances["NodeSelection"];
         this.selection.on("change", this.update.bind(this));
-        $(this.el).appendTo($("#toolBox"));
-        return this.render();
+        $(this.el).attr("id", "minimapPopOut").attr("class", "toolboxpopout");
+        $(this.el).appendTo($("#maingraph"));
+        this.render();
+        return $(this.el).hide();
       };
 
       MiniMap.prototype.render = function() {
