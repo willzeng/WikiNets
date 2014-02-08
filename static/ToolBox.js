@@ -32,17 +32,21 @@
         $container = $("<div id=\"show-all-container\">").appendTo(this.$el);
         $('#listviewButton').click(function() {
           $(_this.listView.el).show();
-          return $(_this.graphView.el).hide();
+          $('#listviewButton').css("background", "url(\"images/icons/blue/list_nested_24x21.png\")");
+          $(_this.graphView.el).hide();
+          return $('#graphviewButton').css("background", "url(\"images/icons/gray_dark/share_24x24.png\")");
         });
         $('#graphviewButton').click(function() {
           $(_this.listView.el).hide();
-          return $(_this.graphView.el).show();
+          $('#listviewButton').css("background", "url(\"images/icons/gray_dark/list_nested_24x21.png\")");
+          $(_this.graphView.el).show();
+          $('#graphviewButton').css("background", "url(\"images/icons/blue/share_24x24.png\")");
+          return console.log("clcki");
         });
         $('#minimapButton').click(function() {
           return $('#minimapPopOut').toggle();
         });
         $('#slidersButton').click(function() {
-          console.log("click sliders");
           return $('#slidersPopOut').toggle();
         });
         $showAllButton = $("<input type=\"button\" id=\"showAllButton\" value=\"Show All\"></input>").appendTo($container);

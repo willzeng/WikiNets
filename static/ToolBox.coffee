@@ -24,12 +24,17 @@ define [], () ->
 
       $('#listviewButton').click(() =>
         $(@listView.el).show()
+        $('#listviewButton').css("background", "url(\"images/icons/blue/list_nested_24x21.png\")")
         $(@graphView.el).hide()
+        $('#graphviewButton').css("background", "url(\"images/icons/gray_dark/share_24x24.png\")")
         )
 
       $('#graphviewButton').click(() =>
         $(@listView.el).hide()
+        $('#listviewButton').css("background", "url(\"images/icons/gray_dark/list_nested_24x21.png\")")
         $(@graphView.el).show()
+        $('#graphviewButton').css("background", "url(\"images/icons/blue/share_24x24.png\")")
+        console.log "clcki"
         )
 
       $('#minimapButton').click(() =>
@@ -37,7 +42,6 @@ define [], () ->
         )
 
       $('#slidersButton').click(() =>
-        console.log "click sliders"
         $('#slidersPopOut').toggle()
         )
 
