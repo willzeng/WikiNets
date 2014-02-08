@@ -420,6 +420,42 @@ module.exports = class MyApp
       )
     )
 
+    app.post '/node_index_search', (request, response)->
+      theKeys = request.body.checkKeys
+      query = request.body.query
+      condition = "where "
+      condition+="n.#{key}=~\".*#{query}.*\" OR " for key in theKeys
+      condition+="False"
+      cypherQuery = "start n=node(*) #{condition} return n;"
+
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes)->
+          console.log "Node Index Search: Query Executed"
+          nodeData = (addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
+          console.log nodeData
+
+          regexpression = ".*#{query}.*"
+          pattern = new RegExp(regexpression)          
+          matchedKeys = (key for key in theKeys when key.match(pattern)?)
+          console.log "the returned keys", matchedKeys
+
+          if matchedKeys.length > 0
+            keyscondition = "where "
+            keyscondition += "has(n.#{key}) OR " for key in matchedKeys
+            keyscondition += "False"
+            cypherQuery = "start n=node(*) #{keyscondition} return n;"
+            console.log "Executing " + cypherQuery
+            graphDb.cypher.execute(cypherQuery).then(
+              (matchedKeys)->
+                nodeDataKeys = (addID(n[0].data,trim(n[0].self)[0]) for n in matchedKeys.data)
+                response.json nodeData.concat nodeDataKeys
+              )
+          else
+            response.json nodeData
+      )
+
+
     port = process.env.PORT || 3000
     app.listen port, -> console.log("Listening on " + port)
 
@@ -470,3 +506,5 @@ module.exports = class MyApp
               callback displaydata
           )
       )
+
+

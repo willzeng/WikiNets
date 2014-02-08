@@ -53,5 +53,5 @@ define [], () ->
       $.post "/search_nodes", searchQuery, (nodes) =>
         for node in nodes
           @graphModel.putNode(node)
-          @selection.toggleSelection(node)
+          #@selection.toggleSelection(node)
 

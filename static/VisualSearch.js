@@ -81,8 +81,7 @@
           _results = [];
           for (_i = 0, _len = nodes.length; _i < _len; _i++) {
             node = nodes[_i];
-            _this.graphModel.putNode(node);
-            _results.push(_this.selection.toggleSelection(node));
+            _results.push(_this.graphModel.putNode(node));
           }
           return _results;
         });
