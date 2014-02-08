@@ -64,10 +64,10 @@
       LinkSelection: {},
       "local/WikiNetsDataProvider": {},
       "local/NodeEdit": {},
-
+      "local/LinkEdit": {},
+      "local/ShowAll": {},
       "local/VisualSearch": {},
       MiniMap: {},
-      "local/ShowAll": {},
       "local/TopBarCreate": {}
     };
     return Celestrium.init(plugins, function(instances) {

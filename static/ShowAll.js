@@ -28,11 +28,7 @@
       };
 
       ShowAll.prototype.render = function() {
-<<<<<<< HEAD
-        var $chooseSelectButton, $clearAllButton, $clearSelectedButton, $container, $deselectAllButton, $expandSelectionButton, $graphViewButton, $listViewButton, $pinSelectedButton, $selectAllButton, $showAllButton, $unpinAllButton, $unpinSelectedButton,
-=======
-        var $chooseSelectButton, $clearAllButton, $clearSelectedButton, $deselectAllButton, $expandSelectionButton, $graphViewButton, $listViewButton, $pinSelectedButton, $selectAllButton, $showAllButton, $showLearningButton, $showResearchButton, $showStudentLifeButton, $unpinAllButton, $unpinSelectedButton, container,
->>>>>>> dev
+        var $chooseSelectButton, $clearAllButton, $clearSelectedButton, $container, $deselectAllButton, $expandSelectionButton, $graphViewButton, $listViewButton, $pinSelectedButton, $selectAllButton, $showAllButton, $showLearningButton, $showResearchButton, $showStudentLifeButton, $unpinAllButton, $unpinSelectedButton,
           _this = this;
         $container = $("<div id=\"show-all-container\">").appendTo(this.$el);
         $listViewButton = $("<input type=\"button\" id=\"listViewButton\" value=\"List View\"></input>").appendTo($container);
@@ -108,13 +104,8 @@
           }
           return _results;
         });
-<<<<<<< HEAD
         $pinSelectedButton = $("<input type=\"button\" id=\"unpinSelectedButton\" value=\"Pin Selected\"></input>").appendTo($container);
-        return $pinSelectedButton.click(function() {
-=======
-        $pinSelectedButton = $("<input type=\"button\" id=\"unpinSelectedButton\" value=\"Pin Selected\"></input>").appendTo(container);
         $pinSelectedButton.click(function() {
->>>>>>> dev
           var node, _i, _len, _ref, _results;
           _ref = _this.selection.getSelectedNodes();
           _results = [];
@@ -124,19 +115,19 @@
           }
           return _results;
         });
-        $showLearningButton = $("<input type=\"button\" id=\"showLearningButton\" value=\"Learning\"></input>").appendTo(container);
+        $showLearningButton = $("<input type=\"button\" id=\"showLearningButton\" value=\"Learning\"></input>").appendTo($container);
         $showLearningButton.click(function() {
           return _this.searchNodes({
             Theme: "Learning"
           });
         });
-        $showStudentLifeButton = $("<input type=\"button\" id=\"showStudentLifeButton\" value=\"Student Life\"></input>").appendTo(container);
+        $showStudentLifeButton = $("<input type=\"button\" id=\"showStudentLifeButton\" value=\"Student Life\"></input>").appendTo($container);
         $showStudentLifeButton.click(function() {
           return _this.searchNodes({
             Theme: "Student Life"
           });
         });
-        $showResearchButton = $("<input type=\"button\" id=\"showResearchButton\" value=\"Research\"></input>").appendTo(container);
+        $showResearchButton = $("<input type=\"button\" id=\"showResearchButton\" value=\"Research\"></input>").appendTo($container);
         return $showResearchButton.click(function() {
           return _this.searchNodes({
             Theme: "Research"

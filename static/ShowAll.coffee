@@ -90,17 +90,17 @@ define [], () ->
         node.fixed = true for node in @selection.getSelectedNodes()
         )
 
-      $showLearningButton = $("<input type=\"button\" id=\"showLearningButton\" value=\"Learning\"></input>").appendTo container
+      $showLearningButton = $("<input type=\"button\" id=\"showLearningButton\" value=\"Learning\"></input>").appendTo $container
       $showLearningButton.click(() =>
         @searchNodes({Theme:"Learning"})
         )
 
-      $showStudentLifeButton = $("<input type=\"button\" id=\"showStudentLifeButton\" value=\"Student Life\"></input>").appendTo container
+      $showStudentLifeButton = $("<input type=\"button\" id=\"showStudentLifeButton\" value=\"Student Life\"></input>").appendTo $container
       $showStudentLifeButton.click(() =>
         @searchNodes({Theme:"Student Life"})
         )
             
-      $showResearchButton = $("<input type=\"button\" id=\"showResearchButton\" value=\"Research\"></input>").appendTo container
+      $showResearchButton = $("<input type=\"button\" id=\"showResearchButton\" value=\"Research\"></input>").appendTo $container
       $showResearchButton.click(() =>
         @searchNodes({Theme:"Research"})
         )

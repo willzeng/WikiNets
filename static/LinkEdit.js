@@ -29,7 +29,7 @@
         this.listenTo(instances["KeyListener"], "down:16:80", function() {
           return _this.$el.toggle();
         });
-        instances["Layout"].addPlugin(this.el, this.options.pluginOrder, 'Link Edit', true);
+        $(this.el).appendTo($('#omniBox'));
         this.Create = instances['local/Create'];
         return this.nodeEdit = instances['local/NodeEdit'];
       };

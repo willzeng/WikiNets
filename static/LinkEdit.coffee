@@ -19,7 +19,8 @@ define [], () ->
       @selection = instances["LinkSelection"]
       @selection.on "change", @update.bind(this)
       @listenTo instances["KeyListener"], "down:16:80", () => @$el.toggle()
-      instances["Layout"].addPlugin @el, @options.pluginOrder, 'Link Edit', true
+      #instances["Layout"].addPlugin @el, @options.pluginOrder, 'Link Edit', true
+      $(@el).appendTo $('#omniBox')
 
       @Create = instances['local/Create']
 
