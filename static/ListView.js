@@ -21,13 +21,9 @@
       }
 
       ListView.prototype.init = function(instances) {
-        var _this = this;
         this.dataController = instances['local/Neo4jDataController'];
         this.graphModel = instances['GraphModel'];
         this.graphModel.on("change", this.update.bind(this));
-        this.listenTo(instances["KeyListener"], "down:80", function() {
-          return _this.$el.toggle();
-        });
         $(this.el).appendTo($('#maingraph'));
         return $(this.el).hide();
       };

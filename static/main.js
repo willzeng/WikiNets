@@ -67,6 +67,7 @@
       "local/NodeEdit": {},
       "local/LinkEdit": {},
       "local/ShowAll": {},
+      "local/ToolBox": {},
       MiniMap: {},
       "local/TopBarCreate": {}
     };

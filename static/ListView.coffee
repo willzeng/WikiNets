@@ -13,7 +13,7 @@ define [], () ->
       @graphModel = instances['GraphModel']
       @graphModel.on "change", @update.bind(this)
 
-      @listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
+      #@listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
       #instances["Layout"].addCenter @el
       $(@el).appendTo $('#maingraph')
 

@@ -89,6 +89,8 @@ require ["Celestrium"], (Celestrium) ->
 
     "local/ShowAll": {}
 
+    "local/ToolBox": {}
+
     #"local/Create": {}
 
     #"local/SyntaxCreate": {}    
