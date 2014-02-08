@@ -69,7 +69,9 @@
       "local/ShowAll": {},
       "local/ToolBox": {},
       MiniMap: {},
-      "local/TopBarCreate": {}
+      "local/TopBarCreate": {},
+      "Sliders": {},
+      "ForceSliders": {}
     };
     return Celestrium.init(plugins, function(instances) {
       var loadEverything;

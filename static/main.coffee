@@ -108,9 +108,9 @@ require ["Celestrium"], (Celestrium) ->
 
     "local/TopBarCreate": {}
 
-    #"Sliders": {}
+    "Sliders": {}
 
-    #"ForceSliders": {}
+    "ForceSliders": {}
 
     #"LinkDistribution": {}
 

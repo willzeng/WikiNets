@@ -36,6 +36,11 @@ define [], () ->
         $('#minimapPopOut').toggle()
         )
 
+      $('#slidersButton').click(() =>
+        console.log "click sliders"
+        $('#slidersPopOut').toggle()
+        )
+
       $showAllButton = $("<input type=\"button\" id=\"showAllButton\" value=\"Show All\"></input>").appendTo $container
       $showAllButton.click(() =>
         @dataProvider.getEverything(@loadAllNodes)

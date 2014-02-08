@@ -41,6 +41,10 @@
         $('#minimapButton').click(function() {
           return $('#minimapPopOut').toggle();
         });
+        $('#slidersButton').click(function() {
+          console.log("click sliders");
+          return $('#slidersPopOut').toggle();
+        });
         $showAllButton = $("<input type=\"button\" id=\"showAllButton\" value=\"Show All\"></input>").appendTo($container);
         $showAllButton.click(function() {
           return _this.dataProvider.getEverything(_this.loadAllNodes);
