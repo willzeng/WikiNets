@@ -22,6 +22,9 @@
         this.graphModel = instances["GraphModel"];
         this.dataProvider = instances["local/WikiNetsDataProvider"];
         this.selection = instances["NodeSelection"];
+        $(this.el).attr("class", "toolboxpopout").css("background", "white");
+        $(this.el).appendTo($('#maingraph'));
+        $(this.el).hide();
         this.graphView = instances["GraphView"];
         return this.listView = instances["local/ListView"];
       };
@@ -40,14 +43,16 @@
           $(_this.listView.el).hide();
           $('#listviewButton').css("background", "url(\"images/icons/gray_dark/list_nested_24x21.png\")");
           $(_this.graphView.el).show();
-          $('#graphviewButton').css("background", "url(\"images/icons/blue/share_24x24.png\")");
-          return console.log("clcki");
+          return $('#graphviewButton').css("background", "url(\"images/icons/blue/share_24x24.png\")");
         });
         $('#minimapButton').click(function() {
           return $('#minimapPopOut').toggle();
         });
         $('#slidersButton').click(function() {
           return $('#slidersPopOut').toggle();
+        });
+        $('#moreoptionsButton').click(function() {
+          return $(_this.el).toggle();
         });
         $showAllButton = $("<input type=\"button\" id=\"showAllButton\" value=\"Show All\"></input>").appendTo($container);
         $showAllButton.click(function() {

@@ -14,7 +14,10 @@ define [], () ->
       @selection = instances["NodeSelection"]
       
       #instances["Layout"].addPlugin @el, @options.pluginOrder, 'Explorations', true
-      #$(@el).appendTo $('#toolBox')
+      $(@el).attr("class", "toolboxpopout").css("background", "white")
+      $(@el).appendTo $('#maingraph')
+
+      $(@el).hide()
 
       @graphView = instances["GraphView"]
       @listView = instances["local/ListView"]
@@ -34,7 +37,6 @@ define [], () ->
         $('#listviewButton').css("background", "url(\"images/icons/gray_dark/list_nested_24x21.png\")")
         $(@graphView.el).show()
         $('#graphviewButton').css("background", "url(\"images/icons/blue/share_24x24.png\")")
-        console.log "clcki"
         )
 
       $('#minimapButton').click(() =>
@@ -43,6 +45,10 @@ define [], () ->
 
       $('#slidersButton').click(() =>
         $('#slidersPopOut').toggle()
+        )
+
+      $('#moreoptionsButton').click(() =>
+        $(@el).toggle()
         )
 
       $showAllButton = $("<input type=\"button\" id=\"showAllButton\" value=\"Show All\"></input>").appendTo $container
