@@ -25,7 +25,7 @@
           return e.preventDefault();
         });
         this.render();
-        $(this.el).attr('id', 'vsplug').appendTo($('#buildbar'));
+        $(this.el).attr('id', 'vsplug').appendTo($('#omniBox'));
         return console.log(x = this.el);
       };
 

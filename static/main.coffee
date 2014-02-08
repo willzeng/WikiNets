@@ -81,6 +81,8 @@ require ["Celestrium"], (Celestrium) ->
     # provides functions to get nodes and links
     "local/WikiNetsDataProvider": {}
 
+    "local/VisualSearch": {}
+
     "local/NodeEdit": {}
 
     "local/LinkEdit": {}
@@ -95,7 +97,6 @@ require ["Celestrium"], (Celestrium) ->
 
     #"NodeSearch": 
     #  prefetch: "/node_names"
-    "local/VisualSearch": {}
 
     MiniMap: {}  
 

@@ -63,10 +63,10 @@
       NodeSelection: {},
       LinkSelection: {},
       "local/WikiNetsDataProvider": {},
+      "local/VisualSearch": {},
       "local/NodeEdit": {},
       "local/LinkEdit": {},
       "local/ShowAll": {},
-      "local/VisualSearch": {},
       MiniMap: {},
       "local/TopBarCreate": {}
     };

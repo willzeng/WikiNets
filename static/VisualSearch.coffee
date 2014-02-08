@@ -15,7 +15,7 @@ define [], () ->
         e.preventDefault()
       @render()
       #instances["Layout"].addPlugin @el, @options.pluginOrder, 'Visual Search', true
-      $(@el).attr('id','vsplug').appendTo $('#buildbar')
+      $(@el).attr('id','vsplug').appendTo $('#omniBox')
       console.log x=@el
 
     render: ->
