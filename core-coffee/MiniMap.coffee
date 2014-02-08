@@ -18,7 +18,7 @@ define [], () ->
       @selection = instances["NodeSelection"]
       @selection.on "change", @update.bind(this)
       
-      $(@el).attr("id", "minimapPopOut").attr("class", "toolboxpopout")
+      $(@el).attr("id", "minimapPopOut").attr("class", "toolboxpopout").attr("z-index",20).css("background", "white")
 
       $(@el).appendTo $("#maingraph")
 
@@ -28,8 +28,8 @@ define [], () ->
 
     render: ->
 
-      @miniMapWidth = 200
-      @miniMapHeight = 200
+      @miniMapWidth = 189
+      @miniMapHeight = 189
 
       # workspace which the minimap will go on
       @frame = d3.select(@el).append("svg:svg").attr("width", @miniMapWidth)

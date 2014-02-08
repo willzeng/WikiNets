@@ -116,7 +116,6 @@
       GraphView.prototype.update = function() {
         var clickSemaphore, filteredLinks, getColor, getSize, link, linkEnter, links, node, nodeEnter, nodes,
           _this = this;
-        this.loadtime = 15000;
         nodes = this.model.get("nodes");
         links = this.model.get("links");
         filteredLinks = this.linkFilter ? this.linkFilter.filter(links) : links;
@@ -211,12 +210,7 @@
             return "translate(" + d.x + "," + d.y + ")";
           });
         });
-        this.nodeEnter = nodeEnter;
-        return setTimeout((function() {
-          return nodeEnter.each(function(d) {
-            return d.fixed = true;
-          });
-        }), this.loadtime);
+        return this.nodeEnter = nodeEnter;
       };
 
       GraphView.prototype.addCentering = function() {

@@ -29,7 +29,8 @@ sliders have range [0, 100]
 
       SlidersView.prototype.init = function(instances) {
         this.render();
-        return instances["Layout"].addPlugin(this.el, this.options.pluginOrder, 'Sliders');
+        $(this.el).attr("id", "slidersPopOut").attr("class", "toolboxpopout");
+        return $(this.el).appendTo($("#maingraph"));
       };
 
       SlidersView.prototype.render = function() {

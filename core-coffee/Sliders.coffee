@@ -20,7 +20,10 @@ define [], () ->
 
     init: (instances) ->
       @render()
-      instances["Layout"].addPlugin @el, @options.pluginOrder, 'Sliders'
+      #$(@el).hide()
+
+      $(@el).attr("id", "slidersPopOut").attr("class", "toolboxpopout")
+      $(@el).appendTo $("#maingraph")
 
     render: () ->
       $container = $ """

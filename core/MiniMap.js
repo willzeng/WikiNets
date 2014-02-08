@@ -24,15 +24,15 @@
         this.model.on("change", this.update.bind(this));
         this.selection = instances["NodeSelection"];
         this.selection.on("change", this.update.bind(this));
-        $(this.el).attr("id", "minimapPopOut").attr("class", "toolboxpopout");
+        $(this.el).attr("id", "minimapPopOut").attr("class", "toolboxpopout").attr("z-index", 20).css("background", "white");
         $(this.el).appendTo($("#maingraph"));
         this.render();
         return $(this.el).hide();
       };
 
       MiniMap.prototype.render = function() {
-        this.miniMapWidth = 200;
-        this.miniMapHeight = 200;
+        this.miniMapWidth = 189;
+        this.miniMapHeight = 189;
         this.frame = d3.select(this.el).append("svg:svg").attr("width", this.miniMapWidth).attr("height", this.miniMapHeight);
         return this;
       };

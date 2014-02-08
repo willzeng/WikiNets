@@ -147,7 +147,7 @@ define [], () ->
 
     update: =>
 
-      @loadtime = 15000 #loadtime before nodes become fixed in ms
+      #@loadtime = 15000 #loadtime before nodes become fixed in ms
 
       #colors = ["aqua", "black", "blue", "darkblue", "fuchsia", "darkgray", "green", "darkgreen", "lime", "maroon", "navy", "olive", "orange", "purple", "red", "silver", "teal", "yellow"]
       nodes = @model.get("nodes")
@@ -238,9 +238,10 @@ define [], () ->
           "translate(#{d.x},#{d.y})"
 
       @nodeEnter = nodeEnter
-      setTimeout (()=> 
-        nodeEnter.each (d)->d.fixed = true
-        ), @loadtime
+      #This code can be used to pin the graph after a certain amount of time
+      # setTimeout (()=> 
+      #   nodeEnter.each (d)->d.fixed = true
+      #   ), @loadtime
 
     addCentering: () ->
       width = $(@el).width()
