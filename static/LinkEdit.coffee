@@ -98,6 +98,7 @@ define [], () ->
                   not (savedLink['_id'] == link['_id'])
                 @graphModel.putLink(savedLink)
                 @selection.toggleSelection(savedLink)
+                @cancelEditing(link, linkDiv, blacklist)
               )
 
           $linkDelete = $("<input name=\"LinkDeleteButton\" type=\"button\" value=\"Delete\">").appendTo(linkDiv)

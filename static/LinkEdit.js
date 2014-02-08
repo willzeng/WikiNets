@@ -108,7 +108,8 @@
                 return !(savedLink['_id'] === link['_id']);
               });
               _this.graphModel.putLink(savedLink);
-              return _this.selection.toggleSelection(savedLink);
+              _this.selection.toggleSelection(savedLink);
+              return _this.cancelEditing(link, linkDiv, blacklist);
             });
           }
         });
