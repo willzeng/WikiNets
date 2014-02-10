@@ -11,7 +11,6 @@
 
       function SimpleSearchBox(options) {
         this.options = options;
-        this.searchNodes = __bind(this.searchNodes, this);
         this.searchNodesSimple = __bind(this.searchNodesSimple, this);
         SimpleSearchBox.__super__.constructor.call(this);
       }
@@ -21,11 +20,11 @@
         this.graphModel = instances["GraphModel"];
         this.selection = instances["NodeSelection"];
         this.listenTo(instances["KeyListener"], "down:191", function(e) {
-          _this.$("input").focus();
+          _this.$("#searchBox").focus();
           return e.preventDefault();
         });
         this.render();
-        $(this.el).attr('id', 'vsplug').appendTo($('#omniBox'));
+        $(this.el).attr('id', 'ssplug').appendTo($('#omniBox'));
         this.searchableKeys = {};
         return $.get("/get_all_node_keys", function(keys) {
           return _this.searchableKeys = keys;
@@ -33,11 +32,10 @@
       };
 
       SimpleSearchBox.prototype.render = function() {
-        var $button, $container, $input, $searchBox,
+        var $button, $container, $searchBox,
           _this = this;
         $container = $("<div id=\"visual-search-container\" style='padding-top:2px'/>").appendTo(this.$el);
-        $input = $("<div class=\"visual_search\" />").appendTo($container);
-        $searchBox = $('<input type="text">').css("width", "220px").css("height", "25px").appendTo($container);
+        $searchBox = $('<input type="text" id="searchBox">').css("width", "220px").css("height", "25px").appendTo($container);
         $button = $("<input type=\"button\" value=\"Go\" style='float:right' />").appendTo($container);
         return $button.click(function() {
           return _this.searchNodesSimple($searchBox.val());
@@ -51,24 +49,11 @@
           query: searchQuery
         }, function(nodes) {
           var node, _i, _len, _results;
-          console.log(nodes);
           _results = [];
           for (_i = 0, _len = nodes.length; _i < _len; _i++) {
             node = nodes[_i];
-            _results.push(_this.graphModel.putNode(node));
-          }
-          return _results;
-        });
-      };
-
-      SimpleSearchBox.prototype.searchNodes = function(searchQuery) {
-        var _this = this;
-        return $.post("/search_nodes", searchQuery, function(nodes) {
-          var node, _i, _len, _results;
-          _results = [];
-          for (_i = 0, _len = nodes.length; _i < _len; _i++) {
-            node = nodes[_i];
-            _results.push(_this.graphModel.putNode(node));
+            _this.graphModel.putNode(node);
+            _results.push(_this.selection.toggleSelection(node));
           }
           return _results;
         });

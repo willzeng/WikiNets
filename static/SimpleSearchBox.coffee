@@ -1,5 +1,5 @@
 # provides a search box which can add nodes to the graph
-# using VisualSearch
+# using fulltext search of keys and values of nodes
 define [], () ->
 
   class SimpleSearchBox extends Backbone.View
@@ -8,41 +8,42 @@ define [], () ->
       super()
 
     init: (instances) ->
+      #plugin dependencies
       @graphModel = instances["GraphModel"]
       @selection = instances["NodeSelection"]
+
+      #The '/' key focuses on the search box
       @listenTo instances["KeyListener"], "down:191", (e) =>
-        @$("input").focus()
+        @$("#searchBox").focus()
         e.preventDefault()
+      
       @render()
       
-      $(@el).attr('id','vsplug').appendTo $('#omniBox')
-      
+      #identify the plugin and place it in the omniBox
+      $(@el).attr('id','ssplug').appendTo $('#omniBox')
 
+      #choose which keys will be searched by the fultext search.
+      #we initially set this to all keys
       @searchableKeys = {}
       $.get "/get_all_node_keys", (keys) =>
         @searchableKeys = keys
 
     render: ->
+
+      #build HTML elements
       $container = $("<div id=\"visual-search-container\" style='padding-top:2px'/>").appendTo @$el
-      $input = $("<div class=\"visual_search\" />").appendTo $container
-
-      $searchBox = $('<input type="text">').css("width", "220px").css("height", "25px").appendTo $container
-
+      $searchBox = $('<input type="text" id="searchBox">').css("width", "220px").css("height", "25px").appendTo $container
       $button = $("<input type=\"button\" value=\"Go\" style='float:right' />").appendTo $container
 
+      #call search functionality with input text
       $button.click(() =>
-        #console.log @searchQuery
         @searchNodesSimple $searchBox.val()
         )
 
     searchNodesSimple: (searchQuery) =>
       $.post "/node_index_search", {checkKeys: @searchableKeys, query: searchQuery}, (nodes) =>
-        console.log nodes
         for node in nodes
           @graphModel.putNode(node)
-
-    searchNodes: (searchQuery) =>
-      $.post "/search_nodes", searchQuery, (nodes) =>
-        for node in nodes
-          @graphModel.putNode(node)
-          #@selection.toggleSelection(node)
+          #selects all the nodes added to the workspace
+          @selection.toggleSelection(node)
+          
