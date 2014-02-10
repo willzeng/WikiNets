@@ -81,7 +81,9 @@ require ["Celestrium"], (Celestrium) ->
     # provides functions to get nodes and links
     "local/WikiNetsDataProvider": {}
 
-    "local/VisualSearch": {}
+    #"local/VisualSearch": {}
+    
+    "local/SimpleSearchBox": {}
 
     "local/NodeEdit": {}
 
