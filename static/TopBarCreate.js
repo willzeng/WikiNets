@@ -46,7 +46,7 @@
           $nodeInputDesc.val('');
           return $nodeInputName.focus();
         });
-        $openPopoutButton = $('<input id="popout-button" type="button" value="popout">').appendTo(this.$nodeWrapper);
+        $openPopoutButton = $('<i class="right fa fa-expand"></i>').appendTo(this.$nodeWrapper);
         $openPopoutButton.click(function() {
           _this.trigger('popout:open');
           _this.$nodeWrapper.hide();

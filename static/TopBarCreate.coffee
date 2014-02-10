@@ -49,7 +49,7 @@ define [], () ->
         $nodeInputName.focus()
  
       # popout button for more detailed node creation
-      $openPopoutButton = $('<input id="popout-button" type="button" value="popout">').appendTo @$nodeWrapper
+      $openPopoutButton = $('<i class="right fa fa-expand"></i>').appendTo @$nodeWrapper
 
       $openPopoutButton.click () =>
         @trigger 'popout:open'
