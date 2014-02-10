@@ -420,6 +420,9 @@ module.exports = class MyApp
       )
     )
 
+
+    #This query does a fulltext search of all the keys in checkKeys
+    #for a query
     app.post '/node_index_search', (request, response)->
       theKeys = request.body.checkKeys
       query = request.body.query
@@ -428,18 +431,20 @@ module.exports = class MyApp
       condition+="False"
       cypherQuery = "start n=node(*) #{condition} return n;"
 
+      #do a fulltext search of all the values of keys in checkKeys for all nodes
       console.log "Executing " + cypherQuery
       graphDb.cypher.execute(cypherQuery).then(
         (noderes)->
           console.log "Node Index Search: Query Executed"
           nodeData = (addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
-          console.log nodeData
 
+          #check which of the keys themselves match the query
           regexpression = ".*#{query}.*"
           pattern = new RegExp(regexpression)          
           matchedKeys = (key for key in theKeys when key.match(pattern)?)
-          console.log "the returned keys", matchedKeys
 
+          #if some keys match the search query 
+          #then find which nodes have those keys
           if matchedKeys.length > 0
             keyscondition = "where "
             keyscondition += "has(n.#{key}) OR " for key in matchedKeys
@@ -449,9 +454,11 @@ module.exports = class MyApp
             graphDb.cypher.execute(cypherQuery).then(
               (matchedKeys)->
                 nodeDataKeys = (addID(n[0].data,trim(n[0].self)[0]) for n in matchedKeys.data)
+                #return nodes with matched values and matched keys
                 response.json nodeData.concat nodeDataKeys
               )
           else
+            #only return nodes with matched keys
             response.json nodeData
       )
 
