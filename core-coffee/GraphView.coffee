@@ -175,7 +175,7 @@ define [], () ->
         if node.votes? then 2+node.votes/15 else 8
 
       link.exit().remove()
-      link.attr "stroke-width", (link) => 5 * (@linkStrength link)
+      link.attr "stroke-width", (link) => 10 * (@linkStrength link)
       node = @nodeSelection = d3.select(@el).select(".nodeContainer").selectAll(".node").data(nodes, @model.get("nodeHash"))
       #disable node dragging
       nodeEnter = node.enter().append("g").attr("class", "node").call(@force.drag)

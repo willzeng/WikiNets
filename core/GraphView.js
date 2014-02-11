@@ -142,7 +142,7 @@
         };
         link.exit().remove();
         link.attr("stroke-width", function(link) {
-          return 5 * (_this.linkStrength(link));
+          return 10 * (_this.linkStrength(link));
         });
         node = this.nodeSelection = d3.select(this.el).select(".nodeContainer").selectAll(".node").data(nodes, this.model.get("nodeHash"));
         nodeEnter = node.enter().append("g").attr("class", "node").call(this.force.drag);

@@ -42,9 +42,6 @@
         if (link.strength == null) {
           link.strength = 1;
         }
-        if (link.strength === 1) {
-          link.strength = Math.random() * 0.8 + 0.2;
-        }
         if (link.strength !== 0) {
           this.pushDatum("links", link);
           return this.trigger("add:link", link);
