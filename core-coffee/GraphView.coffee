@@ -172,7 +172,7 @@ define [], () ->
       
       
       getSize = (node) =>
-        if node.votes? then 2+node.votes/15 else 8
+        if (node.size>0) then Math.min((node.size),100) else 8
 
       link.exit().remove()
       link.attr "stroke-width", (link) => 10 * (@linkStrength link)
