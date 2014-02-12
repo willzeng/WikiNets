@@ -184,7 +184,7 @@
         submitOK = true;
         propertyObject = {};
         createDate = new Date();
-        propertyObject["Creation_Date"] = createDate;
+        propertyObject["_Creation_Date"] = createDate;
         $("." + form_name + "Div").each(function(i, obj) {
           var property, value;
           property = $(this).children(".property" + form_name).val();
