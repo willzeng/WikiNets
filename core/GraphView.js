@@ -134,8 +134,8 @@
           return _this.trigger("enter:link:dblclick", datum);
         });
         getSize = function(node) {
-          if (node.votes != null) {
-            return 2 + node.votes / 15;
+          if (node.size > 0) {
+            return Math.min(node.size, 100);
           } else {
             return 8;
           }
