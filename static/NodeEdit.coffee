@@ -39,7 +39,9 @@ define [], () ->
               makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi,"<a href=\"$1\" target=\"_blank\" style=\"target-new: tab;\">$1</a>")
             else
               makeLinks = value
-            if property!="color" and property!="Last_Edit_Date" and property!="Creation_Date"
+            if property == "_Last_Edit_Date" or property=="_Creation_Date"
+              $("<div class=\"node-profile-property\">#{property}:  #{makeLinks.substring(4,21)}</div>").appendTo $nodeDiv  
+            else if property!="color"
               $("<div class=\"node-profile-property\">#{property}:  #{makeLinks}</div>").appendTo $nodeDiv  
         
 
@@ -62,7 +64,7 @@ define [], () ->
 
           nodeDiv.html("<div class=\"node-profile-title\">Editing #{header} (id: #{node['_id']})</div><form id=\"Node#{node['_id']}EditForm\"></form>")
           _.each node, (value, property) ->
-            if blacklist.indexOf(property) < 0 and ["_id", "text"].indexOf(property) < 0 and property!="color" and property!="Last_Edit_Date" and property !="Creation_Date"
+            if blacklist.indexOf(property) < 0 and ["_id", "text", "color", "_Last_Edit_Date", "_Creation_Date"].indexOf(property) < 0
               newEditingFields = """
                 <div id=\"Node#{node['_id']}EditDiv#{nodeInputNumber}\" class=\"Node#{node['_id']}EditDiv\">
                   <input style=\"width:80px\" id=\"Node#{node['_id']}EditProperty#{nodeInputNumber}\" value=\"#{property}\" class=\"propertyNode#{node['_id']}Edit\"/> 
@@ -102,6 +104,7 @@ define [], () ->
               newNode = newNodeObj[1]
               newNode['color'] = $("#color"+node['_id']).val()
               newNode['_id'] = node['_id']
+              newNode['_Creation_Date'] = node['_Creation_Date']
               @dataController.nodeEdit(node,newNode, (savedNode) =>           
                 @graphModel.filterNodes (node) ->
                   !(savedNode['_id'] == node['_id'])
@@ -120,7 +123,11 @@ define [], () ->
     cancelEditing: (node, nodeDiv, blacklist) =>
       nodeDiv.html("<div class=\"node-profile-title\">#{@findHeader(node)}</div>")
       _.each node, (value, property) ->
-        $("<div class=\"node-profile-property\">#{property}:  #{value}</div>").appendTo nodeDiv  if blacklist.indexOf(property) < 0
+        if blacklist.indexOf(property) < 0
+          if property == "_Last_Edit_Date" or property=="_Creation_Date"
+            $("<div class=\"node-profile-property\">#{property}:  #{value.substring(4,21)}</div>").appendTo nodeDiv  
+          else if property!="color"
+            $("<div class=\"node-profile-property\">#{property}:  #{value}</div>").appendTo nodeDiv  
       $nodeEdit = $("<input id=\"NodeEditButton#{node['_id']}\" class=\"NodeEditButton\" type=\"button\" value=\"Edit this node\">").appendTo nodeDiv
       $nodeEdit.click(() =>
         @editNode(node, nodeDiv, blacklist)
@@ -162,7 +169,7 @@ define [], () ->
         submitOK = true
         propertyObject = {}
         editDate = new Date()
-        propertyObject["Last_Edit_Date"]=editDate
+        propertyObject["_Last_Edit_Date"]=editDate
         $("."+ form_name + "Div").each (i, obj) ->
             property = $(this).children(".property" + form_name).val()
             value = $(this).children(".value" + form_name).val()

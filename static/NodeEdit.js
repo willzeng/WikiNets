@@ -54,7 +54,9 @@
               } else {
                 makeLinks = value;
               }
-              if (property !== "color" && property !== "Last_Edit_Date" && property !== "Creation_Date") {
+              if (property === "_Last_Edit_Date" || property === "_Creation_Date") {
+                return $("<div class=\"node-profile-property\">" + property + ":  " + (makeLinks.substring(4, 21)) + "</div>").appendTo($nodeDiv);
+              } else if (property !== "color") {
                 return $("<div class=\"node-profile-property\">" + property + ":  " + makeLinks + "</div>").appendTo($nodeDiv);
               }
             }
@@ -78,7 +80,7 @@
         nodeDiv.html("<div class=\"node-profile-title\">Editing " + header + " (id: " + node['_id'] + ")</div><form id=\"Node" + node['_id'] + "EditForm\"></form>");
         _.each(node, function(value, property) {
           var newEditingFields;
-          if (blacklist.indexOf(property) < 0 && ["_id", "text"].indexOf(property) < 0 && property !== "color" && property !== "Last_Edit_Date" && property !== "Creation_Date") {
+          if (blacklist.indexOf(property) < 0 && ["_id", "text", "color", "_Last_Edit_Date", "_Creation_Date"].indexOf(property) < 0) {
             newEditingFields = "<div id=\"Node" + node['_id'] + "EditDiv" + nodeInputNumber + "\" class=\"Node" + node['_id'] + "EditDiv\">\n  <input style=\"width:80px\" id=\"Node" + node['_id'] + "EditProperty" + nodeInputNumber + "\" value=\"" + property + "\" class=\"propertyNode" + node['_id'] + "Edit\"/> \n  <input style=\"width:80px\" id=\"Node" + node['_id'] + "EditValue" + nodeInputNumber + "\" value=\"" + value + "\" class=\"valueNode" + node['_id'] + "Edit\"/> \n  <input type=\"button\" id=\"removeNode" + node['_id'] + "Edit" + nodeInputNumber + "\" value=\"x\" onclick=\"this.parentNode.parentNode.removeChild(this.parentNode);\">\n</div>";
             $(newEditingFields).appendTo("#Node" + node['_id'] + "EditForm");
             return nodeInputNumber = nodeInputNumber + 1;
@@ -112,6 +114,7 @@
             newNode = newNodeObj[1];
             newNode['color'] = $("#color" + node['_id']).val();
             newNode['_id'] = node['_id'];
+            newNode['_Creation_Date'] = node['_Creation_Date'];
             return _this.dataController.nodeEdit(node, newNode, function(savedNode) {
               _this.graphModel.filterNodes(function(node) {
                 return !(savedNode['_id'] === node['_id']);
@@ -142,7 +145,11 @@
         nodeDiv.html("<div class=\"node-profile-title\">" + (this.findHeader(node)) + "</div>");
         _.each(node, function(value, property) {
           if (blacklist.indexOf(property) < 0) {
-            return $("<div class=\"node-profile-property\">" + property + ":  " + value + "</div>").appendTo(nodeDiv);
+            if (property === "_Last_Edit_Date" || property === "_Creation_Date") {
+              return $("<div class=\"node-profile-property\">" + property + ":  " + (value.substring(4, 21)) + "</div>").appendTo(nodeDiv);
+            } else if (property !== "color") {
+              return $("<div class=\"node-profile-property\">" + property + ":  " + value + "</div>").appendTo(nodeDiv);
+            }
           }
         });
         $nodeEdit = $("<input id=\"NodeEditButton" + node['_id'] + "\" class=\"NodeEditButton\" type=\"button\" value=\"Edit this node\">").appendTo(nodeDiv);
@@ -194,7 +201,7 @@
         submitOK = true;
         propertyObject = {};
         editDate = new Date();
-        propertyObject["Last_Edit_Date"] = editDate;
+        propertyObject["_Last_Edit_Date"] = editDate;
         $("." + form_name + "Div").each(function(i, obj) {
           var property, value;
           property = $(this).children(".property" + form_name).val();

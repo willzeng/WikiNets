@@ -44,6 +44,8 @@ define [], () ->
               makeLinks = value + " \"" + @graphView.findText(link.source) + "\""          
             else if (property == "end" and @graphView.findText(link.target)) 
               makeLinks = value + " \"" + @graphView.findText(link.target) + "\""
+            else if property == "_Last_Edit_Date" or property == "_Creation_Date"
+              makeLinks = value.substring(4,21)
             else if value?
               makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi,"<a href=\"$1\" target=\"_blank\" style=\"target-new: tab;\">$1</a>")
             else
@@ -61,7 +63,7 @@ define [], () ->
           linkInputNumber = 0
           linkDiv.html("<div class=\"node-profile-title\">Editing #{@findHeader(link)}</div><form id=\"Link#{link['_id']}EditForm\"></form>")
           _.each link, (value, property) ->
-            if blacklist.indexOf(property) < 0 and ["_id", "Last_Edit_Date", "Creation_Date", "start", "end"].indexOf(property) <0
+            if blacklist.indexOf(property) < 0 and ["_id", "_Last_Edit_Date", "_Creation_Date", "start", "end"].indexOf(property) <0
               newEditingFields = """
                 <div id=\"Link#{link['_id']}EditDiv#{linkInputNumber}\" class=\"Link#{link['_id']}EditDiv\">
                   <input style=\"width:80px\" id=\"Link#{link['_id']}EditProperty#{linkInputNumber}\" value=\"#{property}\" class=\"propertyLink#{link['_id']}Edit\"/> 
@@ -93,6 +95,7 @@ define [], () ->
                 savedLink['source'] = link['source']
                 savedLink['target'] = link['target']
                 savedLink['strength'] = link['strength']
+                savedLink['_Creation_Date'] = link['_Creation_Date']
                 #console.log savedLink    
                 @graphModel.filterLinks (link) ->
                   not (savedLink['_id'] == link['_id'])
@@ -111,7 +114,11 @@ define [], () ->
     cancelEditing: (link, linkDiv, blacklist) =>
       linkDiv.html("<div class=\"node-profile-title\">#{@findHeader(link)}</div>")
       _.each link, (value, property) ->
-        $("<div class=\"node-profile-property\">#{property}:  #{value}</div>").appendTo linkDiv  if blacklist.indexOf(property) < 0
+        if blacklist.indexOf(property) < 0
+          if property == "_Last_Edit_Date" or property == "_Creation_Date"
+            $("<div class=\"node-profile-property\">#{property}:  #{value.substring(4,21)}</div>").appendTo linkDiv 
+          else
+            $("<div class=\"node-profile-property\">#{property}:  #{value}</div>").appendTo linkDiv  
       $linkEdit = $("<input id=\"LinkEditButton#{link['_id']}\" class=\"NodeEditButton\" type=\"button\" value=\"Edit this link\">").appendTo linkDiv
       $linkEdit.click(() =>
         @editLink(link, linkDiv, blacklist)

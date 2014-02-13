@@ -144,5 +144,5 @@ define [], () ->
       dict["name"]=text.split('#')[0].trim()
       console.log "This is the title", text.split('#')[0].trim()
       createDate=new Date()
-      dict["Creation_Date"]=createDate
+      dict["_Creation_Date"]=createDate
       dict

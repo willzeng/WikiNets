@@ -55,6 +55,8 @@
                 makeLinks = value + " \"" + _this.graphView.findText(link.source) + "\"";
               } else if (property === "end" && _this.graphView.findText(link.target)) {
                 makeLinks = value + " \"" + _this.graphView.findText(link.target) + "\"";
+              } else if (property === "_Last_Edit_Date" || property === "_Creation_Date") {
+                makeLinks = value.substring(4, 21);
               } else if (value != null) {
                 makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi, "<a href=\"$1\" target=\"_blank\" style=\"target-new: tab;\">$1</a>");
               } else {
@@ -78,7 +80,7 @@
         linkDiv.html("<div class=\"node-profile-title\">Editing " + (this.findHeader(link)) + "</div><form id=\"Link" + link['_id'] + "EditForm\"></form>");
         _.each(link, function(value, property) {
           var newEditingFields;
-          if (blacklist.indexOf(property) < 0 && ["_id", "Last_Edit_Date", "Creation_Date", "start", "end"].indexOf(property) < 0) {
+          if (blacklist.indexOf(property) < 0 && ["_id", "_Last_Edit_Date", "_Creation_Date", "start", "end"].indexOf(property) < 0) {
             newEditingFields = "<div id=\"Link" + link['_id'] + "EditDiv" + linkInputNumber + "\" class=\"Link" + link['_id'] + "EditDiv\">\n  <input style=\"width:80px\" id=\"Link" + link['_id'] + "EditProperty" + linkInputNumber + "\" value=\"" + property + "\" class=\"propertyLink" + link['_id'] + "Edit\"/> \n  <input style=\"width:80px\" id=\"Link" + link['_id'] + "EditValue" + linkInputNumber + "\" value=\"" + value + "\" class=\"valueLink" + link['_id'] + "Edit\"/> \n  <input type=\"button\" id=\"removeLink" + link['_id'] + "Edit" + linkInputNumber + "\" value=\"x\" onclick=\"this.parentNode.parentNode.removeChild(this.parentNode);\">\n</div>";
             $(newEditingFields).appendTo("#Link" + link['_id'] + "EditForm");
             return linkInputNumber = linkInputNumber + 1;
@@ -104,6 +106,7 @@
               savedLink['source'] = link['source'];
               savedLink['target'] = link['target'];
               savedLink['strength'] = link['strength'];
+              savedLink['_Creation_Date'] = link['_Creation_Date'];
               _this.graphModel.filterLinks(function(link) {
                 return !(savedLink['_id'] === link['_id']);
               });
@@ -133,7 +136,11 @@
         linkDiv.html("<div class=\"node-profile-title\">" + (this.findHeader(link)) + "</div>");
         _.each(link, function(value, property) {
           if (blacklist.indexOf(property) < 0) {
-            return $("<div class=\"node-profile-property\">" + property + ":  " + value + "</div>").appendTo(linkDiv);
+            if (property === "_Last_Edit_Date" || property === "_Creation_Date") {
+              return $("<div class=\"node-profile-property\">" + property + ":  " + (value.substring(4, 21)) + "</div>").appendTo(linkDiv);
+            } else {
+              return $("<div class=\"node-profile-property\">" + property + ":  " + value + "</div>").appendTo(linkDiv);
+            }
           }
         });
         $linkEdit = $("<input id=\"LinkEditButton" + link['_id'] + "\" class=\"NodeEditButton\" type=\"button\" value=\"Edit this link\">").appendTo(linkDiv);
