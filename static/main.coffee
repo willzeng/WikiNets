@@ -7,7 +7,8 @@ requirejs.config
   # celestrium/core-coffee, which is celestrium/core by convention.
   # if celestrium were located at www/scripts/celestrium,
   # the base URL should be "/scripts/celestrium/core"
-  baseUrl: "/celestrium_code/core/"
+  #baseUrl: "/celestrium_code/core/"
+  baseUrl: "/core/"
 
   # paths tells requirejs to replace the keys with their values
   # in subsequent calls to require
@@ -16,7 +17,8 @@ requirejs.config
     # this is path, relative to the *baseUrl* to the directory
     # where  plugins defined for this example repo are located
     # this is a convenience
-    local: "../../"
+    #local: "../../"
+    local: "."
 
 ###
 

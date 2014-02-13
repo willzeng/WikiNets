@@ -6,7 +6,7 @@ http://wikinets-demo.herokuapp.com
 Edge:
 http://wikinets-edge.herokuapp.com
 
-http://thewikinetsproject.wordpress.com
+http://wikinets.co.uk
 
 WikiNets can be set to work with a local WikiNet on your machine or with a WikiNet in the cloud.
 
@@ -17,7 +17,7 @@ SETUP
 To Run:
 
   ```
-  git clone --recursive https://github.com/willzeng/WikiNets
+  git clone https://github.com/willzeng/WikiNets
   cd wikinets
   npm install
   sh server.sh

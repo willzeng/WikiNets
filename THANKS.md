@@ -15,10 +15,4 @@ Thanks!
 - [d3](https://github.com/mbostock/d3) for it's awesome data manipulation paradigm
 - [requirejs](https://github.com/jrburke/requirejs) for modularizing javascript
 - [coffeescript](https://github.com/jashkenas/coffee-script) for hiding the ugliness of real javascript
-
-### Testing
-- [karma](https://github.com/karma-runner/karma) for blowing my mind on how to test require.js modules
-- [jasmine](https://github.com/pivotal/jasmine) for getting testing going immediately
-- [travis-ci](https://github.com/travis-ci/travis-ci) for great (continuous integration) integration with github
-
-A big :+1: to all.
+- [celestrium](https://github.com/jdhenke/celestrium) for getting our graph visualization and client-side architecture off the ground
