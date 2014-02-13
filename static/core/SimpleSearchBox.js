@@ -37,8 +37,15 @@
         $container = $("<div id=\"visual-search-container\" style='padding-top:2px'/>").appendTo(this.$el);
         $searchBox = $('<input type="text" id="searchBox">').css("width", "220px").css("height", "25px").appendTo($container);
         $button = $("<input type=\"button\" value=\"Go\" style='float:right' />").appendTo($container);
+        $searchBox.keyup(function(e) {
+          if (e.keyCode === 13) {
+            _this.searchNodesSimple($searchBox.val());
+            return $searchBox.val("");
+          }
+        });
         return $button.click(function() {
-          return _this.searchNodesSimple($searchBox.val());
+          _this.searchNodesSimple($searchBox.val());
+          return $searchBox.val("");
         });
       };
 
@@ -49,6 +56,9 @@
           query: searchQuery
         }, function(nodes) {
           var node, _i, _len, _results;
+          if (nodes.length < 1) {
+            alert("No Results Found");
+          }
           _results = [];
           for (_i = 0, _len = nodes.length; _i < _len; _i++) {
             node = nodes[_i];

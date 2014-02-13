@@ -35,13 +35,20 @@ define [], () ->
       $searchBox = $('<input type="text" id="searchBox">').css("width", "220px").css("height", "25px").appendTo $container
       $button = $("<input type=\"button\" value=\"Go\" style='float:right' />").appendTo $container
 
+      #call search functionality with press of ENTER key
+      $searchBox.keyup (e)=>
+        if(e.keyCode == 13)
+          @searchNodesSimple $searchBox.val()
+          $searchBox.val("")
+
       #call search functionality with input text
-      $button.click(() =>
+      $button.click () =>
         @searchNodesSimple $searchBox.val()
-        )
+        $searchBox.val("")
 
     searchNodesSimple: (searchQuery) =>
       $.post "/node_index_search", {checkKeys: @searchableKeys, query: searchQuery}, (nodes) =>
+        if nodes.length < 1 then alert "No Results Found"
         for node in nodes
           @graphModel.putNode(node)
           #selects all the nodes added to the workspace
