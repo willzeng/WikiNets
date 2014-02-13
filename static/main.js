@@ -4,9 +4,9 @@
 
 (function() {
   requirejs.config({
-    baseUrl: "/celestrium_code/core/",
+    baseUrl: "/core/",
     paths: {
-      local: "../../"
+      local: "."
     }
   });
 
