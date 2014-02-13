@@ -7,7 +7,8 @@ requirejs.config
   # celestrium/core-coffee, which is celestrium/core by convention.
   # if celestrium were located at www/scripts/celestrium,
   # the base URL should be "/scripts/celestrium/core"
-  baseUrl: "/celestrium_code/core/"
+  #baseUrl: "/celestrium_code/core/"
+  baseUrl: "/core/"
 
   # paths tells requirejs to replace the keys with their values
   # in subsequent calls to require
@@ -16,7 +17,8 @@ requirejs.config
     # this is path, relative to the *baseUrl* to the directory
     # where  plugins defined for this example repo are located
     # this is a convenience
-    local: "../../"
+    #local: "../../"
+    local: "."
 
 ###
 
@@ -46,10 +48,10 @@ require ["Celestrium"], (Celestrium) ->
   plugins =
 
     # organizes where things are displayed on the screen
-    Layout:
+    #Layout:
 
       # el is it's container element
-      el: document.querySelector("#maingraph")
+    #  el: document.querySelector("#maingraph")
 
     # listens for keystroke on the dom element it's given
     KeyListener:
@@ -67,42 +69,56 @@ require ["Celestrium"], (Celestrium) ->
 
     # renders the graph using d3's force directedlayout
     GraphView: {}
+
+    "local/Neo4jDataController": {}
+
+    "local/ListView": {}
       
     # allows nodes to be selected
     NodeSelection: {}
+      
+    # allows links to be selected
+    LinkSelection: {}
 
     # provides functions to get nodes and links
     "local/WikiNetsDataProvider": {}
 
-    "local/Neo4jDataController": {}
+    #"local/VisualSearch": {}
+    
+    "local/SimpleSearchBox": {}
 
     "local/NodeEdit": {}
 
-    "local/Create": {}
+    "local/LinkEdit": {}
+
+    "local/ShowAll": {}
+
+    "local/ToolBox": {}
+
+    #"local/Create": {}
 
     #"local/SyntaxCreate": {}    
 
     #NodeDetails: {}
 
-    "Sliders": {}
-
-    "ForceSliders": {}
-
-    "LinkDistribution": {}
-
     #"NodeSearch": 
     #  prefetch: "/node_names"
-    "local/VisualSearch": {}
 
     MiniMap: {}  
 
-    Stats: {}
+    #Stats: {}
 
     #"local/OverlayCreate": {}
 
     "local/TopBarCreate": {}
 
-    "local/ShowAll": {}
+    "Sliders": {}
+
+    "ForceSliders": {}
+
+    "local/NodeCreationPopout": {}
+
+    #"LinkDistribution": {}
 
   # initialize the plugins and execute a callback once done
   Celestrium.init plugins, (instances) ->

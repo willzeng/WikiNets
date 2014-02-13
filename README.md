@@ -6,7 +6,7 @@ http://wikinets-demo.herokuapp.com
 Edge:
 http://wikinets-edge.herokuapp.com
 
-http://thewikinetsproject.wordpress.com
+http://wikinets.co.uk
 
 WikiNets can be set to work with a local WikiNet on your machine or with a WikiNet in the cloud.
 
@@ -17,7 +17,7 @@ SETUP
 To Run:
 
   ```
-  git clone --recursive https://github.com/willzeng/WikiNets
+  git clone https://github.com/willzeng/WikiNets
   cd wikinets
   npm install
   sh server.sh
@@ -26,7 +26,7 @@ To Run:
 
 LOCAL OPTION:
 
-To Run on a local WikiNet, you will need to install a copy of Neo4j:
+To Run on a local WikiNet, you will need to install a copy of Neo4j (version 2.0.0-RC1 or higher):
   Install neo4j http://www.neo4j.org/download
   Linux http://www.neo4j.org/download/linux:
 
@@ -50,3 +50,7 @@ To Run on a local WikiNet, you will need to install a copy of Neo4j:
 
   sh server.sh
   Browse to localhost:3000
+
+
+  For sublime 3 text highlighting for coffee:
+  https://github.com/aponxi/sublime-better-coffeescript

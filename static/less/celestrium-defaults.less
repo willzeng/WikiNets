@@ -1,0 +1,238 @@
+body {
+    font-family: "Trebuchet MS";
+    overflow: hidden;
+}
+
+/* plugin container */
+.plugin-container {
+    position: fixed;
+    z-index: 10;
+    padding: 2px;
+    box-sizing: border-box;
+    right: 10px;
+    overflow: scroll;
+    min-width: 240px;
+    height: 100%;
+    max-height: 100%;
+
+    .plugin-wrapper {
+        width: 100%;
+        padding-top: 2px;
+        padding-bottom: 2px;
+        .plugin-controls {
+            background-color: steelblue;
+            padding: 2px;
+        }
+        .header {
+            color: lightgrey;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+        &.collapsed {
+            .arrow {
+                margin-top: 4px;
+                margin-right: 8px;
+                border-left: 0px solid lightgrey;
+                border-top: 5px solid transparent;
+                border-bottom: 5px solid transparent;
+                border-right: 5px solid lightgrey;
+            }
+        }
+        .arrow {
+            float: right;
+            margin-top: 6px;
+            margin-right: 5px;
+            width: 0;
+            height: 0;
+            border-top: 5px solid lightgrey;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 0px solid lightgrey;
+        }
+    }
+}
+
+
+/* down arrow */
+.plugin-container .plugin-wrapper .plugin-controls .arrow{float: right;
+    margin-top: 6px; margin-right: 5px; width: 0; height: 0; border-top: 5px solid lightgrey; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 0px solid lightgrey;}
+/* left arrow */
+.plugin-container .plugin-wrapper.collapsed .plugin-controls .arrow {margin-top: 4px; margin-right: 8px; border-left: 0px solid lightgrey; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-right: 5px solid lightgrey;}
+
+
+/* controls */
+.container {
+    position: fixed;
+    z-index: 10;
+    background-color: #ccc;
+    padding: 2px;
+    &#top-left-container {
+        top: 5px;
+        left: 5px;
+    }
+    &#top-right-container {
+        top: 5px;
+        right: 5px;
+    }
+    &#bottom-left-container {
+        bottom: 5px;
+        left: 5px;
+    }
+    &#bottom-right-container {
+        bottom: 5px;
+        right: 5px;
+        text-align: right;
+        /* hyperlinkes */
+        a {
+            text-decoration: none;
+            font-style: italic;
+            color: black;
+            &:hover {
+                color: white;
+            }
+        }
+    }
+}
+
+#top-center-outer-container {
+    position: fixed;
+    top: 5px;
+    width: 100%;
+    padding: 2px;
+}
+#title {
+    background-color: #ccc;
+    padding: 4px;
+    font-size: 18pt;
+}
+#bottom-center-outer-container {
+    position: fixed;
+    bottom: 5px;
+    width: 100%;
+}
+
+#toggle {
+    font-family: "Trebuchet MS";
+    font-size: 12pt;
+    &:hover {
+        color: white;
+    }
+}
+
+/*graph workspace */
+.node circle {}
+.node.selected circle {fill: steelblue;}
+.node text {opacity: 0.5; }
+.node:hover text {opacity: 1; }
+.link {stroke: gray; opacity: 0.5;}
+
+.nodeContainer {
+    .node {
+        text {
+            opacity: 0.5;
+        }
+        .link {
+
+        }
+        &.selected {
+            circle {
+                fill: steelblue;
+            }
+        }
+        &:hover {
+            text {
+                opacity: 1;
+            }
+        }
+    }
+}
+
+.linkContainer {
+    .link {
+        stroke: gray;
+        opacity: 0.5;
+    }
+}
+
+/* node search */
+.node-search-container {
+    input {
+        font-size: 12pt;
+        outline: none;
+    }
+
+    .tt-dropdown-menu {
+        background-color: #ccc;
+        width: 100%;
+        max-height: 307;
+        overflow-y: auto;
+        .tt-suggestions {
+            padding-left: 2px;
+            .tt-suggestion {
+                margin-left: 2px;
+            }
+        }
+    }
+}
+
+/* stats */
+.graph-stats-container {
+    .graph-stat {
+        color: black;
+    }
+}
+
+/* pdf */
+.link-pdf {
+    margin-left: auto;
+    margin-right: auto;
+    width: 200px;
+    .threshold-line {
+        stroke: #000;
+        stroke-width: 2px;
+        cursor: ew-resize;
+    }
+    &.drag {
+        cursor: ew-resize;
+    }
+}
+
+.pdf {
+    margin-left: auto;
+    margin-right: auto;
+    width: 200px;
+    .axis {
+        text {
+            font-size: 6pt;
+        }
+        path, line {
+            fill: none;
+            stroke: #000;
+            shape-rendering: crispEdges;
+        }
+        .label {
+            font-size: 10pt;
+            text-anchor: middle;
+        }
+    }
+    path {
+        fill: steelblue;
+    }
+}
+
+/* node profiles */
+.node-profile-helper {
+    max-height: 50%;
+    overflow: scroll;
+    .node-profile {
+        background-color: #ccc;
+        border: 1px solid white;
+        padding: 2px;
+        margin: 2px;
+        .node-profile-property {
+            font-size: 12px;
+        }
+    }
+}
+

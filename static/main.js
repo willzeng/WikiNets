@@ -4,9 +4,9 @@
 
 (function() {
   requirejs.config({
-    baseUrl: "/celestrium_code/core/",
+    baseUrl: "/core/",
     paths: {
-      local: "../../"
+      local: "."
     }
   });
 
@@ -44,9 +44,6 @@
       });
     };
     plugins = {
-      Layout: {
-        el: document.querySelector("#maingraph")
-      },
       KeyListener: document.querySelector("body"),
       GraphModel: {
         nodeHash: function(node) {
@@ -61,19 +58,21 @@
         }
       },
       GraphView: {},
-      NodeSelection: {},
-      "local/WikiNetsDataProvider": {},
       "local/Neo4jDataController": {},
+      "local/ListView": {},
+      NodeSelection: {},
+      LinkSelection: {},
+      "local/WikiNetsDataProvider": {},
+      "local/SimpleSearchBox": {},
       "local/NodeEdit": {},
-      "local/Create": {},
+      "local/LinkEdit": {},
+      "local/ShowAll": {},
+      "local/ToolBox": {},
+      MiniMap: {},
+      "local/TopBarCreate": {},
       "Sliders": {},
       "ForceSliders": {},
-      "LinkDistribution": {},
-      "local/VisualSearch": {},
-      MiniMap: {},
-      Stats: {},
-      "local/TopBarCreate": {},
-      "local/ShowAll": {}
+      "local/NodeCreationPopout": {}
     };
     return Celestrium.init(plugins, function(instances) {
       var loadEverything;
