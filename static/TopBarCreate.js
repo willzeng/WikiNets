@@ -29,7 +29,7 @@
       };
 
       TopBarCreate.prototype.render = function() {
-        var $container, $createLinkButton, $createnodeNodeButton, $linkHolder, $linkInputDesc, $linkInputName, $linkInputUrl, $linkSide, $linkingInstructions, $nodeHolder, $nodeInputDesc, $nodeInputName, $nodeInputUrl, $nodeSide,
+        var $container, $createLinkButton, $createnodeNodeButton, $linkHolder, $linkInputDesc, $linkInputName, $linkInputUrl, $linkSide, $linkingInstructions, $nodeHolder, $nodeInputDesc, $nodeInputName, $nodeInputUrl, $nodeSide, $openPopoutButton,
           _this = this;
         $container = $('<div id="topbarcreate">').appendTo(this.$el);
         $nodeSide = $('<div id="nodeside">').appendTo($container);
@@ -45,6 +45,12 @@
           $nodeInputUrl.val('');
           $nodeInputDesc.val('');
           return $nodeInputName.focus();
+        });
+        $openPopoutButton = $('<i class="right fa fa-expand"></i>').appendTo(this.$nodeWrapper);
+        $openPopoutButton.click(function() {
+          _this.trigger('popout:open');
+          _this.$nodeWrapper.hide();
+          return $nodeHolder.show();
         });
         $linkSide = $('<div id="linkside">').appendTo($container);
         $linkHolder = $('<textarea placeholder="Add Link" id="nodeHolder" name="textin" rows="1" cols="35"></textarea><br>').appendTo($linkSide);
