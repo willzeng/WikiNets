@@ -39,7 +39,7 @@
         this.$el.empty();
         selectedNodes = this.selection.getSelectedNodes();
         $container = $("<div class=\"node-profile-helper\"/>").appendTo(this.$el);
-        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight"];
+        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id"];
         return _.each(selectedNodes, function(node) {
           var $nodeDiv, $nodeEdit, header;
           $nodeDiv = $("<div class=\"node-profile\"/>").appendTo($container);

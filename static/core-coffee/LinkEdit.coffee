@@ -30,7 +30,7 @@ define [], () ->
       @$el.empty()
       selectedLinks = @selection.getSelectedLinks()
       $container = $("<div class=\"node-profile-helper\"/>").appendTo(@$el)
-      blacklist = ["selected", "source", "target", "strength", "_type"]
+      blacklist = ["selected", "source", "target", "strength", "_type", "_id"]
       # not sure whether "strength" should be in the blacklist or not...?
       _.each selectedLinks, (link) =>
         console.log link

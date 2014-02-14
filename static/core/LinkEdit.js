@@ -40,7 +40,7 @@
         this.$el.empty();
         selectedLinks = this.selection.getSelectedLinks();
         $container = $("<div class=\"node-profile-helper\"/>").appendTo(this.$el);
-        blacklist = ["selected", "source", "target", "strength", "_type"];
+        blacklist = ["selected", "source", "target", "strength", "_type", "_id"];
         return _.each(selectedLinks, function(link) {
           var $linkDiv, $linkEdit, header;
           console.log(link);
