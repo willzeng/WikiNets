@@ -128,7 +128,17 @@
           }
         });
         linkEnter.on("click", function(datum, index) {
-          return _this.trigger("enter:link:click", datum);
+          var shifted;
+          if (d3.event.shiftKey) {
+            shifted = true;
+          } else {
+            shifted = false;
+          }
+          if (shifted) {
+            return _this.trigger("enter:link:shift:click", datum);
+          } else {
+            return _this.trigger("enter:link:click", datum);
+          }
         }).on("dblclick", function(datum, index) {
           return _this.trigger("enter:link:dblclick", datum);
         });

@@ -18,20 +18,25 @@ define [], () ->
       #Link to keycodes for javascript: http://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
       # just adding shift to all of these may be suboptimal,
       # but we can always come up with new exciting key combinations later
-      @listenTo @keyListener, "down:16:17:65", @selectAll                  #CTRL-SHIFT-A
-      @listenTo @keyListener, "down:16:27", @deselectAll                   #ESC-SHIFT
-      @listenTo @keyListener, "down:16:46", @removeSelection               #DEL-SHIFT
-      @listenTo @keyListener, "down:16:13", @removeSelectionCompliment     #ENTR-SHIFT
+      @listenTo @keyListener, "down:17:65", @selectAll                  #CTRL-SHIFT-A
+      @listenTo @keyListener, "down:27", @deselectAll                   #ESC-SHIFT
+      @listenTo @keyListener, "down:46", @removeSelection               #DEL-SHIFT
+      @listenTo @keyListener, "down:13", @removeSelectionCompliment     #ENTR-SHIFT
 
       # handle selecting and deselecting links
       @graphView.on "enter:link:click", (datum) =>
-        #toggle off all the currently selected nodes
+        #toggle off all the currently selected links
         @toggleSelection(link) for link in @getSelectedLinks()
+
         #toggle on the currently clicked node
         @toggleSelection datum
 
-      # @graphView.on "enter:node:shift:click", (datum) =>
-      #   @toggleSelection datum
+      @graphView.on "enter:node:click", (datum) =>
+        #toggle off all the currently selected links
+        @toggleSelection(link) for link in @getSelectedLinks()
+
+      @graphView.on "enter:link:shift:click", (datum) =>
+         @toggleSelection datum
 
     renderSelection: () ->
       linkSelection = @graphView.getLinkSelection()

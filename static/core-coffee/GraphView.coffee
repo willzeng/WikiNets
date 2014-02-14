@@ -165,7 +165,9 @@ define [], () ->
 
 
       linkEnter.on("click", (datum, index) =>
-        @trigger "enter:link:click", datum
+        if d3.event.shiftKey then shifted = true else shifted = false
+        if shifted then @trigger "enter:link:shift:click", datum
+        else @trigger "enter:link:click", datum
         )
         .on "dblclick", (datum, index) =>
           @trigger "enter:link:dblclick", datum
