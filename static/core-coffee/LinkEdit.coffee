@@ -135,7 +135,6 @@ define [], () ->
             !(delLink['_id'] == link['_id'])
           callback()
 
-
     findHeader: (link) =>
       if @graphView.findText(link.source) and @graphView.findText(link.target)
         "(" + @graphView.findText(link.source) + ") - " + link._type + " - (" + @graphView.findText(link.target) + ")"

@@ -18,38 +18,18 @@ define [], () ->
       @selection.on "change", @update.bind(this)
       @listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
       
-      #instances["Layout"].addPlugin @el, @options.pluginOrder, 'Node Edit', true
+      #place the plugin on the whole window
       $(@el).appendTo $('#omniBox')
-
-      @Create = instances['local/Create']
 
     update: ->
       @$el.empty()
       selectedNodes = @selection.getSelectedNodes()
       $container = $("<div class=\"node-profile-helper\"/>").appendTo(@$el)
+      #these are they peoperties that are not shown in the profile
       blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id"]
       _.each selectedNodes, (node) =>
         $nodeDiv = $("<div class=\"node-profile\"/>").appendTo($container)
-        header = @findHeader(node)
-        $("<div class=\"node-profile-title\">#{header}</div>").appendTo $nodeDiv
-        _.each node, (value, property) ->
-          value += ""
-          if blacklist.indexOf(property) < 0
-            if value?
-              makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi,"<a href=\"$1\" target=\"_blank\" style=\"target-new: tab;\">$1</a>")
-            else
-              makeLinks = value
-            if property == "_Last_Edit_Date" or property=="_Creation_Date"
-              $("<div class=\"node-profile-property\">#{property}:  #{makeLinks.substring(4,21)}</div>").appendTo $nodeDiv  
-            else if property!="color"
-              $("<div class=\"node-profile-property\">#{property}:  #{makeLinks}</div>").appendTo $nodeDiv  
-        
-
-        $nodeEdit = $("<input id=\"NodeEditButton#{node['_id']}\" class=\"NodeEditButton\" type=\"button\" value=\"Edit this node\">").appendTo $nodeDiv
-        $nodeEdit.click(() =>
-          @editNode(node, $nodeDiv, blacklist)
-          )
-          
+        @renderProfile(node, $nodeDiv, blacklist) 
 
     editNode: (node, nodeDiv, blacklist) ->
           console.log "Editing node: " + node['_id']
@@ -89,13 +69,11 @@ define [], () ->
 
           $("#color#{node['_id']}").colorPicker {showHexField: false} 
 
-
           $nodeMoreFields = $("<input id=\"moreNode#{node['_id']}EditFields\" type=\"button\" value=\"+\">").appendTo(nodeDiv)
           $nodeMoreFields.click(() =>
             @addField(nodeInputNumber, "Node#{node['_id']}Edit")
             nodeInputNumber = nodeInputNumber+1
           )
-
 
           $nodeSave = $("<input name=\"nodeSaveButton\" type=\"button\" value=\"Save\">").appendTo(nodeDiv)
           $nodeSave.click () => 
@@ -121,17 +99,8 @@ define [], () ->
           $nodeCancel.click () => @cancelEditing(node, nodeDiv, blacklist)
 
     cancelEditing: (node, nodeDiv, blacklist) =>
-      nodeDiv.html("<div class=\"node-profile-title\">#{@findHeader(node)}</div>")
-      _.each node, (value, property) ->
-        if blacklist.indexOf(property) < 0
-          if property == "_Last_Edit_Date" or property=="_Creation_Date"
-            $("<div class=\"node-profile-property\">#{property}:  #{value.substring(4,21)}</div>").appendTo nodeDiv  
-          else if property!="color"
-            $("<div class=\"node-profile-property\">#{property}:  #{value}</div>").appendTo nodeDiv  
-      $nodeEdit = $("<input id=\"NodeEditButton#{node['_id']}\" class=\"NodeEditButton\" type=\"button\" value=\"Edit this node\">").appendTo nodeDiv
-      $nodeEdit.click(() =>
-        @editNode(node, nodeDiv, blacklist)
-        )
+      nodeDiv.empty()
+      @renderProfile(node, nodeDiv, blacklist)
 
     deleteNode: (delNode, callback)=>
       @dataController.nodeDelete delNode, (response) =>
@@ -190,6 +159,8 @@ define [], () ->
 
         [submitOK, propertyObject]
 
+    #this method chooses the header from a node
+    #TODO would be to define a .toString method for nodes
     findHeader: (node) ->
       if node.name?
         node.name
@@ -197,3 +168,30 @@ define [], () ->
         node.title
       else
         ''
+
+    #displays the profile of a selected node
+    renderProfile: (node, nodeDiv, blacklist) =>
+      header = @findHeader(node)
+      
+      #add the header and the edit icon
+      $nodeHeader = $("<div class=\"node-profile-title\">#{header}</div>").appendTo nodeDiv
+      $nodeEdit = $("<i class=\"fa fa-pencil-square-o\"></i>").prependTo $nodeHeader
+
+      #adds the deselect button
+      $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").appendTo $nodeHeader
+      $nodeDeselect.click () => @selection.toggleSelection(node)
+
+      _.each node, (value, property) ->
+        value += ""
+        if blacklist.indexOf(property) < 0
+          if value?
+            makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi,"<a href=\"$1\" target=\"_blank\" style=\"target-new: tab;\">$1</a>")
+          else
+            makeLinks = value
+          if property == "_Last_Edit_Date" or property=="_Creation_Date"
+            $("<div class=\"node-profile-property\">#{property}:  #{makeLinks.substring(4,21)}</div>").appendTo nodeDiv  
+          else if property!="color"
+            $("<div class=\"node-profile-property\">#{property}:  #{makeLinks}</div>").appendTo nodeDiv 
+
+      $nodeEdit.click () =>
+        @editNode(node, nodeDiv, blacklist)
