@@ -23,12 +23,15 @@ define [], () ->
       @listenTo @keyListener, "down:16:46", @removeSelection               #DEL-SHIFT
       @listenTo @keyListener, "down:16:13", @removeSelectionCompliment     #ENTR-SHIFT
 
-      # handle selecting and deselecting nodes
+      # handle selecting and deselecting links
       @graphView.on "enter:link:click", (datum) =>
+        #toggle off all the currently selected nodes
+        @toggleSelection(link) for link in @getSelectedLinks()
+        #toggle on the currently clicked node
         @toggleSelection datum
-      
-      #@graphView.on "enter:link:dblclick", (datum) =>
-      #  @selectConnectedComponent datum
+
+      # @graphView.on "enter:node:shift:click", (datum) =>
+      #   @toggleSelection datum
 
     renderSelection: () ->
       linkSelection = @graphView.getLinkSelection()

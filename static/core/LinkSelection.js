@@ -25,6 +25,12 @@
         this.listenTo(this.keyListener, "down:16:46", this.removeSelection);
         this.listenTo(this.keyListener, "down:16:13", this.removeSelectionCompliment);
         return this.graphView.on("enter:link:click", function(datum) {
+          var link, _i, _len, _ref;
+          _ref = _this.getSelectedLinks();
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            link = _ref[_i];
+            _this.toggleSelection(link);
+          }
           return _this.toggleSelection(datum);
         });
       };
