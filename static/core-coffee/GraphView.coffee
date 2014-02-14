@@ -141,7 +141,7 @@ define [], () ->
         else @trigger "view:click"
 
       #Center node on shift+click
-      @addCentering()
+      #@addCentering()
 
       return this
 
@@ -209,7 +209,7 @@ define [], () ->
         setTimeout (=>
           if clickSemaphore is savedClickSemaphore
             if shifted then @trigger "enter:node:shift:click", datum
-            @trigger "enter:node:click", datum
+            else @trigger "enter:node:click", datum
             datum.fixed = false
           else
             # increment so second click isn't registered as a click

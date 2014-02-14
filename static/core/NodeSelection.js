@@ -25,6 +25,15 @@
         this.listenTo(this.keyListener, "down:46", this.removeSelection);
         this.listenTo(this.keyListener, "down:13", this.removeSelectionCompliment);
         this.graphView.on("enter:node:click", function(datum) {
+          var node, _i, _len, _ref;
+          _ref = _this.getSelectedNodes();
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            node = _ref[_i];
+            _this.toggleSelection(node);
+          }
+          return _this.toggleSelection(datum);
+        });
+        this.graphView.on("enter:node:shift:click", function(datum) {
           return _this.toggleSelection(datum);
         });
         return this.graphView.on("enter:node:dblclick", function(datum) {

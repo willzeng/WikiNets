@@ -109,7 +109,6 @@
             return _this.trigger("view:click");
           }
         });
-        this.addCentering();
         return this;
       };
 
@@ -181,8 +180,9 @@
             if (clickSemaphore === savedClickSemaphore) {
               if (shifted) {
                 _this.trigger("enter:node:shift:click", datum);
+              } else {
+                _this.trigger("enter:node:click", datum);
               }
-              _this.trigger("enter:node:click", datum);
               return datum.fixed = false;
             } else {
               clickSemaphore += 1;
