@@ -28,21 +28,7 @@
     The value is passed to its constructor.
     */
 
-    var doWikiNetsSelection, plugins;
-    doWikiNetsSelection = function(nodeName) {
-      return $.getJSON("/json", function(data) {
-        var node, _i, _len, _ref, _results;
-        _ref = data["nodes"];
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          node = _ref[_i];
-          if (node['name'] === nodeName) {
-            _results.push(select_node(node['_id']));
-          }
-        }
-        return _results;
-      });
-    };
+    var plugins;
     plugins = {
       KeyListener: document.querySelector("body"),
       GraphModel: {
@@ -68,6 +54,7 @@
       "local/LinkEdit": {},
       "local/ShowAll": {},
       "local/ToolBox": {},
+      DropdownMenu: {},
       MiniMap: {},
       "local/TopBarCreate": {},
       "Sliders": {},

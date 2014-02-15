@@ -40,11 +40,6 @@ require ["Celestrium"], (Celestrium) ->
 
   ###
   
-  doWikiNetsSelection = (nodeName) ->
-      $.getJSON "/json", (data) -> 
-        select_node(node['_id']) for node in data["nodes"] when node['name'] is nodeName
-
-  
   plugins =
 
     # organizes where things are displayed on the screen
@@ -94,6 +89,8 @@ require ["Celestrium"], (Celestrium) ->
     "local/ShowAll": {}
 
     "local/ToolBox": {}
+
+    DropdownMenu: {}
 
     #"local/Create": {}
 
