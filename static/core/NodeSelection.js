@@ -84,6 +84,12 @@
         return this.trigger("change");
       };
 
+      Selection.prototype.selectNode = function(node) {
+        node.selected = true;
+        this.trigger("change");
+        return this.renderSelection();
+      };
+
       Selection.prototype.toggleSelection = function(node) {
         node.selected = !node.selected;
         this.trigger("change");
