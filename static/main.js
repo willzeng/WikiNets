@@ -55,6 +55,7 @@
       "local/ShowAll": {},
       "local/ToolBox": {},
       DropdownMenu: {},
+      Expander: {},
       MiniMap: {},
       "local/TopBarCreate": {},
       "Sliders": {},

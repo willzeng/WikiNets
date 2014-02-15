@@ -92,6 +92,8 @@ require ["Celestrium"], (Celestrium) ->
 
     DropdownMenu: {}
 
+    Expander: {}
+
     #"local/Create": {}
 
     #"local/SyntaxCreate": {}    

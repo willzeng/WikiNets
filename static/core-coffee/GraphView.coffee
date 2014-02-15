@@ -220,6 +220,24 @@ define [], () ->
         ), 250)
         .on "dblclick", (datum, index) =>
           @trigger "enter:node:dblclick", datum
+        .on "mouseover", (datum, index) =>
+          @trigger "enter:node:mouseover", datum
+        .on "mouseout", (datum, index) =>
+          @trigger "enter:node:mouseout", datum
+
+      #build an expand button for each node
+      nodeEnter.append("rect")
+          .attr("x", (d) -> getSize(d))
+          .attr("y", (d) -> (getSize(d)+3))
+          .attr("width", 20)
+          .attr("height", 10)
+          .attr("stroke", (d) => getColor(d))
+          .attr("fill", "white")
+          .attr("stroke-width", 2)
+          .attr('id', (d)=>'expand-button'+@model.get("nodeHash")(d))
+          .style("display", "none")
+          .on "click", (datum,index) =>
+            @trigger "enter:node:rect:click", datum
 
       @trigger "enter:node", nodeEnter
       @trigger "enter:link", linkEnter
