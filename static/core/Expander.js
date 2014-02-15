@@ -22,6 +22,17 @@
         this.linkFilter = this.graphView.getLinkFilter();
         this.graphModel = instances['GraphModel'];
         this.dataProvider = instances["local/WikiNetsDataProvider"];
+        this.loading = false;
+        this.graphView.on("enter:node:mouseover", function(d) {
+          if (!this.loading) {
+            return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Right-click to find connections.</span>');
+          }
+        });
+        this.graphView.on("enter:node:mouseout", function(d) {
+          if (!_this.loading) {
+            return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px"></span>');
+          }
+        });
         return this.graphView.on("enter:node:rightclick", function(d) {
           return _this.expandSelection(d);
         });
@@ -29,12 +40,16 @@
 
       Expander.prototype.expandSelection = function(d) {
         var _this = this;
+        this.loading = true;
+        $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Loading...</span>');
         return this.dataProvider.getLinkedNodes([d], function(nodes) {
-          return _.each(nodes, function(node) {
+          _.each(nodes, function(node) {
             if (_this.dataProvider.nodeFilter(node)) {
               return _this.graphModel.putNode(node);
             }
           });
+          $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px"></span>');
+          return _this.loading = false;
         });
       };
 

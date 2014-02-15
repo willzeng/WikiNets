@@ -28,7 +28,7 @@ define [], () ->
       selectedNodes = @selection.getSelectedNodes()
       $container = $("<div class=\"node-profile-helper\"/>").appendTo(@$el)
       #these are they peoperties that are not shown in the profile
-      blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id"]
+      blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color"]
       _.each selectedNodes, (node) =>
         if !(node.color?) then node.color="#A9A9A9"
         else if !(node.color.toUpperCase() in colors) then node.color="#A9A9A9"
@@ -174,28 +174,48 @@ define [], () ->
         ''
 
     #displays the profile of a selected node
-    renderProfile: (node, nodeDiv, blacklist) =>
+    renderProfile: (node, nodeDiv, blacklist, propNumber) =>
+      nodeDiv.empty()
       header = @findHeader(node)
       
       #add the header and the edit icon
       $nodeHeader = $("<div class=\"node-profile-title\">#{header}</div>").appendTo nodeDiv
-      $nodeEdit = $("<i class=\"fa fa-pencil-square-o\"></i>").prependTo $nodeHeader
+      $nodeEdit = $("<i class=\"fa fa-pencil-square\"></i>").prependTo $nodeHeader
 
       #adds the deselect button
       $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").appendTo $nodeHeader
       $nodeDeselect.click () => @selection.toggleSelection(node)
 
+      whitelist = ["description", "url"]
+
+      #only show the first four properties initially
+      nodeLength = 0
+      for p,v of node
+        if !(p in blacklist)
+          nodeLength = nodeLength+1
+
+      counter = 0
       _.each node, (value, property) ->
+        if counter >= propNumber
+          return
         value += ""
         if blacklist.indexOf(property) < 0
           if value?
             makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi,"<a href=\"$1\" target=\"_blank\" style=\"target-new: tab;\">$1</a>")
           else
             makeLinks = value
-          if property == "_Last_Edit_Date" or property=="_Creation_Date"
+          if property in whitelist
+            $("<div class=\"node-profile-property\">#{makeLinks}</div>").appendTo nodeDiv 
+          else if property == "_Last_Edit_Date" or property=="_Creation_Date"
             $("<div class=\"node-profile-property\">#{property}:  #{makeLinks.substring(4,21)}</div>").appendTo nodeDiv  
-          else if property!="color"
-            $("<div class=\"node-profile-property\">#{property}:  #{makeLinks}</div>").appendTo nodeDiv 
+          else
+            $("<div class=\"node-profile-property\">#{property}:  #{makeLinks}</div>").appendTo nodeDiv
+          counter++ 
 
       $nodeEdit.click () =>
         @editNode(node, nodeDiv, blacklist)
+      
+      if propNumber < nodeLength
+        $showMore = $("<div class=\"node-profile-property\">Show More</div>").css("background-color","white").appendTo nodeDiv 
+        $showMore.click () =>
+          @renderProfile(node, nodeDiv, blacklist, propNumber+1)

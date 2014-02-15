@@ -52,5 +52,6 @@ define [], () ->
         for node in nodes
           @graphModel.putNode(node)
           #selects all the nodes added to the workspace
-          @selection.toggleSelection(node)
+          modelNode = theNode for theNode in @graphModel.getNodes() when theNode['_id'] is node['_id']
+          @selection.selectNode(modelNode)
           

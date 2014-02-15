@@ -67,6 +67,11 @@ define [], () ->
 
       @trigger "change"
 
+    selectNode: (node) ->
+      node.selected = true
+      @trigger "change"
+      @renderSelection()
+
     toggleSelection: (node) ->
       node.selected = not node.selected
 

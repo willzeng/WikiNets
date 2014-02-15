@@ -43,7 +43,7 @@
         this.$el.empty();
         selectedNodes = this.selection.getSelectedNodes();
         $container = $("<div class=\"node-profile-helper\"/>").appendTo(this.$el);
-        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id"];
+        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color"];
         return _.each(selectedNodes, function(node) {
           var $nodeDiv, _ref;
           if (!(node.color != null)) {
@@ -198,18 +198,31 @@
         }
       };
 
-      NodeEdit.prototype.renderProfile = function(node, nodeDiv, blacklist) {
-        var $nodeDeselect, $nodeEdit, $nodeHeader, header,
+      NodeEdit.prototype.renderProfile = function(node, nodeDiv, blacklist, propNumber) {
+        var $nodeDeselect, $nodeEdit, $nodeHeader, $showMore, counter, header, nodeLength, p, v, whitelist,
           _this = this;
+        nodeDiv.empty();
         header = this.findHeader(node);
         $nodeHeader = $("<div class=\"node-profile-title\">" + header + "</div>").appendTo(nodeDiv);
-        $nodeEdit = $("<i class=\"fa fa-pencil-square-o\"></i>").prependTo($nodeHeader);
+        $nodeEdit = $("<i class=\"fa fa-pencil-square\"></i>").prependTo($nodeHeader);
         $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").appendTo($nodeHeader);
         $nodeDeselect.click(function() {
           return _this.selection.toggleSelection(node);
         });
+        whitelist = ["description", "url"];
+        nodeLength = 0;
+        for (p in node) {
+          v = node[p];
+          if (!(__indexOf.call(blacklist, p) >= 0)) {
+            nodeLength = nodeLength + 1;
+          }
+        }
+        counter = 0;
         _.each(node, function(value, property) {
           var makeLinks;
+          if (counter >= propNumber) {
+            return;
+          }
           value += "";
           if (blacklist.indexOf(property) < 0) {
             if (value != null) {
@@ -217,16 +230,25 @@
             } else {
               makeLinks = value;
             }
-            if (property === "_Last_Edit_Date" || property === "_Creation_Date") {
-              return $("<div class=\"node-profile-property\">" + property + ":  " + (makeLinks.substring(4, 21)) + "</div>").appendTo(nodeDiv);
-            } else if (property !== "color") {
-              return $("<div class=\"node-profile-property\">" + property + ":  " + makeLinks + "</div>").appendTo(nodeDiv);
+            if (__indexOf.call(whitelist, property) >= 0) {
+              $("<div class=\"node-profile-property\">" + makeLinks + "</div>").appendTo(nodeDiv);
+            } else if (property === "_Last_Edit_Date" || property === "_Creation_Date") {
+              $("<div class=\"node-profile-property\">" + property + ":  " + (makeLinks.substring(4, 21)) + "</div>").appendTo(nodeDiv);
+            } else {
+              $("<div class=\"node-profile-property\">" + property + ":  " + makeLinks + "</div>").appendTo(nodeDiv);
             }
+            return counter++;
           }
         });
-        return $nodeEdit.click(function() {
+        $nodeEdit.click(function() {
           return _this.editNode(node, nodeDiv, blacklist);
         });
+        if (propNumber < nodeLength) {
+          $showMore = $("<div class=\"node-profile-property\">Show More</div>").css("background-color", "white").appendTo(nodeDiv);
+          return $showMore.click(function() {
+            return _this.renderProfile(node, nodeDiv, blacklist, propNumber + 1);
+          });
+        }
       };
 
       return NodeEdit;
