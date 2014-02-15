@@ -176,7 +176,7 @@ define [], () ->
       
       #add the header and the edit icon
       $nodeHeader = $("<div class=\"node-profile-title\">#{header}</div>").appendTo nodeDiv
-      $nodeEdit = $("<i class=\"fa fa-pencil-square-o\"></i>").prependTo $nodeHeader
+      $nodeEdit = $("<i class=\"fa fa-pencil-square\"></i>").prependTo $nodeHeader
 
       #adds the deselect button
       $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").appendTo $nodeHeader

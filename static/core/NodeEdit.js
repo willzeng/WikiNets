@@ -199,7 +199,7 @@
         nodeDiv.empty();
         header = this.findHeader(node);
         $nodeHeader = $("<div class=\"node-profile-title\">" + header + "</div>").appendTo(nodeDiv);
-        $nodeEdit = $("<i class=\"fa fa-pencil-square-o\"></i>").prependTo($nodeHeader);
+        $nodeEdit = $("<i class=\"fa fa-pencil-square\"></i>").prependTo($nodeHeader);
         $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").appendTo($nodeHeader);
         $nodeDeselect.click(function() {
           return _this.selection.toggleSelection(node);
