@@ -12,6 +12,7 @@ define [], () ->
       @dataController = instances['local/Neo4jDataController']
 
       @graphModel = instances['GraphModel']
+      @graphView = instances['GraphView']
       @graphModel.on "change", @update.bind(this)
 
       @selection = instances["NodeSelection"]
@@ -22,14 +23,15 @@ define [], () ->
       $(@el).appendTo $('#omniBox')
 
     update: ->
-      @$el.empty()
-      selectedNodes = @selection.getSelectedNodes()
-      $container = $("<div class=\"node-profile-helper\"/>").appendTo(@$el)
-      #these are they peoperties that are not shown in the profile
-      blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color"]
-      _.each selectedNodes, (node) =>
-        $nodeDiv = $("<div class=\"node-profile\"/>").appendTo($container)
-        @renderProfile(node, $nodeDiv, blacklist, 4) 
+      if !@buildingLink
+        @$el.empty()
+        selectedNodes = @selection.getSelectedNodes()
+        $container = $("<div class=\"node-profile-helper\"/>").appendTo(@$el)
+        #these are they peoperties that are not shown in the profile
+        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color"]
+        _.each selectedNodes, (node) =>
+          $nodeDiv = $("<div class=\"node-profile\"/>").appendTo($container)
+          @renderProfile(node, $nodeDiv, blacklist, 4) 
 
     editNode: (node, nodeDiv, blacklist) ->
           console.log "Editing node: " + node['_id']
@@ -210,8 +212,100 @@ define [], () ->
 
       $nodeEdit.click () =>
         @editNode(node, nodeDiv, blacklist)
-      
+
       if propNumber < nodeLength
-        $showMore = $("<div class=\"node-profile-property\">Show More</div>").css("background-color","white").appendTo nodeDiv 
+        $showMore = $("<div class=\"node-profile-property\"><a href='#'>Show More...</a></div>").appendTo nodeDiv 
         $showMore.click () =>
           @renderProfile(node, nodeDiv, blacklist, propNumber+1)
+
+      @addLinker node, nodeDiv
+
+    addLinker: (node, nodeDiv) =>
+      @tempLink = {}
+      #@tempLink.source = node
+
+      nodeID = node['_id']
+
+      linkSideID = "id=" + "'linkside" + nodeID + "'"
+      $linkSide = $('<div ' + linkSideID + '>').appendTo nodeDiv
+      
+      holderClassName = "'profilelinkHolder" + nodeID + "'"
+      className = "class=" + holderClassName
+      $linkHolder = $('<textarea placeholder="Add Link" ' + className + 'rows="1" cols="35"></textarea><br>')
+        .css("width",100)
+        .css("margin-left",85)
+        # .css("margin",0)
+        # .css("margin-left","auto")
+        # .css("margin-right","auto")
+        # .css("position","relative")
+        # .css("align","center")
+        .appendTo $linkSide
+
+      linkWrapperDivID = "id=" + "'source-container" + nodeID + "'"
+      $linkWrapper = $('<div ' + linkWrapperDivID + '>').appendTo $linkSide
+      #$linkTitleArea = $('<textarea placeholder="Title" id="nodeTitle" name="textin" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
+      # $linkInput = $('<textarea placeholder="Link : A link\'s description #key1 value1 #key2 value2" id="linkInputField" name="textin" rows="5" cols="35"></textarea><br>').appendTo @$linkWrapper
+      $linkInputName = $('<textarea placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo $linkWrapper
+      $linkInputUrl = $('<textarea placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo $linkWrapper
+      $linkInputDesc = $('<textarea placeholder="Description\n #key1 value1 #key2 value2" rows="5" cols="35"></textarea><br>').appendTo $linkWrapper
+
+      $createLinkButton = $('<input type="submit" value="Create Link"><br>').appendTo $linkWrapper
+
+      $createLinkButton.click () =>
+        @tempLink.source = node
+        @buildLink(
+          @parseSyntax($linkInputName.val()+" : "+$linkInputDesc.val()+" #url "+$linkInputUrl.val())
+          # if tlink.name is "" then tlink.name = "link"
+          # console.log $linkInputName.val()+" : "+$linkInputDesc.val()+" #url "+$linkInputUrl.val()
+        )
+        $linkInputName.val('')
+        $linkInputUrl.val('')
+        $linkInputDesc.val('')
+        # $linkInput.blur()
+        $linkWrapper.hide()
+        $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click a Node to select the target.</span>')
+
+      $linkWrapper.hide()
+
+      $linkHolder.focus () =>
+        $linkWrapper.show()
+        $linkInputName.focus()
+        $linkHolder.hide()
+
+      @graphView.on "enter:node:click", (clickedNode) =>
+        if @buildingLink
+          @tempLink.target = clickedNode
+          link = @tempLink
+          @dataController.linkAdd(link, (linkres)=> 
+            newLink = linkres
+            allNodes = @graphModel.getNodes()
+            newLink.source = n for n in allNodes when n['_id'] is link.source['_id']
+            newLink.target = n for n in allNodes when n['_id'] is link.target['_id']
+            @graphModel.putLink(newLink)
+            )
+          @buildingLink = false
+          $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>')
+          $linkHolder.show()
+
+    buildLink: (linkProperties) ->
+      @tempLink.properties = linkProperties
+      console.log "tempLink set to", @tempLink
+      @buildingLink = true
+    
+    parseSyntax: (input) ->
+      console.log "input", input
+      strsplit=input.split('#');
+      strsplit[0]=strsplit[0].replace(/:/," #description ");### The : is shorthand for #description ###
+      text=strsplit.join('#')
+
+      pattern = new RegExp(/#([a-zA-Z0-9]+) ([^#]+)/g)
+      dict = {}
+      match = {}
+      dict[match[1].trim()]=match[2].trim() while match = pattern.exec(text)
+
+      ###The first entry becomes the name###
+      dict["name"]=text.split('#')[0].trim()
+      console.log "This is the title", text.split('#')[0].trim()
+      createDate=new Date()
+      dict["_Creation_Date"]=createDate
+      dict

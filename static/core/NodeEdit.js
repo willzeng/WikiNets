@@ -12,6 +12,7 @@
 
       function NodeEdit(options) {
         this.options = options;
+        this.addLinker = __bind(this.addLinker, this);
         this.renderProfile = __bind(this.renderProfile, this);
         this.assign_properties = __bind(this.assign_properties, this);
         this.addField = __bind(this.addField, this);
@@ -24,6 +25,7 @@
         var _this = this;
         this.dataController = instances['local/Neo4jDataController'];
         this.graphModel = instances['GraphModel'];
+        this.graphView = instances['GraphView'];
         this.graphModel.on("change", this.update.bind(this));
         this.selection = instances["NodeSelection"];
         this.selection.on("change", this.update.bind(this));
@@ -36,15 +38,17 @@
       NodeEdit.prototype.update = function() {
         var $container, blacklist, selectedNodes,
           _this = this;
-        this.$el.empty();
-        selectedNodes = this.selection.getSelectedNodes();
-        $container = $("<div class=\"node-profile-helper\"/>").appendTo(this.$el);
-        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color"];
-        return _.each(selectedNodes, function(node) {
-          var $nodeDiv;
-          $nodeDiv = $("<div class=\"node-profile\"/>").appendTo($container);
-          return _this.renderProfile(node, $nodeDiv, blacklist, 4);
-        });
+        if (!this.buildingLink) {
+          this.$el.empty();
+          selectedNodes = this.selection.getSelectedNodes();
+          $container = $("<div class=\"node-profile-helper\"/>").appendTo(this.$el);
+          blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color"];
+          return _.each(selectedNodes, function(node) {
+            var $nodeDiv;
+            $nodeDiv = $("<div class=\"node-profile\"/>").appendTo($container);
+            return _this.renderProfile(node, $nodeDiv, blacklist, 4);
+          });
+        }
       };
 
       NodeEdit.prototype.editNode = function(node, nodeDiv, blacklist) {
@@ -239,11 +243,102 @@
           return _this.editNode(node, nodeDiv, blacklist);
         });
         if (propNumber < nodeLength) {
-          $showMore = $("<div class=\"node-profile-property\">Show More</div>").css("background-color", "white").appendTo(nodeDiv);
-          return $showMore.click(function() {
+          $showMore = $("<div class=\"node-profile-property\"><a href='#'>Show More...</a></div>").appendTo(nodeDiv);
+          $showMore.click(function() {
             return _this.renderProfile(node, nodeDiv, blacklist, propNumber + 1);
           });
         }
+        return this.addLinker(node, nodeDiv);
+      };
+
+      NodeEdit.prototype.addLinker = function(node, nodeDiv) {
+        var $createLinkButton, $linkHolder, $linkInputDesc, $linkInputName, $linkInputUrl, $linkSide, $linkWrapper, className, holderClassName, linkSideID, linkWrapperDivID, nodeID,
+          _this = this;
+        this.tempLink = {};
+        nodeID = node['_id'];
+        linkSideID = "id=" + "'linkside" + nodeID + "'";
+        $linkSide = $('<div ' + linkSideID + '>').appendTo(nodeDiv);
+        holderClassName = "'profilelinkHolder" + nodeID + "'";
+        className = "class=" + holderClassName;
+        $linkHolder = $('<textarea placeholder="Add Link" ' + className + 'rows="1" cols="35"></textarea><br>').css("width", 100).css("margin-left", 85).appendTo($linkSide);
+        linkWrapperDivID = "id=" + "'source-container" + nodeID + "'";
+        $linkWrapper = $('<div ' + linkWrapperDivID + '>').appendTo($linkSide);
+        $linkInputName = $('<textarea placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo($linkWrapper);
+        $linkInputUrl = $('<textarea placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo($linkWrapper);
+        $linkInputDesc = $('<textarea placeholder="Description\n #key1 value1 #key2 value2" rows="5" cols="35"></textarea><br>').appendTo($linkWrapper);
+        $createLinkButton = $('<input type="submit" value="Create Link"><br>').appendTo($linkWrapper);
+        $createLinkButton.click(function() {
+          _this.tempLink.source = node;
+          _this.buildLink(_this.parseSyntax($linkInputName.val() + " : " + $linkInputDesc.val() + " #url " + $linkInputUrl.val()));
+          $linkInputName.val('');
+          $linkInputUrl.val('');
+          $linkInputDesc.val('');
+          $linkWrapper.hide();
+          return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click a Node to select the target.</span>');
+        });
+        $linkWrapper.hide();
+        $linkHolder.focus(function() {
+          $linkWrapper.show();
+          $linkInputName.focus();
+          return $linkHolder.hide();
+        });
+        return this.graphView.on("enter:node:click", function(clickedNode) {
+          var link;
+          if (_this.buildingLink) {
+            _this.tempLink.target = clickedNode;
+            link = _this.tempLink;
+            _this.dataController.linkAdd(link, function(linkres) {
+              var allNodes, n, newLink, _i, _j, _len, _len1;
+              newLink = linkres;
+              allNodes = _this.graphModel.getNodes();
+              for (_i = 0, _len = allNodes.length; _i < _len; _i++) {
+                n = allNodes[_i];
+                if (n['_id'] === link.source['_id']) {
+                  newLink.source = n;
+                }
+              }
+              for (_j = 0, _len1 = allNodes.length; _j < _len1; _j++) {
+                n = allNodes[_j];
+                if (n['_id'] === link.target['_id']) {
+                  newLink.target = n;
+                }
+              }
+              return _this.graphModel.putLink(newLink);
+            });
+            _this.buildingLink = false;
+            $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>');
+            return $linkHolder.show();
+          }
+        });
+      };
+
+      NodeEdit.prototype.buildLink = function(linkProperties) {
+        this.tempLink.properties = linkProperties;
+        console.log("tempLink set to", this.tempLink);
+        return this.buildingLink = true;
+      };
+
+      NodeEdit.prototype.parseSyntax = function(input) {
+        var createDate, dict, match, pattern, strsplit, text;
+        console.log("input", input);
+        strsplit = input.split('#');
+        strsplit[0] = strsplit[0].replace(/:/, " #description ");
+        /* The : is shorthand for #description*/
+
+        text = strsplit.join('#');
+        pattern = new RegExp(/#([a-zA-Z0-9]+) ([^#]+)/g);
+        dict = {};
+        match = {};
+        while (match = pattern.exec(text)) {
+          dict[match[1].trim()] = match[2].trim();
+        }
+        /*The first entry becomes the name*/
+
+        dict["name"] = text.split('#')[0].trim();
+        console.log("This is the title", text.split('#')[0].trim());
+        createDate = new Date();
+        dict["_Creation_Date"] = createDate;
+        return dict;
       };
 
       return NodeEdit;
