@@ -148,7 +148,8 @@ define [], () ->
     update: =>
 
       #@loadtime = 15000 #loadtime before nodes become fixed in ms
-
+      getLinkColor = (link) =>
+        if link.color? then link.color else "grey"
       #colors = ["aqua", "black", "blue", "darkblue", "fuchsia", "darkgray", "green", "darkgreen", "lime", "maroon", "navy", "olive", "orange", "purple", "red", "silver", "teal", "yellow"]
       nodes = @model.get("nodes")
       links = @model.get("links")
@@ -157,7 +158,7 @@ define [], () ->
       link = @linkSelection = d3.select(@el).select(".linkContainer").selectAll(".link").data(filteredLinks, @model.get("linkHash"))
       linkEnter = link.enter().append("line")
         .attr("class", "link")
-        .attr("stroke", "grey")
+        .attr("stroke", (d) => getLinkColor(d))
         .attr 'marker-end', (link) ->
           'url(#Triangle)' #if link.direction is 'forward' or link.direction is 'bidirectional'
         .attr 'marker-start', (link) ->

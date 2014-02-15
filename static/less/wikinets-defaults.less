@@ -542,9 +542,9 @@ body {
 /* node profiles */
 .node-profile-helper {
     float:left;
-    max-height: 50%;
+    max-height: 500px;
     width: 100%;
-    /*overflow: scroll;*/
+    overflow: scroll;
     .node-profile {
         background-color: #ccc;
         border: 1px solid white;
@@ -552,6 +552,9 @@ body {
         margin: 2px;
         .node-profile-property {
             font-size: 12px;
+            max-height: 148px;
+            overflow: scroll;
+            border-top: 1px dotted #DDDEEE;
         };
     }
 }
