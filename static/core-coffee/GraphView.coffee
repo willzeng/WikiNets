@@ -163,7 +163,6 @@ define [], () ->
         .attr 'marker-start', (link) ->
           'url(#Triangle2)' if link.direction is 'backward' or link.direction is 'bidirectional'
 
-
       linkEnter.on("click", (datum, index) =>
         if d3.event.shiftKey then shifted = true else shifted = false
         if shifted then @trigger "enter:link:shift:click", datum
@@ -171,6 +170,21 @@ define [], () ->
         )
         .on "dblclick", (datum, index) =>
           @trigger "enter:link:dblclick", datum
+
+      #attempt to start a tooltip for links
+      # #BROKEN
+      # linkEnter.append("rect")
+      #     .attr("dx", "10px")
+      #     .attr("dy", "10px")
+      #     .attr("width", "20px")
+      #     .attr("height", "10px")
+      #     .attr("stroke", "black")
+      #     .attr("fill", "black")
+      #     .attr("stroke-width", 2)
+      #     .attr('id', (d)=>'link-tooltip'+@model.get("linkHash")(d))
+      #     .style("display", "block")
+      #     .on "click", (datum,index) =>
+      #       @trigger "enter:link:rect:click", datum
       
       
       getSize = (node) =>
@@ -224,20 +238,8 @@ define [], () ->
           @trigger "enter:node:mouseover", datum
         .on "mouseout", (datum, index) =>
           @trigger "enter:node:mouseout", datum
-
-      #build an expand button for each node
-      nodeEnter.append("rect")
-          .attr("x", (d) -> getSize(d))
-          .attr("y", (d) -> (getSize(d)+3))
-          .attr("width", 20)
-          .attr("height", 10)
-          .attr("stroke", (d) => getColor(d))
-          .attr("fill", "white")
-          .attr("stroke-width", 2)
-          .attr('id', (d)=>'expand-button'+@model.get("nodeHash")(d))
-          .style("display", "none")
-          .on "click", (datum,index) =>
-            @trigger "enter:node:rect:click", datum
+        .on "contextmenu", (datum, index) => 
+          @trigger "enter:node:rightclick", datum
 
       @trigger "enter:node", nodeEnter
       @trigger "enter:link", linkEnter

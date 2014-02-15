@@ -1,7 +1,7 @@
 # makes nodes "selectable"
 define [], () ->
 
-  class Expander extends Backbone.View
+  class LinkHover extends Backbone.View
 
     constructor: (@options) ->
       super()
@@ -33,16 +33,13 @@ define [], () ->
       #         .style("left", (d3.event.pageX) + "px")     
       #         .style("top", (d3.event.pageY + 8) + "px")
 
-      # @graphView.on "enter:node:mouseover", (d) =>
-      #   $('#expand-button'+@graphModel.get("nodeHash")(d)).show()
+      @graphView.on "enter:node:mouseover", (d) =>
+        $('#expand-button'+@graphModel.get("nodeHash")(d)).show()
 
-      # @graphView.on "enter:node:mouseout", (d) =>
-      #   $('#expand-button'+@graphModel.get("nodeHash")(d)).hide()
+      @graphView.on "enter:node:mouseout", (d) =>
+        $('#expand-button'+@graphModel.get("nodeHash")(d)).hide()
 
-      # @graphView.on "enter:node:rect:click", (d) =>
-      #   @expandSelection(d)
-
-      @graphView.on "enter:node:rightclick", (d) =>
+      @graphView.on "enter:node:rect:click", (d) =>
         @expandSelection(d)
 
     expandSelection: (d) =>

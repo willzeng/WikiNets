@@ -47,3 +47,6 @@ define [], () ->
       $showAllButton.click(() =>
         @dataProvider.getEverything(@loadAllNodes)
         )
+
+    loadAllNodes: (nodes) =>
+      @graphModel.putNode node for node in nodes

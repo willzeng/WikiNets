@@ -205,17 +205,8 @@
           return _this.trigger("enter:node:mouseover", datum);
         }).on("mouseout", function(datum, index) {
           return _this.trigger("enter:node:mouseout", datum);
-        });
-        nodeEnter.append("rect").attr("x", function(d) {
-          return getSize(d);
-        }).attr("y", function(d) {
-          return getSize(d) + 3;
-        }).attr("width", 20).attr("height", 10).attr("stroke", function(d) {
-          return getColor(d);
-        }).attr("fill", "white").attr("stroke-width", 2).attr('id', function(d) {
-          return 'expand-button' + _this.model.get("nodeHash")(d);
-        }).style("display", "none").on("click", function(datum, index) {
-          return _this.trigger("enter:node:rect:click", datum);
+        }).on("contextmenu", function(datum, index) {
+          return _this.trigger("enter:node:rightclick", datum);
         });
         this.trigger("enter:node", nodeEnter);
         this.trigger("enter:link", linkEnter);
