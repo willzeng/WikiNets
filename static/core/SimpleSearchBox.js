@@ -55,7 +55,7 @@
           checkKeys: this.searchableKeys,
           query: searchQuery
         }, function(nodes) {
-          var node, _i, _len, _results;
+          var modelNode, node, theNode, _i, _j, _len, _len1, _ref, _results;
           if (nodes.length < 1) {
             alert("No Results Found");
           }
@@ -63,7 +63,14 @@
           for (_i = 0, _len = nodes.length; _i < _len; _i++) {
             node = nodes[_i];
             _this.graphModel.putNode(node);
-            _results.push(_this.selection.toggleSelection(node));
+            _ref = _this.graphModel.getNodes();
+            for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+              theNode = _ref[_j];
+              if (theNode['_id'] === node['_id']) {
+                modelNode = theNode;
+              }
+            }
+            _results.push(_this.selection.selectNode(modelNode));
           }
           return _results;
         });

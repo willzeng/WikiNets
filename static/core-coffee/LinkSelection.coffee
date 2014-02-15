@@ -25,11 +25,14 @@ define [], () ->
 
       # handle selecting and deselecting links
       @graphView.on "enter:link:click", (datum) =>
-        #toggle off all the currently selected links
-        @toggleSelection(link) for link in @getSelectedLinks()
+        if datum in @getSelectedLinks()
+          @toggleSelection(datum)
+        else
+          #toggle off all the currently selected links
+          @toggleSelection(link) for link in @getSelectedLinks()
 
-        #toggle on the currently clicked node
-        @toggleSelection datum
+          #toggle on the currently clicked node
+          @toggleSelection datum
 
       @graphView.on "enter:node:click", (datum) =>
         #toggle off all the currently selected links

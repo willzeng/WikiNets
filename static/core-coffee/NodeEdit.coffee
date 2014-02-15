@@ -2,7 +2,9 @@
 define [], () ->
 
   class NodeEdit extends Backbone.View
-
+    # colors = ["darkgray", "aqua", "black", "blue", "darkblue", "fuchsia", "green", "darkgreen", "lime", "maroon", "navy", "olive", "orange", "purple", "red", "silver", "teal", "yellow"]
+    # hexColors = ["#A9A9A9","#00FFFF","#000000","#0000FF", "#00008B","#FF00FF","#008000","#006400","#00FF00","#800000","#000080","#808000","#FFA500","#800080","#FF0000","#C0C0C0","#008080","#FFFF00"]
+    colors = ['#F56545', '#FFBB22', '#BBE535', '#77DDBB', '#66CCDD', '#A9A9A9']
     constructor: (@options) ->
       super()
 
@@ -30,7 +32,9 @@ define [], () ->
         #these are they peoperties that are not shown in the profile
         blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color"]
         _.each selectedNodes, (node) =>
-          $nodeDiv = $("<div class=\"node-profile\"/>").appendTo($container)
+          if !(node.color?) then node.color="#A9A9A9"
+          else if !(node.color.toUpperCase() in colors) then node.color="#A9A9A9"
+          $nodeDiv = $("<div class=\"node-profile\"/>").css("background-color","#{node.color}").appendTo($container)
           @renderProfile(node, $nodeDiv, blacklist, 4) 
 
     editNode: (node, nodeDiv, blacklist) ->
@@ -39,9 +43,7 @@ define [], () ->
 
           #TODO these color settings should probably go in a settings plugin
           origColor = "#A9A9A9" #TODO: map this to the CSS file color choice for node color
-          colors = ["darkgray", "aqua", "black", "blue", "darkblue", "fuchsia", "green", "darkgreen", "lime", "maroon", "navy", "olive", "orange", "purple", "red", "silver", "teal", "yellow"]
-          hexColors = ["#A9A9A9","#00FFFF","#000000","#0000FF", "#00008B","#FF00FF","#008000","#006400","#00FF00","#800000","#000080","#808000","#FFA500","#800080","#FF0000","#C0C0C0","#008080","#FFFF00"]
-          
+                    
           header = @findHeader(node)
 
           nodeDiv.html("<div class=\"node-profile-title\">Editing #{header} (id: #{node['_id']})</div><form id=\"Node#{node['_id']}EditForm\"></form>")
@@ -57,10 +59,12 @@ define [], () ->
               $(newEditingFields).appendTo("#Node#{node['_id']}EditForm")
               nodeInputNumber = nodeInputNumber + 1
             else if property == "color"
-            	if value in colors 
-                origColor = hexColors[colors.indexOf(value)]
-              else if origColor in hexColors 
+              if value.toUpperCase() in colors
                 origColor = value
+            	# if value in colors 
+             #    origColor = hexColors[colors.indexOf(value)]
+             #  else if value in hexColors 
+             #    origColor = value
 
           colorEditingField = '
             <form action="#" method="post">
@@ -178,7 +182,7 @@ define [], () ->
       
       #add the header and the edit icon
       $nodeHeader = $("<div class=\"node-profile-title\">#{header}</div>").appendTo nodeDiv
-      $nodeEdit = $("<i class=\"fa fa-pencil-square-o\"></i>").prependTo $nodeHeader
+      $nodeEdit = $("<i class=\"fa fa-pencil-square\"></i>").prependTo $nodeHeader
 
       #adds the deselect button
       $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").appendTo $nodeHeader

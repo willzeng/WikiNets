@@ -23,10 +23,14 @@ define [], () ->
 
       # handle selecting and deselecting nodes
       @graphView.on "enter:node:click", (datum) =>
-        #toggle off all the currently selected nodes
-        @toggleSelection(node) for node in @getSelectedNodes()
-        #toggle on the currently clicked node
-        @toggleSelection datum
+        if datum in @getSelectedNodes()
+          @toggleSelection(datum)
+        else
+          #toggle off all the currently selected nodes
+          @toggleSelection(node) for node in @getSelectedNodes()
+
+          #toggle on the currently clicked node
+          @toggleSelection datum
 
       @graphView.on "enter:node:shift:click", (datum) =>
         @toggleSelection datum
@@ -63,8 +67,14 @@ define [], () ->
 
       @trigger "change"
 
+    selectNode: (node) ->
+      node.selected = true
+      @trigger "change"
+      @renderSelection()
+
     toggleSelection: (node) ->
       node.selected = not node.selected
+
       @trigger "change"
       @renderSelection()
 

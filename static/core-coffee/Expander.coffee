@@ -42,10 +42,25 @@ define [], () ->
       # @graphView.on "enter:node:rect:click", (d) =>
       #   @expandSelection(d)
 
+      @loading = false
+
+      @graphView.on "enter:node:mouseover", (d) ->
+        if !@loading
+          $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Right-click to find connections.</span>')
+
+      @graphView.on "enter:node:mouseout", (d) => 
+        if !@loading
+          $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px"></span>')
+
       @graphView.on "enter:node:rightclick", (d) =>
         @expandSelection(d)
 
     expandSelection: (d) =>
+      @loading = true
+      $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Loading...</span>')
       @dataProvider.getLinkedNodes [d], (nodes) =>
           _.each nodes, (node) =>
             @graphModel.putNode node if @dataProvider.nodeFilter node
+          $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px"></span>')
+          @loading = false
+

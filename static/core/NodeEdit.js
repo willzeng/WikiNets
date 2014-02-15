@@ -8,7 +8,11 @@
   define([], function() {
     var NodeEdit;
     return NodeEdit = (function(_super) {
+      var colors;
+
       __extends(NodeEdit, _super);
+
+      colors = ['#F56545', '#FFBB22', '#BBE535', '#77DDBB', '#66CCDD', '#A9A9A9'];
 
       function NodeEdit(options) {
         this.options = options;
@@ -44,33 +48,34 @@
           $container = $("<div class=\"node-profile-helper\"/>").appendTo(this.$el);
           blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color"];
           return _.each(selectedNodes, function(node) {
-            var $nodeDiv;
-            $nodeDiv = $("<div class=\"node-profile\"/>").appendTo($container);
+            var $nodeDiv, _ref;
+            if (!(node.color != null)) {
+              node.color = "#A9A9A9";
+            } else if (!(_ref = node.color.toUpperCase(), __indexOf.call(colors, _ref) >= 0)) {
+              node.color = "#A9A9A9";
+            }
+            $nodeDiv = $("<div class=\"node-profile\"/>").css("background-color", "" + node.color).appendTo($container);
             return _this.renderProfile(node, $nodeDiv, blacklist, 4);
           });
         }
       };
 
       NodeEdit.prototype.editNode = function(node, nodeDiv, blacklist) {
-        var $nodeCancel, $nodeDelete, $nodeMoreFields, $nodeSave, colorEditingField, colors, header, hexColors, nodeInputNumber, origColor,
+        var $nodeCancel, $nodeDelete, $nodeMoreFields, $nodeSave, colorEditingField, header, nodeInputNumber, origColor,
           _this = this;
         console.log("Editing node: " + node['_id']);
         nodeInputNumber = 0;
         origColor = "#A9A9A9";
-        colors = ["darkgray", "aqua", "black", "blue", "darkblue", "fuchsia", "green", "darkgreen", "lime", "maroon", "navy", "olive", "orange", "purple", "red", "silver", "teal", "yellow"];
-        hexColors = ["#A9A9A9", "#00FFFF", "#000000", "#0000FF", "#00008B", "#FF00FF", "#008000", "#006400", "#00FF00", "#800000", "#000080", "#808000", "#FFA500", "#800080", "#FF0000", "#C0C0C0", "#008080", "#FFFF00"];
         header = this.findHeader(node);
         nodeDiv.html("<div class=\"node-profile-title\">Editing " + header + " (id: " + node['_id'] + ")</div><form id=\"Node" + node['_id'] + "EditForm\"></form>");
         _.each(node, function(value, property) {
-          var newEditingFields;
+          var newEditingFields, _ref;
           if (blacklist.indexOf(property) < 0 && ["_id", "text", "color", "_Last_Edit_Date", "_Creation_Date"].indexOf(property) < 0) {
             newEditingFields = "<div id=\"Node" + node['_id'] + "EditDiv" + nodeInputNumber + "\" class=\"Node" + node['_id'] + "EditDiv\">\n  <input style=\"width:80px\" id=\"Node" + node['_id'] + "EditProperty" + nodeInputNumber + "\" value=\"" + property + "\" class=\"propertyNode" + node['_id'] + "Edit\"/> \n  <input style=\"width:80px\" id=\"Node" + node['_id'] + "EditValue" + nodeInputNumber + "\" value=\"" + value + "\" class=\"valueNode" + node['_id'] + "Edit\"/> \n  <input type=\"button\" id=\"removeNode" + node['_id'] + "Edit" + nodeInputNumber + "\" value=\"x\" onclick=\"this.parentNode.parentNode.removeChild(this.parentNode);\">\n</div>";
             $(newEditingFields).appendTo("#Node" + node['_id'] + "EditForm");
             return nodeInputNumber = nodeInputNumber + 1;
           } else if (property === "color") {
-            if (__indexOf.call(colors, value) >= 0) {
-              return origColor = hexColors[colors.indexOf(value)];
-            } else if (__indexOf.call(hexColors, origColor) >= 0) {
+            if (_ref = value.toUpperCase(), __indexOf.call(colors, _ref) >= 0) {
               return origColor = value;
             }
           }
@@ -203,7 +208,7 @@
         nodeDiv.empty();
         header = this.findHeader(node);
         $nodeHeader = $("<div class=\"node-profile-title\">" + header + "</div>").appendTo(nodeDiv);
-        $nodeEdit = $("<i class=\"fa fa-pencil-square-o\"></i>").prependTo($nodeHeader);
+        $nodeEdit = $("<i class=\"fa fa-pencil-square\"></i>").prependTo($nodeHeader);
         $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").appendTo($nodeHeader);
         $nodeDeselect.click(function() {
           return _this.selection.toggleSelection(node);
