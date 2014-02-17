@@ -246,7 +246,7 @@ define [], () ->
         .appendTo $linkSide
 
       linkWrapperDivID = "id=" + "'source-container" + nodeID + "'"
-      $linkWrapper = $('<div ' + linkWrapperDivID + '>').appendTo $linkSide
+      $linkWrapper = $('<div ' + linkWrapperDivID + ' class="linkWrapperClass">').appendTo $linkSide
       #$linkTitleArea = $('<textarea placeholder="Title" id="nodeTitle" name="textin" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
       # $linkInput = $('<textarea placeholder="Link : A link\'s description #key1 value1 #key2 value2" id="linkInputField" name="textin" rows="5" cols="35"></textarea><br>').appendTo @$linkWrapper
       $linkInputName = $('<textarea placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo $linkWrapper
@@ -313,3 +313,9 @@ define [], () ->
       createDate=new Date()
       dict["_Creation_Date"]=createDate
       dict
+
+    # $(document).click(function(envent){
+
+    # });
+      # $linkWrapperSlector = $('.linkWrapperClass')
+      # console.log $linkWrapperSlector

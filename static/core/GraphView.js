@@ -150,6 +150,10 @@
           }
         }).on("dblclick", function(datum, index) {
           return _this.trigger("enter:link:dblclick", datum);
+        }).on("mouseover", function(datum, index) {
+          return _this.trigger("enter:link:mouseover", datum);
+        }).on("mouseout", function(datum, index) {
+          return _this.trigger("enter:link:mouseout", datum);
         });
         getSize = function(node) {
           if (node.size > 0) {

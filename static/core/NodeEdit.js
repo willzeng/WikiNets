@@ -267,7 +267,7 @@
         className = "class=" + holderClassName;
         $linkHolder = $('<textarea placeholder="Add Link" ' + className + 'rows="1" cols="35"></textarea><br>').css("width", 100).css("margin-left", 85).appendTo($linkSide);
         linkWrapperDivID = "id=" + "'source-container" + nodeID + "'";
-        $linkWrapper = $('<div ' + linkWrapperDivID + '>').appendTo($linkSide);
+        $linkWrapper = $('<div ' + linkWrapperDivID + ' class="linkWrapperClass">').appendTo($linkSide);
         $linkInputName = $('<textarea placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo($linkWrapper);
         $linkInputUrl = $('<textarea placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo($linkWrapper);
         $linkInputDesc = $('<textarea placeholder="Description\n #key1 value1 #key2 value2" rows="5" cols="35"></textarea><br>').appendTo($linkWrapper);

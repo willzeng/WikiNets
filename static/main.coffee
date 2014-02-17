@@ -94,6 +94,8 @@ require ["Celestrium"], (Celestrium) ->
 
     Expander: {}
 
+    LinkHover: {}
+
     #"local/Create": {}
 
     #"local/SyntaxCreate": {}    

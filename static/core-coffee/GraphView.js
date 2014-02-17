@@ -112,14 +112,23 @@ define([], function() {
     };
 
     GraphView.prototype.update = function() {
-      var clickSemaphore, filteredLinks, getColor, getSize, link, linkEnter, links, node, nodeEnter, nodes,
+      var clickSemaphore, filteredLinks, getColor, getLinkColor, getSize, link, linkEnter, links, node, nodeEnter, nodes,
         _this = this;
+      getLinkColor = function(link) {
+        if (link.color != null) {
+          return link.color;
+        } else {
+          return "grey";
+        }
+      };
       nodes = this.model.get("nodes");
       links = this.model.get("links");
       filteredLinks = this.linkFilter ? this.linkFilter.filter(links) : links;
       this.force.nodes(nodes).links(filteredLinks).start();
       link = this.linkSelection = d3.select(this.el).select(".linkContainer").selectAll(".link").data(filteredLinks, this.model.get("linkHash"));
-      linkEnter = link.enter().append("line").attr("class", "link").attr("stroke", "grey").attr('marker-end', function(link) {
+      linkEnter = link.enter().append("line").attr("class", "link").attr("stroke", function(d) {
+        return getLinkColor(d);
+      }).attr('marker-end', function(link) {
         return 'url(#Triangle)';
       }).attr('marker-start', function(link) {
         if (link.direction === 'backward' || link.direction === 'bidirectional') {
@@ -140,6 +149,10 @@ define([], function() {
         }
       }).on("dblclick", function(datum, index) {
         return _this.trigger("enter:link:dblclick", datum);
+      }).on("mouseover", function(datum, index) {
+        return _this.trigger("enter:link:mouseover", datum);
+      }).on("mouseout", function(datum, index) {
+        return _this.trigger("enter:link:mouseout", datum);
       });
       getSize = function(node) {
         if (node.size > 0) {

@@ -171,6 +171,10 @@ define [], () ->
         )
         .on "dblclick", (datum, index) =>
           @trigger "enter:link:dblclick", datum
+        .on "mouseover", (datum, index) =>
+          @trigger "enter:link:mouseover", datum
+        .on "mouseout", (datum, index) =>
+          @trigger "enter:link:mouseout", datum
 
       #attempt to start a tooltip for links
       # #BROKEN
