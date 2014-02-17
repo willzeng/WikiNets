@@ -25,7 +25,7 @@
         this.render();
         $(this.el).appendTo($('#buildbar'));
         this.selection = instances["NodeSelection"];
-        return this.selection.on("change", this.update.bind(this));
+        return this.linkSelection = instances["LinkSelection"];
       };
 
       TopBarCreate.prototype.render = function() {
@@ -113,7 +113,8 @@
                     newLink.target = n;
                   }
                 }
-                return _this.graphModel.putLink(newLink);
+                _this.graphModel.putLink(newLink);
+                return _this.linkSelection.toggleSelection(newLink);
               });
               _this.sourceSet = _this.buildingLink = false;
               $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>');
@@ -134,7 +135,8 @@
       TopBarCreate.prototype.buildNode = function(node) {
         var _this = this;
         return this.dataController.nodeAdd(node, function(datum) {
-          return _this.graphModel.putNode(datum);
+          _this.graphModel.putNode(datum);
+          return _this.selection.toggleSelection(datum);
         });
       };
 

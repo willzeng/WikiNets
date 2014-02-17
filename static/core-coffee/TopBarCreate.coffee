@@ -23,7 +23,9 @@ define [], () ->
       $(@el).appendTo $('#buildbar')
 
       @selection = instances["NodeSelection"]
-      @selection.on "change", @update.bind(this)
+      #@selection.on "change", @update.bind(this)
+
+      @linkSelection = instances["LinkSelection"]
 
     render: ->
 
@@ -116,6 +118,7 @@ define [], () ->
               newLink.source = n for n in allNodes when n['_id'] is link.source['_id']
               newLink.target = n for n in allNodes when n['_id'] is link.target['_id']
               @graphModel.putLink(newLink)
+              @linkSelection.toggleSelection(newLink)
               )
             @sourceSet = @buildingLink = false
             $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>')
@@ -129,7 +132,9 @@ define [], () ->
       @selection.getSelectedNodes()
 
     buildNode: (node) ->
-      @dataController.nodeAdd(node, (datum) => @graphModel.putNode(datum))
+      @dataController.nodeAdd node, (datum) => 
+        @graphModel.putNode(datum)
+        @selection.toggleSelection(datum)
 
     buildLink: (linkProperties) ->
       @tempLink.properties = linkProperties

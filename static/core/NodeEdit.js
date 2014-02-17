@@ -351,7 +351,7 @@
               spoke.color = "#A9A9A9";
             }
             spokeID = "spokeDiv";
-            $spokeDiv = $('<div id=' + spokeID + '>' + spoke.name + '</div>').css("background-color", "" + spoke.color).css("padding", "4px").css("margin", "1px").css("border", "1px solid black").appendTo($spokesDiv);
+            $spokeDiv = $('<div id=' + spokeID + '>' + spoke.name + "..." + '</div>').css("background-color", "" + spoke.color).css("padding", "4px").css("margin", "1px").css("border", "1px solid black").appendTo($spokesDiv);
             $spokeDiv.data("link", [spoke]);
             _results.push($spokeDiv.on("click", function(e) {
               var clickedLink;
