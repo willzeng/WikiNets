@@ -306,9 +306,9 @@ define [], () ->
         for spoke in spokes
           savedSpoke = spoke
           if !(spoke.name?) or spoke.name == "" then spoke.name = "<i>empty link</i>"
-          if !(spoke.color?) then spoke.color = "white"
+          if !(spoke.color?) then spoke.color = "#A9A9A9"
           spokeID = "spokeDiv"
-          $spokeDiv = $('<div id='+spokeID+'>'+spoke.name+'</div>')
+          $spokeDiv = $('<div id='+spokeID+'>'+spoke.name+"..."+'</div>')
             .css("background-color","#{spoke.color}")
             .css("padding", "4px")
             .css("margin", "1px")
@@ -317,8 +317,12 @@ define [], () ->
 
           $spokeDiv.data("link", [spoke])
           $spokeDiv.on "click", (e) =>
-            #console.log "clicked spoke", $(e.target).data("link")
-            @linkSelection.toggleSelection($(e.target).data("link")[0])
+            clickedLink = $(e.target).data("link")[0]
+            if !clickedLink.selected
+              $(e.target).css("background-color","steelblue")
+            else 
+              $(e.target).css("background-color","#{clickedLink.color}")
+            @linkSelection.toggleSelection(clickedLink)
 
     buildLink: (linkProperties) ->
       @tempLink.properties = linkProperties

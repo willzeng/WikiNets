@@ -348,13 +348,20 @@
               spoke.name = "<i>empty link</i>";
             }
             if (!(spoke.color != null)) {
-              spoke.color = "white";
+              spoke.color = "#A9A9A9";
             }
             spokeID = "spokeDiv";
             $spokeDiv = $('<div id=' + spokeID + '>' + spoke.name + '</div>').css("background-color", "" + spoke.color).css("padding", "4px").css("margin", "1px").css("border", "1px solid black").appendTo($spokesDiv);
             $spokeDiv.data("link", [spoke]);
             _results.push($spokeDiv.on("click", function(e) {
-              return _this.linkSelection.toggleSelection($(e.target).data("link")[0]);
+              var clickedLink;
+              clickedLink = $(e.target).data("link")[0];
+              if (!clickedLink.selected) {
+                $(e.target).css("background-color", "steelblue");
+              } else {
+                $(e.target).css("background-color", "" + clickedLink.color);
+              }
+              return _this.linkSelection.toggleSelection(clickedLink);
             }));
           }
           return _results;
