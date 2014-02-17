@@ -211,6 +211,9 @@
         header = this.findHeader(node);
         $nodeHeader = $("<div class=\"node-profile-title\">" + header + "</div>").appendTo(nodeDiv);
         $nodeEdit = $("<i class=\"fa fa-pencil-square\"></i>").prependTo($nodeHeader);
+        $nodeEdit.click(function() {
+          return _this.editNode(node, nodeDiv, blacklist);
+        });
         $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").appendTo($nodeHeader);
         $nodeDeselect.click(function() {
           return _this.selection.toggleSelection(node);
@@ -245,9 +248,6 @@
             }
             return counter++;
           }
-        });
-        $nodeEdit.click(function() {
-          return _this.editNode(node, nodeDiv, blacklist);
         });
         if (propNumber < nodeLength) {
           $showMore = $("<div class=\"node-profile-property\"><a href='#'>Show More...</a></div>").appendTo(nodeDiv);

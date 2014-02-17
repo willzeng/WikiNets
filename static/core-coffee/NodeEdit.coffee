@@ -2,8 +2,7 @@
 define [], () ->
 
   class NodeEdit extends Backbone.View
-    # colors = ["darkgray", "aqua", "black", "blue", "darkblue", "fuchsia", "green", "darkgreen", "lime", "maroon", "navy", "olive", "orange", "purple", "red", "silver", "teal", "yellow"]
-    # hexColors = ["#A9A9A9","#00FFFF","#000000","#0000FF", "#00008B","#FF00FF","#008000","#006400","#00FF00","#800000","#000080","#808000","#FFA500","#800080","#FF0000","#C0C0C0","#008080","#FFFF00"]
+
     colors = ['#F56545', '#FFBB22', '#BBE535', '#77DDBB', '#66CCDD', '#A9A9A9']
     constructor: (@options) ->
       super()
@@ -63,10 +62,7 @@ define [], () ->
             else if property == "color"
               if value.toUpperCase() in colors
                 origColor = value
-            	# if value in colors 
-             #    origColor = hexColors[colors.indexOf(value)]
-             #  else if value in hexColors 
-             #    origColor = value
+
 
           colorEditingField = '
             <form action="#" method="post">
@@ -74,7 +70,6 @@ define [], () ->
             </form>
           '
           $(colorEditingField).appendTo(nodeDiv)
-
           $("#color#{node['_id']}").colorPicker {showHexField: false} 
 
           $nodeMoreFields = $("<input id=\"moreNode#{node['_id']}EditFields\" type=\"button\" value=\"+\">").appendTo(nodeDiv)
@@ -177,22 +172,24 @@ define [], () ->
       else
         ''
 
-    #displays the profile of a selected node
+    #This profile is rendered for nodes whenever they are selected.
+    #Outputs: relevant properties, values, an editting button, and a deselection button
     renderProfile: (node, nodeDiv, blacklist, propNumber) =>
       nodeDiv.empty()
       header = @findHeader(node)
       
-      #add the header and the edit icon
       $nodeHeader = $("<div class=\"node-profile-title\">#{header}</div>").appendTo nodeDiv
-      $nodeEdit = $("<i class=\"fa fa-pencil-square\"></i>").prependTo $nodeHeader
 
-      #adds the deselect button
+      $nodeEdit = $("<i class=\"fa fa-pencil-square\"></i>").prependTo $nodeHeader
+      $nodeEdit.click () =>
+        @editNode(node, nodeDiv, blacklist)
+
       $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").appendTo $nodeHeader
       $nodeDeselect.click () => @selection.toggleSelection(node)
 
       whitelist = ["description", "url"]
 
-      #only show the first four properties initially
+      #limits number of displayed properties to propNumber (default: propNumber=4)
       nodeLength = 0
       for p,v of node
         if !(p in blacklist)
@@ -216,17 +213,16 @@ define [], () ->
             $("<div class=\"node-profile-property\">#{property}:  #{makeLinks}</div>").appendTo nodeDiv
           counter++ 
 
-      $nodeEdit.click () =>
-        @editNode(node, nodeDiv, blacklist)
-
       if propNumber < nodeLength
         $showMore = $("<div class=\"node-profile-property\"><a href='#'>Show More...</a></div>").appendTo nodeDiv 
         $showMore.click () =>
           @renderProfile(node, nodeDiv, blacklist, propNumber+1)
-
+          
+      #Adds button that creates link from selected node to user-inputted node
       @addLinker node, nodeDiv
 
       @addSpokes node, nodeDiv, 3
+
 
     addLinker: (node, nodeDiv) =>
       @tempLink = {}
