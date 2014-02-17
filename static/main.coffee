@@ -1,23 +1,17 @@
-### javascript entry point for this example interface. ###
+### This is the main file that constructs the client-side application ###
+# It builds an object called Celestrium that has plugins to provide functionality.
 
 # tell requirejs where everything is
 requirejs.config
 
-  # this should point to the URL for the compiled output of
-  # celestrium/core-coffee, which is celestrium/core by convention.
-  # if celestrium were located at www/scripts/celestrium,
-  # the base URL should be "/scripts/celestrium/core"
-  #baseUrl: "/celestrium_code/core/"
+  #This is where all the plugins and Celestrium itself are located
   baseUrl: "/core/"
 
   # paths tells requirejs to replace the keys with their values
   # in subsequent calls to require
   paths:
 
-    # this is path, relative to the *baseUrl* to the directory
-    # where  plugins defined for this example repo are located
-    # this is a convenience
-    #local: "../../"
+    #This is another path where you could put your own local plugins
     local: "."
 
 ###
@@ -25,7 +19,6 @@ requirejs.config
 You need only require the Celestrium plugin.
 NOTE: it's module loads the globally defined standard js libraries
       like jQuery, underscore, etc...
-
 ###
 
 require ["Celestrium"], (Celestrium) ->
@@ -42,12 +35,6 @@ require ["Celestrium"], (Celestrium) ->
   
   plugins =
 
-    # organizes where things are displayed on the screen
-    #Layout:
-
-      # el is it's container element
-    #  el: document.querySelector("#maingraph")
-
     # listens for keystroke on the dom element it's given
     KeyListener:
       document.querySelector("body")
@@ -56,18 +43,18 @@ require ["Celestrium"], (Celestrium) ->
     GraphModel:
       nodeHash: (node) -> node['_id']
       linkHash: (link) -> if link['_id']? then link['_id'] else 0
-      # nodeAttributes: 
-      #   'text': getValue = (node) -> node.text
-      #   'name': getValue = (node) -> node.name
-      #   'description': getValue = (node) -> node.description
-      #   '_id': getValue = (node) -> node['_id']
 
     # renders the graph using d3's force directedlayout
     GraphView: {}
 
+    # this controls edits to the Neo4j database
     "local/Neo4jDataController": {}
 
-    "local/ListView": {}
+    # provides functions to get nodes and links from the Neo4j database
+    "local/WikiNetsDataProvider": {}
+
+    # renders the graph in a pseudo-list view
+    #"local/ListView": {}
       
     # allows nodes to be selected
     NodeSelection: {}
@@ -75,48 +62,50 @@ require ["Celestrium"], (Celestrium) ->
     # allows links to be selected
     LinkSelection: {}
 
-    # provides functions to get nodes and links
-    "local/WikiNetsDataProvider": {}
-
+    # Build the faceted Visual Search box
     #"local/VisualSearch": {}
     
+    # Is a full text search box
     "local/SimpleSearchBox": {}
 
+    # Displays selected node details and allows editing
     "local/NodeEdit": {}
 
+    # Displays selected link details and allows editing
     "local/LinkEdit": {}
 
-    "local/ShowAll": {}
-
+    # This builds the toolbox in the botton right
+    # with functionality to control the graph layout and behavior
+    # some other plugins are added to this toolbox
     "local/ToolBox": {}
 
+    # adds a dropdown menu on the top left with 
+    # About information and some basic display commands
     DropdownMenu: {}
 
+    # Allows you to get the neighbors of a nodes
+    # currently implemented by right click
     Expander: {}
 
-    #"local/Create": {}
+    # This shows the name of a link on hover
+    LinkHover: {}
 
-    #"local/SyntaxCreate": {}    
-
-    #NodeDetails: {}
-
-    #"NodeSearch": 
-    #  prefetch: "/node_names"
-
-    MiniMap: {}  
-
-    #Stats: {}
-
-    #"local/OverlayCreate": {}
-
+    # Adds a topbar with link/node creation functionality
     "local/TopBarCreate": {}
 
+    # appends a minimap plugin to the ToolBox
+    MiniMap: {}  
+
+    # adds a slider plugin to the ToolBox
     "Sliders": {}
 
+    # adds a slider to change the force for the graph
     "ForceSliders": {}
 
+    # adds a popout creation functionality to TopBarCreate
     "local/NodeCreationPopout": {}
 
+    # is a plugin that filters the graphview based on link.strength
     #"LinkDistribution": {}
 
   # initialize the plugins and execute a callback once done
@@ -127,9 +116,6 @@ require ["Celestrium"], (Celestrium) ->
 
     #Prepopulate the GraphModel with all the nodes and links
     $.get('/get_nodes', loadEverything)
-
-    #this prepopulates the graph with the "Albert" node
-    #instances["GraphModel"].putNode {text: "first"} #, _id:"300"}
 
     # this allows all link strengths to be visible
     instances["GraphView"].getLinkFilter().set("threshold", 0)

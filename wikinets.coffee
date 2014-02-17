@@ -19,11 +19,9 @@ module.exports = class MyApp
       response.render('index.jade')
     )
 
-    app.get('/test', (request,response)->
-      response.render('test.jade')
-    )
-
     ###  Responds with a JSON formatted for D3JS viz of the entire Neo4j database ###
+    # Not currently used, but should be updated to include link information
+    # to be useful for exporting
     app.get('/json',(request,response)->
       inputer = (builder)->response.json builder
       getvizjson inputer, request, response
@@ -81,7 +79,7 @@ module.exports = class MyApp
       targetNode = request.body.target
       console.log "sourceNode", sourceNode
       console.log "targetNode", targetNode
-      cypherQuery = "start n=node(" + sourceNode['_id'] + "), m=node(" + targetNode['_id'] + ") create (n)-[r:" + request.body.properties.name
+      cypherQuery = "start n=node(" + sourceNode['_id'] + "), m=node(" + targetNode['_id'] + ") create (n)-[r: link"
       if request.body.properties isnt undefined
         cypherQuery += " {"
         for property, value of request.body.properties
@@ -109,34 +107,11 @@ module.exports = class MyApp
       )
     )
 
-    ### Creates a relationship using a Cypher query ###
-    # request should be of the form {properties: {key1:val1 , ...}, from: node_id, to: node_id, type: type}
-    app.post('/create_rel', (request, response) ->
-      console.log "Relationship Creation Requested"
-      cypherQuery = "start n=node(" + request.body.from + "), m=node(" + request.body.to + ") create (n)-[r:" + request.body.type
-      if request.body.properties isnt undefined
-        cypherQuery += " {"
-        for property, value of request.body.properties
-          cypherQuery += "#{property}:'#{value}', "
-        cypherQuery = cypherQuery.substring(0,cypherQuery.length-2) + "}"
-      cypherQuery +="]->(m) return r;"
-      console.log "Executing " + cypherQuery
-      graphDb.cypher.execute(cypherQuery).then(
-        (relres) ->
-          console.log relres.data[0][0]
-          relIDstart = relres.data[0][0]["self"].lastIndexOf('/') + 1
-          response.send relres.data[0][0]["self"].slice(relIDstart)
-        (relres) ->
-          console.log relres
-          response.send "error"
-      )
-    )
-
-
     ###
-    Collects data from a node so it can be edited  
+    Gets a node by ID
+    Request is of the form {nodeid: 9}
     ###
-    app.post('/get_id', (request,response)->
+    app.post('/get_node_by_id', (request,response)->
       console.log "Node Data Requested"
       cypherQuery = "start n=node(" + request.body.nodeid + ") return n;"
       console.log "Executing " + cypherQuery
@@ -150,7 +125,27 @@ module.exports = class MyApp
       )
     )
 
+    ###
+    get a link by id, request be of the form {id: 1}
+    ###
+    app.post('/get_link_by_id', (request,response)->
+      console.log "Link Data Requested"
+      cypherQuery = "start r=rel(" + request.body.id + ") return r;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (relres) ->
+          console.log "Link ID Lookup Executed"
+          console.log relres.data[0][0]
+          response.json {from: trim(relres.data[0][0]["start"])[0], to: trim(relres.data[0][0]["end"])[0], type:relres.data[0][0]["type"], properties: relres.data[0][0]["data"]}
+        (relres) ->
+          console.log "Link not found"
+          response.send "error"
+      )
+    )
+
     ### Edits a node using a Cypher query ###
+    # Request is of the form {nodeid: 0, properties: {}, remove: []} where remove is a list of
+    # the properties to be deleted
     app.post('/edit_node', (request, response) ->
       console.log "Node Edit Requested"
       cypherQuery = "start n=node(" + request.body.nodeid + ") "
@@ -177,6 +172,36 @@ module.exports = class MyApp
           response.json savedNode
         (noderes) ->
           console.log "Node Edit Failed"
+          response.send "error"
+      )
+    )
+
+    ### Edits a link using a Cypher query ###
+    # Request is of the form {nodeid: 0, properties: {}, remove: []} where remove is a list of
+    # the properties to be deleted
+    app.post('/edit_link', (request, response) ->
+      console.log "Link Edit Requested"
+      cypherQuery = "start r=rel(" + request.body.id + ") "
+      if request.body.properties isnt undefined
+        cypherQuery += "set r."
+        for property, value of request.body.properties
+          cypherQuery += "#{property}='#{value}', r."
+        cypherQuery = cypherQuery.substring(0,cypherQuery.length-4)
+      if request.body.remove isnt undefined
+        cypherQuery += " remove r."
+        for property in request.body.remove
+          cypherQuery += "#{property}, r."
+        cypherQuery = cypherQuery.substring(0,cypherQuery.length-4)
+      cypherQuery += " return r;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes) ->
+          nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
+          nodeID = noderes.data[0][0]["self"].slice(nodeIDstart)
+          console.log "Link Edit Done, ID = " + nodeID
+          response.json noderes.data[0][0]["data"]
+        (noderes) ->
+          console.log "Link Edit Failed"
           response.send "error"
       )
     )
@@ -220,52 +245,6 @@ module.exports = class MyApp
         ) 
     )
 
-    ###
-    Collects data from an arrow so it can be edited  
-    ###
-    app.post('/get_arrow', (request,response)->
-      console.log "Arrow Data Requested"
-      cypherQuery = "start r=rel(" + request.body.id + ") return r;"
-      console.log "Executing " + cypherQuery
-      graphDb.cypher.execute(cypherQuery).then(
-        (relres) ->
-          console.log "Arrow ID Lookup Executed"
-          console.log relres.data[0][0]
-          response.json {from: trim(relres.data[0][0]["start"])[0], to: trim(relres.data[0][0]["end"])[0], type:relres.data[0][0]["type"], properties: relres.data[0][0]["data"]}
-        (relres) ->
-          console.log "Arrow not found"
-          response.send "error"
-      )
-    )
-
-    ### Edits a link using a Cypher query ###
-    app.post('/edit_link', (request, response) ->
-      console.log "Link Edit Requested"
-      cypherQuery = "start r=rel(" + request.body.id + ") "
-      if request.body.properties isnt undefined
-        cypherQuery += "set r."
-        for property, value of request.body.properties
-          cypherQuery += "#{property}='#{value}', r."
-        cypherQuery = cypherQuery.substring(0,cypherQuery.length-4)
-      if request.body.remove isnt undefined
-        cypherQuery += " remove r."
-        for property in request.body.remove
-          cypherQuery += "#{property}, r."
-        cypherQuery = cypherQuery.substring(0,cypherQuery.length-4)
-      cypherQuery += " return r;"
-      console.log "Executing " + cypherQuery
-      graphDb.cypher.execute(cypherQuery).then(
-        (noderes) ->
-          nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
-          nodeID = noderes.data[0][0]["self"].slice(nodeIDstart)
-          console.log "Link Edit Done, ID = " + nodeID
-          response.json noderes.data[0][0]["data"]
-        (noderes) ->
-          console.log "Link Edit Failed"
-          response.send "error"
-      )
-    )
-
 
     ###
     Deletes a link 
@@ -284,6 +263,9 @@ module.exports = class MyApp
       )
     )
 
+
+    # Returns a list of all the names in the databse
+    # not currently in use
     app.get('/node_names', (request,response)->
       graphDb.cypher.execute("start n=node(*) return n;").then(
         (noderes)->
@@ -295,7 +277,9 @@ module.exports = class MyApp
     )
 
     # gets a list of all node properties occuring in the database
+    # used in VisualSearch
     # for each of those properties, it also gets a list of all values, though that should be moved to a separate query
+    # Request may be empty
     app.get('/get_all_node_keys', (request,response)->
       graphDb.cypher.execute("start n=node(*) return n;").then(
         (noderes)->
@@ -307,10 +291,11 @@ module.exports = class MyApp
           )
     )
 
-    # gets a list of all values occuring in the database for a given node property
-    # and returns them as an alphabetically sorted list
-    # - will have to add a limit to number of results for large databases
-    # - should also add a cutoff for very long value strings
+    # Gets a list of all values occuring in the database for a given node property
+    # and returns them as an alphabetically sorted list for VisualSearch
+    # Request should be of form {property: 'foo'}
+    # if value is very long it is shortened - cf. shorten()
+    # TO DO: add a limit to number of results for large databases
     app.post('/get_all_key_values', (request,response)->
       cypherQuery = "start n=node(*) where has(n." + request.body.property + ") return n;"
       console.log "Executing " + cypherQuery
@@ -319,20 +304,27 @@ module.exports = class MyApp
           console.log "Get All Key values: Query Executed"
           nodeData = (n[0].data for n in noderes.data)
           values = ['(any)']
+          # the option '(any)' will allow searching for any node with a certain property,
+          # independent of value - cf. /search_nodes
           (values.push shorten(n[request.body.property]) for n in nodeData when not (shorten(n[request.body.property]) in values))
           response.json values.sort()
           )
     )
 
-    # returns all nodes matching the property-value pairs given in the request body
+    # Returns all nodes matching the property-value pairs given in the request body
+    # this is for VisualSearch
+    # Request should be of form {property1: 'value1', property2: 'value2', ...}
     app.post('/search_nodes', (request,response)->
       console.log "Searching nodes"
       cypherQuery = "start n=node(*) where "
       if JSON.stringify(request.body) isnt '{}'
         for property, value of request.body
           if value is '(any)'
+            # this allows searching for any node that has a certain property, independent of value
             cypherQuery += "has(n.#{property}) and "
           else if value.substr(-3) is '...'
+            # this means value has been shortened, cf. shorten()
+            # in this case use regular expression in query to compensate
             cypherQuery += "n.#{property} =~ '#{value.slice(0,-2)}*' and "
           else
             cypherQuery += "n.#{property} = '#{value}' and "
@@ -346,16 +338,9 @@ module.exports = class MyApp
           )
     )
 
-    # adds a default strength value to a relationship 
-    # TODO: (should only do this if there isnt one already)
-    addStrength = (dict,start,end,id, type) -> 
-      dict['strength'] = 1
-      dict['start'] = start
-      dict['end'] = end
-      dict['_id'] = id+"" #make sure that the added id is a string
-      dict['_type'] = type
-      dict
-
+    # Request is of the form {node: node, nodes:{node0, node1, ...}}
+    # returns all of the links between node and any of the nodes
+    # TO DO: send only node IDs rather than full nodes in request
     app.post('/get_links', (request,response)->
       console.log "GET LINKS REQUESTED"
       node= request.body.node
@@ -388,15 +373,11 @@ module.exports = class MyApp
     )
 
 
-    # - getLinkedNodes(nodes, callback) should call callback with
-    #   an array of the union of the linked nodes of each node in nodes.
-    #   currently, a node can have any attributes you like so they long
-    #   as they don't conflict with d3's attributes and they
-    #   must have a "text" attribute.
+    # Request is an array of nodes
+    # Returns an array of all the nodes linked to any one of them
     app.post('/get_linked_nodes', (request,response)->
       
       console.log "GET LINKED NODES REQUESTED"
-      #console.log request
       nodes= request.body.nodes
       console.log "NODES: ", nodes
 
@@ -421,8 +402,9 @@ module.exports = class MyApp
     )
 
 
-    #This query does a fulltext search of all the keys in checkKeys
-    #for a query
+    #Request is of the form {checkKeys: [key0, key1,...], query:"queryStr"}
+    #Does returns all the nodes that have a key which contains the query 
+    #or have a value of a key in checkKeys that contains the query
     app.post '/node_index_search', (request, response)->
       theKeys = request.body.checkKeys
       query = request.body.query
@@ -463,8 +445,21 @@ module.exports = class MyApp
       )
 
 
+    #Tells the server where to listen
     port = process.env.PORT || 3000
     app.listen port, -> console.log("Listening on " + port)
+
+    #HELPER METHODS ===============================================
+
+    # adds a default strength value to a relationship 
+    # TODO: (should only do this if there isnt one already)
+    addStrength = (dict,start,end,id, type) -> 
+      dict['strength'] = 1
+      dict['start'] = start
+      dict['end'] = end
+      dict['_id'] = id+"" #make sure that the added id is a string
+      dict['_type'] = type
+      dict
 
     #Trims a url i.e. 'http://localhost:7474/db/data/node/312' -> 312
     trim = (string)->

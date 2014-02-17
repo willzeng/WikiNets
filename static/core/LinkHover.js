@@ -28,8 +28,14 @@
         this.graphView.on("enter:node:mouseout", function(d) {
           return $('#expand-button' + _this.graphModel.get("nodeHash")(d)).hide();
         });
-        return this.graphView.on("enter:node:rect:click", function(d) {
+        this.graphView.on("enter:node:rect:click", function(d) {
           return _this.expandSelection(d);
+        });
+        this.graphView.on("enter:link:mouseover", function(d) {
+          return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">' + 'Click to select link: <b>' + d.name + '</b></span>');
+        });
+        return this.graphView.on("enter:link:mouseout", function(d) {
+          return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px"></span>');
         });
       };
 

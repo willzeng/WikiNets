@@ -19,6 +19,8 @@ define [], () ->
       @selection = instances["NodeSelection"]
       @selection.on "change", @update.bind(this)
       @listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
+
+      @linkSelection = instances["LinkSelection"]
       
       #place the plugin on the whole window
       $(@el).appendTo $('#omniBox')
@@ -215,13 +217,15 @@ define [], () ->
         $showMore = $("<div class=\"node-profile-property\"><a href='#'>Show More...</a></div>").appendTo nodeDiv 
         $showMore.click () =>
           @renderProfile(node, nodeDiv, blacklist, propNumber+1)
-
+          
+      #Adds button that creates link from selected node to user-inputted node
       @addLinker node, nodeDiv
 
-    #Adds button that creates link from selected node to user-inputted node
+      @addSpokes node, nodeDiv
+
+
     addLinker: (node, nodeDiv) =>
       @tempLink = {}
-      #@tempLink.source = node
 
       nodeID = node['_id']
 
@@ -241,7 +245,7 @@ define [], () ->
         .appendTo $linkSide
 
       linkWrapperDivID = "id=" + "'source-container" + nodeID + "'"
-      $linkWrapper = $('<div ' + linkWrapperDivID + '>').appendTo $linkSide
+      $linkWrapper = $('<div ' + linkWrapperDivID + ' class="linkWrapperClass">').appendTo $linkSide
       #$linkTitleArea = $('<textarea placeholder="Title" id="nodeTitle" name="textin" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
       # $linkInput = $('<textarea placeholder="Link : A link\'s description #key1 value1 #key2 value2" id="linkInputField" name="textin" rows="5" cols="35"></textarea><br>').appendTo @$linkWrapper
       $linkInputName = $('<textarea placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo $linkWrapper
@@ -286,6 +290,36 @@ define [], () ->
           $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>')
           $linkHolder.show()
 
+
+    addSpokes: (node, nodeDiv) =>
+      nHash = @graphModel.get("nodeHash")
+      lHash = @graphModel.get("linkHash")
+      spokesID = "spokesDiv#{nHash(node)}"
+      $spokesDiv = $('<div id='+spokesID+'>').appendTo nodeDiv
+      spokes = (link for link in @graphModel.getLinks() when nHash(link.source) is nHash(node) or nHash(link.target) is nHash(node))
+
+      if spokes.length > 0
+        for spoke in spokes
+          savedSpoke = spoke
+          if !(spoke.name?) or spoke.name == "" then spoke.name = "<i>empty link</i>"
+          if !(spoke.color?) then spoke.color = "#A9A9A9"
+          spokeID = "spokeDiv"
+          $spokeDiv = $('<div id='+spokeID+'>'+spoke.name+"..."+'</div>')
+            .css("background-color","#{spoke.color}")
+            .css("padding", "4px")
+            .css("margin", "1px")
+            .css("border", "1px solid black")
+            .appendTo $spokesDiv
+
+          $spokeDiv.data("link", [spoke])
+          $spokeDiv.on "click", (e) =>
+            clickedLink = $(e.target).data("link")[0]
+            if !clickedLink.selected
+              $(e.target).css("background-color","steelblue")
+            else 
+              $(e.target).css("background-color","#{clickedLink.color}")
+            @linkSelection.toggleSelection(clickedLink)
+
     buildLink: (linkProperties) ->
       @tempLink.properties = linkProperties
       console.log "tempLink set to", @tempLink
@@ -308,3 +342,9 @@ define [], () ->
       createDate=new Date()
       dict["_Creation_Date"]=createDate
       dict
+
+    # $(document).click(function(envent){
+
+    # });
+      # $linkWrapperSlector = $('.linkWrapperClass')
+      # console.log $linkWrapperSlector

@@ -51,7 +51,8 @@ define ["DataController"], (DataController) ->
       filteredLink = link
       filteredLink.source = @filterNode(link.source)
       filteredLink.target = @filterNode(link.target)
-      $.post "/create_link", link, callback
+      console.log filteredLink
+      $.post "/create_link", filteredLink, callback
 
     #should delete a link from the database
     linkDelete: (link, callback) ->

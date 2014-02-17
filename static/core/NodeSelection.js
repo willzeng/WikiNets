@@ -44,7 +44,17 @@
         this.graphView.on("enter:node:dblclick", function(datum) {
           return _this.selectConnectedComponent(datum);
         });
-        return this.graphView.on("enter:link:click", function(datum) {
+        this.graphView.on("enter:link:click", function(datum) {
+          var node, _i, _len, _ref, _results;
+          _ref = _this.getSelectedNodes();
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            node = _ref[_i];
+            _results.push(_this.toggleSelection(node));
+          }
+          return _results;
+        });
+        return this.graphView.on("view:click", function() {
           var node, _i, _len, _ref, _results;
           _ref = _this.getSelectedNodes();
           _results = [];

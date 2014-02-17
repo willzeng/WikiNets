@@ -133,13 +133,13 @@ define [], () ->
 
     findHeader: (link) =>
       if @graphView.findText(link.source) and @graphView.findText(link.target)
-        "(" + @graphView.findText(link.source) + ") - " + link._type + " - (" + @graphView.findText(link.target) + ")"
+        "(" + @graphView.findText(link.source) + ") - " + link.name + " - (" + @graphView.findText(link.target) + ")"
       else if @graphView.findText(link.source)
-        "(" + @graphView.findText(link.source) + ") - " + link._type + " - (" + link.end + ")"
+        "(" + @graphView.findText(link.source) + ") - " + link.name + " - (" + link.end + ")"
       else if @graphView.findText(link.target)
-        "(" + link.start + ") - " + link._type + " - (" + @graphView.findText(link.target) + ")"
+        "(" + link.start + ") - " + link.name + " - (" + @graphView.findText(link.target) + ")"
       else
-        "(" + link.start + ") - " + link._type + " - (" + link.end + ")"
+        "(" + link.start + ") - " + link.name + " - (" + link.end + ")"
 
     renderProfile: (link, linkDiv, blacklist) =>
       header = @findHeader(link)

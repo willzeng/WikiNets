@@ -105,9 +105,10 @@
         $(this.el).mousedown(function(e) {
           if (e.which === 3) {
             return _this.trigger("view:rightclick");
-          } else {
-            return _this.trigger("view:click");
           }
+        });
+        $(this.el).on("dblclick", function(e) {
+          return _this.trigger("view:click");
         });
         return this;
       };
@@ -138,6 +139,7 @@
         });
         linkEnter.on("click", function(datum, index) {
           var shifted;
+          d3.event.stopPropagation();
           if (d3.event.shiftKey) {
             shifted = true;
           } else {
@@ -150,6 +152,10 @@
           }
         }).on("dblclick", function(datum, index) {
           return _this.trigger("enter:link:dblclick", datum);
+        }).on("mouseover", function(datum, index) {
+          return _this.trigger("enter:link:mouseover", datum);
+        }).on("mouseout", function(datum, index) {
+          return _this.trigger("enter:link:mouseout", datum);
         });
         getSize = function(node) {
           if (node.size > 0) {
@@ -187,6 +193,7 @@
           if (d3.event.defaultPrevented) {
             return;
           }
+          d3.event.stopPropagation();
           if (d3.event.shiftKey) {
             shifted = true;
           } else {

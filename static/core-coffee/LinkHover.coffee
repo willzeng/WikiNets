@@ -42,6 +42,12 @@ define [], () ->
       @graphView.on "enter:node:rect:click", (d) =>
         @expandSelection(d)
 
+      @graphView.on "enter:link:mouseover", (d) =>
+        $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">' + 'Click to select link: <b>' + d.name + '</b></span>')
+
+      @graphView.on "enter:link:mouseout", (d) =>
+        $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px"></span>')
+
     expandSelection: (d) =>
       @dataProvider.getLinkedNodes [d], (nodes) =>
           _.each nodes, (node) =>
