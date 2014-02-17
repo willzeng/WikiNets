@@ -65,7 +65,8 @@
         filteredLink = link;
         filteredLink.source = this.filterNode(link.source);
         filteredLink.target = this.filterNode(link.target);
-        return $.post("/create_link", link, callback);
+        console.log(filteredLink);
+        return $.post("/create_link", filteredLink, callback);
       };
 
       Neo4jDataController.prototype.linkDelete = function(link, callback) {

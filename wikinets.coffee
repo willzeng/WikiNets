@@ -73,6 +73,7 @@ module.exports = class MyApp
       )
     )
 
+    ## IN_USE
     ### Creates a link using a Cypher query ###
     # request should be of the form {properties: {name:type , key1:val1 ...}, source: sourceNode, target: targeNode}
     app.post('/create_link', (request, response) ->
@@ -81,7 +82,8 @@ module.exports = class MyApp
       targetNode = request.body.target
       console.log "sourceNode", sourceNode
       console.log "targetNode", targetNode
-      cypherQuery = "start n=node(" + sourceNode['_id'] + "), m=node(" + targetNode['_id'] + ") create (n)-[r:" + request.body.properties.name
+      #cypherQuery = "start n=node(" + sourceNode['_id'] + "), m=node(" + targetNode['_id'] + ") create (n)-[r:" + request.body.properties.name
+      cypherQuery = "start n=node(" + sourceNode['_id'] + "), m=node(" + targetNode['_id'] + ") create (n)-[r: link"
       if request.body.properties isnt undefined
         cypherQuery += " {"
         for property, value of request.body.properties
