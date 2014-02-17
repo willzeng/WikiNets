@@ -31,8 +31,13 @@ define [], () ->
     render: ->
 
       #build HTML elements
-      $container = $("<div id=\"visual-search-container\" style='padding-top:2px'/>").appendTo @$el
-      $searchBox = $('<input type="text" id="searchBox">').css("width", "220px").css("height", "25px").appendTo $container
+      $container = $("<div id='visual-search-container'>").appendTo @$el
+      $searchBox = $('<input type="text" id="searchBox">')
+        .css("width", "235px")
+        .css("height", "25px")
+        .css("box-shadow", "2px 2px 4px #888888")
+        .css("border", "1px solid blue")
+        .appendTo $container
       $button = $("<input type=\"button\" value=\"Go\" style='float:right' />").appendTo $container
 
       #call search functionality with press of ENTER key

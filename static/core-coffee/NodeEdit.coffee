@@ -180,11 +180,11 @@ define [], () ->
       
       $nodeHeader = $("<div class=\"node-profile-title\">#{header}</div>").appendTo nodeDiv
 
-      $nodeEdit = $("<i class=\"fa fa-pencil-square\"></i>").prependTo $nodeHeader
+      $nodeEdit = $("<i class=\"fa fa-pencil-square \"></i>").css("margin","6px").appendTo $nodeHeader
       $nodeEdit.click () =>
         @editNode(node, nodeDiv, blacklist)
 
-      $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").appendTo $nodeHeader
+      $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").css("margin","1px").appendTo $nodeHeader
       $nodeDeselect.click () => @selection.toggleSelection(node)
 
       whitelist = ["description", "url"]
@@ -214,14 +214,15 @@ define [], () ->
           counter++ 
 
       if propNumber < nodeLength
-        $showMore = $("<div class=\"node-profile-property\"><a href='#'>Show More...</a></div>").appendTo nodeDiv 
+        $showMore = $("<div class='showMore'><a href='#'>Show More...</a></div>").appendTo nodeDiv 
         $showMore.click () =>
           @renderProfile(node, nodeDiv, blacklist, propNumber+1)
           
       #Adds button that creates link from selected node to user-inputted node
       @addLinker node, nodeDiv
 
-      @addSpokes node, nodeDiv, 3
+      $spokeHolder = $("<div class='spokeHolder'></div>").appendTo nodeDiv
+      @addSpokes node, $spokeHolder, 2
 
 
     addLinker: (node, nodeDiv) =>
@@ -230,18 +231,13 @@ define [], () ->
       nodeID = node['_id']
 
       linkSideID = "id=" + "'linkside" + nodeID + "'"
-      $linkSide = $('<div ' + linkSideID + '>').appendTo nodeDiv
+      $linkSide = $('<div ' + linkSideID + '><hr style="margin:3px"></div>').appendTo nodeDiv
       
       holderClassName = "'profilelinkHolder" + nodeID + "'"
       className = "class=" + holderClassName
-      $linkHolder = $('<textarea placeholder="Add Link" ' + className + 'rows="1" cols="35"></textarea><br>')
+      $linkHolder = $('<input type="button"' + className + 'value="Add Link"></input><br>')
         .css("width",100)
         .css("margin-left",85)
-        # .css("margin",0)
-        # .css("margin-left","auto")
-        # .css("margin-right","auto")
-        # .css("position","relative")
-        # .css("align","center")
         .appendTo $linkSide
 
       linkWrapperDivID = "id=" + "'source-container" + nodeID + "'"
@@ -270,6 +266,12 @@ define [], () ->
 
       $linkWrapper.hide()
 
+      $(document).on "click", ()->
+        $linkWrapper.hide()
+        $linkHolder.show()
+      $linkWrapper.on "click", (e)->
+        e.stopPropagation()
+
       $linkHolder.focus () =>
         $linkWrapper.show()
         $linkInputName.focus()
@@ -291,24 +293,28 @@ define [], () ->
           $linkHolder.show()
 
 
-    addSpokes: (node, nodeDiv, maxSpokes) =>
+    addSpokes: (node, spokeHolder, maxSpokes) =>
+      spokeHolder.empty()
       nHash = @graphModel.get("nodeHash")
       lHash = @graphModel.get("linkHash")
       spokesID = "spokesDiv#{nHash(node)}"
-      $spokesDiv = $('<div id='+spokesID+'>').appendTo nodeDiv
+      $spokesDiv = $('<div id='+spokesID+'>').appendTo spokeHolder
       spokes = (link for link in @graphModel.getLinks() when nHash(link.source) is nHash(node) or nHash(link.target) is nHash(node))
 
       if spokes.length > 0
+        spoke_counter = 0
         for spoke in spokes
+          if spoke_counter >= maxSpokes then break else spoke_counter++
           savedSpoke = spoke
           if !(spoke.name?) or spoke.name == "" then spoke.name = "<i>empty link</i>"
           if !(spoke.color?) then spoke.color = "#A9A9A9"
           spokeID = "spokeDiv"
-          $spokeDiv = $('<div id='+spokeID+'>'+spoke.name+"..."+'</div>')
+          $spokeDiv = $('<div class='+spokeID+'>'+spoke.name+"..."+'</div>')
             .css("background-color","#{spoke.color}")
             .css("padding", "4px")
             .css("margin", "1px")
             .css("border", "1px solid black")
+            .css("font-size", "12px")
             .appendTo $spokesDiv
 
           $spokeDiv.data("link", [spoke])
@@ -321,9 +327,10 @@ define [], () ->
             @linkSelection.toggleSelection(clickedLink)
 
       if maxSpokes < spokes.length
-        $showMore = $("<div class=\"node-profile-property\"><a href='#'>Show More...</a></div>").appendTo nodeDiv 
-        $showMore.click () =>
-          @addSpokes(node, nodeDiv, maxSpokes+1)
+        $showMoreSpokes = $("<div class=\"showMore\"><a href='#'>Show More...</a></div>").appendTo spokeHolder 
+        $showMoreSpokes.on "click", (e) =>
+          $('<div id='+spokesID+'>').empty()
+          @addSpokes(node, spokeHolder, maxSpokes+1)
 
     buildLink: (linkProperties) ->
       @tempLink.properties = linkProperties
