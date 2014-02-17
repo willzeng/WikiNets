@@ -226,7 +226,7 @@ define [], () ->
 
       @addLinker node, nodeDiv
 
-      @addSpokes node, nodeDiv
+      @addSpokes node, nodeDiv, 3
 
     addLinker: (node, nodeDiv) =>
       @tempLink = {}
@@ -295,7 +295,7 @@ define [], () ->
           $linkHolder.show()
 
 
-    addSpokes: (node, nodeDiv) =>
+    addSpokes: (node, nodeDiv, maxSpokes) =>
       nHash = @graphModel.get("nodeHash")
       lHash = @graphModel.get("linkHash")
       spokesID = "spokesDiv#{nHash(node)}"
@@ -323,6 +323,11 @@ define [], () ->
             else 
               $(e.target).css("background-color","#{clickedLink.color}")
             @linkSelection.toggleSelection(clickedLink)
+
+      if maxSpokes < spokes.length
+        $showMore = $("<div class=\"node-profile-property\"><a href='#'>Show More...</a></div>").appendTo nodeDiv 
+        $showMore.click () =>
+          @addSpokes(node, nodeDiv, maxSpokes+1)
 
     buildLink: (linkProperties) ->
       @tempLink.properties = linkProperties
