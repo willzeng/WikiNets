@@ -32,7 +32,6 @@
           return _this.expandSelection(d);
         });
         this.graphView.on("enter:link:mouseover", function(d) {
-          console.log(d);
           return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">' + 'Click to select link: <b>' + d.name + '</b></span>');
         });
         return this.graphView.on("enter:link:mouseout", function(d) {

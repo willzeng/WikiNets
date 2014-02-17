@@ -20,6 +20,8 @@ define [], () ->
       @selection = instances["NodeSelection"]
       @selection.on "change", @update.bind(this)
       @listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
+
+      @linkSelection = instances["LinkSelection"]
       
       #place the plugin on the whole window
       $(@el).appendTo $('#omniBox')
@@ -224,9 +226,10 @@ define [], () ->
 
       @addLinker node, nodeDiv
 
+      @addSpokes node, nodeDiv
+
     addLinker: (node, nodeDiv) =>
       @tempLink = {}
-      #@tempLink.source = node
 
       nodeID = node['_id']
 
@@ -290,6 +293,32 @@ define [], () ->
           @buildingLink = false
           $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>')
           $linkHolder.show()
+
+
+    addSpokes: (node, nodeDiv) =>
+      nHash = @graphModel.get("nodeHash")
+      lHash = @graphModel.get("linkHash")
+      spokesID = "spokesDiv#{nHash(node)}"
+      $spokesDiv = $('<div id='+spokesID+'>').appendTo nodeDiv
+      spokes = (link for link in @graphModel.getLinks() when nHash(link.source) is nHash(node) or nHash(link.target) is nHash(node))
+
+      if spokes.length > 0
+        for spoke in spokes
+          savedSpoke = spoke
+          if !(spoke.name?) or spoke.name == "" then spoke.name = "<i>empty link</i>"
+          if !(spoke.color?) then spoke.color = "white"
+          spokeID = "spokeDiv"
+          $spokeDiv = $('<div id='+spokeID+'>'+spoke.name+'</div>')
+            .css("background-color","#{spoke.color}")
+            .css("padding", "4px")
+            .css("margin", "1px")
+            .css("border", "1px solid black")
+            .appendTo $spokesDiv
+
+          $spokeDiv.data("link", [spoke])
+          $spokeDiv.on "click", (e) =>
+            #console.log "clicked spoke", $(e.target).data("link")
+            @linkSelection.toggleSelection($(e.target).data("link")[0])
 
     buildLink: (linkProperties) ->
       @tempLink.properties = linkProperties

@@ -16,6 +16,7 @@
 
       function NodeEdit(options) {
         this.options = options;
+        this.addSpokes = __bind(this.addSpokes, this);
         this.addLinker = __bind(this.addLinker, this);
         this.renderProfile = __bind(this.renderProfile, this);
         this.assign_properties = __bind(this.assign_properties, this);
@@ -36,6 +37,7 @@
         this.listenTo(instances["KeyListener"], "down:80", function() {
           return _this.$el.toggle();
         });
+        this.linkSelection = instances["LinkSelection"];
         return $(this.el).appendTo($('#omniBox'));
       };
 
@@ -253,7 +255,8 @@
             return _this.renderProfile(node, nodeDiv, blacklist, propNumber + 1);
           });
         }
-        return this.addLinker(node, nodeDiv);
+        this.addLinker(node, nodeDiv);
+        return this.addSpokes(node, nodeDiv);
       };
 
       NodeEdit.prototype.addLinker = function(node, nodeDiv) {
@@ -315,6 +318,47 @@
             return $linkHolder.show();
           }
         });
+      };
+
+      NodeEdit.prototype.addSpokes = function(node, nodeDiv) {
+        var $spokeDiv, $spokesDiv, lHash, link, nHash, savedSpoke, spoke, spokeID, spokes, spokesID, _i, _len, _results,
+          _this = this;
+        nHash = this.graphModel.get("nodeHash");
+        lHash = this.graphModel.get("linkHash");
+        spokesID = "spokesDiv" + (nHash(node));
+        $spokesDiv = $('<div id=' + spokesID + '>').appendTo(nodeDiv);
+        spokes = (function() {
+          var _i, _len, _ref, _results;
+          _ref = this.graphModel.getLinks();
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            link = _ref[_i];
+            if (nHash(link.source) === nHash(node) || nHash(link.target) === nHash(node)) {
+              _results.push(link);
+            }
+          }
+          return _results;
+        }).call(this);
+        if (spokes.length > 0) {
+          _results = [];
+          for (_i = 0, _len = spokes.length; _i < _len; _i++) {
+            spoke = spokes[_i];
+            savedSpoke = spoke;
+            if (!(spoke.name != null) || spoke.name === "") {
+              spoke.name = "<i>empty link</i>";
+            }
+            if (!(spoke.color != null)) {
+              spoke.color = "white";
+            }
+            spokeID = "spokeDiv";
+            $spokeDiv = $('<div id=' + spokeID + '>' + spoke.name + '</div>').css("background-color", "" + spoke.color).css("padding", "4px").css("margin", "1px").css("border", "1px solid black").appendTo($spokesDiv);
+            $spokeDiv.data("link", [spoke]);
+            _results.push($spokeDiv.on("click", function(e) {
+              return _this.linkSelection.toggleSelection($(e.target).data("link")[0]);
+            }));
+          }
+          return _results;
+        }
       };
 
       NodeEdit.prototype.buildLink = function(linkProperties) {
