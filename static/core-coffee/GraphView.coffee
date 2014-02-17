@@ -138,7 +138,8 @@ define [], () ->
       $(@el).bind "contextmenu", (e) -> return false #disable defaultcontextmenu
       $(@el).mousedown (e) => 
         if e.which is 3 then @trigger "view:rightclick"
-        else @trigger "view:click"
+      $(@el).on "dblclick", (e) => 
+        @trigger "view:click"
 
       #Center node on shift+click
       #@addCentering()
@@ -165,6 +166,7 @@ define [], () ->
           'url(#Triangle2)' if link.direction is 'backward' or link.direction is 'bidirectional'
 
       linkEnter.on("click", (datum, index) =>
+        d3.event.stopPropagation()
         if d3.event.shiftKey then shifted = true else shifted = false
         if shifted then @trigger "enter:link:shift:click", datum
         else @trigger "enter:link:click", datum
@@ -223,6 +225,7 @@ define [], () ->
       nodeEnter.on("click", (datum, index) =>
         #ignore drag
         return  if d3.event.defaultPrevented
+        d3.event.stopPropagation()
         if d3.event.shiftKey then shifted = true else shifted = false
         datum.fixed = true
         clickSemaphore += 1

@@ -105,9 +105,10 @@
         $(this.el).mousedown(function(e) {
           if (e.which === 3) {
             return _this.trigger("view:rightclick");
-          } else {
-            return _this.trigger("view:click");
           }
+        });
+        $(this.el).on("dblclick", function(e) {
+          return _this.trigger("view:click");
         });
         return this;
       };
@@ -138,6 +139,7 @@
         });
         linkEnter.on("click", function(datum, index) {
           var shifted;
+          d3.event.stopPropagation();
           if (d3.event.shiftKey) {
             shifted = true;
           } else {
@@ -191,6 +193,7 @@
           if (d3.event.defaultPrevented) {
             return;
           }
+          d3.event.stopPropagation();
           if (d3.event.shiftKey) {
             shifted = true;
           } else {

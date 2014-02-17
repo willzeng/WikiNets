@@ -42,6 +42,9 @@ define [], () ->
         #toggle off all the currently selected nodes
         @toggleSelection(node) for node in @getSelectedNodes()
 
+      @graphView.on "view:click", =>
+        @toggleSelection(node) for node in @getSelectedNodes()
+
     renderSelection: () ->
       nodeSelection = @graphView.getNodeSelection()
       if nodeSelection

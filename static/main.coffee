@@ -111,11 +111,11 @@ require ["Celestrium"], (Celestrium) ->
   # initialize the plugins and execute a callback once done
   Celestrium.init plugins, (instances) ->
 
+    loadEverything = (nodes) -> 
+      instances["GraphModel"].putNode node for node in nodes
+
     #Prepopulate the GraphModel with all the nodes and links
     $.get('/get_nodes', loadEverything)
 
     # this allows all link strengths to be visible
     instances["GraphView"].getLinkFilter().set("threshold", 0)
-
-    loadEverything = (nodes) -> 
-      instances["GraphModel"].putNode node for node in nodes
