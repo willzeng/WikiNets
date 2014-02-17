@@ -57,33 +57,30 @@ define [], () ->
         @$nodeWrapper.hide()
         $nodeHolder.show()
 
+
       $linkSide = $('<div id="linkside">').appendTo $container
 
-      $linkHolder = $('<textarea placeholder="Add Link" id="nodeHolder" name="textin" rows="1" cols="35"></textarea><br>').appendTo $linkSide
+      $linkHolder = $('<textarea placeholder="Add Link" id="linkHolder" name="textin" rows="1" cols="35"></textarea>').appendTo $linkSide
 
-      @$linkWrapper = $('<div id="source-container">').appendTo $linkSide
-      #$linkTitleArea = $('<textarea placeholder="Title" id="nodeTitle" name="textin" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
-      # $linkInput = $('<textarea placeholder="Link : A link\'s description #key1 value1 #key2 value2" id="linkInputField" name="textin" rows="5" cols="35"></textarea><br>').appendTo @$linkWrapper
-      $linkInputName = $('<textarea placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
-      $linkInputUrl = $('<textarea placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
-      $linkInputDesc = $('<textarea placeholder="Description\n #key1 value1 #key2 value2" rows="5" cols="35"></textarea><br>').appendTo @$linkWrapper
+      @$linkWrapper = $('<div id="LinkCreateContainer">').appendTo $linkSide
 
-      $createLinkButton = $('<input id="queryform" type="submit" value="Create Link"><br>').appendTo @$linkWrapper
+      @$linkInputName = $('<textarea id="LinkCreateName" placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
+      @$linkInputDesc = $('<textarea id="LinkCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
+
+      $linkInputForm = $('<form id="LinkCreateForm"></form>').appendTo @$linkWrapper
+      linkInputNumber = 0
+
+      $linkMoreFields = $("<input id=\"moreLinkCreateFields\" type=\"button\" value=\"+\">").appendTo @$linkWrapper
+      $linkMoreFields.click(() => 
+        @addField(linkInputNumber, "LinkCreate")
+        linkInputNumber = linkInputNumber+1
+        )
+
+      $createLinkButton = $('<input id="queryform" type="button" value="Attach & Create Link">').appendTo @$linkWrapper
 
       $linkingInstructions = $('<span id="toplink-instructions">').appendTo $container
 
-      $createLinkButton.click () =>
-        @buildLink(
-          tlink = @parseSyntax($linkInputName.val()+" : "+$linkInputDesc.val()+" #url "+$linkInputUrl.val())
-          # if tlink.name is "" then tlink.name = "link"
-          # console.log $linkInputName.val()+" : "+$linkInputDesc.val()+" #url "+$linkInputUrl.val()
-        )
-        $linkInputName.val('')
-        $linkInputUrl.val('')
-        $linkInputDesc.val('')
-        # $linkInput.blur()
-        @$linkWrapper.hide()
-        $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click two Nodes to link them.</span>')
+      $createLinkButton.click(@buildLink)
 
       @$nodeWrapper.hide()
       @$linkWrapper.hide()
@@ -162,7 +159,6 @@ define [], () ->
         propertyObject = {}
         createDate = new Date()
         propertyObject["_Creation_Date"] = createDate
-        console.log $("##{form_name}Name").val(), $("##{form_name}Desc").val()
         if not ($("##{form_name}Name").val() == undefined or $("##{form_name}Name").val() == "")
           propertyObject["name"] = $("##{form_name}Name").val().replace(/'/g, "\\'")
         if not ($("##{form_name}Desc").val() == undefined or $("##{form_name}Desc").val() == "")
@@ -178,6 +174,7 @@ define [], () ->
             #   nodeObject, escaping any single quotes in the value so they don't
             #   break the cypher query
             if is_illegal(property, "Property")
+              alert "Property '" + property + "' is not allowed."
               submitOK = false
             else if property of propertyObject
               alert "Property '" + property + "' already assigned.\nFirst value: " + propertyObject[property] + "\nSecond value: " + value
@@ -208,25 +205,22 @@ define [], () ->
         @dataController.nodeAdd(nodeObject[1], (datum) => @graphModel.putNode(datum))
       )
 
-    buildLink: (linkProperties) ->
-      @tempLink.properties = linkProperties
-      console.log "tempLink set to", @tempLink
-      @buildingLink = true
-    
-    parseSyntax: (input) ->
-      console.log "input", input
-      strsplit=input.split('#');
-      strsplit[0]=strsplit[0].replace(/:/," #description ");### The : is shorthand for #description ###
-      text=strsplit.join('#')
 
-      pattern = new RegExp(/#([a-zA-Z0-9]+) ([^#]+)/g)
-      dict = {}
-      match = {}
-      dict[match[1].trim()]=match[2].trim() while match = pattern.exec(text)
+    ###
+    ###
+    buildLink: =>
+      # check property names and assign property-value pairs
+      # first component of relProperties is boolean result of whether all
+      # properties are legal; second component is dictionary of properties to
+      # be assigned
+      console.log "Building Link"
+      linkProperties = @assign_properties("LinkCreate")
 
-      ###The first entry becomes the name###
-      dict["name"]=text.split('#')[0].trim()
-      console.log "This is the title", text.split('#')[0].trim()
-      createDate=new Date()
-      dict["_Creation_Date"]=createDate
-      dict
+      # if all property names were fine, remove the on-the-fly created input
+      # fields and submit the data to the server to actually create the link
+      if linkProperties[0]
+        console.log "Link properties OK"
+        @tempLink["properties"] = linkProperties[1]
+        @buildingLink = true
+        $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click a node to select it as the link source.</span>')
+

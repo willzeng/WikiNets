@@ -11,6 +11,7 @@
 
       function TopBarCreate(options) {
         this.options = options;
+        this.buildLink = __bind(this.buildLink, this);
         this.createNode = __bind(this.createNode, this);
         this.assign_properties = __bind(this.assign_properties, this);
         this.addField = __bind(this.addField, this);
@@ -32,7 +33,7 @@
       };
 
       TopBarCreate.prototype.render = function() {
-        var $container, $createLinkButton, $createNodeButton, $linkHolder, $linkInputDesc, $linkInputName, $linkInputUrl, $linkSide, $linkingInstructions, $nodeHolder, $nodeInputForm, $nodeMoreFields, $nodeSide, $openPopoutButton, nodeInputNumber,
+        var $container, $createLinkButton, $createNodeButton, $linkHolder, $linkInputForm, $linkMoreFields, $linkSide, $linkingInstructions, $nodeHolder, $nodeInputForm, $nodeMoreFields, $nodeSide, $openPopoutButton, linkInputNumber, nodeInputNumber,
           _this = this;
         $container = $('<div id="topbarcreate">').appendTo($('#buildbar'));
         $nodeSide = $('<div id="nodeside">').appendTo($container);
@@ -56,22 +57,20 @@
           return $nodeHolder.show();
         });
         $linkSide = $('<div id="linkside">').appendTo($container);
-        $linkHolder = $('<textarea placeholder="Add Link" id="nodeHolder" name="textin" rows="1" cols="35"></textarea><br>').appendTo($linkSide);
-        this.$linkWrapper = $('<div id="source-container">').appendTo($linkSide);
-        $linkInputName = $('<textarea placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
-        $linkInputUrl = $('<textarea placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
-        $linkInputDesc = $('<textarea placeholder="Description\n #key1 value1 #key2 value2" rows="5" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
-        $createLinkButton = $('<input id="queryform" type="submit" value="Create Link"><br>').appendTo(this.$linkWrapper);
-        $linkingInstructions = $('<span id="toplink-instructions">').appendTo($container);
-        $createLinkButton.click(function() {
-          var tlink;
-          _this.buildLink(tlink = _this.parseSyntax($linkInputName.val() + " : " + $linkInputDesc.val() + " #url " + $linkInputUrl.val()));
-          $linkInputName.val('');
-          $linkInputUrl.val('');
-          $linkInputDesc.val('');
-          _this.$linkWrapper.hide();
-          return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click two Nodes to link them.</span>');
+        $linkHolder = $('<textarea placeholder="Add Link" id="linkHolder" name="textin" rows="1" cols="35"></textarea>').appendTo($linkSide);
+        this.$linkWrapper = $('<div id="LinkCreateContainer">').appendTo($linkSide);
+        this.$linkInputName = $('<textarea id="LinkCreateName" placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
+        this.$linkInputDesc = $('<textarea id="LinkCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
+        $linkInputForm = $('<form id="LinkCreateForm"></form>').appendTo(this.$linkWrapper);
+        linkInputNumber = 0;
+        $linkMoreFields = $("<input id=\"moreLinkCreateFields\" type=\"button\" value=\"+\">").appendTo(this.$linkWrapper);
+        $linkMoreFields.click(function() {
+          _this.addField(linkInputNumber, "LinkCreate");
+          return linkInputNumber = linkInputNumber + 1;
         });
+        $createLinkButton = $('<input id="queryform" type="button" value="Attach & Create Link">').appendTo(this.$linkWrapper);
+        $linkingInstructions = $('<span id="toplink-instructions">').appendTo($container);
+        $createLinkButton.click(this.buildLink);
         this.$nodeWrapper.hide();
         this.$linkWrapper.hide();
         $nodeHolder.focus(function() {
@@ -175,7 +174,6 @@
         propertyObject = {};
         createDate = new Date();
         propertyObject["_Creation_Date"] = createDate;
-        console.log($("#" + form_name + "Name").val(), $("#" + form_name + "Desc").val());
         if (!($("#" + form_name + "Name").val() === void 0 || $("#" + form_name + "Name").val() === "")) {
           propertyObject["name"] = $("#" + form_name + "Name").val().replace(/'/g, "\\'");
         }
@@ -187,6 +185,7 @@
           property = $(this).children(".property" + form_name).val();
           value = $(this).children(".value" + form_name).val();
           if (is_illegal(property, "Property")) {
+            alert("Property '" + property + "' is not allowed.");
             return submitOK = false;
           } else if (property in propertyObject) {
             alert("Property '" + property + "' already assigned.\nFirst value: " + propertyObject[property] + "\nSecond value: " + value);
@@ -221,33 +220,20 @@
         }
       };
 
-      TopBarCreate.prototype.buildLink = function(linkProperties) {
-        this.tempLink.properties = linkProperties;
-        console.log("tempLink set to", this.tempLink);
-        return this.buildingLink = true;
-      };
+      /*
+      */
 
-      TopBarCreate.prototype.parseSyntax = function(input) {
-        var createDate, dict, match, pattern, strsplit, text;
-        console.log("input", input);
-        strsplit = input.split('#');
-        strsplit[0] = strsplit[0].replace(/:/, " #description ");
-        /* The : is shorthand for #description*/
 
-        text = strsplit.join('#');
-        pattern = new RegExp(/#([a-zA-Z0-9]+) ([^#]+)/g);
-        dict = {};
-        match = {};
-        while (match = pattern.exec(text)) {
-          dict[match[1].trim()] = match[2].trim();
+      TopBarCreate.prototype.buildLink = function() {
+        var linkProperties;
+        console.log("Building Link");
+        linkProperties = this.assign_properties("LinkCreate");
+        if (linkProperties[0]) {
+          console.log("Link properties OK");
+          this.tempLink["properties"] = linkProperties[1];
+          this.buildingLink = true;
+          return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click a node to select it as the link source.</span>');
         }
-        /*The first entry becomes the name*/
-
-        dict["name"] = text.split('#')[0].trim();
-        console.log("This is the title", text.split('#')[0].trim());
-        createDate = new Date();
-        dict["_Creation_Date"] = createDate;
-        return dict;
       };
 
       return TopBarCreate;
