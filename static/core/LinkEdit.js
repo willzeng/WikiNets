@@ -152,6 +152,17 @@
       };
 
       LinkEdit.prototype.findHeader = function(link) {
+        var realurl, result;
+        if (link.url != null) {
+          realurl = "";
+          result = link.url.search(new RegExp(/^http:\/\//i));
+          if (!result) {
+            realurl = link.url;
+          } else {
+            realurl = 'http://' + link.url;
+          }
+          link.name = '<a href=' + realurl + ' target="_blank">' + link.name + '</a>';
+        }
         if (this.graphView.findText(link.source) && this.graphView.findText(link.target)) {
           return "(" + this.graphView.findText(link.source) + ") - " + link.name + " - (" + this.graphView.findText(link.target) + ")";
         } else if (this.graphView.findText(link.source)) {

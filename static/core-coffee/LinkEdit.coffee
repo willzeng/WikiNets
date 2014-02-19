@@ -132,6 +132,14 @@ define [], () ->
           callback()
 
     findHeader: (link) =>
+      if link.url?
+        realurl = ""
+        result = link.url.search(new RegExp(/^http:\/\//i));
+        if !result
+          realurl = link.url
+        else
+          realurl = 'http://'+link.url;
+        link.name = '<a href='+realurl+' target="_blank">'+link.name+'</a>'
       if @graphView.findText(link.source) and @graphView.findText(link.target)
         "(" + @graphView.findText(link.source) + ") - " + link.name + " - (" + @graphView.findText(link.target) + ")"
       else if @graphView.findText(link.source)
