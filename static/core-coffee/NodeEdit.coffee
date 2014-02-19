@@ -166,7 +166,16 @@ define [], () ->
     #TODO would be to define a .toString method for nodes
     findHeader: (node) ->
       if node.name?
-        node.name
+        if node.url?
+          realurl = ""
+          result = node.url.search(new RegExp(/^http:\/\//i));
+          if !result
+            realurl = node.url
+          else
+            realurl = 'http://'+node.url;
+          '<a href='+realurl+' target="_blank">'+node.name+'</a>'
+        else
+          node.name
       else if node.title?
         node.title
       else

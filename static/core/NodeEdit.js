@@ -195,8 +195,20 @@
       };
 
       NodeEdit.prototype.findHeader = function(node) {
+        var realurl, result;
         if (node.name != null) {
-          return node.name;
+          if (node.url != null) {
+            realurl = "";
+            result = node.url.search(new RegExp(/^http:\/\//i));
+            if (!result) {
+              realurl = node.url;
+            } else {
+              realurl = 'http://' + node.url;
+            }
+            return '<a href=' + realurl + ' target="_blank">' + node.name + '</a>';
+          } else {
+            return node.name;
+          }
         } else if (node.title != null) {
           return node.title;
         } else {
