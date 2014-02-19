@@ -225,7 +225,7 @@ define [], () ->
       if propNumber < nodeLength
         $showMore = $("<div class='showMore'><a href='#'>Show More...</a></div>").appendTo nodeDiv 
         $showMore.click () =>
-          @renderProfile(node, nodeDiv, blacklist, propNumber+1)
+          @renderProfile(node, nodeDiv, blacklist, propNumber+10)
           
       #Adds button that creates link from selected node to user-inputted node
       @addLinker node, nodeDiv
@@ -339,7 +339,7 @@ define [], () ->
         $showMoreSpokes = $("<div class=\"showMore\"><a href='#'>Show More...</a></div>").appendTo spokeHolder 
         $showMoreSpokes.on "click", (e) =>
           $('<div id='+spokesID+'>').empty()
-          @addSpokes(node, spokeHolder, maxSpokes+1)
+          @addSpokes(node, spokeHolder, maxSpokes+4)
 
     buildLink: (linkProperties) ->
       @tempLink.properties = linkProperties

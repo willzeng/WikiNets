@@ -264,7 +264,7 @@
         if (propNumber < nodeLength) {
           $showMore = $("<div class='showMore'><a href='#'>Show More...</a></div>").appendTo(nodeDiv);
           $showMore.click(function() {
-            return _this.renderProfile(node, nodeDiv, blacklist, propNumber + 1);
+            return _this.renderProfile(node, nodeDiv, blacklist, propNumber + 10);
           });
         }
         this.addLinker(node, nodeDiv);
@@ -395,7 +395,7 @@
           $showMoreSpokes = $("<div class=\"showMore\"><a href='#'>Show More...</a></div>").appendTo(spokeHolder);
           return $showMoreSpokes.on("click", function(e) {
             $('<div id=' + spokesID + '>').empty();
-            return _this.addSpokes(node, spokeHolder, maxSpokes + 1);
+            return _this.addSpokes(node, spokeHolder, maxSpokes + 4);
           });
         }
       };
