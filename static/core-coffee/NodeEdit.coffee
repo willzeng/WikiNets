@@ -231,7 +231,7 @@ define [], () ->
       @addLinker node, nodeDiv
 
       $spokeHolder = $("<div class='spokeHolder'></div>").appendTo nodeDiv
-      @addSpokes node, $spokeHolder, 2
+      @addSpokes node, $spokeHolder, 5
 
 
     addLinker: (node, nodeDiv) =>
