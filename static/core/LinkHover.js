@@ -32,7 +32,7 @@
           return _this.expandSelection(d);
         });
         this.graphView.on("enter:link:mouseover", function(d) {
-          return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">' + 'Click to select link: <b>' + d.name + '</b></span>');
+          return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">' + 'Click to select: <b>' + d.source.name + " - " + d.name + " - " + d.target.name + '</b></span>');
         });
         return this.graphView.on("enter:link:mouseout", function(d) {
           return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px"></span>');

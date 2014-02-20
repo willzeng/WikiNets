@@ -43,7 +43,7 @@ define [], () ->
         @expandSelection(d)
 
       @graphView.on "enter:link:mouseover", (d) =>
-        $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">' + 'Click to select link: <b>' + d.name + '</b></span>')
+        $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">' + 'Click to select: <b>' + d.source.name+" - "+d.name+" - "+d.target.name+ '</b></span>')
 
       @graphView.on "enter:link:mouseout", (d) =>
         $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px"></span>')
