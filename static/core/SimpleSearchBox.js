@@ -35,8 +35,8 @@
         var $button, $container, $searchBox,
           _this = this;
         $container = $("<div id='visual-search-container'>").appendTo(this.$el);
-        $searchBox = $('<input type="text" id="searchBox">').css("width", "235px").css("height", "25px").css("box-shadow", "2px 2px 4px #888888").css("border", "1px solid blue").appendTo($container);
-        $button = $("<input type=\"button\" value=\"Go\" style='float:right' />").appendTo($container);
+        $searchBox = $('<input type="text" id="searchBox">').css("width", "235px").css("height", "24px").css("border", "1px solid gray").css("outline","none").css("float","left").css("border-right","0px").css("line-height","16pt").css("font-size","15pt").css("padding","2px").appendTo($container);
+        $button = $("<input type=\"button\" value=\"Go\" style='float:left' />").appendTo($container);
         $searchBox.keyup(function(e) {
           if (e.keyCode === 13) {
             _this.searchNodesSimple($searchBox.val());
