@@ -132,7 +132,10 @@ define [], () ->
       @selection.getSelectedNodes()
 
     buildNode: (node) ->
-      @dataController.nodeAdd node, (datum) => 
+      @dataController.nodeAdd node, (datum) =>
+        datum.fixed = true
+        datum.px = $(window).width()/2
+        datum.py = $(window).height()/2
         @graphModel.putNode(datum)
         @selection.toggleSelection(datum)
 

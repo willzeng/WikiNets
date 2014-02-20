@@ -269,7 +269,7 @@
         }
         this.addLinker(node, nodeDiv);
         $spokeHolder = $("<div class='spokeHolder'></div>").appendTo(nodeDiv);
-        return this.addSpokes(node, $spokeHolder, 2);
+        return this.addSpokes(node, $spokeHolder, 5);
       };
 
       NodeEdit.prototype.addLinker = function(node, nodeDiv) {

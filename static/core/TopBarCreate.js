@@ -135,6 +135,9 @@
       TopBarCreate.prototype.buildNode = function(node) {
         var _this = this;
         return this.dataController.nodeAdd(node, function(datum) {
+          datum.fixed = true;
+          datum.px = $(window).width() / 2;
+          datum.py = $(window).height() / 2;
           _this.graphModel.putNode(datum);
           return _this.selection.toggleSelection(datum);
         });
