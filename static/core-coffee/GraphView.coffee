@@ -41,7 +41,7 @@ define [], () ->
       @linkStrength = (link) =>
         return (link.strength - @linkFilter.get("threshold")) / (1.0 - @linkFilter.get("threshold"))
       @force.linkStrength @linkStrength
-      svg = d3.select(@el).append("svg:svg").attr("pointer-events", "all")
+      svg = d3.select(@el).append("svg:svg").attr("pointer-events", "all").attr("height","100%").attr("width","100%")
       zoom = d3.behavior.zoom()
       @zoom = zoom
 
@@ -94,6 +94,8 @@ define [], () ->
 
       # outermost wrapper - this is used to capture all zoom events
       zoomCapture = svg.append("g")
+      zoomCapture
+        .attr("height","100%")
 
       # this is in the background to capture events not on any node
       # should be added first so appended nodes appear above this

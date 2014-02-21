@@ -69,7 +69,7 @@
           return (link.strength - _this.linkFilter.get("threshold")) / (1.0 - _this.linkFilter.get("threshold"));
         };
         this.force.linkStrength(this.linkStrength);
-        svg = d3.select(this.el).append("svg:svg").attr("pointer-events", "all");
+        svg = d3.select(this.el).append("svg:svg").attr("pointer-events", "all").attr("height", "100%").attr("width", "100%");
         zoom = d3.behavior.zoom();
         this.zoom = zoom;
         defs = svg.append("defs");
@@ -79,6 +79,7 @@
         gradient.attr("id", "gradFill").attr("cx", "50%").attr("cy", "50%").attr("r", "75%").attr("fx", "50%").attr("fy", "50%").append("stop").attr("offset", "0%").attr("style", "stop-color:steelblue;stop-opacity:1");
         gradient.append("stop").attr("offset", "100%").attr("style", "stop-color:rgb(255,255,255);stop-opacity:1");
         zoomCapture = svg.append("g");
+        zoomCapture.attr("height", "100%");
         zoomCapture.append("svg:rect").attr("width", "100%").attr("height", "100%").style("fill-opacity", "0%").style("fill", "white");
         translateLock = false;
         currentZoom = void 0;
