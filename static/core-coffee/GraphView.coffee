@@ -101,6 +101,8 @@ define [], () ->
              .attr("width", "100%")
              .attr("height", "100%")
              .style("fill-opacity", "0%")
+             .attr("fill", "white")
+
 
       # Panning on Drag
       # lock infrastracture to ignore zoom changes that would
