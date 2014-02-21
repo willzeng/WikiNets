@@ -37,6 +37,7 @@ define [], () ->
 
       @$nodeInputName = $('<textarea id="NodeCreateName" placeholder=\"Node Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
       @$nodeInputDesc = $('<textarea id="NodeCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
+      @$nodeInputUrl = $('<textarea id="NodeCreateUrl" placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
       @$nodeInputColor = $('<textarea id="NodeCreateColor" placeholder="Color [optional]" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
       @$nodeInputSize = $('<textarea id="NodeCreateSize" placeholder="Size [optional]" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
 
@@ -71,6 +72,7 @@ define [], () ->
       @$linkWrapper = $('<div id="LinkCreateContainer">').appendTo $linkSide
 
       @$linkInputName = $('<textarea id="LinkCreateName" placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
+      @$linkInputUrl = $('<textarea id="LinkCreateUrl" placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
       @$linkInputDesc = $('<textarea id="LinkCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
 
       $linkInputForm = $('<form id="LinkCreateForm"></form>').appendTo @$linkWrapper
@@ -137,6 +139,7 @@ define [], () ->
             )
             @$linkInputName.val('')
             @$linkInputDesc.val('')
+            @$linkInputUrl.val('')
             $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>')
             @$createLinkButton.val('Attach & Create Link')
             @$linkInputName.focus()
@@ -189,6 +192,8 @@ define [], () ->
           propertyObject["color"] = $("##{form_name}Color").val().replace(/'/g, "\\'")
         if not ($("##{form_name}Size").val() == undefined or $("##{form_name}Size").val() == "")
           propertyObject["size"] = $("##{form_name}Size").val().replace(/'/g, "\\'")
+        if not ($("##{form_name}Url").val() == undefined or $("##{form_name}Url").val() == "")
+          propertyObject["url"] = $("##{form_name}Url").val().replace(/'/g, "\\'")
         $("." + form_name + "Div").each (i, obj) ->
             property = $(this).children(".property" + form_name).val()
             value = $(this).children(".value" + form_name).val()
@@ -228,6 +233,7 @@ define [], () ->
         @$nodeInputName.val('')
         @$nodeInputDesc.val('')
         @$nodeInputColor.val('')
+        @$nodeInputUrl.val('')
         @$nodeInputSize.val('')
         @$nodeInputName.focus()
         @dataController.nodeAdd(nodeObject[1], (datum) =>

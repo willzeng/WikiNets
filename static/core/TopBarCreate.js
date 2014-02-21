@@ -41,6 +41,7 @@
         this.$nodeWrapper = $('<div id="NodeCreateContainer">').appendTo($nodeSide);
         this.$nodeInputName = $('<textarea id="NodeCreateName" placeholder=\"Node Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
         this.$nodeInputDesc = $('<textarea id="NodeCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
+        this.$nodeInputUrl = $('<textarea id="NodeCreateUrl" placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
         this.$nodeInputColor = $('<textarea id="NodeCreateColor" placeholder="Color [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
         this.$nodeInputSize = $('<textarea id="NodeCreateSize" placeholder="Size [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
         $nodeInputForm = $('<form id="NodeCreateForm"></form>').appendTo(this.$nodeWrapper);
@@ -62,6 +63,7 @@
         $linkHolder = $('<textarea placeholder="Add Link" id="linkHolder" name="textin" rows="1" cols="35"></textarea>').appendTo($linkSide);
         this.$linkWrapper = $('<div id="LinkCreateContainer">').appendTo($linkSide);
         this.$linkInputName = $('<textarea id="LinkCreateName" placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
+        this.$linkInputUrl = $('<textarea id="LinkCreateUrl" placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
         this.$linkInputDesc = $('<textarea id="LinkCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
         $linkInputForm = $('<form id="LinkCreateForm"></form>').appendTo(this.$linkWrapper);
         linkInputNumber = 0;
@@ -137,6 +139,7 @@
               });
               _this.$linkInputName.val('');
               _this.$linkInputDesc.val('');
+              _this.$linkInputUrl.val('');
               $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>');
               _this.$createLinkButton.val('Attach & Create Link');
               return _this.$linkInputName.focus();
@@ -206,6 +209,9 @@
         if (!($("#" + form_name + "Size").val() === void 0 || $("#" + form_name + "Size").val() === "")) {
           propertyObject["size"] = $("#" + form_name + "Size").val().replace(/'/g, "\\'");
         }
+        if (!($("#" + form_name + "Url").val() === void 0 || $("#" + form_name + "Url").val() === "")) {
+          propertyObject["url"] = $("#" + form_name + "Url").val().replace(/'/g, "\\'");
+        }
         $("." + form_name + "Div").each(function(i, obj) {
           var property, value;
           property = $(this).children(".property" + form_name).val();
@@ -240,6 +246,7 @@
           this.$nodeInputName.val('');
           this.$nodeInputDesc.val('');
           this.$nodeInputColor.val('');
+          this.$nodeInputUrl.val('');
           this.$nodeInputSize.val('');
           this.$nodeInputName.focus();
           return this.dataController.nodeAdd(nodeObject[1], function(datum) {
