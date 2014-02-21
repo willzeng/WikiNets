@@ -2,8 +2,7 @@
 define [], () ->
 
   class NodeEdit extends Backbone.View
-    # colors = ["darkgray", "aqua", "black", "blue", "darkblue", "fuchsia", "green", "darkgreen", "lime", "maroon", "navy", "olive", "orange", "purple", "red", "silver", "teal", "yellow"]
-    # hexColors = ["#A9A9A9","#00FFFF","#000000","#0000FF", "#00008B","#FF00FF","#008000","#006400","#00FF00","#800000","#000080","#808000","#FFA500","#800080","#FF0000","#C0C0C0","#008080","#FFFF00"]
+
     colors = ['#F56545', '#FFBB22', '#BBE535', '#77DDBB', '#66CCDD', '#A9A9A9']
     constructor: (@options) ->
       super()
@@ -20,6 +19,8 @@ define [], () ->
       @selection = instances["NodeSelection"]
       @selection.on "change", @update.bind(this)
       @listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
+
+      @linkSelection = instances["LinkSelection"]
       
       #place the plugin on the whole window
       $(@el).appendTo $('#omniBox')
@@ -61,10 +62,7 @@ define [], () ->
             else if property == "color"
               if value.toUpperCase() in colors
                 origColor = value
-            	# if value in colors 
-             #    origColor = hexColors[colors.indexOf(value)]
-             #  else if value in hexColors 
-             #    origColor = value
+
 
           colorEditingField = '
             <form action="#" method="post">
@@ -72,7 +70,6 @@ define [], () ->
             </form>
           '
           $(colorEditingField).appendTo(nodeDiv)
-
           $("#color#{node['_id']}").colorPicker {showHexField: false} 
 
           $nodeMoreFields = $("<input id=\"moreNode#{node['_id']}EditFields\" type=\"button\" value=\"+\">").appendTo(nodeDiv)
@@ -169,28 +166,39 @@ define [], () ->
     #TODO would be to define a .toString method for nodes
     findHeader: (node) ->
       if node.name?
-        node.name
+        if node.url?
+          realurl = ""
+          result = node.url.search(new RegExp(/^http:\/\//i));
+          if !result
+            realurl = node.url
+          else
+            realurl = 'http://'+node.url;
+          '<a href='+realurl+' target="_blank">'+node.name+'</a>'
+        else
+          node.name
       else if node.title?
         node.title
       else
         ''
 
-    #displays the profile of a selected node
+    #This profile is rendered for nodes whenever they are selected.
+    #Outputs: relevant properties, values, an editting button, and a deselection button
     renderProfile: (node, nodeDiv, blacklist, propNumber) =>
       nodeDiv.empty()
       header = @findHeader(node)
       
-      #add the header and the edit icon
       $nodeHeader = $("<div class=\"node-profile-title\">#{header}</div>").appendTo nodeDiv
-      $nodeEdit = $("<i class=\"fa fa-pencil-square\"></i>").prependTo $nodeHeader
 
-      #adds the deselect button
-      $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").appendTo $nodeHeader
+      $nodeEdit = $("<i class=\"fa fa-pencil-square \"></i>").css("margin","6px").appendTo $nodeHeader
+      $nodeEdit.click () =>
+        @editNode(node, nodeDiv, blacklist)
+
+      $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").css("margin","1px").appendTo $nodeHeader
       $nodeDeselect.click () => @selection.toggleSelection(node)
 
       whitelist = ["description", "url"]
 
-      #only show the first four properties initially
+      #limits number of displayed properties to propNumber (default: propNumber=4)
       nodeLength = 0
       for p,v of node
         if !(p in blacklist)
@@ -214,35 +222,31 @@ define [], () ->
             $("<div class=\"node-profile-property\">#{property}:  #{makeLinks}</div>").appendTo nodeDiv
           counter++ 
 
-      $nodeEdit.click () =>
-        @editNode(node, nodeDiv, blacklist)
-
       if propNumber < nodeLength
-        $showMore = $("<div class=\"node-profile-property\"><a href='#'>Show More...</a></div>").appendTo nodeDiv 
+        $showMore = $("<div class='showMore'><a href='#'>Show More...</a></div>").appendTo nodeDiv 
         $showMore.click () =>
-          @renderProfile(node, nodeDiv, blacklist, propNumber+1)
-
+          @renderProfile(node, nodeDiv, blacklist, propNumber+10)
+          
+      #Adds button that creates link from selected node to user-inputted node
       @addLinker node, nodeDiv
+
+      $spokeHolder = $("<div class='spokeHolder'></div>").appendTo nodeDiv
+      @addSpokes node, $spokeHolder, 5
+
 
     addLinker: (node, nodeDiv) =>
       @tempLink = {}
-      #@tempLink.source = node
 
       nodeID = node['_id']
 
       linkSideID = "id=" + "'linkside" + nodeID + "'"
-      $linkSide = $('<div ' + linkSideID + '>').appendTo nodeDiv
+      $linkSide = $('<div ' + linkSideID + '><hr style="margin:3px"></div>').appendTo nodeDiv
       
       holderClassName = "'profilelinkHolder" + nodeID + "'"
       className = "class=" + holderClassName
-      $linkHolder = $('<textarea placeholder="Add Link" ' + className + 'rows="1" cols="35"></textarea><br>')
+      $linkHolder = $('<input type="button"' + className + 'value="Add Link"></input><br>')
         .css("width",100)
         .css("margin-left",85)
-        # .css("margin",0)
-        # .css("margin-left","auto")
-        # .css("margin-right","auto")
-        # .css("position","relative")
-        # .css("align","center")
         .appendTo $linkSide
 
       linkWrapperDivID = "id=" + "'source-container" + nodeID + "'"
@@ -271,6 +275,12 @@ define [], () ->
 
       $linkWrapper.hide()
 
+      $(document).on "click", ()->
+        $linkWrapper.hide()
+        $linkHolder.show()
+      $linkWrapper.on "click", (e)->
+        e.stopPropagation()
+
       $linkHolder.focus () =>
         $linkWrapper.show()
         $linkInputName.focus()
@@ -290,6 +300,46 @@ define [], () ->
           @buildingLink = false
           $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>')
           $linkHolder.show()
+
+
+    addSpokes: (node, spokeHolder, maxSpokes) =>
+      spokeHolder.empty()
+      nHash = @graphModel.get("nodeHash")
+      lHash = @graphModel.get("linkHash")
+      spokesID = "spokesDiv#{nHash(node)}"
+      $spokesDiv = $('<div id='+spokesID+'>').appendTo spokeHolder
+      spokes = (link for link in @graphModel.getLinks() when nHash(link.source) is nHash(node) or nHash(link.target) is nHash(node))
+
+      if spokes.length > 0
+        spoke_counter = 0
+        for spoke in spokes
+          if spoke_counter >= maxSpokes then break else spoke_counter++
+          savedSpoke = spoke
+          if !(spoke.name?) or spoke.name == "" then spoke.name = "<i>empty link</i>"
+          if !(spoke.color?) then spoke.color = "#A9A9A9"
+          spokeID = "spokeDiv"
+          $spokeDiv = $('<div class='+spokeID+'>'+spoke.name+"..."+'</div>')
+            .css("background-color","#{spoke.color}")
+            .css("padding", "4px")
+            .css("margin", "1px")
+            .css("border", "1px solid black")
+            .css("font-size", "12px")
+            .appendTo $spokesDiv
+
+          $spokeDiv.data("link", [spoke])
+          $spokeDiv.on "click", (e) =>
+            clickedLink = $(e.target).data("link")[0]
+            if !clickedLink.selected
+              $(e.target).css("background-color","steelblue")
+            else 
+              $(e.target).css("background-color","#{clickedLink.color}")
+            @linkSelection.toggleSelection(clickedLink)
+
+      if maxSpokes < spokes.length
+        $showMoreSpokes = $("<div class=\"showMore\"><a href='#'>Show More...</a></div>").appendTo spokeHolder 
+        $showMoreSpokes.on "click", (e) =>
+          $('<div id='+spokesID+'>').empty()
+          @addSpokes(node, spokeHolder, maxSpokes+4)
 
     buildLink: (linkProperties) ->
       @tempLink.properties = linkProperties

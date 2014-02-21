@@ -21,7 +21,9 @@ define [], () ->
       @render()
 
       @selection = instances["NodeSelection"]
-      @selection.on "change", @update.bind(this)
+      #@selection.on "change", @update.bind(this)
+
+      @linkSelection = instances["LinkSelection"]
 
     render: ->
 
@@ -35,6 +37,8 @@ define [], () ->
 
       @$nodeInputName = $('<textarea id="NodeCreateName" placeholder=\"Node Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
       @$nodeInputDesc = $('<textarea id="NodeCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
+      @$nodeInputColor = $('<textarea placeholder="Color [optional]" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
+      @$nodeInputSize = $('<textarea placeholder="Size [optional]" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
 
       $nodeInputForm = $('<form id="NodeCreateForm"></form>').appendTo @$nodeWrapper
       nodeInputNumber = 0
@@ -48,6 +52,7 @@ define [], () ->
       $createNodeButton = $('<input id="queryform" type="button" value="Create Node">').appendTo @$nodeWrapper
 
       $createNodeButton.click(@createNode)
+
  
       # popout button for more detailed node creation
       $openPopoutButton = $('<i class="right fa fa-expand"></i>').appendTo @$nodeWrapper
@@ -61,6 +66,7 @@ define [], () ->
       $linkSide = $('<div id="linkside">').appendTo $container
 
       $linkHolder = $('<textarea placeholder="Add Link" id="linkHolder" name="textin" rows="1" cols="35"></textarea>').appendTo $linkSide
+
 
       @$linkWrapper = $('<div id="LinkCreateContainer">').appendTo $linkSide
 
@@ -114,6 +120,7 @@ define [], () ->
               newLink.source = n for n in allNodes when n['_id'] is link.source['_id']
               newLink.target = n for n in allNodes when n['_id'] is link.target['_id']
               @graphModel.putLink(newLink)
+              @linkSelection.toggleSelection(newLink)
               )
             @sourceSet = @buildingLink = false
             $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>')
@@ -163,6 +170,10 @@ define [], () ->
           propertyObject["name"] = $("##{form_name}Name").val().replace(/'/g, "\\'")
         if not ($("##{form_name}Desc").val() == undefined or $("##{form_name}Desc").val() == "")
           propertyObject["description"] = $("##{form_name}Desc").val().replace(/'/g, "\\'")
+        if not ($("##{form_name}Color").val() == undefined or $("##{form_name}Color").val() == "")
+          propertyObject["color"] = $("##{form_name}Color").val().replace(/'/g, "\\'")
+        if not ($("##{form_name}Size").val() == undefined or $("##{form_name}Size").val() == "")
+          propertyObject["size"] = $("##{form_name}Size").val().replace(/'/g, "\\'")
         $("." + form_name + "Div").each (i, obj) ->
             property = $(this).children(".property" + form_name).val()
             value = $(this).children(".value" + form_name).val()
@@ -201,6 +212,8 @@ define [], () ->
         )
         @$nodeInputName.val('')
         @$nodeInputDesc.val('')
+        @$nodeInputColor.val('')
+        @$nodeInputSize.val('')
         @$nodeInputName.focus()
         @dataController.nodeAdd(nodeObject[1], (datum) => @graphModel.putNode(datum))
       )

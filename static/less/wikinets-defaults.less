@@ -17,29 +17,31 @@ body {
 
 .toolboxpopout {
     position:fixed;
-    bottom:45px;
-    right:60px;
+    bottom:55px;
+    right:10px;
     padding:20px;
     display:none;
     border:2px solid gray;
     /*border-bottom:0px;*/
     width: 189px;
+    background-color: white;
 }
 
 #omniBox {
     float:left;
-    width:300px;
+    width:280px;
 }
 
 #toolbox {
     position:fixed;
-    bottom:0px;
-    right:20px;
+    bottom:10px;
+    right:50px;
     width:auto;
     height:auto;
-    border:2px solid gray;
-    border-bottom:0px;
+    border:1px solid gray;
+    //border-bottom:0px;
     background:white;
+    //box-shadow: 2px 2px 4px #888888;
 
     div {
         width:24px;
@@ -73,13 +75,13 @@ body {
         background:url("../images/icons/black/undo_24x24.png") !important;
     }
     #minimapButton:hover{
-        background:url("../images/icons/black/sun_stroke_24x24.png") !important;
+        background:url("../images/icons/black/Magnifying_glass.png") !important;
     }
     #settings:hover{
         background:url("../images/icons/black/cog_24x24.png") !important;    
     }
     #moreoptionsButton:hover{
-        background:url("../images/icons/black/arrow_up_24x24.png") !important;    
+        background:url("../images/icons/black/expand.png") !important;    
     }
 }
 
@@ -94,8 +96,8 @@ body {
 
 #navigation {
     position:fixed;
-    right:20px;
-    bottom:60px;
+    right:10px;
+    bottom:15px;
     width:30px;
     height:auto;
 
@@ -123,6 +125,11 @@ body {
     top:0px;
     height:100%;
     width:100%;
+
+    div {
+        height:100%;
+        width:100%;
+    }
 }
 
 #buildbar {
@@ -136,7 +143,7 @@ body {
         input[type="button"]{
             background:blue;
             height:30px;
-            width:60px;
+            width:40px;
             -webkit-font-smoothing: antialiased;
             -webkit-transition-delay: 0s;
             -webkit-transition-duration: 0.1s;
@@ -162,8 +169,8 @@ body {
             float: left;
             cursor:pointer;
             font-size: 16px;
-            border-bottom-right-radius:3px;
-            border-top-right-radius:3px;
+            //border-bottom-right-radius:3px;
+            //border-top-right-radius:3px;
 
             padding-bottom: 4px;
             padding-top: 4px;
@@ -238,22 +245,28 @@ body {
         width:310px;
     }
 
-    h1 {
+    #menuButton {
         font-family:'Helvetica Neue';
         font-weight:100;
         text-decoration:none;
         float:left;
-        font-size:16pt;
-        padding-top:2px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-bottom: 2px;
+        padding-top: 5px;
+        background-color: white;
+        border:1px solid gray;
+        color: gray;
         margin-top:0px;
         margin-bottom:0px;
         letter-spacing: 1px;
         width:auto;
-        margin-left:20px;
-        margin-right:10px;
-
+        font-size:18px;
+        margin-left: 10px;
+        margin-right: 10px;
+        cursor:pointer;
         a {
-            text-decoration:none;
+            /*text-decoration:none;*/
             color:black;
         }
     }
@@ -550,15 +563,22 @@ body {
     /*overflow: scroll;*/
     .node-profile {
         background-color: #ccc;
-        border: 1px solid white;
-        padding: 2px;
-        margin: 2px;
+        border: 1px solid black;
+        padding: 5px;
+        box-shadow: 2px 2px 4px #888888;
+        margin-bottom: 6px;
         .node-profile-property {
             font-size: 12px;
             max-height: 148px;
             /*overflow: scroll;*/
             border-bottom: 1px dotted #DDDEEE;
+            padding-bottom: 3px;
+            padding-top: 3px;
         };
+        .showMore {
+            font-size: 10px;
+            padding-top: 3px;
+        }
     }
 }
 

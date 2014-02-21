@@ -48,8 +48,18 @@
           }
           return _results;
         });
-        return this.graphView.on("enter:link:shift:click", function(datum) {
+        this.graphView.on("enter:link:shift:click", function(datum) {
           return _this.toggleSelection(datum);
+        });
+        return this.graphView.on("view:click", function() {
+          var link, _i, _len, _ref, _results;
+          _ref = _this.getSelectedLinks();
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            link = _ref[_i];
+            _results.push(_this.toggleSelection(link));
+          }
+          return _results;
         });
       };
 

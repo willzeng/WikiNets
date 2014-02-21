@@ -41,7 +41,7 @@ define [], () ->
       @linkStrength = (link) =>
         return (link.strength - @linkFilter.get("threshold")) / (1.0 - @linkFilter.get("threshold"))
       @force.linkStrength @linkStrength
-      svg = d3.select(@el).append("svg:svg").attr("pointer-events", "all")
+      svg = d3.select(@el).append("svg:svg").attr("pointer-events", "all").attr("height","100%").attr("width","100%")
       zoom = d3.behavior.zoom()
       @zoom = zoom
 
@@ -94,6 +94,8 @@ define [], () ->
 
       # outermost wrapper - this is used to capture all zoom events
       zoomCapture = svg.append("g")
+      zoomCapture
+        .attr("height","100%")
 
       # this is in the background to capture events not on any node
       # should be added first so appended nodes appear above this
@@ -101,6 +103,7 @@ define [], () ->
              .attr("width", "100%")
              .attr("height", "100%")
              .style("fill-opacity", "0%")
+             .style("fill","white")
 
       # Panning on Drag
       # lock infrastracture to ignore zoom changes that would
@@ -138,7 +141,8 @@ define [], () ->
       $(@el).bind "contextmenu", (e) -> return false #disable defaultcontextmenu
       $(@el).mousedown (e) => 
         if e.which is 3 then @trigger "view:rightclick"
-        else @trigger "view:click"
+      $(@el).on "dblclick", (e) => 
+        @trigger "view:click"
 
       #Center node on shift+click
       #@addCentering()
@@ -165,6 +169,7 @@ define [], () ->
           'url(#Triangle2)' if link.direction is 'backward' or link.direction is 'bidirectional'
 
       linkEnter.on("click", (datum, index) =>
+        d3.event.stopPropagation()
         if d3.event.shiftKey then shifted = true else shifted = false
         if shifted then @trigger "enter:link:shift:click", datum
         else @trigger "enter:link:click", datum
@@ -223,6 +228,7 @@ define [], () ->
       nodeEnter.on("click", (datum, index) =>
         #ignore drag
         return  if d3.event.defaultPrevented
+        d3.event.stopPropagation()
         if d3.event.shiftKey then shifted = true else shifted = false
         datum.fixed = true
         clickSemaphore += 1

@@ -29,7 +29,7 @@
         this.sourceSet = false;
         this.render();
         this.selection = instances["NodeSelection"];
-        return this.selection.on("change", this.update.bind(this));
+        return this.linkSelection = instances["LinkSelection"];
       };
 
       TopBarCreate.prototype.render = function() {
@@ -41,6 +41,8 @@
         this.$nodeWrapper = $('<div id="NodeCreateContainer">').appendTo($nodeSide);
         this.$nodeInputName = $('<textarea id="NodeCreateName" placeholder=\"Node Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
         this.$nodeInputDesc = $('<textarea id="NodeCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
+        this.$nodeInputColor = $('<textarea placeholder="Color [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
+        this.$nodeInputSize = $('<textarea placeholder="Size [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
         $nodeInputForm = $('<form id="NodeCreateForm"></form>').appendTo(this.$nodeWrapper);
         nodeInputNumber = 0;
         $nodeMoreFields = $("<input id=\"moreNodeCreateFields\" type=\"button\" value=\"+\">").appendTo(this.$nodeWrapper);
@@ -115,7 +117,8 @@
                     newLink.target = n;
                   }
                 }
-                return _this.graphModel.putLink(newLink);
+                _this.graphModel.putLink(newLink);
+                return _this.linkSelection.toggleSelection(newLink);
               });
               _this.sourceSet = _this.buildingLink = false;
               $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>');
@@ -180,6 +183,12 @@
         if (!($("#" + form_name + "Desc").val() === void 0 || $("#" + form_name + "Desc").val() === "")) {
           propertyObject["description"] = $("#" + form_name + "Desc").val().replace(/'/g, "\\'");
         }
+        if (!($("#" + form_name + "Color").val() === void 0 || $("#" + form_name + "Color").val() === "")) {
+          propertyObject["color"] = $("#" + form_name + "Color").val().replace(/'/g, "\\'");
+        }
+        if (!($("#" + form_name + "Size").val() === void 0 || $("#" + form_name + "Size").val() === "")) {
+          propertyObject["size"] = $("#" + form_name + "Size").val().replace(/'/g, "\\'");
+        }
         $("." + form_name + "Div").each(function(i, obj) {
           var property, value;
           property = $(this).children(".property" + form_name).val();
@@ -213,6 +222,8 @@
           });
           this.$nodeInputName.val('');
           this.$nodeInputDesc.val('');
+          this.$nodeInputColor.val('');
+          this.$nodeInputSize.val('');
           this.$nodeInputName.focus();
           return this.dataController.nodeAdd(nodeObject[1], function(datum) {
             return _this.graphModel.putNode(datum);

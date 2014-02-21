@@ -34,7 +34,7 @@
         });
         this.graphView.on("enter:link:mouseover", function(d) {
           if (!_this.topBarCreate.buildingLink) {
-            return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">' + 'Selected Link: <b>' + d.name + '</b></span>');
+            return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">' + 'Click to select: <b>' + d.source.name + " - " + d.name + " - " + d.target.name + '</b></span>');
           }
         });
         return this.graphView.on("enter:link:mouseout", function(d) {

@@ -41,6 +41,9 @@ define [], () ->
       @graphView.on "enter:link:shift:click", (datum) =>
          @toggleSelection datum
 
+      @graphView.on "view:click", =>
+        @toggleSelection(link) for link in @getSelectedLinks()
+
     renderSelection: () ->
       linkSelection = @graphView.getLinkSelection()
       if linkSelection

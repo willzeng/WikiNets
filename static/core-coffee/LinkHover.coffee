@@ -46,7 +46,7 @@ define [], () ->
       @graphView.on "enter:link:mouseover", (d) =>
         #console.log d
         if not @topBarCreate.buildingLink
-          $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">' + 'Selected Link: <b>' + d.name + '</b></span>')
+          $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">' + 'Click to select: <b>' + d.source.name+" - "+d.name+" - "+d.target.name+ '</b></span>')
 
       @graphView.on "enter:link:mouseout", (d) =>
         if not @topBarCreate.buildingLink
