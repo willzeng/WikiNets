@@ -41,8 +41,7 @@ define [], () ->
       @linkStrength = (link) =>
         return (link.strength - @linkFilter.get("threshold")) / (1.0 - @linkFilter.get("threshold"))
       @force.linkStrength @linkStrength
-      svg = d3.select(@el).append("svg:svg").attr("pointer-events", "all")
-      zoom = d3.behavior.zoom()
+      svg = d3.select(@el).append("svg:svg").attr("pointer-events", "all").attr("height","100%").attr("width","100%")      zoom = d3.behavior.zoom()
       @zoom = zoom
 
       # create arrowhead definitions

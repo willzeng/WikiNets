@@ -69,8 +69,7 @@
           return (link.strength - _this.linkFilter.get("threshold")) / (1.0 - _this.linkFilter.get("threshold"));
         };
         this.force.linkStrength(this.linkStrength);
-        svg = d3.select(this.el).append("svg:svg").attr("pointer-events", "all");
-        zoom = d3.behavior.zoom();
+        svg = d3.select(this.el).append("svg:svg").attr("pointer-events", "all").attr("height", "100%").attr("width", "100%")(zoom = d3.behavior.zoom());
         this.zoom = zoom;
         defs = svg.append("defs");
         defs.append("marker").attr("id", "Triangle").attr("viewBox", "0 0 20 15").attr("refX", "20").attr("refY", "5").attr("markerUnits", "userSpaceOnUse").attr("markerWidth", "20").attr("markerHeight", "15").attr("orient", "auto").append("path").attr("d", "M 0 0 L 10 5 L 0 10 z");
