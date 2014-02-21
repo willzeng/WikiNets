@@ -123,7 +123,7 @@
             } else {
               _this.tempLink.source = node;
               _this.sourceSet = true;
-              return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click a node to select it as the link target.</span>');
+              return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Source:' + _this.findHeader(node) + ' (' + node['_id'] + ')<br />Click a node to select it as the link target.</span>');
             }
           }
         });
@@ -233,6 +233,21 @@
           this.tempLink["properties"] = linkProperties[1];
           this.buildingLink = true;
           return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click a node to select it as the link source.</span>');
+        }
+      };
+
+      /*
+      To Do: replace this with a "to string" method for nodes
+      */
+
+
+      TopBarCreate.prototype.findHeader = function(node) {
+        if (node.name != null) {
+          return node.name;
+        } else if (node.title != null) {
+          return node.title;
+        } else {
+          return '';
         }
       };
 

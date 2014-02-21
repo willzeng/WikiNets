@@ -121,7 +121,7 @@ define [], () ->
           else
             @tempLink.source = node
             @sourceSet = true
-            $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click a node to select it as the link target.</span>')
+            $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Source:' + @findHeader(node) + ' (' + node['_id'] + ')<br />Click a node to select it as the link target.</span>')
 
     update: (node) ->
       @selection.getSelectedNodes()
@@ -224,3 +224,13 @@ define [], () ->
         @buildingLink = true
         $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click a node to select it as the link source.</span>')
 
+    ###
+    To Do: replace this with a "to string" method for nodes
+    ###
+    findHeader: (node) ->
+      if node.name?
+        node.name
+      else if node.title?
+        node.title
+      else
+        ''

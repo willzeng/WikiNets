@@ -14,6 +14,7 @@ define [], () ->
       @linkFilter = @graphView.getLinkFilter()
       @graphModel = instances['GraphModel']
       @dataProvider = instances["local/WikiNetsDataProvider"]
+      @topBarCreate = instances['local/TopBarCreate']
 
       # div = d3.select("#maingraph").append("div")   
       #     .style("position", "absolute")       
@@ -43,11 +44,13 @@ define [], () ->
         @expandSelection(d)
 
       @graphView.on "enter:link:mouseover", (d) =>
-        console.log d
-        $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">' + 'Selected Link: <b>' + d.name + '</b></span>')
+        #console.log d
+        if not @topBarCreate.buildingLink
+          $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">' + 'Selected Link: <b>' + d.name + '</b></span>')
 
       @graphView.on "enter:link:mouseout", (d) =>
-        $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px"></span>')
+        if not @topBarCreate.buildingLink
+          $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px"></span>')
 
     expandSelection: (d) =>
       @dataProvider.getLinkedNodes [d], (nodes) =>

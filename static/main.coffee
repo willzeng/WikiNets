@@ -90,6 +90,8 @@ require ["Celestrium"], (Celestrium) ->
 
     "local/ToolBox": {}
 
+    "local/TopBarCreate": {}
+
     DropdownMenu: {}
 
     Expander: {}
@@ -110,8 +112,6 @@ require ["Celestrium"], (Celestrium) ->
     #Stats: {}
 
     #"local/OverlayCreate": {}
-
-    "local/TopBarCreate": {}
 
     "Sliders": {}
 

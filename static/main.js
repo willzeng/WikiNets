@@ -54,11 +54,11 @@
       "local/LinkEdit": {},
       "local/ShowAll": {},
       "local/ToolBox": {},
+      "local/TopBarCreate": {},
       DropdownMenu: {},
       Expander: {},
       LinkHover: {},
       MiniMap: {},
-      "local/TopBarCreate": {},
       "Sliders": {},
       "ForceSliders": {},
       "local/NodeCreationPopout": {}
