@@ -80,6 +80,7 @@ require ["Celestrium"], (Celestrium) ->
     "local/ToolBox": {}
 
     # Adds a topbar with link/node creation functionality
+    # and the "#toplink-instructions" box
     "local/TopBarCreate": {}
 
     # adds a dropdown menu on the top left with 

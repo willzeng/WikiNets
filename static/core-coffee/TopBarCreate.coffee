@@ -37,8 +37,8 @@ define [], () ->
 
       @$nodeInputName = $('<textarea id="NodeCreateName" placeholder=\"Node Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
       @$nodeInputDesc = $('<textarea id="NodeCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
-      @$nodeInputColor = $('<textarea placeholder="Color [optional]" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
-      @$nodeInputSize = $('<textarea placeholder="Size [optional]" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
+      @$nodeInputColor = $('<textarea id="NodeCreateColor" placeholder="Color [optional]" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
+      @$nodeInputSize = $('<textarea id="NodeCreateSize" placeholder="Size [optional]" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
 
       $nodeInputForm = $('<form id="NodeCreateForm"></form>').appendTo @$nodeWrapper
       nodeInputNumber = 0
@@ -123,8 +123,13 @@ define [], () ->
               @linkSelection.toggleSelection(newLink)
               )
             @sourceSet = @buildingLink = false
+            $('.LinkCreateDiv').each( (i, obj) ->
+              $(this)[0].parentNode.removeChild $(this)[0]
+            )
+            @$linkInputName.val('')
+            @$linkInputDesc.val('')
             $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>')
-            $linkHolder.show()
+            @$linkInputName.focus()
           else
             @tempLink.source = node
             @sourceSet = true
@@ -207,6 +212,7 @@ define [], () ->
       # if all property names were fine, remove the on-the-fly created input
       # fields and submit the data to the server to actually create the node
       if (nodeObject[0]) then (
+        console.log nodeObject[1]
         $('.NodeCreateDiv').each( (i, obj) ->
           $(this)[0].parentNode.removeChild $(this)[0]
         )
@@ -215,7 +221,13 @@ define [], () ->
         @$nodeInputColor.val('')
         @$nodeInputSize.val('')
         @$nodeInputName.focus()
-        @dataController.nodeAdd(nodeObject[1], (datum) => @graphModel.putNode(datum))
+        @dataController.nodeAdd(nodeObject[1], (datum) =>
+          datum.fixed = true
+          datum.px = $(window).width()/2
+          datum.py = $(window).height()/2
+          @graphModel.putNode(datum)
+          @selection.toggleSelection(datum)
+        )
       )
 
 

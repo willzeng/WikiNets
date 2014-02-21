@@ -25,7 +25,7 @@
         this.topBarCreate = instances['local/TopBarCreate'];
         this.loading = false;
         this.graphView.on("enter:node:mouseover", function(d) {
-          if (!this.loading && (!this.topBarCreate.buildingLink)) {
+          if (!_this.loading && (!_this.topBarCreate.buildingLink)) {
             return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Right-click to find connections.</span>');
           }
         });

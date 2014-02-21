@@ -41,8 +41,8 @@
         this.$nodeWrapper = $('<div id="NodeCreateContainer">').appendTo($nodeSide);
         this.$nodeInputName = $('<textarea id="NodeCreateName" placeholder=\"Node Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
         this.$nodeInputDesc = $('<textarea id="NodeCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
-        this.$nodeInputColor = $('<textarea placeholder="Color [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
-        this.$nodeInputSize = $('<textarea placeholder="Size [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
+        this.$nodeInputColor = $('<textarea id="NodeCreateColor" placeholder="Color [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
+        this.$nodeInputSize = $('<textarea id="NodeCreateSize" placeholder="Size [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
         $nodeInputForm = $('<form id="NodeCreateForm"></form>').appendTo(this.$nodeWrapper);
         nodeInputNumber = 0;
         $nodeMoreFields = $("<input id=\"moreNodeCreateFields\" type=\"button\" value=\"+\">").appendTo(this.$nodeWrapper);
@@ -121,8 +121,13 @@
                 return _this.linkSelection.toggleSelection(newLink);
               });
               _this.sourceSet = _this.buildingLink = false;
+              $('.LinkCreateDiv').each(function(i, obj) {
+                return $(this)[0].parentNode.removeChild($(this)[0]);
+              });
+              _this.$linkInputName.val('');
+              _this.$linkInputDesc.val('');
               $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>');
-              return $linkHolder.show();
+              return _this.$linkInputName.focus();
             } else {
               _this.tempLink.source = node;
               _this.sourceSet = true;
@@ -217,6 +222,7 @@
           _this = this;
         nodeObject = this.assign_properties("NodeCreate");
         if (nodeObject[0]) {
+          console.log(nodeObject[1]);
           $('.NodeCreateDiv').each(function(i, obj) {
             return $(this)[0].parentNode.removeChild($(this)[0]);
           });
@@ -226,7 +232,11 @@
           this.$nodeInputSize.val('');
           this.$nodeInputName.focus();
           return this.dataController.nodeAdd(nodeObject[1], function(datum) {
-            return _this.graphModel.putNode(datum);
+            datum.fixed = true;
+            datum.px = $(window).width() / 2;
+            datum.py = $(window).height() / 2;
+            _this.graphModel.putNode(datum);
+            return _this.selection.toggleSelection(datum);
           });
         }
       };

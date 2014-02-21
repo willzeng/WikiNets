@@ -45,7 +45,7 @@ define [], () ->
 
       @loading = false
 
-      @graphView.on "enter:node:mouseover", (d) ->
+      @graphView.on "enter:node:mouseover", (d) =>
         if !@loading and (not @topBarCreate.buildingLink)
           $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Right-click to find connections.</span>')
 
