@@ -33,7 +33,7 @@
       };
 
       TopBarCreate.prototype.render = function() {
-        var $container, $createLinkButton, $createNodeButton, $linkHolder, $linkInputForm, $linkMoreFields, $linkSide, $linkingInstructions, $nodeHolder, $nodeInputForm, $nodeMoreFields, $nodeSide, $openPopoutButton, linkInputNumber, nodeInputNumber,
+        var $container, $createNodeButton, $linkHolder, $linkInputForm, $linkMoreFields, $linkSide, $linkingInstructions, $nodeHolder, $nodeInputForm, $nodeMoreFields, $nodeSide, $openPopoutButton, linkInputNumber, nodeInputNumber,
           _this = this;
         $container = $('<div id="topbarcreate">').appendTo($('#buildbar'));
         $nodeSide = $('<div id="nodeside">').appendTo($container);
@@ -70,9 +70,20 @@
           _this.addField(linkInputNumber, "LinkCreate");
           return linkInputNumber = linkInputNumber + 1;
         });
-        $createLinkButton = $('<input id="queryform" type="button" value="Attach & Create Link">').appendTo(this.$linkWrapper);
+        this.$createLinkButton = $('<input id="LinkCreateButton" type="button" value="Attach & Create Link">').appendTo(this.$linkWrapper);
         $linkingInstructions = $('<span id="toplink-instructions">').appendTo($container);
-        $createLinkButton.click(this.buildLink);
+        this.$createLinkButton.click(function() {
+          if (_this.buildingLink) {
+            _this.buildingLink = false;
+            _this.tempLink = {};
+            _this.sourceSet = false;
+            $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>');
+            _this.$createLinkButton.val('Attach & Create Link');
+            return _this.$linkInputName.focus();
+          } else {
+            return _this.buildLink();
+          }
+        });
         this.$nodeWrapper.hide();
         this.$linkWrapper.hide();
         $nodeHolder.focus(function() {
@@ -127,6 +138,7 @@
               _this.$linkInputName.val('');
               _this.$linkInputDesc.val('');
               $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>');
+              _this.$createLinkButton.val('Attach & Create Link');
               return _this.$linkInputName.focus();
             } else {
               _this.tempLink.source = node;
@@ -222,7 +234,6 @@
           _this = this;
         nodeObject = this.assign_properties("NodeCreate");
         if (nodeObject[0]) {
-          console.log(nodeObject[1]);
           $('.NodeCreateDiv').each(function(i, obj) {
             return $(this)[0].parentNode.removeChild($(this)[0]);
           });
@@ -250,10 +261,10 @@
         console.log("Building Link");
         linkProperties = this.assign_properties("LinkCreate");
         if (linkProperties[0]) {
-          console.log("Link properties OK");
           this.tempLink["properties"] = linkProperties[1];
           this.buildingLink = true;
-          return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click a node to select it as the link source.</span>');
+          $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click a node to select it as the link source.</span>');
+          return this.$createLinkButton.val('Cancel Link Creation');
         }
       };
 

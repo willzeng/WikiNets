@@ -82,11 +82,20 @@ define [], () ->
         linkInputNumber = linkInputNumber+1
         )
 
-      $createLinkButton = $('<input id="queryform" type="button" value="Attach & Create Link">').appendTo @$linkWrapper
+      @$createLinkButton = $('<input id="LinkCreateButton" type="button" value="Attach & Create Link">').appendTo @$linkWrapper
 
       $linkingInstructions = $('<span id="toplink-instructions">').appendTo $container
 
-      $createLinkButton.click(@buildLink)
+      @$createLinkButton.click () =>
+        if @buildingLink
+          @buildingLink = false
+          @tempLink = {};
+          @sourceSet = false
+          $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>')
+          @$createLinkButton.val('Attach & Create Link')
+          @$linkInputName.focus()
+        else
+          @buildLink()
 
       @$nodeWrapper.hide()
       @$linkWrapper.hide()
@@ -129,6 +138,7 @@ define [], () ->
             @$linkInputName.val('')
             @$linkInputDesc.val('')
             $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>')
+            @$createLinkButton.val('Attach & Create Link')
             @$linkInputName.focus()
           else
             @tempLink.source = node
@@ -212,7 +222,6 @@ define [], () ->
       # if all property names were fine, remove the on-the-fly created input
       # fields and submit the data to the server to actually create the node
       if (nodeObject[0]) then (
-        console.log nodeObject[1]
         $('.NodeCreateDiv').each( (i, obj) ->
           $(this)[0].parentNode.removeChild $(this)[0]
         )
@@ -244,10 +253,10 @@ define [], () ->
       # if all property names were fine, remove the on-the-fly created input
       # fields and submit the data to the server to actually create the link
       if linkProperties[0]
-        console.log "Link properties OK"
         @tempLink["properties"] = linkProperties[1]
         @buildingLink = true
         $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click a node to select it as the link source.</span>')
+        @$createLinkButton.val('Cancel Link Creation')
 
     ###
     To Do: replace this with a "to string" method for nodes
