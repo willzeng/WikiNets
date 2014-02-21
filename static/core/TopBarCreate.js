@@ -29,7 +29,7 @@
       };
 
       TopBarCreate.prototype.render = function() {
-        var $container, $createLinkButton, $createnodeNodeButton, $linkHolder, $linkInputDesc, $linkInputName, $linkInputUrl, $linkSide, $linkingInstructions, $nodeHolder, $nodeInputDesc, $nodeInputName, $nodeInputUrl, $nodeSide, $openPopoutButton,
+        var $container, $createLinkButton, $createnodeNodeButton, $linkHolder, $linkInputDesc, $linkInputName, $linkInputUrl, $linkSide, $linkingInstructions, $nodeHolder, $nodeInputColor, $nodeInputDesc, $nodeInputName, $nodeInputSize, $nodeInputUrl, $nodeSide, $openPopoutButton,
           _this = this;
         $container = $('<div id="topbarcreate">').appendTo(this.$el);
         $nodeSide = $('<div id="nodeside">').appendTo($container);
@@ -37,10 +37,12 @@
         this.$nodeWrapper = $('<div class="source-container">').appendTo($nodeSide);
         $nodeInputName = $('<textarea placeholder=\"Node Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
         $nodeInputUrl = $('<textarea placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
-        $nodeInputDesc = $('<textarea placeholder="Description #key1 value1 #key2 value2" rows="5" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
+        $nodeInputColor = $('<textarea placeholder="Color [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
+        $nodeInputSize = $('<textarea placeholder="Size [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
+        $nodeInputDesc = $('<textarea placeholder="say somthing about your node...." rows="5" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
         $createnodeNodeButton = $('<input id="queryform" type="button" value="Create Node">').appendTo(this.$nodeWrapper);
         $createnodeNodeButton.click(function() {
-          _this.buildNode(_this.parseSyntax($nodeInputName.val() + " : " + $nodeInputDesc.val() + " #url " + $nodeInputUrl.val()));
+          _this.buildNode(_this.parseNewSyntax($nodeInputName.val() + ":#:" + $nodeInputUrl.val() + ":#:" + $nodeInputColor.val() + ":#:" + $nodeInputSize.val() + ":#:" + $nodeInputDesc.val()));
           $nodeInputName.val('');
           $nodeInputUrl.val('');
           $nodeInputDesc.val('');
@@ -55,7 +57,7 @@
         $linkSide = $('<div id="linkside">').appendTo($container);
         $linkHolder = $('<textarea placeholder="Add Link" id="nodeHolder" name="textin" rows="1" cols="35"></textarea><br>').appendTo($linkSide);
         this.$linkWrapper = $('<div id="source-container">').appendTo($linkSide);
-        $linkInputName = $('<textarea placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
+        $linkInputName = $('<textarea placeholder=\"Link Name\" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
         $linkInputUrl = $('<textarea placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
         $linkInputDesc = $('<textarea placeholder="Description\n #key1 value1 #key2 value2" rows="5" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
         $createLinkButton = $('<input id="queryform" type="submit" value="Create Link"><br>').appendTo(this.$linkWrapper);
@@ -149,9 +151,22 @@
         return this.buildingLink = true;
       };
 
+      TopBarCreate.prototype.parseNewSyntax = function(input) {
+        var createDate, dict, strsplit;
+        strsplit = input.split(":#:");
+        dict = {};
+        dict["name"] = strsplit[0].trim();
+        strsplit[1].trim() !== "" && (dict["url"] = strsplit[1].trim());
+        strsplit[2].trim() !== "" && (dict["color"] = strsplit[2].trim());
+        strsplit[3].trim() !== "" && (dict["size"] = strsplit[3].trim());
+        strsplit[4].trim() !== "" && (dict["description"] = strsplit[4].trim());
+        createDate = new Date();
+        dict["_Creation_Date"] = createDate;
+        return dict;
+      };
+
       TopBarCreate.prototype.parseSyntax = function(input) {
         var createDate, dict, match, pattern, strsplit, text;
-        console.log("input", input);
         strsplit = input.split('#');
         strsplit[0] = strsplit[0].replace(/:/, " #description ");
         /* The : is shorthand for #description*/
@@ -169,6 +184,7 @@
         console.log("This is the title", text.split('#')[0].trim());
         createDate = new Date();
         dict["_Creation_Date"] = createDate;
+        console.log("dictdict", dict);
         return dict;
       };
 
