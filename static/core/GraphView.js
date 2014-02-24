@@ -90,10 +90,14 @@
           zoom.translate(currentZoom);
           return translateLock = false;
         });
+        this.currentTranslation = [0, 0];
+        this.currentScale = 1;
         zoomCapture.call(zoom.on("zoom", function() {
           if (translateLock) {
             return;
           }
+          _this.currentTranslation = d3.event.translate;
+          _this.currentScale = d3.event.scale;
           return workspace.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
         })).on("dblclick.zoom", null);
         workspace = zoomCapture.append("svg:g");

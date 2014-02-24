@@ -236,8 +236,8 @@ define [], () ->
         @$nodeInputName.focus()
         @dataController.nodeAdd(nodeObject[1], (datum) =>
           datum.fixed = true
-          datum.px = $(window).width()/2
-          datum.py = $(window).height()/2
+          datum.px = ($(window).width()/2-@graphView.currentTranslation[0])/@graphView.currentScale
+          datum.py = ($(window).height()/2-@graphView.currentTranslation[1])/@graphView.currentScale
           @graphModel.putNode(datum)
           @selection.toggleSelection(datum)
         )

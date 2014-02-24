@@ -247,8 +247,8 @@
           this.$nodeInputName.focus();
           return this.dataController.nodeAdd(nodeObject[1], function(datum) {
             datum.fixed = true;
-            datum.px = $(window).width() / 2;
-            datum.py = $(window).height() / 2;
+            datum.px = ($(window).width() / 2 - _this.graphView.currentTranslation[0]) / _this.graphView.currentScale;
+            datum.py = ($(window).height() / 2 - _this.graphView.currentTranslation[1]) / _this.graphView.currentScale;
             _this.graphModel.putNode(datum);
             return _this.selection.toggleSelection(datum);
           });

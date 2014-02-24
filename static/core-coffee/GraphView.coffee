@@ -121,9 +121,12 @@ define [], () ->
       # ignore zoom event if it's due to a node being dragged
       # otherwise, translate and scale according to zoom
       # disabled dragging for clicking
-      
-      zoomCapture.call(zoom.on("zoom", -> # ignore double click to zoom
+      @currentTranslation = [0,0]
+      @currentScale = 1
+      zoomCapture.call(zoom.on("zoom", => # ignore double click to zoom
         return  if translateLock
+        @currentTranslation = d3.event.translate
+        @currentScale = d3.event.scale
         workspace.attr "transform", "translate(#{d3.event.translate}) scale(#{d3.event.scale})"
       )).on("dblclick.zoom", null)
 
