@@ -260,8 +260,17 @@
         var translateParams,
           _this = this;
         translateParams = [0, 0];
-        return this.on("enter:node:dblclick", function(node) {
+        this.on("enter:node:dblclick", function(node) {
           translateParams = [$(window).width() / 2 - node.x * _this.currentScale, $(window).height() / 2 - node.y * _this.currentScale];
+          _this.zoom.translate([translateParams[0], translateParams[1]]);
+          return _this.workspace.transition().ease("linear").attr("transform", "translate(" + translateParams + ") scale(" + _this.currentScale + ")");
+        });
+        return this.on("enter:link:dblclick", function(link) {
+          var linkCenterX, linkCenterY;
+          console.log("cnenencsnjdnj");
+          linkCenterX = (link.target.x - link.source.x) / 2 + link.source.x;
+          linkCenterY = (link.target.y - link.source.y) / 2 + link.source.y;
+          translateParams = [$(window).width() / 2 - linkCenterX * _this.currentScale, $(window).height() / 2 - linkCenterY * _this.currentScale];
           _this.zoom.translate([translateParams[0], translateParams[1]]);
           return _this.workspace.transition().ease("linear").attr("transform", "translate(" + translateParams + ") scale(" + _this.currentScale + ")");
         });

@@ -292,6 +292,16 @@ define [], () ->
         #translate workspace
         @workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{@currentScale})"
 
+      @on "enter:link:dblclick", (link) =>
+        console.log "cnenencsnjdnj"
+        linkCenterX = (link.target.x-link.source.x)/2+link.source.x
+        linkCenterY = (link.target.y-link.source.y)/2+link.source.y
+        translateParams = [$(window).width()/2-linkCenterX*@currentScale,$(window).height()/2-linkCenterY*@currentScale]
+        #update translate values
+        @zoom.translate([translateParams[0], translateParams[1]])
+        #translate workspace
+        @workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{@currentScale})"
+
     #fast-forward force graph rendering to prevent bouncing http://stackoverflow.com/questions/13463053/calm-down-initial-tick-of-a-force-layout  
     # forwardAlpha: (layout, alpha, max) ->
     #   alpha = alpha || 0
