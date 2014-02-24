@@ -14,6 +14,7 @@ define [], () ->
       @linkFilter = @graphView.getLinkFilter()
       @graphModel = instances['GraphModel']
       @dataProvider = instances["local/WikiNetsDataProvider"]
+      @topBarCreate = instances['local/TopBarCreate']
 
       # div = d3.select("#maingraph").append("div")   
       #     .style("position", "absolute")       
@@ -44,12 +45,12 @@ define [], () ->
 
       @loading = false
 
-      @graphView.on "enter:node:mouseover", (d) ->
-        if !@loading
+      @graphView.on "enter:node:mouseover", (d) =>
+        if !@loading and (not @topBarCreate.buildingLink)
           $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Right-click to find connections.</span>')
 
       @graphView.on "enter:node:mouseout", (d) => 
-        if !@loading
+        if !@loading and (not @topBarCreate.buildingLink)
           $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px"></span>')
 
       @graphView.on "enter:node:rightclick", (d) =>

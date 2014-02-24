@@ -22,6 +22,7 @@
         this.linkFilter = this.graphView.getLinkFilter();
         this.graphModel = instances['GraphModel'];
         this.dataProvider = instances["local/WikiNetsDataProvider"];
+        this.topBarCreate = instances['local/TopBarCreate'];
         this.graphView.on("enter:node:mouseover", function(d) {
           return $('#expand-button' + _this.graphModel.get("nodeHash")(d)).show();
         });
@@ -32,10 +33,14 @@
           return _this.expandSelection(d);
         });
         this.graphView.on("enter:link:mouseover", function(d) {
-          return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">' + 'Click to select: <b>' + d.source.name + " - " + d.name + " - " + d.target.name + '</b></span>');
+          if (!_this.topBarCreate.buildingLink) {
+            return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">' + 'Click to select: <b>' + d.source.name + " - " + d.name + " - " + d.target.name + '</b></span>');
+          }
         });
         return this.graphView.on("enter:link:mouseout", function(d) {
-          return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px"></span>');
+          if (!_this.topBarCreate.buildingLink) {
+            return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px"></span>');
+          }
         });
       };
 

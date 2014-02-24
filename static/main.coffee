@@ -79,6 +79,10 @@ require ["Celestrium"], (Celestrium) ->
     # some other plugins are added to this toolbox
     "local/ToolBox": {}
 
+    # Adds a topbar with link/node creation functionality
+    # and the "#toplink-instructions" box
+    "local/TopBarCreate": {}
+
     # adds a dropdown menu on the top left with 
     # About information and some basic display commands
     DropdownMenu: {}
@@ -89,9 +93,6 @@ require ["Celestrium"], (Celestrium) ->
 
     # This shows the name of a link on hover
     LinkHover: {}
-
-    # Adds a topbar with link/node creation functionality
-    "local/TopBarCreate": {}
 
     # appends a minimap plugin to the ToolBox
     MiniMap: {}  
