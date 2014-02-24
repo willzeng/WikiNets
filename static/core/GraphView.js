@@ -112,9 +112,8 @@
             return _this.trigger("view:rightclick");
           }
         });
-        $(this.el).on("dblclick", function(e) {
-          return _this.trigger("view:click");
-        });
+        $(this.el).on("dblclick", function(e) {});
+        this.addCentering();
         return this;
       };
 
@@ -194,7 +193,7 @@
         }).attr("fill", "white").attr("stroke-width", 3);
         clickSemaphore = 0;
         nodeEnter.on("click", function(datum, index) {
-          var savedClickSemaphore, shifted;
+          var ctrl, savedClickSemaphore, shifted;
           if (d3.event.defaultPrevented) {
             return;
           }
@@ -204,6 +203,11 @@
           } else {
             shifted = false;
           }
+          if (d3.event.ctrlKey) {
+            ctrl = true;
+          } else {
+            ctrl = false;
+          }
           datum.fixed = true;
           clickSemaphore += 1;
           savedClickSemaphore = clickSemaphore;
@@ -211,6 +215,8 @@
             if (clickSemaphore === savedClickSemaphore) {
               if (shifted) {
                 _this.trigger("enter:node:shift:click", datum);
+              } else if (ctrl) {
+                _this.trigger("enter:node:ctrl:click", datum);
               } else {
                 _this.trigger("enter:node:click", datum);
               }
@@ -251,18 +257,13 @@
       };
 
       GraphView.prototype.addCentering = function() {
-        var height, translateParams, width;
-        width = $(this.el).width();
-        height = $(this.el).height();
+        var translateParams,
+          _this = this;
         translateParams = [0, 0];
-        return this.on("enter:node:shift:click", function(node) {
-          var scale, x, y;
-          x = node.x;
-          y = node.y;
-          scale = this.zoom.scale();
-          translateParams = [(width / 2 - x) / scale, (height / 2 - y) / scale];
-          this.zoom.translate([translateParams[0], translateParams[1]]);
-          return this.workspace.transition().ease("linear").attr("transform", "translate(" + translateParams + ") scale(" + scale + ")");
+        return this.on("enter:node:dblclick", function(node) {
+          translateParams = [$(window).width() / 2 - node.x * _this.currentScale, $(window).height() / 2 - node.y * _this.currentScale];
+          _this.zoom.translate([translateParams[0], translateParams[1]]);
+          return _this.workspace.transition().ease("linear").attr("transform", "translate(" + translateParams + ") scale(" + _this.currentScale + ")");
         });
       };
 

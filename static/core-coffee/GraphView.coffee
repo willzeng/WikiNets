@@ -145,10 +145,10 @@ define [], () ->
       $(@el).mousedown (e) => 
         if e.which is 3 then @trigger "view:rightclick"
       $(@el).on "dblclick", (e) => 
-        @trigger "view:click"
+        #@trigger "view:click"
 
-      #Center node on shift+click
-      #@addCentering()
+      #Center node on dblclick
+      @addCentering()
 
       return this
 
@@ -233,12 +233,14 @@ define [], () ->
         return  if d3.event.defaultPrevented
         d3.event.stopPropagation()
         if d3.event.shiftKey then shifted = true else shifted = false
+        if d3.event.ctrlKey then ctrl = true else ctrl = false
         datum.fixed = true
         clickSemaphore += 1
         savedClickSemaphore = clickSemaphore
         setTimeout (=>
           if clickSemaphore is savedClickSemaphore
             if shifted then @trigger "enter:node:shift:click", datum
+            else if ctrl then @trigger "enter:node:ctrl:click", datum
             else @trigger "enter:node:click", datum
             datum.fixed = false
           else
@@ -280,20 +282,15 @@ define [], () ->
       #   ), @loadtime
 
     addCentering: () ->
-      width = $(@el).width()
-      height = $(@el).height() 
 
       translateParams=[0,0]
            
-      @on "enter:node:shift:click", (node) ->
-        x = node.x
-        y = node.y
-        scale = @zoom.scale()
-        translateParams = [(width/2 -x)/scale,(height/2-y)/scale]
-        #translateParams = [x,y]
+      @on "enter:node:dblclick", (node) =>
+        translateParams = [$(window).width()/2-node.x*@currentScale,$(window).height()/2-node.y*@currentScale]
         #update translate values
         @zoom.translate([translateParams[0], translateParams[1]])
-        @workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
+        #translate workspace
+        @workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{@currentScale})"
 
     #fast-forward force graph rendering to prevent bouncing http://stackoverflow.com/questions/13463053/calm-down-initial-tick-of-a-force-layout  
     # forwardAlpha: (layout, alpha, max) ->
