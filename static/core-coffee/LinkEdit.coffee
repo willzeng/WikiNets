@@ -132,6 +132,7 @@ define [], () ->
           callback()
 
     findHeader: (link) =>
+      headerName = link.name
       if link.url?
         realurl = ""
         result = link.url.search(new RegExp(/^http:\/\//i));
@@ -139,15 +140,15 @@ define [], () ->
           realurl = link.url
         else
           realurl = 'http://'+link.url;
-        link.name = '<a href='+realurl+' target="_blank">'+link.name+'</a>'
+        headerName = '<a href='+realurl+' target="_blank">'+link.name+'</a>'
       if @graphView.findText(link.source) and @graphView.findText(link.target)
-        "(" + @graphView.findText(link.source) + ") - " + link.name + " - (" + @graphView.findText(link.target) + ")"
+        "(#{@graphView.findText(link.source)})-#{headerName}-(#{@graphView.findText(link.target)})"
       else if @graphView.findText(link.source)
-        "(" + @graphView.findText(link.source) + ") - " + link.name + " - (" + link.end + ")"
+        "(#{@graphView.findText(link.source)})-#{headerName}-(#{link.end})"
       else if @graphView.findText(link.target)
-        "(" + link.start + ") - " + link.name + " - (" + @graphView.findText(link.target) + ")"
+        "(#{link.start})-#{headerName}-(#{@graphView.findText(link.target)})"
       else
-        "(" + link.start + ") - " + link.name + " - (" + link.end + ")"
+        "(#{link.start})-#{headerName}-(#{link.end})"
 
     renderProfile: (link, linkDiv, blacklist) =>
       header = @findHeader(link)

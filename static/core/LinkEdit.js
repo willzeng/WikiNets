@@ -152,7 +152,8 @@
       };
 
       LinkEdit.prototype.findHeader = function(link) {
-        var realurl, result;
+        var headerName, realurl, result;
+        headerName = link.name;
         if (link.url != null) {
           realurl = "";
           result = link.url.search(new RegExp(/^http:\/\//i));
@@ -161,16 +162,16 @@
           } else {
             realurl = 'http://' + link.url;
           }
-          link.name = '<a href=' + realurl + ' target="_blank">' + link.name + '</a>';
+          headerName = '<a href=' + realurl + ' target="_blank">' + link.name + '</a>';
         }
         if (this.graphView.findText(link.source) && this.graphView.findText(link.target)) {
-          return "(" + this.graphView.findText(link.source) + ") - " + link.name + " - (" + this.graphView.findText(link.target) + ")";
+          return "(" + (this.graphView.findText(link.source)) + ")-" + headerName + "-(" + (this.graphView.findText(link.target)) + ")";
         } else if (this.graphView.findText(link.source)) {
-          return "(" + this.graphView.findText(link.source) + ") - " + link.name + " - (" + link.end + ")";
+          return "(" + (this.graphView.findText(link.source)) + ")-" + headerName + "-(" + link.end + ")";
         } else if (this.graphView.findText(link.target)) {
-          return "(" + link.start + ") - " + link.name + " - (" + this.graphView.findText(link.target) + ")";
+          return "(" + link.start + ")-" + headerName + "-(" + (this.graphView.findText(link.target)) + ")";
         } else {
-          return "(" + link.start + ") - " + link.name + " - (" + link.end + ")";
+          return "(" + link.start + ")-" + headerName + "-(" + link.end + ")";
         }
       };
 

@@ -40,10 +40,8 @@
         $nodeHolder = $('<textarea placeholder="Add Node" id="nodeHolder" name="textin" rows="1" cols="35"></textarea>').appendTo($nodeSide);
         this.$nodeWrapper = $('<div id="NodeCreateContainer">').appendTo($nodeSide);
         this.$nodeInputName = $('<textarea id="NodeCreateName" placeholder=\"Node Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
-        this.$nodeInputDesc = $('<textarea id="NodeCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
         this.$nodeInputUrl = $('<textarea id="NodeCreateUrl" placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
-        this.$nodeInputColor = $('<textarea id="NodeCreateColor" placeholder="Color [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
-        this.$nodeInputSize = $('<textarea id="NodeCreateSize" placeholder="Size [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
+        this.$nodeInputDesc = $('<textarea id="NodeCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
         $nodeInputForm = $('<form id="NodeCreateForm"></form>').appendTo(this.$nodeWrapper);
         nodeInputNumber = 0;
         $nodeMoreFields = $("<input id=\"moreNodeCreateFields\" type=\"button\" value=\"+\">").appendTo(this.$nodeWrapper);
@@ -245,14 +243,12 @@
           });
           this.$nodeInputName.val('');
           this.$nodeInputDesc.val('');
-          this.$nodeInputColor.val('');
           this.$nodeInputUrl.val('');
-          this.$nodeInputSize.val('');
           this.$nodeInputName.focus();
           return this.dataController.nodeAdd(nodeObject[1], function(datum) {
             datum.fixed = true;
-            datum.px = $(window).width() / 2;
-            datum.py = $(window).height() / 2;
+            datum.px = ($(window).width() / 2 - _this.graphView.currentTranslation[0]) / _this.graphView.currentScale;
+            datum.py = ($(window).height() / 2 - _this.graphView.currentTranslation[1]) / _this.graphView.currentScale;
             _this.graphModel.putNode(datum);
             return _this.selection.toggleSelection(datum);
           });

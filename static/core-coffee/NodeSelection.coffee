@@ -35,7 +35,7 @@ define [], () ->
       @graphView.on "enter:node:shift:click", (datum) =>
         @toggleSelection datum
       
-      @graphView.on "enter:node:dblclick", (datum) =>
+      @graphView.on "enter:node:ctrl:click", (datum) =>
         @selectConnectedComponent datum
 
       @graphView.on "enter:link:click", (datum) =>
