@@ -21,8 +21,6 @@ define [], () ->
       @render()
 
       @selection = instances["NodeSelection"]
-      #@selection.on "change", @update.bind(this)
-
       @linkSelection = instances["LinkSelection"]
 
     render: ->
@@ -36,8 +34,8 @@ define [], () ->
       @$nodeWrapper = $('<div id="NodeCreateContainer">').appendTo $nodeSide
 
       @$nodeInputName = $('<textarea id="NodeCreateName" placeholder=\"Node Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
-      @$nodeInputDesc = $('<textarea id="NodeCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
       @$nodeInputUrl = $('<textarea id="NodeCreateUrl" placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
+      @$nodeInputDesc = $('<textarea id="NodeCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
       #@$nodeInputColor = $('<textarea id="NodeCreateColor" placeholder="Color [optional]" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
       #@$nodeInputSize = $('<textarea id="NodeCreateSize" placeholder="Size [optional]" rows="1" cols="35"></textarea><br>').appendTo @$nodeWrapper
 
@@ -232,9 +230,9 @@ define [], () ->
         )
         @$nodeInputName.val('')
         @$nodeInputDesc.val('')
-        @$nodeInputColor.val('')
+        #@$nodeInputColor.val('')
         @$nodeInputUrl.val('')
-        @$nodeInputSize.val('')
+        #@$nodeInputSize.val('')
         @$nodeInputName.focus()
         @dataController.nodeAdd(nodeObject[1], (datum) =>
           datum.fixed = true

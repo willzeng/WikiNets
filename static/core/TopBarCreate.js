@@ -40,8 +40,8 @@
         $nodeHolder = $('<textarea placeholder="Add Node" id="nodeHolder" name="textin" rows="1" cols="35"></textarea>').appendTo($nodeSide);
         this.$nodeWrapper = $('<div id="NodeCreateContainer">').appendTo($nodeSide);
         this.$nodeInputName = $('<textarea id="NodeCreateName" placeholder=\"Node Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
-        this.$nodeInputDesc = $('<textarea id="NodeCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
         this.$nodeInputUrl = $('<textarea id="NodeCreateUrl" placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
+        this.$nodeInputDesc = $('<textarea id="NodeCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
         $nodeInputForm = $('<form id="NodeCreateForm"></form>').appendTo(this.$nodeWrapper);
         nodeInputNumber = 0;
         $nodeMoreFields = $("<input id=\"moreNodeCreateFields\" type=\"button\" value=\"+\">").appendTo(this.$nodeWrapper);
@@ -243,9 +243,7 @@
           });
           this.$nodeInputName.val('');
           this.$nodeInputDesc.val('');
-          this.$nodeInputColor.val('');
           this.$nodeInputUrl.val('');
-          this.$nodeInputSize.val('');
           this.$nodeInputName.focus();
           return this.dataController.nodeAdd(nodeObject[1], function(datum) {
             datum.fixed = true;
