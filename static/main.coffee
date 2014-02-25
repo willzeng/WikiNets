@@ -116,7 +116,7 @@ require ["Celestrium"], (Celestrium) ->
       instances["GraphModel"].putNode node for node in nodes
 
     #Prepopulate the GraphModel with all the nodes and links
-    $.get('/get_nodes', loadEverything)
+    $.get('/get_default_nodes', loadEverything)
 
     # this allows all link strengths to be visible
     instances["GraphView"].getLinkFilter().set("threshold", 0)

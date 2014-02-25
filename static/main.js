@@ -72,7 +72,7 @@
         }
         return _results;
       };
-      $.get('/get_nodes', loadEverything);
+      $.get('/get_default_nodes', loadEverything);
       return instances["GraphView"].getLinkFilter().set("threshold", 0);
     });
   });

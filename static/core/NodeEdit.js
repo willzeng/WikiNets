@@ -48,7 +48,7 @@
           this.$el.empty();
           selectedNodes = this.selection.getSelectedNodes();
           $container = $("<div class=\"node-profile-helper\"/>").appendTo(this.$el);
-          blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color"];
+          blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color", "shouldLoad"];
           return _.each(selectedNodes, function(node) {
             var $nodeDiv, _ref;
             if (!(node.color != null)) {
@@ -63,7 +63,7 @@
       };
 
       NodeEdit.prototype.editNode = function(node, nodeDiv, blacklist) {
-        var $nodeCancel, $nodeDelete, $nodeMoreFields, $nodeSave, colorEditingField, header, nodeInputNumber, origColor,
+        var $loaderHolder, $loaderToggle, $nodeCancel, $nodeDelete, $nodeMoreFields, $nodeSave, colorEditingField, header, nodeInputNumber, origColor, shouldLoad,
           _this = this;
         console.log("Editing node: " + node['_id']);
         nodeInputNumber = 0;
@@ -91,6 +91,13 @@
         $("#color" + node['_id']).colorPicker({
           showHexField: false
         });
+        if (node.shouldLoad != null) {
+          shouldLoad = node.shouldLoad;
+        } else {
+          shouldLoad = false;
+        }
+        $loaderHolder = $('<span> Load by default <br> </span>').css("font-size", "12px").appendTo(nodeDiv);
+        $loaderToggle = $('<input type="checkbox" id=\"shouldLoad' + node._id + '\">').attr("checked", shouldLoad).prependTo($loaderHolder);
         $nodeMoreFields = $("<input id=\"moreNode" + node['_id'] + "EditFields\" type=\"button\" value=\"+\">").appendTo(nodeDiv);
         $nodeMoreFields.click(function() {
           _this.addField(nodeInputNumber, "Node" + node['_id'] + "Edit");
@@ -105,6 +112,7 @@
             newNode['color'] = $("#color" + node['_id']).val();
             newNode['_id'] = node['_id'];
             newNode['_Creation_Date'] = node['_Creation_Date'];
+            newNode["shouldLoad"] = $("#shouldLoad" + node._id).prop('checked');
             return _this.dataController.nodeEdit(node, newNode, function(savedNode) {
               _this.graphModel.filterNodes(function(node) {
                 return !(savedNode['_id'] === node['_id']);
@@ -169,7 +177,7 @@
         return $("#" + name + "Form").append($row);
       };
 
-      NodeEdit.prototype.assign_properties = function(form_name, is_illegal) {
+      NodeEdit.prototype.assign_properties = function(form_name, is_illegal, node) {
         var editDate, propertyObject, submitOK;
         if (is_illegal == null) {
           is_illegal = this.dataController.is_illegal;
@@ -217,7 +225,7 @@
       };
 
       NodeEdit.prototype.renderProfile = function(node, nodeDiv, blacklist, propNumber) {
-        var $nodeDeselect, $nodeEdit, $nodeHeader, $showMore, $spokeHolder, counter, header, nodeLength, p, v, whitelist,
+        var $nodeDeselect, $nodeEdit, $nodeHeader, $showMore, $spokeHolder, counter, header, initialSpokeNumber, nodeLength, p, v, whitelist,
           _this = this;
         nodeDiv.empty();
         header = this.findHeader(node);
@@ -268,8 +276,9 @@
           });
         }
         this.addLinker(node, nodeDiv);
+        initialSpokeNumber = 5;
         $spokeHolder = $("<div class='spokeHolder'></div>").appendTo(nodeDiv);
-        return this.addSpokes(node, $spokeHolder, 5);
+        return this.addSpokes(node, $spokeHolder, initialSpokeNumber);
       };
 
       NodeEdit.prototype.addLinker = function(node, nodeDiv) {

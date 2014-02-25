@@ -31,7 +31,7 @@ define [], () ->
         selectedNodes = @selection.getSelectedNodes()
         $container = $("<div class=\"node-profile-helper\"/>").appendTo(@$el)
         #these are they peoperties that are not shown in the profile
-        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color"]
+        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color","shouldLoad"]
         _.each selectedNodes, (node) =>
           if !(node.color?) then node.color="#A9A9A9"
           else if !(node.color.toUpperCase() in colors) then node.color="#A9A9A9"
@@ -70,7 +70,14 @@ define [], () ->
             </form>
           '
           $(colorEditingField).appendTo(nodeDiv)
-          $("#color#{node['_id']}").colorPicker {showHexField: false} 
+          $("#color#{node['_id']}").colorPicker {showHexField: false}
+
+          #Adds a checkbox to determine if the node should be loaded initially
+          if node.shouldLoad? then shouldLoad = node.shouldLoad else shouldLoad = false
+          $loaderHolder = $('<span> Load by default <br> </span>').css("font-size","12px").appendTo nodeDiv
+          $loaderToggle = $('<input type="checkbox" id=\"shouldLoad'+node._id+'\">')
+            .attr("checked", shouldLoad)
+            .prependTo $loaderHolder 
 
           $nodeMoreFields = $("<input id=\"moreNode#{node['_id']}EditFields\" type=\"button\" value=\"+\">").appendTo(nodeDiv)
           $nodeMoreFields.click(() =>
@@ -86,6 +93,7 @@ define [], () ->
               newNode['color'] = $("#color"+node['_id']).val()
               newNode['_id'] = node['_id']
               newNode['_Creation_Date'] = node['_Creation_Date']
+              newNode["shouldLoad"] = $("#shouldLoad#{node._id}").prop('checked')
               @dataController.nodeEdit(node,newNode, (savedNode) =>           
                 @graphModel.filterNodes (node) ->
                   !(savedNode['_id'] == node['_id'])
@@ -137,11 +145,11 @@ define [], () ->
     # returns: submitOK: a boolean indicating whether the property names were all
     #                    legal
     #          propertyObject: a dictionary of property-value pairs
-    assign_properties: (form_name, is_illegal = @dataController.is_illegal) => 
+    assign_properties: (form_name, is_illegal = @dataController.is_illegal, node) => 
         submitOK = true
         propertyObject = {}
         editDate = new Date()
-        propertyObject["_Last_Edit_Date"]=editDate
+        propertyObject["_Last_Edit_Date"] = editDate
         $("."+ form_name + "Div").each (i, obj) ->
             property = $(this).children(".property" + form_name).val()
             value = $(this).children(".value" + form_name).val()
@@ -230,8 +238,10 @@ define [], () ->
       #Adds button that creates link from selected node to user-inputted node
       @addLinker node, nodeDiv
 
+      #Adds the links from this node to its neighbors
+      initialSpokeNumber = 5
       $spokeHolder = $("<div class='spokeHolder'></div>").appendTo nodeDiv
-      @addSpokes node, $spokeHolder, 5
+      @addSpokes node, $spokeHolder, initialSpokeNumber
 
 
     addLinker: (node, nodeDiv) =>

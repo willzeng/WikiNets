@@ -40,6 +40,21 @@ module.exports = class MyApp
       )
     )
 
+    ### Responds with a list of all the nodes 
+        that have the shouldLoad attribute as true
+    ###
+    app.get('/get_default_nodes', (request,response)->
+      console.log "get_default_nodes Query Requested"
+      cypherQuery = "start n=node(*) where n.shouldLoad=\"true\" return n;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes)->
+          console.log "get_default_nodes Lookup Executed"
+          nodeList = (addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
+          response.json nodeList
+      )
+    )
+
     ### Creates a node using a Cypher query ###
     app.post('/create_node', (request, response) ->
       console.log "Node Creation Requested"
