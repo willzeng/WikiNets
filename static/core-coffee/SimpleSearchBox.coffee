@@ -39,12 +39,37 @@ define [], () ->
         .css("border", "1px solid blue")
         .appendTo $container
       $button = $("<input type=\"button\" value=\"Go\" style='float:right' />").appendTo $container
+      $autofillWrapper = $('<div class="autofillWrapperClass" style="border: 1px solid black; border-top: none;"></div>').appendTo $container
+      $autofillWrapper.hide()
 
       #call search functionality with press of ENTER key
       $searchBox.keyup (e)=>
         if(e.keyCode == 13)
           @searchNodesSimple $searchBox.val()
           $searchBox.val("")
+          $autofillWrapper.empty()
+          $autofillWrapper.hide()
+        else if($searchBox.val()!="")
+          #@searchNodesAutofill $searchBox.val(),$autofillWrapper
+          $tempquery = $searchBox.val()
+          $.post "/node_index_search", {checkKeys: @searchableKeys, query: $searchBox.val()}, (nodes) =>
+            if($tempquery!=$searchBox.val())
+              return
+            $autofillWrapper.empty()
+            for node in nodes
+              #console.log node
+              $autofillField = $("<span>" + node.name + "</span><br>").appendTo $autofillWrapper
+          $autofillWrapper.show()
+        else if($searchBox.val()=="")
+          $autofillWrapper.empty()
+
+      $(document).on "click", ()->
+        $autofillWrapper.hide()
+      $searchBox.on "click", (e)->
+        $autofillWrapper.show()
+        e.stopPropagation()
+        if($searchBox.val()>0)
+          $searchBox.show()
 
       #call search functionality with input text
       $button.click () =>
@@ -59,4 +84,11 @@ define [], () ->
           #selects all the nodes added to the workspace
           modelNode = theNode for theNode in @graphModel.getNodes() when theNode['_id'] is node['_id']
           @selection.selectNode(modelNode)
+
+    # searchNodesAutofill: (searchQuery,autofillWrapper) =>
+    #     $.post "/node_index_search", {checkKeys: @searchableKeys, query: searchQuery}, (nodes) =>
+    #       $autofillWrapper.empty()
+    #       for node in nodes
+    #         #console.log node
+    #         $autofillField = $("<p>" + node.name + "</p>").appendTo $autofillWrapper
           

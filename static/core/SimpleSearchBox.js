@@ -32,15 +32,51 @@
       };
 
       SimpleSearchBox.prototype.render = function() {
-        var $button, $container, $searchBox,
+        var $autofillWrapper, $button, $container, $searchBox,
           _this = this;
         $container = $("<div id='visual-search-container'>").appendTo(this.$el);
         $searchBox = $('<input type="text" id="searchBox">').css("width", "235px").css("height", "25px").css("box-shadow", "2px 2px 4px #888888").css("border", "1px solid blue").appendTo($container);
         $button = $("<input type=\"button\" value=\"Go\" style='float:right' />").appendTo($container);
+        $autofillWrapper = $('<div class="autofillWrapperClass" style="border: 1px solid black; border-top: none;"></div>').appendTo($container);
+        $autofillWrapper.hide();
         $searchBox.keyup(function(e) {
+          var $tempquery;
           if (e.keyCode === 13) {
             _this.searchNodesSimple($searchBox.val());
-            return $searchBox.val("");
+            $searchBox.val("");
+            $autofillWrapper.empty();
+            return $autofillWrapper.hide();
+          } else if ($searchBox.val() !== "") {
+            $tempquery = $searchBox.val();
+            $.post("/node_index_search", {
+              checkKeys: _this.searchableKeys,
+              query: $searchBox.val()
+            }, function(nodes) {
+              var $autofillField, node, _i, _len, _results;
+              if ($tempquery !== $searchBox.val()) {
+                return;
+              }
+              $autofillWrapper.empty();
+              _results = [];
+              for (_i = 0, _len = nodes.length; _i < _len; _i++) {
+                node = nodes[_i];
+                _results.push($autofillField = $("<span>" + node.name + "</span><br>").appendTo($autofillWrapper));
+              }
+              return _results;
+            });
+            return $autofillWrapper.show();
+          } else if ($searchBox.val() === "") {
+            return $autofillWrapper.empty();
+          }
+        });
+        $(document).on("click", function() {
+          return $autofillWrapper.hide();
+        });
+        $searchBox.on("click", function(e) {
+          $autofillWrapper.show();
+          e.stopPropagation();
+          if ($searchBox.val() > 0) {
+            return $searchBox.show();
           }
         });
         return $button.click(function() {
