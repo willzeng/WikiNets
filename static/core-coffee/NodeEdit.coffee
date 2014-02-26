@@ -89,18 +89,24 @@ define [], () ->
           $nodeSave.click () => 
             newNodeObj = @assign_properties("Node#{node['_id']}Edit")
             if newNodeObj[0]
-              newNode = newNodeObj[1]
-              newNode['color'] = $("#color"+node['_id']).val()
-              newNode['_id'] = node['_id']
-              newNode['_Creation_Date'] = node['_Creation_Date']
-              newNode["shouldLoad"] = $("#shouldLoad#{node._id}").prop('checked')
-              @dataController.nodeEdit(node,newNode, (savedNode) =>           
-                @graphModel.filterNodes (node) ->
-                  !(savedNode['_id'] == node['_id'])
-                @graphModel.putNode(savedNode)
-                @selection.toggleSelection(savedNode)
-                @cancelEditing(savedNode, nodeDiv, blacklist)
-              )
+              $.post "/get_node_by_id", {'nodeid': node['_id']}, (data) =>
+                if data['_Last_Edit_Date'] == node['_Last_Edit_Date'] or confirm("Node " + @findHeader(node) + " (id: #{node['_id']}) has changed on server. Are you sure you want to risk overwriting the changes?")
+                  # possibly list all changes?
+                  newNode = newNodeObj[1]
+                  newNode['color'] = $("#color"+node['_id']).val()
+                  newNode['_id'] = node['_id']
+                  newNode['_Creation_Date'] = node['_Creation_Date']
+                  newNode["shouldLoad"] = $("#shouldLoad#{node._id}").prop('checked')
+                  @dataController.nodeEdit(node,newNode, (savedNode) =>           
+                    @graphModel.filterNodes (node) ->
+                      !(savedNode['_id'] == node['_id'])
+                    @graphModel.putNode(savedNode)
+                    @selection.toggleSelection(savedNode)
+                    @cancelEditing(savedNode, nodeDiv, blacklist)
+                  )
+                else
+                  alert("Did not save node " + @findHeader(node) + " (id: #{node['_id']}).")
+
 
           $nodeDelete = $("<input name=\"NodeDeleteButton\" type=\"button\" value=\"Delete\">").appendTo(nodeDiv)
           $nodeDelete.click () => 

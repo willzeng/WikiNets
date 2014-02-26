@@ -91,28 +91,37 @@
         });
         $linkSave = $("<input name=\"LinkSaveButton\" type=\"button\" value=\"Save\">").appendTo(linkDiv);
         $linkSave.click(function() {
-          var newLink, newLinkObj;
+          var newLinkObj;
           newLinkObj = _this.nodeEdit.assign_properties("Link" + link['_id'] + "Edit");
           if (newLinkObj[0]) {
-            newLink = newLinkObj[1];
-            newLink['_id'] = link['_id'];
-            newLink['color'] = $("#color" + link['_id']).val();
-            newLink['_Creation_Date'] = link['_Creation_Date'];
-            return _this.dataController.linkEdit(link, newLink, function(savedLink) {
-              savedLink['_id'] = link['_id'];
-              savedLink['_type'] = link['_type'];
-              savedLink['start'] = link['start'];
-              savedLink['end'] = link['end'];
-              savedLink['source'] = link['source'];
-              savedLink['target'] = link['target'];
-              savedLink['strength'] = link['strength'];
-              savedLink['_Creation_Date'] = link['_Creation_Date'];
-              _this.graphModel.filterLinks(function(link) {
-                return !(savedLink['_id'] === link['_id']);
-              });
-              _this.graphModel.putLink(savedLink);
-              _this.selection.toggleSelection(savedLink);
-              return _this.cancelEditing(link, linkDiv, blacklist);
+            return $.post("/get_link_by_id", {
+              'id': link['_id']
+            }, function(data) {
+              var newLink;
+              if (data['properties']['_Last_Edit_Date'] === link['_Last_Edit_Date'] || confirm("Link " + _this.findHeader(link) + (" (id: " + link['_id'] + ") has changed on server. Are you sure you want to risk overwriting the changes?"))) {
+                newLink = newLinkObj[1];
+                newLink['_id'] = link['_id'];
+                newLink['color'] = $("#color" + link['_id']).val();
+                newLink['_Creation_Date'] = link['_Creation_Date'];
+                return _this.dataController.linkEdit(link, newLink, function(savedLink) {
+                  savedLink['_id'] = link['_id'];
+                  savedLink['_type'] = link['_type'];
+                  savedLink['start'] = link['start'];
+                  savedLink['end'] = link['end'];
+                  savedLink['source'] = link['source'];
+                  savedLink['target'] = link['target'];
+                  savedLink['strength'] = link['strength'];
+                  savedLink['_Creation_Date'] = link['_Creation_Date'];
+                  _this.graphModel.filterLinks(function(link) {
+                    return !(savedLink['_id'] === link['_id']);
+                  });
+                  _this.graphModel.putLink(savedLink);
+                  _this.selection.toggleSelection(savedLink);
+                  return _this.cancelEditing(link, linkDiv, blacklist);
+                });
+              } else {
+                return alert("Did not save link " + _this.findHeader(link) + (" (id: " + link['_id'] + ")."));
+              }
             });
           }
         });

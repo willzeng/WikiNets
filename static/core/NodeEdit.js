@@ -104,21 +104,30 @@
         });
         $nodeSave = $("<input name=\"nodeSaveButton\" type=\"button\" value=\"Save\">").appendTo(nodeDiv);
         $nodeSave.click(function() {
-          var newNode, newNodeObj;
+          var newNodeObj;
           newNodeObj = _this.assign_properties("Node" + node['_id'] + "Edit");
           if (newNodeObj[0]) {
-            newNode = newNodeObj[1];
-            newNode['color'] = $("#color" + node['_id']).val();
-            newNode['_id'] = node['_id'];
-            newNode['_Creation_Date'] = node['_Creation_Date'];
-            newNode["shouldLoad"] = $("#shouldLoad" + node._id).prop('checked');
-            return _this.dataController.nodeEdit(node, newNode, function(savedNode) {
-              _this.graphModel.filterNodes(function(node) {
-                return !(savedNode['_id'] === node['_id']);
-              });
-              _this.graphModel.putNode(savedNode);
-              _this.selection.toggleSelection(savedNode);
-              return _this.cancelEditing(savedNode, nodeDiv, blacklist);
+            return $.post("/get_node_by_id", {
+              'nodeid': node['_id']
+            }, function(data) {
+              var newNode;
+              if (data['_Last_Edit_Date'] === node['_Last_Edit_Date'] || confirm("Node " + _this.findHeader(node) + (" (id: " + node['_id'] + ") has changed on server. Are you sure you want to risk overwriting the changes?"))) {
+                newNode = newNodeObj[1];
+                newNode['color'] = $("#color" + node['_id']).val();
+                newNode['_id'] = node['_id'];
+                newNode['_Creation_Date'] = node['_Creation_Date'];
+                newNode["shouldLoad"] = $("#shouldLoad" + node._id).prop('checked');
+                return _this.dataController.nodeEdit(node, newNode, function(savedNode) {
+                  _this.graphModel.filterNodes(function(node) {
+                    return !(savedNode['_id'] === node['_id']);
+                  });
+                  _this.graphModel.putNode(savedNode);
+                  _this.selection.toggleSelection(savedNode);
+                  return _this.cancelEditing(savedNode, nodeDiv, blacklist);
+                });
+              } else {
+                return alert("Did not save node " + _this.findHeader(node) + (" (id: " + node['_id'] + ")."));
+              }
             });
           }
         });
