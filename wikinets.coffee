@@ -291,9 +291,8 @@ module.exports = class MyApp
           )
     )
 
-    # gets a list of all node properties occuring in the database
-    # used in VisualSearch
-    # for each of those properties, it also gets a list of all values, though that should be moved to a separate query
+    # Gets a list of all node properties occuring in the database
+    # Was used in VisualSearch
     # Request may be empty
     app.get('/get_all_node_keys', (request,response)->
       graphDb.cypher.execute("start n=node(*) return n;").then(
@@ -304,6 +303,33 @@ module.exports = class MyApp
           ((keys.push key for key,value of n when not (key in keys)) for n in nodeData)
           response.json keys.sort()
           )
+    )
+
+    # Gets a list of all node & link properties occuring in the database
+    # Used in VisualSearch
+    # Request may be empty
+    # Response is a list of elements of the form {'label':/key/, 'category':/c/},
+    # where /c/ is either 'node' or 'link'
+    app.get('/get_all_keys', (request,response)->
+      graphDb.cypher.execute("start n=node(*) return n;").then(
+        (noderes)->
+          console.log "Get All Node Keys: Query Executed"
+          nodeData = (n[0].data for n in noderes.data)
+          nodeKeys = []
+          allKeys = []
+          ((nodeKeys.push key for key,value of n when not (key in nodeKeys)) for n in nodeData)
+          (allKeys.push {'label':key, 'category':'node'} for key in nodeKeys.sort())
+          graphDb.cypher.execute("start r=rel(*) return r;").then(
+            (linkres)=>
+              console.log "Get All Link Keys: Query Executed"
+              linkData = (n[0].data for n in linkres.data)
+              linkKeys = []
+              ((linkKeys.push key for key,value of n when not (key in linkKeys)) for n in linkData)
+              (allKeys.push {'label':key, 'category':'link'} for key in linkKeys.sort())
+              response.json allKeys
+              )
+          )
+      
     )
 
     # Gets a list of all values occuring in the database for a given node property

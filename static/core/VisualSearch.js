@@ -39,7 +39,7 @@
         $button.click(function() {
           return _this.searchNodes(_this.searchQuery);
         });
-        $.get("/get_all_node_keys", function(data) {
+        $.get("/get_all_keys", function(data) {
           _this.keys = data;
           $(document).ready(function() {
             var visualSearch;
@@ -54,7 +54,7 @@
                   });
                 },
                 facetMatches: function(callback) {
-                  return $.get("/get_all_node_keys", function(data) {
+                  return $.get("/get_all_keys", function(data) {
                     _this.keys = data;
                     return callback(data);
                   });

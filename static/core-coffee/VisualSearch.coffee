@@ -27,7 +27,7 @@ define [], () ->
         #console.log @searchQuery
         @searchNodes @searchQuery
         )
-      $.get "/get_all_node_keys", (data) =>
+      $.get "/get_all_keys", (data) =>
         @keys = data
         #console.log @keys
         $(document).ready(() =>
@@ -39,7 +39,7 @@ define [], () ->
                 @searchQuery = {}
                 searchCollection.each((term) => @searchQuery[term.attributes.category] = term.attributes.value)
               facetMatches : (callback) =>
-                $.get "/get_all_node_keys", (data) =>
+                $.get "/get_all_keys", (data) =>
                   @keys = data
                   callback data
               valueMatches : (facet, searchTerm, callback) =>
