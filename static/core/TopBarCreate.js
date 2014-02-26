@@ -189,12 +189,6 @@
         if (!($("#" + form_name + "Desc").val() === void 0 || $("#" + form_name + "Desc").val() === "")) {
           propertyObject["description"] = $("#" + form_name + "Desc").val().replace(/'/g, "\\'");
         }
-        if (!($("#" + form_name + "Color").val() === void 0 || $("#" + form_name + "Color").val() === "")) {
-          propertyObject["color"] = $("#" + form_name + "Color").val().replace(/'/g, "\\'");
-        }
-        if (!($("#" + form_name + "Size").val() === void 0 || $("#" + form_name + "Size").val() === "")) {
-          propertyObject["size"] = $("#" + form_name + "Size").val().replace(/'/g, "\\'");
-        }
         if (!($("#" + form_name + "Url").val() === void 0 || $("#" + form_name + "Url").val() === "")) {
           propertyObject["url"] = $("#" + form_name + "Url").val().replace(/'/g, "\\'");
         }
