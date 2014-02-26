@@ -41,7 +41,7 @@ define [], () ->
       @linkStrength = (link) =>
         return (link.strength - @linkFilter.get("threshold")) / (1.0 - @linkFilter.get("threshold"))
       @force.linkStrength @linkStrength
-      svg = d3.select(@el).append("svg:svg").attr("pointer-events", "all").attr("height","100%").attr("width","100%")
+      svg = d3.select(@el).append("svg:svg").attr("pointer-events", "all").attr("height","100%").attr("width","100%") 
       zoom = d3.behavior.zoom()
       @zoom = zoom
 
@@ -103,7 +103,7 @@ define [], () ->
              .attr("width", "100%")
              .attr("height", "100%")
              .style("fill-opacity", "0%")
-             .style("fill","white")
+             .attr("fill", "white")
 
       # Panning on Drag
       # lock infrastracture to ignore zoom changes that would

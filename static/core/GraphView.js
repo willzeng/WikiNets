@@ -80,7 +80,7 @@
         gradient.append("stop").attr("offset", "100%").attr("style", "stop-color:rgb(255,255,255);stop-opacity:1");
         zoomCapture = svg.append("g");
         zoomCapture.attr("height", "100%");
-        zoomCapture.append("svg:rect").attr("width", "100%").attr("height", "100%").style("fill-opacity", "0%").style("fill", "white");
+        zoomCapture.append("svg:rect").attr("width", "100%").attr("height", "100%").style("fill-opacity", "0%").attr("fill", "white");
         translateLock = false;
         currentZoom = void 0;
         this.force.drag().on("dragstart", function() {
