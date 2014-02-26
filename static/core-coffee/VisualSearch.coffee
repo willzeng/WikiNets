@@ -18,6 +18,8 @@ define [], () ->
       $(@el).attr('id','vsplug').appendTo $('#omniBox')
       console.log x=@el
 
+      @keys = ['search']
+
     render: ->
       $container = $("<div id=\"visual-search-container\" style='padding-top:2px'/>").appendTo @$el
       $input = $("<div class=\"visual_search\" />").appendTo $container
@@ -38,12 +40,26 @@ define [], () ->
               search       : (query, searchCollection) =>
                 @searchQuery = {}
                 searchCollection.each((term) => @searchQuery[term.attributes.category] = term.attributes.value)
+                console.log query, searchCollection, @searchQuery
               facetMatches : (callback) =>
-                $.get "/get_all_keys", (data) =>
-                  @keys = data
-                  callback data
+                console.log visualSearch.searchBox.value(), visualSearch.searchQuery.facets()
+                if visualSearch.searchBox.value().indexOf('nodes') > -1
+                  $.get "/get_all_node_keys", (data) =>
+                    @keys = data
+                    callback data
+                else if visualSearch.searchBox.value().indexOf('links') > -1
+                  $.get "/get_all_link_keys", (data) =>
+                    @keys = data
+                    callback data
+                else
+                  @keys = ['search']
+                  callback @keys
               valueMatches : (facet, searchTerm, callback) =>
-                $.post "/get_all_key_values", {property: facet}, (data) -> callback data
+                if facet == 'search'
+                  callback ['links', 'nodes']
+                else
+                  # need to distinguish between links and nodes here
+                  $.post "/get_all_key_values", {property: facet}, (data) -> callback data
           })
         )
         return data

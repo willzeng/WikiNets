@@ -292,7 +292,7 @@ module.exports = class MyApp
     )
 
     # Gets a list of all node properties occuring in the database
-    # Was used in VisualSearch
+    # Used in VisualSearch
     # Request may be empty
     app.get('/get_all_node_keys', (request,response)->
       graphDb.cypher.execute("start n=node(*) return n;").then(
@@ -305,8 +305,22 @@ module.exports = class MyApp
           )
     )
 
-    # Gets a list of all node & link properties occuring in the database
+    # Gets a list of all link properties occuring in the database
     # Used in VisualSearch
+    # Request may be empty
+    app.get('/get_all_link_keys', (request,response)->
+      graphDb.cypher.execute("start r=rel(*) return r;").then(
+        (noderes)->
+          console.log "Get All Link Keys: Query Executed"
+          nodeData = (n[0].data for n in noderes.data)
+          keys = []
+          ((keys.push key for key,value of n when not (key in keys)) for n in nodeData)
+          response.json keys.sort()
+          )
+    )
+
+    # Gets a list of all node & link properties occuring in the database
+    # Possibly used in VisualSearch
     # Request may be empty
     # Response is a list of elements of the form {'label':/key/, 'category':/c/},
     # where /c/ is either 'node' or 'link'
@@ -318,7 +332,7 @@ module.exports = class MyApp
           nodeKeys = []
           allKeys = []
           ((nodeKeys.push key for key,value of n when not (key in nodeKeys)) for n in nodeData)
-          (allKeys.push {'label':key, 'category':'node'} for key in nodeKeys.sort())
+          (allKeys.push {'label':key+' ', 'category':'node'} for key in nodeKeys.sort())
           graphDb.cypher.execute("start r=rel(*) return r;").then(
             (linkres)=>
               console.log "Get All Link Keys: Query Executed"

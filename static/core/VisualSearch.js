@@ -26,7 +26,8 @@
         });
         this.render();
         $(this.el).attr('id', 'vsplug').appendTo($('#omniBox'));
-        return console.log(x = this.el);
+        console.log(x = this.el);
+        return this.keys = ['search'];
       };
 
       VisualSearchBox.prototype.render = function() {
@@ -49,22 +50,38 @@
               callbacks: {
                 search: function(query, searchCollection) {
                   _this.searchQuery = {};
-                  return searchCollection.each(function(term) {
+                  searchCollection.each(function(term) {
                     return _this.searchQuery[term.attributes.category] = term.attributes.value;
                   });
+                  return console.log(query, searchCollection, _this.searchQuery);
                 },
                 facetMatches: function(callback) {
-                  return $.get("/get_all_keys", function(data) {
-                    _this.keys = data;
-                    return callback(data);
-                  });
+                  console.log(visualSearch.searchBox.value(), visualSearch.searchQuery.facets());
+                  if (visualSearch.searchBox.value().indexOf('nodes') > -1) {
+                    return $.get("/get_all_node_keys", function(data) {
+                      _this.keys = data;
+                      return callback(data);
+                    });
+                  } else if (visualSearch.searchBox.value().indexOf('links') > -1) {
+                    return $.get("/get_all_link_keys", function(data) {
+                      _this.keys = data;
+                      return callback(data);
+                    });
+                  } else {
+                    _this.keys = ['search'];
+                    return callback(_this.keys);
+                  }
                 },
                 valueMatches: function(facet, searchTerm, callback) {
-                  return $.post("/get_all_key_values", {
-                    property: facet
-                  }, function(data) {
-                    return callback(data);
-                  });
+                  if (facet === 'search') {
+                    return callback(['links', 'nodes']);
+                  } else {
+                    return $.post("/get_all_key_values", {
+                      property: facet
+                    }, function(data) {
+                      return callback(data);
+                    });
+                  }
                 }
               }
             });
