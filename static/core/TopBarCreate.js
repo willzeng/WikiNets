@@ -218,7 +218,7 @@
         var nodeObject,
           _this = this;
         nodeObject = this.assign_properties("NodeCreate");
-        if (nodeObject[0]) {
+        if (nodeObject[0] && (_.size(nodeObject[1]) > 1 || confirm("The node you are creating has no information associated with it. Do you really want to proceed?"))) {
           $('.NodeCreateDiv').each(function(i, obj) {
             return $(this)[0].parentNode.removeChild($(this)[0]);
           });
