@@ -186,10 +186,10 @@ define [], () ->
           propertyObject["name"] = $("##{form_name}Name").val().replace(/'/g, "\\'")
         if not ($("##{form_name}Desc").val() == undefined or $("##{form_name}Desc").val() == "")
           propertyObject["description"] = $("##{form_name}Desc").val().replace(/'/g, "\\'")
-        if not ($("##{form_name}Color").val() == undefined or $("##{form_name}Color").val() == "")
-          propertyObject["color"] = $("##{form_name}Color").val().replace(/'/g, "\\'")
-        if not ($("##{form_name}Size").val() == undefined or $("##{form_name}Size").val() == "")
-          propertyObject["size"] = $("##{form_name}Size").val().replace(/'/g, "\\'")
+        #if not ($("##{form_name}Color").val() == undefined or $("##{form_name}Color").val() == "")
+        #  propertyObject["color"] = $("##{form_name}Color").val().replace(/'/g, "\\'")
+        #if not ($("##{form_name}Size").val() == undefined or $("##{form_name}Size").val() == "")
+        #  propertyObject["size"] = $("##{form_name}Size").val().replace(/'/g, "\\'")
         if not ($("##{form_name}Url").val() == undefined or $("##{form_name}Url").val() == "")
           propertyObject["url"] = $("##{form_name}Url").val().replace(/'/g, "\\'")
         $("." + form_name + "Div").each (i, obj) ->
@@ -224,7 +224,7 @@ define [], () ->
       nodeObject = @assign_properties("NodeCreate")
       # if all property names were fine, remove the on-the-fly created input
       # fields and submit the data to the server to actually create the node
-      if (nodeObject[0]) then (
+      if (nodeObject[0] and (_.size(nodeObject[1]) > 1 or confirm "The node you are creating has no information associated with it. Do you really want to proceed?")) then (
         $('.NodeCreateDiv').each( (i, obj) ->
           $(this)[0].parentNode.removeChild $(this)[0]
         )
