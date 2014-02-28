@@ -99,7 +99,6 @@
         var _this = this;
         if (searchQuery['search'] === 'nodes') {
           delete searchQuery['search'];
-          console.log(searchQuery);
           return $.post("/search_nodes", searchQuery, function(nodes) {
             var node, _i, _len, _results;
             _results = [];
@@ -110,7 +109,16 @@
             return _results;
           });
         } else {
-          return alert("Search functionality for links not implemented yet.");
+          delete searchQuery['search'];
+          return $.post("/search_links", searchQuery, function(nodes) {
+            var node, _i, _len, _results;
+            _results = [];
+            for (_i = 0, _len = nodes.length; _i < _len; _i++) {
+              node = nodes[_i];
+              _results.push(_this.graphModel.putNode(node));
+            }
+            return _results;
+          });
         }
       };
 

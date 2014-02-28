@@ -413,6 +413,33 @@ module.exports = class MyApp
           )
     )
 
+    # Returns the start and end nodes for all links matching the property-value pairs given in the request body
+    # this is for VisualSearch
+    # Request should be of form {property1: 'value1', property2: 'value2', ...}
+    app.post('/search_links', (request,response)->
+      console.log "Searching links"
+      cypherQuery = "start n=node(*) match (n)-[r]-() where "
+      if JSON.stringify(request.body) isnt '{}'
+        for property, value of request.body
+          if value is '(any)'
+            # this allows searching for any node that has a certain property, independent of value
+            cypherQuery += "has(r.#{property}) and "
+          else if value.substr(-3) is '...'
+            # this means value has been shortened, cf. shorten()
+            # in this case use regular expression in query to compensate
+            cypherQuery += "r.#{property} =~ '#{value.slice(0,-2)}*' and "
+          else
+            cypherQuery += "r.#{property} = '#{value}' and "
+        cypherQuery = cypherQuery.substring(0,cypherQuery.length-4)
+      cypherQuery += "return n;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes)->
+          nodeList = (addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
+          response.json nodeList
+          )
+    )
+
     # Request is of the form {node: node, nodes:{node0, node1, ...}}
     # returns all of the links between node and any of the nodes
     # TO DO: send only node IDs rather than full nodes in request

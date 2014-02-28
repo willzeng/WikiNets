@@ -66,19 +66,18 @@ define [], () ->
       return this
 
     searchDatabase: (searchQuery) =>
+      # should add check to avoid empty searches
       if searchQuery['search'] == 'nodes'
         delete searchQuery['search']
-        console.log searchQuery
         $.post "/search_nodes", searchQuery, (nodes) =>
           for node in nodes
             @graphModel.putNode(node)
             #@selection.toggleSelection(node)
       else
-        alert "Search functionality for links not implemented yet."
-        #delete searchQuery['search']
-        #$.post "/search_links", searchQuery, (nodes) =>
-          #for link in links
-            #what should happen here? Add both end nodes?
-            #@graphModel.putNode(node)
+        delete searchQuery['search']
+        $.post "/search_links", searchQuery, (nodes) =>
+          # search_links returns the start & end nodes for all links matching the searchQuery
+          for node in nodes
+            @graphModel.putNode(node)
             #@selection.toggleSelection(node)
 
