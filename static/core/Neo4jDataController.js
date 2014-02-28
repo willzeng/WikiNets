@@ -126,7 +126,7 @@
 
       Neo4jDataController.prototype.is_illegal = function(property, type) {
         var reserved_keys;
-        reserved_keys = ["_id", "text", "_type", "Last_Edit_Date", "Creation_Date"];
+        reserved_keys = ["_id", "text", "_type", "_Last_Edit_Date", "_Creation_Date", "search"];
         if (property === '') {
           alert(type + " name must not be empty.");
           return true;

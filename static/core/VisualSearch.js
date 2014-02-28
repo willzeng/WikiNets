@@ -40,7 +40,7 @@
         $button.click(function() {
           return _this.searchDatabase(_this.searchQuery);
         });
-        $.get("/get_all_keys", function(data) {
+        $.get("/get_all_node_keys", function(data) {
           _this.keys = data;
           $(document).ready(function() {
             var visualSearch;
@@ -97,28 +97,38 @@
 
       VisualSearchBox.prototype.searchDatabase = function(searchQuery) {
         var _this = this;
-        if (searchQuery['search'] === 'nodes') {
-          delete searchQuery['search'];
-          return $.post("/search_nodes", searchQuery, function(nodes) {
-            var node, _i, _len, _results;
-            _results = [];
-            for (_i = 0, _len = nodes.length; _i < _len; _i++) {
-              node = nodes[_i];
-              _results.push(_this.graphModel.putNode(node));
-            }
-            return _results;
-          });
+        if (_.size(searchQuery) === 0) {
+          return alert("Please enter a search query.");
+        } else if (searchQuery['search'] === 'nodes') {
+          if (_.size(searchQuery) === 1) {
+            return alert("Please enter a further search query for nodes.");
+          } else {
+            delete searchQuery['search'];
+            return $.post("/search_nodes", searchQuery, function(nodes) {
+              var node, _i, _len, _results;
+              _results = [];
+              for (_i = 0, _len = nodes.length; _i < _len; _i++) {
+                node = nodes[_i];
+                _results.push(_this.graphModel.putNode(node));
+              }
+              return _results;
+            });
+          }
         } else {
-          delete searchQuery['search'];
-          return $.post("/search_links", searchQuery, function(nodes) {
-            var node, _i, _len, _results;
-            _results = [];
-            for (_i = 0, _len = nodes.length; _i < _len; _i++) {
-              node = nodes[_i];
-              _results.push(_this.graphModel.putNode(node));
-            }
-            return _results;
-          });
+          if (_.size(searchQuery) === 1) {
+            return alert("Please enter a further search query for links.");
+          } else {
+            delete searchQuery['search'];
+            return $.post("/search_links", searchQuery, function(nodes) {
+              var node, _i, _len, _results;
+              _results = [];
+              for (_i = 0, _len = nodes.length; _i < _len; _i++) {
+                node = nodes[_i];
+                _results.push(_this.graphModel.putNode(node));
+              }
+              return _results;
+            });
+          }
         }
       };
 
