@@ -351,17 +351,37 @@ module.exports = class MyApp
     # Request should be of form {property: 'foo'}
     # if value is very long it is shortened - cf. shorten()
     # TO DO: add a limit to number of results for large databases
-    app.post('/get_all_key_values', (request,response)->
+    app.post('/get_all_node_key_values', (request,response)->
       cypherQuery = "start n=node(*) where has(n." + request.body.property + ") return n;"
       console.log "Executing " + cypherQuery
       graphDb.cypher.execute(cypherQuery).then(
         (noderes)->
-          console.log "Get All Key values: Query Executed"
+          console.log "Get All Node Key values: Query Executed"
           nodeData = (n[0].data for n in noderes.data)
           values = ['(any)']
-          # the option '(any)' will allow searching for any node with a certain property,
+          # the option '(any)' allows searching for any node with a certain property,
           # independent of value - cf. /search_nodes
           (values.push shorten(n[request.body.property]) for n in nodeData when not (shorten(n[request.body.property]) in values))
+          response.json values.sort()
+          )
+    )
+
+    # Gets a list of all values occuring in the database for a given link property
+    # and returns them as an alphabetically sorted list for VisualSearch
+    # Request should be of form {property: 'foo'}
+    # if value is very long it is shortened - cf. shorten()
+    # TO DO: add a limit to number of results for large databases
+    app.post('/get_all_link_key_values', (request,response)->
+      cypherQuery = "start r=rel(*) where has(r." + request.body.property + ") return r;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes)->
+          console.log "Get All Link Key values: Query Executed"
+          linkData = (n[0].data for n in noderes.data)
+          values = ['(any)']
+          # the option '(any)' allows searching for any link with a certain property,
+          # independent of value - cf. /search_nodes
+          (values.push shorten(n[request.body.property]) for n in linkData when not (shorten(n[request.body.property]) in values))
           response.json values.sort()
           )
     )

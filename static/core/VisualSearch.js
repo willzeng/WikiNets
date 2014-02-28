@@ -11,7 +11,7 @@
 
       function VisualSearchBox(options) {
         this.options = options;
-        this.searchNodes = __bind(this.searchNodes, this);
+        this.searchDatabase = __bind(this.searchDatabase, this);
         VisualSearchBox.__super__.constructor.call(this);
       }
 
@@ -38,7 +38,7 @@
         $button = $("<input type=\"button\" value=\"Go\" style='float:left' />").appendTo($container);
         this.searchQuery = {};
         $button.click(function() {
-          return _this.searchNodes(_this.searchQuery);
+          return _this.searchDatabase(_this.searchQuery);
         });
         $.get("/get_all_keys", function(data) {
           _this.keys = data;
@@ -50,19 +50,17 @@
               callbacks: {
                 search: function(query, searchCollection) {
                   _this.searchQuery = {};
-                  searchCollection.each(function(term) {
+                  return searchCollection.each(function(term) {
                     return _this.searchQuery[term.attributes.category] = term.attributes.value;
                   });
-                  return console.log(query, searchCollection, _this.searchQuery);
                 },
                 facetMatches: function(callback) {
-                  console.log(visualSearch.searchBox.value(), visualSearch.searchQuery.facets());
-                  if (visualSearch.searchBox.value().indexOf('nodes') > -1) {
+                  if (visualSearch.searchBox.value().indexOf('search: "nodes"') > -1) {
                     return $.get("/get_all_node_keys", function(data) {
                       _this.keys = data;
                       return callback(data);
                     });
-                  } else if (visualSearch.searchBox.value().indexOf('links') > -1) {
+                  } else if (visualSearch.searchBox.value().indexOf('search: "links"') > -1) {
                     return $.get("/get_all_link_keys", function(data) {
                       _this.keys = data;
                       return callback(data);
@@ -75,8 +73,14 @@
                 valueMatches: function(facet, searchTerm, callback) {
                   if (facet === 'search') {
                     return callback(['links', 'nodes']);
+                  } else if (visualSearch.searchBox.value().indexOf('search: "nodes"') > -1) {
+                    return $.post("/get_all_node_key_values", {
+                      property: facet
+                    }, function(data) {
+                      return callback(data);
+                    });
                   } else {
-                    return $.post("/get_all_key_values", {
+                    return $.post("/get_all_link_key_values", {
                       property: facet
                     }, function(data) {
                       return callback(data);
@@ -91,17 +95,23 @@
         return this;
       };
 
-      VisualSearchBox.prototype.searchNodes = function(searchQuery) {
+      VisualSearchBox.prototype.searchDatabase = function(searchQuery) {
         var _this = this;
-        return $.post("/search_nodes", searchQuery, function(nodes) {
-          var node, _i, _len, _results;
-          _results = [];
-          for (_i = 0, _len = nodes.length; _i < _len; _i++) {
-            node = nodes[_i];
-            _results.push(_this.graphModel.putNode(node));
-          }
-          return _results;
-        });
+        if (searchQuery['search'] === 'nodes') {
+          delete searchQuery['search'];
+          console.log(searchQuery);
+          return $.post("/search_nodes", searchQuery, function(nodes) {
+            var node, _i, _len, _results;
+            _results = [];
+            for (_i = 0, _len = nodes.length; _i < _len; _i++) {
+              node = nodes[_i];
+              _results.push(_this.graphModel.putNode(node));
+            }
+            return _results;
+          });
+        } else {
+          return alert("Search functionality for links not implemented yet.");
+        }
       };
 
       return VisualSearchBox;

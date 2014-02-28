@@ -27,7 +27,7 @@ define [], () ->
       @searchQuery = {}
       $button.click(() =>
         #console.log @searchQuery
-        @searchNodes @searchQuery
+        @searchDatabase @searchQuery
         )
       $.get "/get_all_keys", (data) =>
         @keys = data
@@ -40,14 +40,12 @@ define [], () ->
               search       : (query, searchCollection) =>
                 @searchQuery = {}
                 searchCollection.each((term) => @searchQuery[term.attributes.category] = term.attributes.value)
-                console.log query, searchCollection, @searchQuery
               facetMatches : (callback) =>
-                console.log visualSearch.searchBox.value(), visualSearch.searchQuery.facets()
-                if visualSearch.searchBox.value().indexOf('nodes') > -1
+                if visualSearch.searchBox.value().indexOf('search: "nodes"') > -1
                   $.get "/get_all_node_keys", (data) =>
                     @keys = data
                     callback data
-                else if visualSearch.searchBox.value().indexOf('links') > -1
+                else if visualSearch.searchBox.value().indexOf('search: "links"') > -1
                   $.get "/get_all_link_keys", (data) =>
                     @keys = data
                     callback data
@@ -55,19 +53,32 @@ define [], () ->
                   @keys = ['search']
                   callback @keys
               valueMatches : (facet, searchTerm, callback) =>
+                # this might break if some link or node has a property "search"
                 if facet == 'search'
                   callback ['links', 'nodes']
+                else if visualSearch.searchBox.value().indexOf('search: "nodes"') > -1
+                  $.post "/get_all_node_key_values", {property: facet}, (data) -> callback data
                 else
-                  # need to distinguish between links and nodes here
-                  $.post "/get_all_key_values", {property: facet}, (data) -> callback data
+                  $.post "/get_all_link_key_values", {property: facet}, (data) -> callback data
           })
         )
         return data
       return this
 
-    searchNodes: (searchQuery) =>
-      $.post "/search_nodes", searchQuery, (nodes) =>
-        for node in nodes
-          @graphModel.putNode(node)
-          #@selection.toggleSelection(node)
+    searchDatabase: (searchQuery) =>
+      if searchQuery['search'] == 'nodes'
+        delete searchQuery['search']
+        console.log searchQuery
+        $.post "/search_nodes", searchQuery, (nodes) =>
+          for node in nodes
+            @graphModel.putNode(node)
+            #@selection.toggleSelection(node)
+      else
+        alert "Search functionality for links not implemented yet."
+        #delete searchQuery['search']
+        #$.post "/search_links", searchQuery, (nodes) =>
+          #for link in links
+            #what should happen here? Add both end nodes?
+            #@graphModel.putNode(node)
+            #@selection.toggleSelection(node)
 
