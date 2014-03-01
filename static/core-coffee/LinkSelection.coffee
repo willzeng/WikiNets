@@ -69,6 +69,11 @@ define [], () ->
 
       @trigger "change"
 
+    deselectLink: (link) ->
+      link.selected = false
+      @trigger "change"
+      @renderSelection()
+
     toggleSelection: (link) ->
       link.selected = not link.selected
       @trigger "change"

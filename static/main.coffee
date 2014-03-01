@@ -68,8 +68,8 @@ require ["Celestrium"], (Celestrium) ->
     # Is a full text search box
     "local/SimpleSearchBox": {}
 
-    # Displays selected node details and allows editing
-    "local/NodeEdit": {}
+    # Displays selected node/link details and allows editing
+    "local/SelectedDetails" : {}
 
     # Displays selected link details and allows editing
     "local/LinkEdit": {}

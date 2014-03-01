@@ -6,27 +6,30 @@
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   define([], function() {
-    var NodeEdit;
-    return NodeEdit = (function(_super) {
+    var SelectedDetails;
+    return SelectedDetails = (function(_super) {
       var colors;
 
-      __extends(NodeEdit, _super);
+      __extends(SelectedDetails, _super);
 
       colors = ['#F56545', '#FFBB22', '#BBE535', '#77DDBB', '#66CCDD', '#A9A9A9'];
 
-      function NodeEdit(options) {
+      function SelectedDetails(options) {
         this.options = options;
         this.addSpokes = __bind(this.addSpokes, this);
         this.addLinker = __bind(this.addLinker, this);
+        this.renderLinkProfile = __bind(this.renderLinkProfile, this);
         this.renderProfile = __bind(this.renderProfile, this);
+        this.findLinkHeader = __bind(this.findLinkHeader, this);
         this.assign_properties = __bind(this.assign_properties, this);
         this.addField = __bind(this.addField, this);
         this.deleteNode = __bind(this.deleteNode, this);
         this.cancelEditing = __bind(this.cancelEditing, this);
-        NodeEdit.__super__.constructor.call(this);
+        this.editLink = __bind(this.editLink, this);
+        SelectedDetails.__super__.constructor.call(this);
       }
 
-      NodeEdit.prototype.init = function(instances) {
+      SelectedDetails.prototype.init = function(instances) {
         var _this = this;
         this.dataController = instances['local/Neo4jDataController'];
         this.graphModel = instances['GraphModel'];
@@ -41,7 +44,7 @@
         return $(this.el).appendTo($('#omniBox'));
       };
 
-      NodeEdit.prototype.update = function() {
+      SelectedDetails.prototype.update = function() {
         var $container, blacklist, selectedNodes,
           _this = this;
         if (!this.buildingLink) {
@@ -49,6 +52,7 @@
           selectedNodes = this.selection.getSelectedNodes();
           $container = $("<div class=\"node-profile-helper\"/>").appendTo(this.$el);
           blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color", "shouldLoad"];
+          this.blacklist = blacklist;
           return _.each(selectedNodes, function(node) {
             var $nodeDiv, _ref;
             if (!(node.color != null)) {
@@ -62,7 +66,7 @@
         }
       };
 
-      NodeEdit.prototype.editNode = function(node, nodeDiv, blacklist) {
+      SelectedDetails.prototype.editNode = function(node, nodeDiv, blacklist) {
         var $loaderHolder, $loaderToggle, $nodeCancel, $nodeDelete, $nodeMoreFields, $nodeSave, colorEditingField, header, nodeInputNumber, origColor, shouldLoad,
           _this = this;
         console.log("Editing node: " + node['_id']);
@@ -146,12 +150,93 @@
         });
       };
 
-      NodeEdit.prototype.cancelEditing = function(node, nodeDiv, blacklist) {
+      SelectedDetails.prototype.editLink = function(link, linkDiv, blacklist) {
+        var $linkCancel, $linkDelete, $linkMoreFields, $linkSave, colorEditingField, linkInputNumber, origColor,
+          _this = this;
+        console.log("Editing link: " + link['_id']);
+        origColor = "#A9A9A9";
+        linkInputNumber = 0;
+        linkDiv.html("<div class=\"node-profile-title\">Editing " + (this.findHeader(link)) + "</div><form id=\"Link" + link['_id'] + "EditForm\"></form>");
+        _.each(link, function(value, property) {
+          var newEditingFields;
+          if (blacklist.indexOf(property) < 0 && ["_id", "_Last_Edit_Date", "_Creation_Date", "start", "end", "color"].indexOf(property) < 0) {
+            newEditingFields = "<div id=\"Link" + link['_id'] + "EditDiv" + linkInputNumber + "\" class=\"Link" + link['_id'] + "EditDiv\">\n  <input style=\"width:80px\" id=\"Link" + link['_id'] + "EditProperty" + linkInputNumber + "\" value=\"" + property + "\" class=\"propertyLink" + link['_id'] + "Edit\"/> \n  <input style=\"width:80px\" id=\"Link" + link['_id'] + "EditValue" + linkInputNumber + "\" value=\"" + value + "\" class=\"valueLink" + link['_id'] + "Edit\"/> \n  <input type=\"button\" id=\"removeLink" + link['_id'] + "Edit" + linkInputNumber + "\" value=\"x\" onclick=\"this.parentNode.parentNode.removeChild(this.parentNode);\">\n</div>";
+            $(newEditingFields).appendTo("#Link" + link['_id'] + "EditForm");
+            return linkInputNumber = linkInputNumber + 1;
+          } else if (property === "color") {
+            return origColor = value;
+          }
+        });
+        colorEditingField = '\
+            <form action="#" method="post">\
+                <div class="controlset">Color<input id="color' + link['_id'] + '" name="color' + link['_id'] + '" type="text" value="' + origColor + '"/></div>\
+            </form>\
+          ';
+        $(colorEditingField).appendTo(linkDiv);
+        $("#color" + link['_id']).colorPicker({
+          showHexField: false
+        });
+        $linkMoreFields = $("<input id=\"moreLink" + link['_id'] + "EditFields\" type=\"button\" value=\"+\">").appendTo(linkDiv);
+        $linkMoreFields.click(function() {
+          _this.nodeEdit.addField(linkInputNumber, "Link" + link['_id'] + "Edit");
+          return linkInputNumber = linkInputNumber + 1;
+        });
+        $linkSave = $("<input name=\"LinkSaveButton\" type=\"button\" value=\"Save\">").appendTo(linkDiv);
+        $linkSave.click(function() {
+          var newLinkObj;
+          newLinkObj = _this.nodeEdit.assign_properties("Link" + link['_id'] + "Edit");
+          if (newLinkObj[0]) {
+            return $.post("/get_link_by_id", {
+              'id': link['_id']
+            }, function(data) {
+              var newLink;
+              if (data['properties']['_Last_Edit_Date'] === link['_Last_Edit_Date'] || confirm("Link " + _this.findHeader(link) + (" (id: " + link['_id'] + ") has changed on server. Are you sure you want to risk overwriting the changes?"))) {
+                newLink = newLinkObj[1];
+                newLink['_id'] = link['_id'];
+                newLink['color'] = $("#color" + link['_id']).val();
+                newLink['_Creation_Date'] = link['_Creation_Date'];
+                return _this.dataController.linkEdit(link, newLink, function(savedLink) {
+                  savedLink['_id'] = link['_id'];
+                  savedLink['_type'] = link['_type'];
+                  savedLink['start'] = link['start'];
+                  savedLink['end'] = link['end'];
+                  savedLink['source'] = link['source'];
+                  savedLink['target'] = link['target'];
+                  savedLink['strength'] = link['strength'];
+                  savedLink['_Creation_Date'] = link['_Creation_Date'];
+                  _this.graphModel.filterLinks(function(link) {
+                    return !(savedLink['_id'] === link['_id']);
+                  });
+                  _this.graphModel.putLink(savedLink);
+                  _this.selection.toggleSelection(savedLink);
+                  return _this.cancelEditing(link, linkDiv, blacklist);
+                });
+              } else {
+                return alert("Did not save link " + _this.findHeader(link) + (" (id: " + link['_id'] + ")."));
+              }
+            });
+          }
+        });
+        $linkDelete = $("<input name=\"LinkDeleteButton\" type=\"button\" value=\"Delete\">").appendTo(linkDiv);
+        $linkDelete.click(function() {
+          if (confirm("Are you sure you want to delete this link?")) {
+            return _this.deleteLink(link, function() {
+              return _this.selection.toggleSelection(link);
+            });
+          }
+        });
+        $linkCancel = $("<input name=\"LinkCancelButton\" type=\"button\" value=\"Cancel\">").appendTo(linkDiv);
+        return $linkCancel.click(function() {
+          return _this.cancelEditing(link, linkDiv, blacklist);
+        });
+      };
+
+      SelectedDetails.prototype.cancelEditing = function(node, nodeDiv, blacklist) {
         nodeDiv.empty();
         return this.renderProfile(node, nodeDiv, blacklist);
       };
 
-      NodeEdit.prototype.deleteNode = function(delNode, callback) {
+      SelectedDetails.prototype.deleteNode = function(delNode, callback) {
         var _this = this;
         return this.dataController.nodeDelete(delNode, function(response) {
           if (response === "error") {
@@ -174,7 +259,7 @@
         });
       };
 
-      NodeEdit.prototype.addField = function(inputIndex, name, defaultKey, defaultValue) {
+      SelectedDetails.prototype.addField = function(inputIndex, name, defaultKey, defaultValue) {
         var $row;
         if (!(defaultKey != null)) {
           defaultKey = "propertyEx";
@@ -186,7 +271,7 @@
         return $("#" + name + "Form").append($row);
       };
 
-      NodeEdit.prototype.assign_properties = function(form_name, is_illegal, node) {
+      SelectedDetails.prototype.assign_properties = function(form_name, is_illegal, node) {
         var editDate, propertyObject, submitOK;
         if (is_illegal == null) {
           is_illegal = this.dataController.is_illegal;
@@ -211,7 +296,7 @@
         return [submitOK, propertyObject];
       };
 
-      NodeEdit.prototype.findHeader = function(node) {
+      SelectedDetails.prototype.findHeader = function(node) {
         var realurl, result;
         if (node.name != null) {
           if (node.url != null) {
@@ -233,7 +318,27 @@
         }
       };
 
-      NodeEdit.prototype.renderProfile = function(node, nodeDiv, blacklist, propNumber) {
+      SelectedDetails.prototype.findLinkHeader = function(link) {
+        var headerName, realurl, result;
+        if (!(link.name != null) || link.name === "") {
+          headerName = "<i>empty link</i>";
+        } else {
+          headerName = link.name;
+        }
+        if (link.url != null) {
+          realurl = "";
+          result = link.url.search(new RegExp(/^http:\/\//i));
+          if (!result) {
+            realurl = link.url;
+          } else {
+            realurl = 'http://' + link.url;
+          }
+          headerName = '<a href=' + realurl + ' target="_blank">' + link.name + '</a>';
+        }
+        return headerName;
+      };
+
+      SelectedDetails.prototype.renderProfile = function(node, nodeDiv, blacklist, propNumber) {
         var $nodeDeselect, $nodeEdit, $nodeHeader, $showMore, $spokeHolder, counter, header, initialSpokeNumber, nodeLength, p, v, whitelist,
           _this = this;
         nodeDiv.empty();
@@ -286,11 +391,67 @@
         }
         this.addLinker(node, nodeDiv);
         initialSpokeNumber = 5;
-        $spokeHolder = $("<div class='spokeHolder'></div>").appendTo(nodeDiv);
+        $spokeHolder = $("<div class='spokeHolder'></div>").appendTo(nodeDiv.parent());
         return this.addSpokes(node, $spokeHolder, initialSpokeNumber);
       };
 
-      NodeEdit.prototype.addLinker = function(node, nodeDiv) {
+      SelectedDetails.prototype.renderLinkProfile = function(link, linkDiv, blacklist, propNumber) {
+        var $linkDeselect, $linkEdit, $linkHeader, $showMore, counter, header, linkLength, p, v, whitelist,
+          _this = this;
+        linkDiv.empty();
+        header = this.findLinkHeader(link);
+        $linkHeader = $("<div class=\"node-profile-title\">" + header + "</div>").appendTo(linkDiv);
+        $linkEdit = $("<i class=\"fa fa-pencil-square \"></i>").css("margin", "6px").appendTo($linkHeader);
+        $linkEdit.click(function(e) {
+          e.stopPropagation();
+          return _this.editNode(node, linkDiv, blacklist);
+        });
+        $linkDeselect = $("<i class=\"right fa fa-times\"></i>").css("margin", "1px").appendTo($linkHeader);
+        $linkDeselect.click(function(e) {
+          e.stopPropagation();
+          console.log("de");
+          return _this.linkSelection.deselectLink(link);
+        });
+        whitelist = ["description", "url"];
+        linkLength = 0;
+        for (p in link) {
+          v = link[p];
+          if (!(__indexOf.call(blacklist, p) >= 0)) {
+            linkLength = linkLength + 1;
+          }
+        }
+        counter = 0;
+        _.each(link, function(value, property) {
+          var makeLinks;
+          if (counter >= propNumber) {
+            return;
+          }
+          value += "";
+          if (blacklist.indexOf(property) < 0) {
+            if (value != null) {
+              makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi, "<a href=\"$1\" target=\"_blank\" style=\"target-new: tab;\">$1</a>");
+            } else {
+              makeLinks = value;
+            }
+            if (__indexOf.call(whitelist, property) >= 0) {
+              $("<div class=\"node-profile-property\">" + makeLinks + "</div>").appendTo(linkDiv);
+            } else if (property === "_Last_Edit_Date" || property === "_Creation_Date") {
+              $("<div class=\"node-profile-property\">" + property + ":  " + (makeLinks.substring(4, 21)) + "</div>").appendTo(linkDiv);
+            } else {
+              $("<div class=\"node-profile-property\">" + property + ":  " + makeLinks + "</div>").appendTo(linkDiv);
+            }
+            return counter++;
+          }
+        });
+        if (propNumber < linkLength) {
+          $showMore = $("<div class='showMore'><a href='#'>Show More...</a></div>").appendTo(linkDiv);
+          return $showMore.click(function() {
+            return _this.renderLinkProfile(link, linkDiv, blacklist, propNumber + 10);
+          });
+        }
+      };
+
+      SelectedDetails.prototype.addLinker = function(node, nodeDiv) {
         var $createLinkButton, $linkHolder, $linkInputDesc, $linkInputName, $linkInputUrl, $linkSide, $linkWrapper, className, holderClassName, linkSideID, linkWrapperDivID, nodeID,
           _this = this;
         this.tempLink = {};
@@ -358,8 +519,8 @@
         });
       };
 
-      NodeEdit.prototype.addSpokes = function(node, spokeHolder, maxSpokes) {
-        var $showMoreSpokes, $spokeDiv, $spokesDiv, lHash, link, nHash, savedSpoke, spoke, spokeID, spoke_counter, spokes, spokesID, _i, _len,
+      SelectedDetails.prototype.addSpokes = function(node, spokeHolder, maxSpokes) {
+        var $showMoreSpokes, $spokeDiv, $spokeSource, $spokeTarget, $spokesDiv, displayName, lHash, link, nHash, savedSpoke, spoke, spoke_counter, spokes, spokesID, _i, _len,
           _this = this;
         spokeHolder.empty();
         nHash = this.graphModel.get("nodeHash");
@@ -388,24 +549,31 @@
               spoke_counter++;
             }
             savedSpoke = spoke;
-            if (!(spoke.name != null) || spoke.name === "") {
-              spoke.name = "<i>empty link</i>";
-            }
+            displayName = this.findLinkHeader(spoke);
             if (!(spoke.color != null)) {
               spoke.color = "#A9A9A9";
             }
-            spokeID = "spokeDiv";
-            $spokeDiv = $('<div class=' + spokeID + '>' + spoke.name + "..." + '</div>').css("background-color", "" + spoke.color).css("padding", "4px").css("margin", "1px").css("border", "1px solid black").css("font-size", "12px").appendTo($spokesDiv);
+            $spokeDiv = $('<div class="spokeDiv">' + displayName + ' </div>').css("border", "2px solid " + spoke.color).appendTo($spokesDiv);
+            $spokeSource = $('<span class="nodeNameBox">' + spoke.source.name + '</span>').css("background-color", "" + spoke.source.color).prependTo($spokeDiv);
+            $spokeSource.on("click", function(e) {
+              var clickedLink;
+              e.stopPropagation();
+              clickedLink = $(e.target).parent().data("link")[0];
+              return _this.selection.selectNode(clickedLink.source);
+            });
+            $spokeTarget = $('<span class="nodeNameBox">' + spoke.target.name + '</span>').css("background-color", "" + spoke.target.color).appendTo($spokeDiv);
+            $spokeTarget.on("click", function(e) {
+              var clickedLink;
+              e.stopPropagation();
+              clickedLink = $(e.target).parent().data("link")[0];
+              return _this.selection.selectNode(clickedLink.target);
+            });
+            $('<i class="fa fa-caret-right fa-2x"></i> ').prependTo($spokeDiv);
             $spokeDiv.data("link", [spoke]);
             $spokeDiv.on("click", function(e) {
               var clickedLink;
               clickedLink = $(e.target).data("link")[0];
-              if (!clickedLink.selected) {
-                $(e.target).css("background-color", "steelblue");
-              } else {
-                $(e.target).css("background-color", "" + clickedLink.color);
-              }
-              return _this.linkSelection.toggleSelection(clickedLink);
+              return _this.renderLinkProfile(clickedLink, $(e.target), _this.blacklist, 5);
             });
           }
         }
@@ -418,13 +586,13 @@
         }
       };
 
-      NodeEdit.prototype.buildLink = function(linkProperties) {
+      SelectedDetails.prototype.buildLink = function(linkProperties) {
         this.tempLink.properties = linkProperties;
         console.log("tempLink set to", this.tempLink);
         return this.buildingLink = true;
       };
 
-      NodeEdit.prototype.parseSyntax = function(input) {
+      SelectedDetails.prototype.parseSyntax = function(input) {
         var createDate, dict, match, pattern, strsplit, text;
         console.log("input", input);
         strsplit = input.split('#');
@@ -447,7 +615,7 @@
         return dict;
       };
 
-      return NodeEdit;
+      return SelectedDetails;
 
     })(Backbone.View);
   });
