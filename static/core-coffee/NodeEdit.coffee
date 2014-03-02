@@ -182,7 +182,7 @@ define [], () ->
       if node.name?
         if node.url?
           realurl = ""
-          result = node.url.search(new RegExp(/^http:\/\//i));
+          result = node.url.search(new RegExp(/^(https?|ftp|dict):\/\//i));
           if !result
             realurl = node.url
           else
