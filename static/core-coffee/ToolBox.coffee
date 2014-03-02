@@ -1,5 +1,4 @@
-# adds a "Show All Nodes" button to load the whole database into the graph
-# model
+# adds a Toolbox plugin
 define [], () ->
 
   class ToolBox extends Backbone.View
@@ -24,6 +23,8 @@ define [], () ->
 
     render: ->
       $container = $("<div id=\"show-all-container\">").appendTo(@$el)
+
+      @addZoomButtons()
 
       $('#listviewButton').click(() =>
         $(@listView.el).show()
@@ -119,6 +120,56 @@ define [], () ->
       $showResearchButton = $("<input type=\"button\" id=\"showResearchButton\" value=\"Research\"></input>").appendTo $container
       $showResearchButton.click(() =>
         @searchNodes({Theme:"Research"})
+        )
+
+
+    addZoomButtons: =>  
+      $('#zoomin').click( =>
+        #find the current view and viewport settings
+        center = [$(window).width()/2,$(window).height()/2]
+        translate = @graphView.zoom.translate()
+        view = {x: translate[0], y: translate[1], k: @graphView.zoom.scale()}
+
+        #set the new scale factor
+        newScale = view.k*1.3
+
+        #calculate offset to zoom in center
+        translate0 = [(center[0] - view.x) / view.k, (center[1] - view.y) / view.k]
+        view.k = newScale
+        diff = [translate0[0] * view.k + view.x, translate0[1] * view.k + view.y]
+        view.x += center[0] - diff[0]
+        view.y += center[1] - diff[1]
+
+        #update zoom values
+        @graphView.zoom.translate([view.x,view.y])
+        @graphView.zoom.scale(newScale)
+
+        #translate workspace
+        @graphView.workspace.transition().ease("linear").attr "transform", "translate(#{[view.x,view.y]}) scale(#{newScale})"
+        )
+
+      $('#zoomout').click( =>
+        #find the current view and viewport settings
+        center = [$(window).width()/2,$(window).height()/2]
+        translate = @graphView.zoom.translate()
+        view = {x: translate[0], y: translate[1], k: @graphView.zoom.scale()}
+
+        #set the new scale factor
+        newScale = view.k/1.3
+
+        #calculate offset to zoom in center
+        translate0 = [(center[0] - view.x) / view.k, (center[1] - view.y) / view.k]
+        view.k = newScale
+        diff = [translate0[0] * view.k + view.x, translate0[1] * view.k + view.y]
+        view.x += center[0] - diff[0]
+        view.y += center[1] - diff[1]
+
+        #update zoom values
+        @graphView.zoom.translate([view.x,view.y])
+        @graphView.zoom.scale(newScale)
+
+        #translate workspace
+        @graphView.workspace.transition().ease("linear").attr "transform", "translate(#{[view.x,view.y]}) scale(#{newScale})"
         )
 
     loadAllNodes: (nodes) =>
