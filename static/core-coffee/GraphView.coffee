@@ -285,15 +285,14 @@ define [], () ->
 
       translateParams=[0,0]
            
-      @on "enter:node:dblclick", (node) =>
+      @on "enter:node:rightclick", (node) =>
         translateParams = [$(window).width()/2-node.x*@currentScale,$(window).height()/2-node.y*@currentScale]
         #update translate values
         @zoom.translate([translateParams[0], translateParams[1]])
         #translate workspace
         @workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{@currentScale})"
 
-      @on "enter:link:dblclick", (link) =>
-        console.log "cnenencsnjdnj"
+      @on "enter:link:rightclick", (link) =>
         linkCenterX = (link.target.x-link.source.x)/2+link.source.x
         linkCenterY = (link.target.y-link.source.y)/2+link.source.y
         translateParams = [$(window).width()/2-linkCenterX*@currentScale,$(window).height()/2-linkCenterY*@currentScale]

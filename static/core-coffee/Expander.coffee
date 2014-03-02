@@ -53,7 +53,7 @@ define [], () ->
         if !@loading and (not @topBarCreate.buildingLink)
           $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px"></span>')
 
-      @graphView.on "enter:node:rightclick", (d) =>
+      @graphView.on "enter:node:dblclick", (d) =>
         @expandSelection(d)
 
     expandSelection: (d) =>
