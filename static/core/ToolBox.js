@@ -46,12 +46,18 @@
           return $('#graphviewButton').css("background", "url(\"images/icons/blue/share_24x24.png\")");
         });
         $('#minimapButton').click(function() {
+          $(_this.el).hide();
+          $('#slidersPopOut').hide();
           return $('#minimapPopOut').toggle();
         });
         $('#slidersButton').click(function() {
+          $('#minimapPopOut').hide();
+          $(_this.el).hide();
           return $('#slidersPopOut').toggle();
         });
         $('#moreoptionsButton').click(function() {
+          $('#minimapPopOut').hide();
+          $('#slidersPopOut').hide();
           return $(_this.el).toggle();
         });
         $showAllButton = $("<input type=\"button\" id=\"showAllButton\" value=\"Show All\"></input>").appendTo($container);
