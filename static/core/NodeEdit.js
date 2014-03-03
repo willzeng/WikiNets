@@ -287,7 +287,10 @@
         this.addLinker(node, nodeDiv);
         initialSpokeNumber = 5;
         $spokeHolder = $("<div class='spokeHolder'></div>").appendTo(nodeDiv);
-        return this.addSpokes(node, $spokeHolder, initialSpokeNumber);
+        this.addSpokes(node, $spokeHolder, initialSpokeNumber);
+        return nodeDiv.on("click", function() {
+          return _this.graphView.centerOn(node);
+        });
       };
 
       NodeEdit.prototype.addLinker = function(node, nodeDiv) {

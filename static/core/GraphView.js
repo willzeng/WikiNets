@@ -40,6 +40,7 @@
       __extends(GraphView, _super);
 
       function GraphView() {
+        this.centerOn = __bind(this.centerOn, this);
         this.update = __bind(this.update, this);
         _ref1 = GraphView.__super__.constructor.apply(this, arguments);
         return _ref1;
@@ -254,6 +255,13 @@
           });
         });
         return this.nodeEnter = nodeEnter;
+      };
+
+      GraphView.prototype.centerOn = function(node) {
+        var translateParams;
+        translateParams = [$(window).width() / 2 - node.x * this.currentScale, $(window).height() / 2 - node.y * this.currentScale];
+        this.zoom.translate([translateParams[0], translateParams[1]]);
+        return this.workspace.transition().ease("linear").attr("transform", "translate(" + translateParams + ") scale(" + this.currentScale + ")");
       };
 
       GraphView.prototype.addCentering = function() {

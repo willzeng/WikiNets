@@ -281,6 +281,14 @@ define [], () ->
       #   nodeEnter.each (d)->d.fixed = true
       #   ), @loadtime
 
+    centerOn: (node) =>
+      translateParams = [$(window).width()/2-node.x*@currentScale,$(window).height()/2-node.y*@currentScale]
+      #update translate values
+      @zoom.translate([translateParams[0], translateParams[1]])
+      #translate workspace
+      @workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{@currentScale})"
+
+
     addCentering: () ->
 
       translateParams=[0,0]
