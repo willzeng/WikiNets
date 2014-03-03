@@ -8,7 +8,6 @@ define [], () ->
       super()
 
     init: (instances) ->
-      
       #require plugins
       @dataController = instances['local/Neo4jDataController']
 

@@ -8,7 +8,7 @@ define [], () ->
 
     init: (instances) ->
       @topBarCreate = instances["local/TopBarCreate"]
-      @listenTo instances["local/TopBarCreate"], "popout:open", () => 
+      @listenTo instances["local/TopBarCreate"], "node_create:popout:open", () =>
         @popout()
 
       @$el.appendTo $('#maingraph')
