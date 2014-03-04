@@ -32,7 +32,7 @@ define [], () ->
 
       #build HTML elements
       $container = $("<div id='visual-search-container'>").appendTo @$el
-      $searchBox = $('<input type="text" id="searchBox">')
+      $searchBox = $('<input type="text" id="searchBox" data-intro="Search the graph" data-position="right">')
         .css("width", "235px")
         .css("height", "24px")
         .css("border", "1px solid gray")

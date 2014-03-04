@@ -32,7 +32,8 @@ globalLibs = [
   '../lib/d3',
   '../lib/less',
   '../lib/visualsearch',
-  '../lib/colorPicker/jquery.colorPicker'
+  '../lib/colorPicker/jquery.colorPicker',
+  '../lib/chardinjs.min'
 ]
 
 define globalLibs, () ->

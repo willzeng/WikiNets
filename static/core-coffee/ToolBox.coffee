@@ -40,21 +40,24 @@ define [], () ->
         )
 
       $('#minimapButton').click(() =>
-        $(@el).hide();
-        $('#slidersPopOut').hide();
+        $(@el).hide()
+        $('#slidersPopOut').hide()
         $('#minimapPopOut').toggle()
         )
 
       $('#slidersButton').click(() =>
-        $('#minimapPopOut').hide();
-        $(@el).hide();
+        $('#minimapPopOut').hide()
+        $(@el).hide()
         $('#slidersPopOut').toggle()
         )
 
       $('#moreoptionsButton').click(() =>
-        $('#minimapPopOut').hide();
-        $('#slidersPopOut').hide();
+        $('#minimapPopOut').hide()
+        $('#slidersPopOut').hide()
         $(@el).toggle()
+        )
+      $('#help').click(() =>
+        $('body').chardinJs('toggle')
         )
 
       $showAllButton = $("<input type=\"button\" id=\"showAllButton\" value=\"Show All\"></input>").appendTo $container

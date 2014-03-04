@@ -32,7 +32,7 @@
         var $container, $createLinkButton, $createnodeNodeButton, $linkHolder, $linkInputDesc, $linkInputName, $linkInputUrl, $linkSide, $linkingInstructions, $nodeHolder, $nodeInputDesc, $nodeInputName, $nodeInputUrl, $nodeSide, $openPopoutButton,
           _this = this;
         $container = $('<div id="topbarcreate">').appendTo(this.$el);
-        $nodeSide = $('<div id="nodeside">').appendTo($container);
+        $nodeSide = $('<div id="nodeside" data-intro="Add a Node and connect it to other nodes in the graph" data-position="left">').appendTo($container);
         $nodeHolder = $('<textarea placeholder="Add Node" id="nodeHolder" name="textin" rows="1" cols="35"></textarea>').appendTo($nodeSide);
         this.$nodeWrapper = $('<div class="source-container">').appendTo($nodeSide);
         $nodeInputName = $('<textarea placeholder=\"Node Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);

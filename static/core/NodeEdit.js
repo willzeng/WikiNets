@@ -56,7 +56,7 @@
             } else if (!(_ref = node.color.toUpperCase(), __indexOf.call(colors, _ref) >= 0)) {
               node.color = "#A9A9A9";
             }
-            $nodeDiv = $("<div class=\"node-profile\"/>").css("background-color", "" + node.color).appendTo($container);
+            $nodeDiv = $("<div class=\"node-profile\" />").css("background-color", "" + node.color).appendTo($container);
             return _this.renderProfile(node, $nodeDiv, blacklist, 4);
           });
         }
@@ -69,7 +69,7 @@
         nodeInputNumber = 0;
         origColor = "#A9A9A9";
         header = this.findHeader(node);
-        nodeDiv.html("<div class=\"node-profile-title\">Editing " + header + " (id: " + node['_id'] + ")</div><form id=\"Node" + node['_id'] + "EditForm\"></form>");
+        nodeDiv.html("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view. It is shown here because it is either selected on the graph or a search result' data-position='right'>Editing " + header + " (id: " + node['_id'] + ")</div><form id=\"Node" + node['_id'] + "EditForm\"></form>");
         _.each(node, function(value, property) {
           var newEditingFields, _ref;
           if (blacklist.indexOf(property) < 0 && ["_id", "text", "color", "_Last_Edit_Date", "_Creation_Date"].indexOf(property) < 0) {
@@ -221,7 +221,7 @@
           _this = this;
         nodeDiv.empty();
         header = this.findHeader(node);
-        $nodeHeader = $("<div class=\"node-profile-title\">" + header + "</div>").appendTo(nodeDiv);
+        $nodeHeader = $("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view.' data-position='right'>" + header + "</div>").appendTo(nodeDiv);
         $nodeEdit = $("<i class=\"fa fa-pencil-square \"></i>").css("margin", "6px").appendTo($nodeHeader);
         $nodeEdit.click(function() {
           return _this.editNode(node, nodeDiv, blacklist);
@@ -268,7 +268,7 @@
           });
         }
         this.addLinker(node, nodeDiv);
-        $spokeHolder = $("<div class='spokeHolder'></div>").appendTo(nodeDiv);
+        $spokeHolder = $("<div class='spokeHolder' data-intro='Connections between this node and another node' data-position='right'></div>").appendTo(nodeDiv);
         return this.addSpokes(node, $spokeHolder, 5);
       };
 

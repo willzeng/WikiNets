@@ -60,6 +60,9 @@
           $('#slidersPopOut').hide();
           return $(_this.el).toggle();
         });
+        $('#help').click(function() {
+          return $('body').chardinJs('toggle');
+        });
         $showAllButton = $("<input type=\"button\" id=\"showAllButton\" value=\"Show All\"></input>").appendTo($container);
         $showAllButton.click(function() {
           return _this.dataProvider.getEverything(_this.loadAllNodes);

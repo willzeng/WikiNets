@@ -31,7 +31,7 @@ define [], () ->
 
       $container = $('<div id="topbarcreate">').appendTo @$el
 
-      $nodeSide = $('<div id="nodeside">').appendTo $container
+      $nodeSide = $('<div id="nodeside" data-intro="Add a Node and connect it to other nodes in the graph" data-position="left">').appendTo $container
 
       $nodeHolder = $('<textarea placeholder="Add Node" id="nodeHolder" name="textin" rows="1" cols="35"></textarea>').appendTo $nodeSide
 

@@ -35,7 +35,7 @@ define [], () ->
         _.each selectedNodes, (node) =>
           if !(node.color?) then node.color="#A9A9A9"
           else if !(node.color.toUpperCase() in colors) then node.color="#A9A9A9"
-          $nodeDiv = $("<div class=\"node-profile\"/>").css("background-color","#{node.color}").appendTo($container)
+          $nodeDiv = $("<div class=\"node-profile\" />").css("background-color","#{node.color}").appendTo($container)
           @renderProfile(node, $nodeDiv, blacklist, 4) 
 
     editNode: (node, nodeDiv, blacklist) ->
@@ -47,7 +47,7 @@ define [], () ->
                     
           header = @findHeader(node)
 
-          nodeDiv.html("<div class=\"node-profile-title\">Editing #{header} (id: #{node['_id']})</div><form id=\"Node#{node['_id']}EditForm\"></form>")
+          nodeDiv.html("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view. It is shown here because it is either selected on the graph or a search result' data-position='right'>Editing #{header} (id: #{node['_id']})</div><form id=\"Node#{node['_id']}EditForm\"></form>")
           _.each node, (value, property) ->
             if blacklist.indexOf(property) < 0 and ["_id", "text", "color", "_Last_Edit_Date", "_Creation_Date"].indexOf(property) < 0
               newEditingFields = """
@@ -187,7 +187,7 @@ define [], () ->
       nodeDiv.empty()
       header = @findHeader(node)
       
-      $nodeHeader = $("<div class=\"node-profile-title\">#{header}</div>").appendTo nodeDiv
+      $nodeHeader = $("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view.' data-position='right'>#{header}</div>").appendTo nodeDiv
 
       $nodeEdit = $("<i class=\"fa fa-pencil-square \"></i>").css("margin","6px").appendTo $nodeHeader
       $nodeEdit.click () =>
@@ -230,7 +230,7 @@ define [], () ->
       #Adds button that creates link from selected node to user-inputted node
       @addLinker node, nodeDiv
 
-      $spokeHolder = $("<div class='spokeHolder'></div>").appendTo nodeDiv
+      $spokeHolder = $("<div class='spokeHolder' data-intro='Connections between this node and another node' data-position='right'></div>").appendTo nodeDiv
       @addSpokes node, $spokeHolder, 5
 
 
