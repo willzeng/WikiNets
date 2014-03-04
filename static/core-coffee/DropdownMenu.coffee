@@ -25,7 +25,6 @@ define [], () ->
 
     render: ->
       $bbar = $("<div id=\"bbar\"></div>")
-        .css("background-color","#979985")
         .css("width","10px")
         #.css("height", "110px")
         .appendTo @$el

@@ -15,6 +15,21 @@ body {
     z-index: 1000;
 }
 
+#dropdownMenu:last-child{
+    margin-bottom:5px;
+}
+
+.clickable, .fa-times, .fa-pencil-square {
+    cursor:pointer;
+}
+
+#toplink-instructions {
+    background:white;
+    opacity:0.8;
+    font-family:helvetica;
+}
+
+
 .toolboxpopout {
     position:fixed;
     bottom:55px;
@@ -248,17 +263,23 @@ body {
     }
 
     #menuButton {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
         font-family:'Helvetica Neue';
         font-weight:100;
         text-decoration:none;
+        background:white;
+        border:1px solid gray;
         float:left;
         font-size:16pt;
         padding-left: 10px;
         padding-right: 10px;
         padding-bottom: 2px;
-        padding-top: 5px;
-        background-color: gray;
-        color: white;
+        padding-top: 3px;
         margin-top:0px;
         margin-bottom:0px;
         letter-spacing: 1px;
