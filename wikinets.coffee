@@ -291,9 +291,8 @@ module.exports = class MyApp
           )
     )
 
-    # gets a list of all node properties occuring in the database
-    # used in VisualSearch
-    # for each of those properties, it also gets a list of all values, though that should be moved to a separate query
+    # Gets a list of all node properties occuring in the database
+    # Used in VisualSearch
     # Request may be empty
     app.get('/get_all_node_keys', (request,response)->
       graphDb.cypher.execute("start n=node(*) return n;").then(
@@ -306,22 +305,83 @@ module.exports = class MyApp
           )
     )
 
+    # Gets a list of all link properties occuring in the database
+    # Used in VisualSearch
+    # Request may be empty
+    app.get('/get_all_link_keys', (request,response)->
+      graphDb.cypher.execute("start r=rel(*) return r;").then(
+        (noderes)->
+          console.log "Get All Link Keys: Query Executed"
+          nodeData = (n[0].data for n in noderes.data)
+          keys = []
+          ((keys.push key for key,value of n when not (key in keys)) for n in nodeData)
+          response.json keys.sort()
+          )
+    )
+
+    # Gets a list of all node & link properties occuring in the database
+    # Possibly used in VisualSearch
+    # Request may be empty
+    # Response is a list of elements of the form {'label':/key/, 'category':/c/},
+    # where /c/ is either 'node' or 'link'
+    app.get('/get_all_keys', (request,response)->
+      graphDb.cypher.execute("start n=node(*) return n;").then(
+        (noderes)->
+          console.log "Get All Node Keys: Query Executed"
+          nodeData = (n[0].data for n in noderes.data)
+          nodeKeys = []
+          allKeys = []
+          ((nodeKeys.push key for key,value of n when not (key in nodeKeys)) for n in nodeData)
+          (allKeys.push {'label':key+' ', 'category':'node'} for key in nodeKeys.sort())
+          graphDb.cypher.execute("start r=rel(*) return r;").then(
+            (linkres)=>
+              console.log "Get All Link Keys: Query Executed"
+              linkData = (n[0].data for n in linkres.data)
+              linkKeys = []
+              ((linkKeys.push key for key,value of n when not (key in linkKeys)) for n in linkData)
+              (allKeys.push {'label':key, 'category':'link'} for key in linkKeys.sort())
+              response.json allKeys
+              )
+          )
+      
+    )
+
     # Gets a list of all values occuring in the database for a given node property
     # and returns them as an alphabetically sorted list for VisualSearch
     # Request should be of form {property: 'foo'}
     # if value is very long it is shortened - cf. shorten()
     # TO DO: add a limit to number of results for large databases
-    app.post('/get_all_key_values', (request,response)->
+    app.post('/get_all_node_key_values', (request,response)->
       cypherQuery = "start n=node(*) where has(n." + request.body.property + ") return n;"
       console.log "Executing " + cypherQuery
       graphDb.cypher.execute(cypherQuery).then(
         (noderes)->
-          console.log "Get All Key values: Query Executed"
+          console.log "Get All Node Key values: Query Executed"
           nodeData = (n[0].data for n in noderes.data)
           values = ['(any)']
-          # the option '(any)' will allow searching for any node with a certain property,
+          # the option '(any)' allows searching for any node with a certain property,
           # independent of value - cf. /search_nodes
           (values.push shorten(n[request.body.property]) for n in nodeData when not (shorten(n[request.body.property]) in values))
+          response.json values.sort()
+          )
+    )
+
+    # Gets a list of all values occuring in the database for a given link property
+    # and returns them as an alphabetically sorted list for VisualSearch
+    # Request should be of form {property: 'foo'}
+    # if value is very long it is shortened - cf. shorten()
+    # TO DO: add a limit to number of results for large databases
+    app.post('/get_all_link_key_values', (request,response)->
+      cypherQuery = "start r=rel(*) where has(r." + request.body.property + ") return r;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes)->
+          console.log "Get All Link Key values: Query Executed"
+          linkData = (n[0].data for n in noderes.data)
+          values = ['(any)']
+          # the option '(any)' allows searching for any link with a certain property,
+          # independent of value - cf. /search_nodes
+          (values.push shorten(n[request.body.property]) for n in linkData when not (shorten(n[request.body.property]) in values))
           response.json values.sort()
           )
     )
@@ -343,6 +403,33 @@ module.exports = class MyApp
             cypherQuery += "n.#{property} =~ '#{value.slice(0,-2)}*' and "
           else
             cypherQuery += "n.#{property} = '#{value}' and "
+        cypherQuery = cypherQuery.substring(0,cypherQuery.length-4)
+      cypherQuery += "return n;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes)->
+          nodeList = (addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
+          response.json nodeList
+          )
+    )
+
+    # Returns the start and end nodes for all links matching the property-value pairs given in the request body
+    # this is for VisualSearch
+    # Request should be of form {property1: 'value1', property2: 'value2', ...}
+    app.post('/search_links', (request,response)->
+      console.log "Searching links"
+      cypherQuery = "start n=node(*) match (n)-[r]-() where "
+      if JSON.stringify(request.body) isnt '{}'
+        for property, value of request.body
+          if value is '(any)'
+            # this allows searching for any node that has a certain property, independent of value
+            cypherQuery += "has(r.#{property}) and "
+          else if value.substr(-3) is '...'
+            # this means value has been shortened, cf. shorten()
+            # in this case use regular expression in query to compensate
+            cypherQuery += "r.#{property} =~ '#{value.slice(0,-2)}*' and "
+          else
+            cypherQuery += "r.#{property} = '#{value}' and "
         cypherQuery = cypherQuery.substring(0,cypherQuery.length-4)
       cypherQuery += "return n;"
       console.log "Executing " + cypherQuery
