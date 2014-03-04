@@ -216,7 +216,7 @@
         if (node.name != null) {
           if (node.url != null) {
             realurl = "";
-            result = node.url.search(new RegExp(/^http:\/\//i));
+            result = node.url.search(new RegExp(/^(https?|ftp|dict):\/\//i));
             if (!result) {
               realurl = node.url;
             } else {
@@ -287,7 +287,10 @@
         this.addLinker(node, nodeDiv);
         initialSpokeNumber = 5;
         $spokeHolder = $("<div class='spokeHolder'></div>").appendTo(nodeDiv);
-        return this.addSpokes(node, $spokeHolder, initialSpokeNumber);
+        this.addSpokes(node, $spokeHolder, initialSpokeNumber);
+        return nodeDiv.on("click", function() {
+          return _this.graphView.centerOn(node);
+        });
       };
 
       NodeEdit.prototype.addLinker = function(node, nodeDiv) {

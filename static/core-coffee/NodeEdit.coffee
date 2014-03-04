@@ -36,7 +36,7 @@ define [], () ->
           if !(node.color?) then node.color="#A9A9A9"
           else if !(node.color.toUpperCase() in colors) then node.color="#A9A9A9"
           $nodeDiv = $("<div class=\"node-profile\"/>").css("background-color","#{node.color}").appendTo($container)
-          @renderProfile(node, $nodeDiv, blacklist, 4) 
+          @renderProfile(node, $nodeDiv, blacklist, 4)
 
     editNode: (node, nodeDiv, blacklist) ->
           console.log "Editing node: " + node['_id']
@@ -182,7 +182,7 @@ define [], () ->
       if node.name?
         if node.url?
           realurl = ""
-          result = node.url.search(new RegExp(/^http:\/\//i));
+          result = node.url.search(new RegExp(/^(https?|ftp|dict):\/\//i));
           if !result
             realurl = node.url
           else
@@ -248,6 +248,9 @@ define [], () ->
       initialSpokeNumber = 5
       $spokeHolder = $("<div class='spokeHolder'></div>").appendTo nodeDiv
       @addSpokes node, $spokeHolder, initialSpokeNumber
+
+      nodeDiv.on "click", () =>
+        @graphView.centerOn(node)
 
 
     addLinker: (node, nodeDiv) =>
