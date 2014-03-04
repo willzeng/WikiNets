@@ -37,7 +37,7 @@
         });
         $(this.el).appendTo($('#omniBox'));
         this.Create = instances['local/Create'];
-        return this.nodeEdit = instances['local/NodeEdit'];
+        return this.nodeEdit = instances['local/SelectedDetails'];
       };
 
       LinkEdit.prototype.update = function() {

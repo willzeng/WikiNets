@@ -28,7 +28,7 @@ define [], () ->
 
       @Create = instances['local/Create']
 
-      @nodeEdit = instances['local/NodeEdit']
+      @nodeEdit = instances['local/SelectedDetails']
 
     update: ->
       @$el.empty()
