@@ -47,18 +47,39 @@
         });
         $('#minimapButton').click(function() {
           $(_this.el).hide();
+          $('#moreoptionsButton').removeClass('selected');
           $('#slidersPopOut').hide();
-          return $('#minimapPopOut').toggle();
+          $('#slidersButton').removeClass('selected');
+          $('#minimapPopOut').toggle();
+          if ($('#minimapButton').hasClass('selected')) {
+            return $('#minimapButton').removeClass('selected');
+          } else {
+            return $('#minimapButton').addClass('selected');
+          }
         });
         $('#slidersButton').click(function() {
           $('#minimapPopOut').hide();
+          $('#minimapButton').removeClass('selected');
           $(_this.el).hide();
-          return $('#slidersPopOut').toggle();
+          $('#moreoptionsButton').removeClass('selected');
+          $('#slidersPopOut').toggle();
+          if ($('#slidersButton').hasClass('selected')) {
+            return $('#slidersButton').removeClass('selected');
+          } else {
+            return $('#slidersButton').addClass('selected');
+          }
         });
         $('#moreoptionsButton').click(function() {
           $('#minimapPopOut').hide();
+          $('#minimapButton').removeClass('selected');
           $('#slidersPopOut').hide();
-          return $(_this.el).toggle();
+          $('#slidersButton').removeClass('selected');
+          $(_this.el).toggle();
+          if ($('#moreoptionsButton').hasClass('selected')) {
+            return $('#moreoptionsButton').removeClass('selected');
+          } else {
+            return $('#moreoptionsButton').addClass('selected');
+          }
         });
         $('#help').click(function() {
           return $('body').chardinJs('toggle');

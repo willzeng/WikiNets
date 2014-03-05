@@ -41,20 +41,38 @@ define [], () ->
 
       $('#minimapButton').click(() =>
         $(@el).hide()
+        $('#moreoptionsButton').removeClass('selected')
         $('#slidersPopOut').hide()
+        $('#slidersButton').removeClass('selected')
         $('#minimapPopOut').toggle()
+        if($('#minimapButton').hasClass('selected'))
+          $('#minimapButton').removeClass('selected')
+        else
+          $('#minimapButton').addClass('selected')
         )
 
       $('#slidersButton').click(() =>
         $('#minimapPopOut').hide()
+        $('#minimapButton').removeClass('selected')
         $(@el).hide()
+        $('#moreoptionsButton').removeClass('selected')
         $('#slidersPopOut').toggle()
+        if($('#slidersButton').hasClass('selected'))
+          $('#slidersButton').removeClass('selected')
+        else
+          $('#slidersButton').addClass('selected')
         )
 
       $('#moreoptionsButton').click(() =>
         $('#minimapPopOut').hide()
+        $('#minimapButton').removeClass('selected')
         $('#slidersPopOut').hide()
+        $('#slidersButton').removeClass('selected')
         $(@el).toggle()
+        if($('#moreoptionsButton').hasClass('selected'))
+          $('#moreoptionsButton').removeClass('selected')
+        else
+          $('#moreoptionsButton').addClass('selected')
         )
       $('#help').click(() =>
         $('body').chardinJs('toggle')
