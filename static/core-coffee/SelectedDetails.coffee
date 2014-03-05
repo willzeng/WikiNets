@@ -41,10 +41,10 @@ define [], () ->
 
       #create profiles based on selectedNodes
       selectedNodes = @selection.getSelectedNodes()
-      $container = $("<div class=\"node-profile-helper\"/>").appendTo(@$el)
+      $container = $("<div class='node-profile-helper'/>").appendTo(@$el)
       _.each selectedNodes, (node) =>
         node = @validateNode(node)
-        $nodeDiv = $("<div class=\"node-profile\"/>").css("background-color","#{node.color}").appendTo($container)
+        $nodeDiv = $("<div class='node-profile'/>").css("background-color","#{node.color}").appendTo($container)
         @renderProfile(node, $nodeDiv, 4) 
 
     #This validates a node's data to make sure it matches the requirements for display with
@@ -60,13 +60,13 @@ define [], () ->
       nodeDiv.empty()
       header = @findHeader(node)
       
-      $nodeHeader = $("<div class=\"node-profile-title\">#{header}</div>").appendTo nodeDiv
+      $nodeHeader = $("<div class='node-profile-title'>#{header}</div>").appendTo nodeDiv
 
-      $nodeEdit = $("<i class=\"fa fa-pencil-square \"></i>").css("margin","6px").appendTo $nodeHeader
+      $nodeEdit = $("<i class='fa fa-pencil-square'></i>").css("margin","6px").appendTo $nodeHeader
       $nodeEdit.click () =>
         @editNode(node, nodeDiv, @blacklist)
 
-      $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").css("margin","1px").appendTo $nodeHeader
+      $nodeDeselect = $("<i class='right fa fa-times'></i>").css("margin","1px").appendTo $nodeHeader
       $nodeDeselect.click () => @selection.toggleSelection(node)
 
       whitelist = ["description", "url"]
@@ -85,19 +85,19 @@ define [], () ->
         value += ""
         if @blacklist.indexOf(property) < 0
           if value?
-            makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi,"<a href=\"$1\" target=\"_blank\" style=\"target-new: tab;\">$1</a>")
+            makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi,"<a href='$1' target='_blank' style='target-new: tab;'>$1</a>")
           else
             makeLinks = value
           if property in whitelist
-            $("<div class=\"node-profile-property\">#{makeLinks}</div>").appendTo nodeDiv 
+            $("<div class='node-profile-property'>#{makeLinks}</div>").appendTo nodeDiv 
           else if property == "_Last_Edit_Date" or property=="_Creation_Date"
-            $("<div class=\"node-profile-property\">#{property}:  #{makeLinks.substring(4,21)}</div>").appendTo nodeDiv  
+            $("<div class='node-profile-property'>#{property}:  #{makeLinks.substring(4,21)}</div>").appendTo nodeDiv  
           else
-            $("<div class=\"node-profile-property\">#{property}:  #{makeLinks}</div>").appendTo nodeDiv
+            $("<div class='node-profile-property'>#{property}:  #{makeLinks}</div>").appendTo nodeDiv
           counter++ 
 
       if propNumber < nodeLength
-        $showMore = $("<div class='showMore'><a href='#'>Show More...</a></div>").appendTo nodeDiv 
+        $showMore = $("<div class='show-more'><a href='#'>Show More...</a></div>").appendTo nodeDiv 
         $showMore.click () =>
           @renderProfile(node, nodeDiv, propNumber+10)
           
@@ -106,7 +106,7 @@ define [], () ->
 
       #Adds the links from this node to its neighbors
       initialSpokeNumber = 4
-      $spokeHolder = $("<div class='spokeHolder'></div>").appendTo nodeDiv
+      $spokeHolder = $("<div class='spoke-holder'></div>").appendTo nodeDiv
       @addSpokes node, $spokeHolder, initialSpokeNumber
 
     editNode: (node, nodeDiv) ->
@@ -117,14 +117,14 @@ define [], () ->
                     
           header = @findHeader(node)
 
-          nodeDiv.html("<div class=\"node-profile-title\">Editing #{header} (id: #{node['_id']})</div><form id=\"Node#{node['_id']}EditForm\"></form>")
+          nodeDiv.html("<div class='node-profile-title'>Editing #{header} (id: #{node['_id']})</div><form id='Node#{node['_id']}EditForm'></form>")
           for property, value of node
             if @blacklist.indexOf(property) < 0 and ["_id", "text", "color", "_Last_Edit_Date", "_Creation_Date"].indexOf(property) < 0
               newEditingFields = """
-                <div id=\"Node#{node['_id']}EditDiv#{nodeInputNumber}\" class=\"Node#{node['_id']}EditDiv\">
-                  <input style=\"width:80px\" id=\"Node#{node['_id']}EditProperty#{nodeInputNumber}\" value=\"#{property}\" class=\"propertyNode#{node['_id']}Edit\"/> 
-                  <input style=\"width:80px\" id=\"Node#{node['_id']}EditValue#{nodeInputNumber}\" value=\"#{value}\" class=\"valueNode#{node['_id']}Edit\"/> 
-                  <input type=\"button\" id=\"removeNode#{node['_id']}Edit#{nodeInputNumber}\" value=\"x\" onclick=\"this.parentNode.parentNode.removeChild(this.parentNode);\">
+                <div id='Node#{node['_id']}EditDiv#{nodeInputNumber}' class='Node#{node['_id']}EditDiv'>
+                  <input style='width:80px' id='Node#{node['_id']}EditProperty#{nodeInputNumber}' value='#{property}' class='propertyNode#{node['_id']}Edit'/> 
+                  <input style='width:80px' id='Node#{node['_id']}EditValue#{nodeInputNumber}' value='#{value}' class='valueNode#{node['_id']}Edit'/> 
+                  <input type='button' id='removeNode#{node['_id']}Edit#{nodeInputNumber}' value='x' onclick='this.parentNode.parentNode.removeChild(this.parentNode);'>
                 </div>
               """
               $(newEditingFields).appendTo("#Node#{node['_id']}EditForm")
@@ -145,17 +145,17 @@ define [], () ->
           #Adds a checkbox to determine if the node should be loaded initially
           if node.shouldLoad? then shouldLoad = node.shouldLoad else shouldLoad = false
           $loaderHolder = $('<span> Load by default <br> </span>').css("font-size","12px").appendTo nodeDiv
-          $loaderToggle = $('<input type="checkbox" id=\"shouldLoad'+node._id+'\">')
+          $loaderToggle = $('<input type="checkbox" id="shouldLoad"'+node._id+'>')
             .attr("checked", shouldLoad)
             .prependTo $loaderHolder 
 
-          $nodeMoreFields = $("<input id=\"moreNode#{node['_id']}EditFields\" type=\"button\" value=\"+\">").appendTo(nodeDiv)
+          $nodeMoreFields = $("<input id='moreNode#{node['_id']}EditFields' type='button' value='+'>").appendTo(nodeDiv)
           $nodeMoreFields.click(() =>
             @addField(nodeInputNumber, "Node#{node['_id']}Edit")
             nodeInputNumber = nodeInputNumber+1
           )
 
-          $nodeSave = $("<input name=\"nodeSaveButton\" type=\"button\" value=\"Save\">").appendTo(nodeDiv)
+          $nodeSave = $("<input name='nodeSaveButton' type='button' value='Save'>").appendTo(nodeDiv)
           $nodeSave.click () => 
             newNodeObj = @assign_properties("Node#{node['_id']}Edit")
             if newNodeObj[0]
@@ -178,11 +178,11 @@ define [], () ->
                   alert("Did not save node " + @findHeader(node) + " (id: #{node['_id']}).")
 
 
-          $nodeDelete = $("<input name=\"NodeDeleteButton\" type=\"button\" value=\"Delete\">").appendTo(nodeDiv)
+          $nodeDelete = $("<input type='button' value='Delete'>").appendTo(nodeDiv)
           $nodeDelete.click () => 
             if confirm("Are you sure you want to delete this node?") then @deleteNode(node, () => @selection.toggleSelection(node))
 
-          $nodeCancel =  $("<input name=\"NodeCancelButton\" type=\"button\" value=\"Cancel\">").appendTo(nodeDiv)
+          $nodeCancel =  $("<input type='button' value='Cancel'>").appendTo(nodeDiv)
           $nodeCancel.click () => @cancelEditing(node, nodeDiv)
 
     cancelEditing: (node, nodeDiv) =>
@@ -295,7 +295,7 @@ define [], () ->
       linkWrapperDivID = "id=" + "'source-container" + nodeID + "'"
       $linkWrapper = $('<div ' + linkWrapperDivID + ' class="linkWrapperClass">').appendTo $linkSide
 
-      $linkInputName = $('<textarea placeholder=\"Link Name [optional]\" rows="1" cols="25"></textarea><br>').appendTo $linkWrapper
+      $linkInputName = $('<textarea placeholder="Link Name [optional]" rows="1" cols="25"></textarea><br>').appendTo $linkWrapper
       $linkInputUrl = $('<textarea placeholder="Url [optional]" rows="1" cols="25"></textarea><br>').appendTo $linkWrapper
       $linkInputDesc = $('<textarea placeholder="Description\n #key1 value1 #key2 value2" rows="5" cols="25"></textarea><br>').appendTo $linkWrapper
 
@@ -303,7 +303,6 @@ define [], () ->
 
       $createLinkButton.click () =>
         @tempLink.source = node
-        console.log "set source of tempLink", @tempLink
         @buildLink(
           @parseSyntax($linkInputName.val()+" : "+$linkInputDesc.val()+" #url "+$linkInputUrl.val())
         )
@@ -329,7 +328,6 @@ define [], () ->
       @graphView.on "enter:node:click", (clickedNode) =>
         if @buildingLink
           @tempLink.target = clickedNode
-          console.log "this is the tempLink", @tempLink
           link = @tempLink
           @dataController.linkAdd(link, (linkres)=> 
             newLink = linkres
@@ -360,13 +358,13 @@ define [], () ->
           savedSpoke = spoke
           displayName = @findLinkHeader(spoke)
           if !(spoke.color?) then spoke.color = "#A9A9A9"
-          $spokeDiv = $('<div class="spokeDiv">'+displayName+' </div>')
+          $spokeDiv = $('<div class="spoke-div">'+displayName+' </div>')
             .css("border","2px solid #{spoke.color}")
             .appendTo $spokesDiv
 
           if spoke.selected then $spokeDiv.css("background-color", "steelblue")
 
-          $spokeSource = $('<span class="nodeNameBox">'+spoke.source.name+'</span>')
+          $spokeSource = $('<span class="node-header-box">'+spoke.source.name+'</span>')
             .css("background-color","#{spoke.source.color}")
             .prependTo $spokeDiv
           $spokeSource.on "click", (e) =>
@@ -374,7 +372,7 @@ define [], () ->
             clickedLink = $(e.target).parent().data("link")[0]
             @selection.selectNode(clickedLink.source)
 
-          $spokeTarget = $('<span class="nodeNameBox">'+spoke.target.name+'</span>')
+          $spokeTarget = $('<span class="node-header-box">'+spoke.target.name+'</span>')
             .css("background-color","#{spoke.target.color}")
             .appendTo $spokeDiv
           $spokeTarget.on "click", (e) =>
@@ -388,7 +386,7 @@ define [], () ->
             @linkSelection.toggleSelection(clickedLink)
 
       if maxSpokes < spokes.length
-        $showMoreSpokes = $("<div class=\"showMore\"><a href='#'>Show More...</a></div>").appendTo spokeHolder 
+        $showMoreSpokes = $("<div class='show-more'><a href='#'>Show More...</a></div>").appendTo spokeHolder 
         $showMoreSpokes.on "click", (e) =>
           $('<div id='+spokesID+'>').empty()
           @addSpokes(node, spokeHolder, maxSpokes+4)
@@ -409,7 +407,7 @@ define [], () ->
 
       ###The first entry becomes the name###
       dict["name"]=text.split('#')[0].trim()
-      console.log "This is the title", text.split('#')[0].trim()
+      #console.log "This is the title", text.split('#')[0].trim()
       createDate=new Date()
       dict["_Creation_Date"]=createDate
       dict
