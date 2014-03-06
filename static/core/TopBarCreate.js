@@ -27,12 +27,11 @@
         this.linkSelection = instances["LinkSelection"];
         this.buildingLink = false;
         this.tempLink = {};
-        this.sourceSet = false;
         return this.render();
       };
 
       TopBarCreate.prototype.render = function() {
-        var container, createNodeButton, linkHolder, linkSide, linkWrapper, linkingInstructions, nodeHolder, nodeInputDesc, nodeInputName, nodeInputUrl, nodeSide, nodeWrapper, openPopoutButton,
+        var container, createNodeButton, linkHolder, linkInputDesc, linkInputName, linkInputUrl, linkSide, linkWrapper, linkingInstructions, nodeHolder, nodeInputDesc, nodeInputName, nodeInputUrl, nodeSide, nodeWrapper, openPopoutButton,
           _this = this;
         container = $('<div id="topbarcreate">').appendTo($('#buildbar'));
         nodeSide = $('<div id="nodeside">').appendTo(container);
@@ -62,73 +61,63 @@
         linkSide = $('<div id="linkside">').appendTo(container);
         linkHolder = $('<input type="text" placeholder="Add Link" id="linkHolder">').appendTo(linkSide);
         linkWrapper = $('<div class="small-form">').appendTo(linkSide).hide();
-        this.linkInputName = $('<input type="text" placeholder="Link Name [optional]">').appendTo(linkWrapper);
-        this.linkInputUrl = $('<input type="text"  placeholder="Url [optional]" >').appendTo(linkWrapper);
-        this.linkInputDesc = $('<textarea placeholder="Description [optional]" rows="1" cols="35">').appendTo(linkWrapper);
-        this.createLinkButton = $('<input id="LinkCreateButton" type="button" value="Attach & Create Link">').appendTo(linkWrapper);
+        linkInputName = $('<input type="text" placeholder="Link Name [optional]">').appendTo(linkWrapper);
+        linkInputUrl = $('<input type="text"  placeholder="Url [optional]" >').appendTo(linkWrapper);
+        linkInputDesc = $('<textarea placeholder="Description [optional]" rows="1" cols="35">').appendTo(linkWrapper);
+        this.createLinkButton = $('<input type="button" value="Attach & Create Link">').appendTo(linkWrapper);
+        this.cancelLinkButton = $('<input type="button" value="Cancel Link Creation">').appendTo(linkWrapper).hide();
+        this.cancelLinkButton.click(function() {
+          _this.cancelLinkButton.hide();
+          _this.createLinkButton.show();
+          _this.buildingLink = false;
+          _this.tempLink = {};
+          _this.sourceSet = false;
+          return $('#toplink-instructions').text('');
+        });
         linkingInstructions = $('<span id="toplink-instructions">').appendTo(container);
         this.createLinkButton.click(function() {
-          if (_this.buildingLink) {
-            _this.buildingLink = false;
-            _this.tempLink = {};
-            _this.sourceSet = false;
-            $('#toplink-instructions').text('');
-            _this.createLinkButton.val('Attach & Create Link');
-            return _this.linkInputName.focus();
-          } else {
-            return _this.buildLink();
-          }
+          return _this.buildLink(linkInputName.val(), linkInputUrl.val(), linkInputDesc.val());
         });
         linkHolder.focus(function() {
           linkWrapper.show();
-          _this.linkInputName.focus();
+          linkInputName.focus();
           return linkHolder.hide();
-        });
-        this.graphView.on("view:click", function() {
-          nodeWrapper.hide();
-          nodeHolder.show();
-          linkWrapper.hide();
-          return linkHolder.show();
         });
         return this.graphView.on("enter:node:click", function(node) {
           var link;
           if (_this.buildingLink) {
-            if (_this.sourceSet) {
-              _this.tempLink.target = node;
+            if (!!_this.tempLink['source']) {
+              _this.tempLink['target'] = node;
               link = _this.tempLink;
               _this.dataController.linkAdd(link, function(linkres) {
-                var allNodes, n, newLink, _i, _j, _len, _len1;
-                newLink = linkres;
+                var allNodes, n, _i, _j, _len, _len1;
                 allNodes = _this.graphModel.getNodes();
                 for (_i = 0, _len = allNodes.length; _i < _len; _i++) {
                   n = allNodes[_i];
                   if (n['_id'] === link.source['_id']) {
-                    newLink.source = n;
+                    linkres.source = n;
                   }
                 }
                 for (_j = 0, _len1 = allNodes.length; _j < _len1; _j++) {
                   n = allNodes[_j];
                   if (n['_id'] === link.target['_id']) {
-                    newLink.target = n;
+                    linkres.target = n;
                   }
                 }
-                _this.graphModel.putLink(newLink);
-                return _this.linkSelection.toggleSelection(newLink);
+                _this.graphModel.putLink(linkres);
+                return _this.linkSelection.toggleSelection(linkres);
               });
-              _this.sourceSet = _this.buildingLink = false;
-              $('.LinkCreateDiv').each(function(i, obj) {
-                return $(this)[0].parentNode.removeChild($(this)[0]);
-              });
-              _this.linkInputName.val('');
-              _this.linkInputDesc.val('');
-              _this.linkInputUrl.val('');
-              $('#toplink-instructions').text('');
-              _this.createLinkButton.val('Attach & Create Link');
-              return _this.linkInputName.focus();
+              _this.buildingLink = false;
+              _this.tempLink = {};
+              linkInputName.val('');
+              linkInputDesc.val('');
+              linkInputUrl.val('');
+              _this.createLinkButton.show();
+              _this.cancelLinkButton.hide();
+              return $('#toplink-instructions').text('');
             } else {
-              _this.tempLink.source = node;
-              _this.sourceSet = true;
-              return $('#toplink-instructions').text('Source:' + node.name + ' (' + node['_id'] + ') Click a node to select it as the link target.');
+              _this.tempLink['source'] = node;
+              return $('#toplink-instructions').text("Source: " + node.name + " (" + node['_id'] + ") Click a node to select it as the link target.");
             }
           }
         });
@@ -174,7 +163,7 @@
         }
       };
 
-      TopBarCreate.prototype.buildLink = function(name, url, description, on_success) {
+      TopBarCreate.prototype.buildLink = function(name, url, description) {
         var i, properties, val, _i, _len;
         if (name == null) {
           name = '';
@@ -198,7 +187,8 @@
         this.tempLink["properties"] = properties;
         this.buildingLink = true;
         $('#toplink-instructions').text('Click a node to select it as the link source.');
-        return this.createLinkButton.val('Cancel Link Creation');
+        this.createLinkButton.hide();
+        return this.cancelLinkButton.show();
       };
 
       return TopBarCreate;

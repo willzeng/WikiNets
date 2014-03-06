@@ -17,10 +17,8 @@ define [], () ->
       @selection = instances["NodeSelection"]
       @linkSelection = instances["LinkSelection"]
 
-      ## HELP
       @buildingLink = false
-      @tempLink = {};
-      @sourceSet = false
+      @tempLink = {}
 
       @render()
 
@@ -71,66 +69,54 @@ define [], () ->
                       .appendTo(linkSide)
                       .hide()
 
-      @linkInputName = $('<input type="text" placeholder="Link Name [optional]">').appendTo linkWrapper
-      @linkInputUrl = $('<input type="text"  placeholder="Url [optional]" >').appendTo linkWrapper
-      @linkInputDesc = $('<textarea placeholder="Description [optional]" rows="1" cols="35">').appendTo linkWrapper
+      linkInputName = $('<input type="text" placeholder="Link Name [optional]">').appendTo linkWrapper
+      linkInputUrl = $('<input type="text"  placeholder="Url [optional]" >').appendTo linkWrapper
+      linkInputDesc = $('<textarea placeholder="Description [optional]" rows="1" cols="35">').appendTo linkWrapper
 
-      @createLinkButton = $('<input id="LinkCreateButton" type="button" value="Attach & Create Link">').appendTo linkWrapper
+      @createLinkButton = $('<input type="button" value="Attach & Create Link">').appendTo linkWrapper
+      @cancelLinkButton = $('<input type="button" value="Cancel Link Creation">').appendTo(linkWrapper).hide()
+      @cancelLinkButton.click =>
+        @cancelLinkButton.hide()
+        @createLinkButton.show()
+        @buildingLink = false
+        @tempLink = {};
+        @sourceSet = false
+        $('#toplink-instructions').text('')
 
       linkingInstructions = $('<span id="toplink-instructions">').appendTo container
 
       # what we do when we create a link
       @createLinkButton.click () =>
-        if @buildingLink
-          # this is when we are cancelling creating a link
-          @buildingLink = false
-          @tempLink = {};
-          @sourceSet = false
-          $('#toplink-instructions').text('')
-          @createLinkButton.val('Attach & Create Link')
-          @linkInputName.focus()
-        else
-          # start creating a link
-          @buildLink()
+        @buildLink(linkInputName.val(), linkInputUrl.val(), linkInputDesc.val())
 
       linkHolder.focus () =>
         linkWrapper.show()
-        @linkInputName.focus()
+        linkInputName.focus()
         linkHolder.hide()
-
-      @graphView.on "view:click", () =>
-        nodeWrapper.hide()
-        nodeHolder.show()
-        linkWrapper.hide()
-        linkHolder.show()
 
       @graphView.on "enter:node:click", (node) =>
         if @buildingLink
-          if @sourceSet
-            @tempLink.target = node
+          if !!@tempLink['source']
+            @tempLink['target'] = node
             link = @tempLink
-            @dataController.linkAdd(link, (linkres)=>
-              newLink = linkres
+            @dataController.linkAdd link, (linkres) =>
               allNodes = @graphModel.getNodes()
-              newLink.source = n for n in allNodes when n['_id'] is link.source['_id']
-              newLink.target = n for n in allNodes when n['_id'] is link.target['_id']
-              @graphModel.putLink(newLink)
-              @linkSelection.toggleSelection(newLink)
-              )
-            @sourceSet = @buildingLink = false
-            $('.LinkCreateDiv').each( (i, obj) ->
-              $(this)[0].parentNode.removeChild $(this)[0]
-            )
-            @linkInputName.val('')
-            @linkInputDesc.val('')
-            @linkInputUrl.val('')
+              linkres.source = n for n in allNodes when n['_id'] is link.source['_id']
+              linkres.target = n for n in allNodes when n['_id'] is link.target['_id']
+              @graphModel.putLink(linkres)
+              @linkSelection.toggleSelection(linkres)
+            @buildingLink = false
+            @tempLink = {}
+            linkInputName.val('')
+            linkInputDesc.val('')
+            linkInputUrl.val('')
+            @createLinkButton.show()
+            @cancelLinkButton.hide()
             $('#toplink-instructions').text('')
-            @createLinkButton.val('Attach & Create Link')
-            @linkInputName.focus()
           else
-            @tempLink.source = node
-            @sourceSet = true
-            $('#toplink-instructions').text('Source:' + node.name + ' (' + node['_id'] + ') Click a node to select it as the link target.')
+            @tempLink['source'] = node
+            $('#toplink-instructions').text("Source: #{node.name} (#{node['_id']}) Click a node to select it as the link target.")
+
 
     sanitize: (propertyVal) =>
       propertyVal.replace(/'/g, "\\'")
@@ -150,11 +136,14 @@ define [], () ->
           @selection.toggleSelection(datum)
         onSuccess()
 
-    buildLink: (name = '', url = '', description = '', on_success) =>
+    buildLink: (name = '', url = '', description = '') =>
       properties = {'name': name, 'url': url, 'description': description, '_Creation_Date': new Date()}
       properties[i] = sanitize(val) for val, i in properties
 
       @tempLink["properties"] = properties
       @buildingLink = true
+
       $('#toplink-instructions').text('Click a node to select it as the link source.')
-      @createLinkButton.val('Cancel Link Creation')
+
+      @createLinkButton.hide()
+      @cancelLinkButton.show()
