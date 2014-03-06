@@ -79,10 +79,10 @@ body {
         background:url("../images/icons/black/Magnifying_glass.png") !important;
     }
     #settings:hover{
-        background:url("../images/icons/black/cog_24x24.png") !important;    
+        background:url("../images/icons/black/cog_24x24.png") !important;
     }
     #moreoptionsButton:hover{
-        background:url("../images/icons/black/expand.png") !important;    
+        background:url("../images/icons/black/expand.png") !important;
     }
 }
 
@@ -193,7 +193,7 @@ body {
             vertical-align: baseline;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
-        
+
         input[type="button"]:hover{
             -webkit-appearance: none;
             -webkit-box-shadow: rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
@@ -299,44 +299,33 @@ body {
     height:24px;
     margin:10px;
 
+    input[type="text"], textarea {
+      display: block;
+      padding: 7px 1px;
+      border-radius: 5px;
+      min-height:20px;
+      border: 1px solid rgb(204, 204, 204);
+      width: 100%;
 
-    #nodeside,#linkside {
+      outline:none;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 12px;
+      border-radius:3px;
+    }
+
+    #nodeside, #linkside {
         opacity:0.95;
         padding:0px;
         border-radius:5px;
         width:auto;
         float:right;
         margin-right:10px;
-        #source-container,.source-container{
-        }
-        textarea {
-            background:white;
-            padding:4px;
-            padding-top:7px;
-            padding-bottom:1px;
-            padding-left:7px;
-            border-radius:5px;
-            min-height:20px;
-            outline:none;
-            font-size:16px;
-            margin:0px;
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-
-            background-color: white;
-            border-radius:3px;
-            border:1px solid rgb(204, 204, 204);
-            color: rgb(55, 55, 55);
-            font-size: 12px;
-            line-height: 14px;
-            outline:none;
-            vertical-align: baseline;
-        }
     }
 }
 
 #toplink-instructions{
     font-style:italic;
-    font-size: 12px;
+    font-size: 16px;
     margin-left: 10px;
 }
 

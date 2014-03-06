@@ -19,4 +19,3 @@ var graphDb = new neo4js.GraphDatabase4Node(url);
 var App = require('./wikinets');
 
 app = new App(graphDb);
-

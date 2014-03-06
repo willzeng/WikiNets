@@ -9,7 +9,8 @@ This is the code for WikiNets. Feel free to contribute. It's available under a G
 + [Stable Version](http://wikinets-demo.herokuapp.com)
 + [Edge](http://wikinets-edge.herokuapp.com)
 
-##Setup
+Setup
+-----
 
 WikiNets can be set to work with a local WikiNet on your machine or with a WikiNet in the cloud.
 
@@ -56,6 +57,13 @@ Then run the following in your terminal:
 
 Then go to `localhost:3000` in your browser.
 
+Development
+-----------
+###Roadmap for Code
 
-For sublime 3 text highlighting for coffee:
-  https://github.com/aponxi/sublime-better-coffeescript
+
+###Tips
+
+For sublime 3 text highlighting for CoffeeScript: https://github.com/aponxi/sublime-better-coffeescript
+  
+

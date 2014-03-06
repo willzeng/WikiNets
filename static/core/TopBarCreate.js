@@ -13,8 +13,7 @@
         this.options = options;
         this.buildLink = __bind(this.buildLink, this);
         this.createNode = __bind(this.createNode, this);
-        this.assign_properties = __bind(this.assign_properties, this);
-        this.addField = __bind(this.addField, this);
+        this.sanitize = __bind(this.sanitize, this);
         TopBarCreate.__super__.constructor.call(this);
       }
 
@@ -24,87 +23,72 @@
         this.graphView = instances['GraphView'];
         this.graphModel = instances['GraphModel'];
         this.dataController = instances['local/Neo4jDataController'];
+        this.selection = instances["NodeSelection"];
+        this.linkSelection = instances["LinkSelection"];
         this.buildingLink = false;
         this.tempLink = {};
         this.sourceSet = false;
-        this.render();
-        this.selection = instances["NodeSelection"];
-        return this.linkSelection = instances["LinkSelection"];
+        return this.render();
       };
 
       TopBarCreate.prototype.render = function() {
-        var $container, $createNodeButton, $linkHolder, $linkInputForm, $linkMoreFields, $linkSide, $linkingInstructions, $nodeHolder, $nodeInputForm, $nodeMoreFields, $nodeSide, $openPopoutButton, linkInputNumber, nodeInputNumber,
+        var container, createNodeButton, linkHolder, linkSide, linkWrapper, linkingInstructions, nodeHolder, nodeInputDesc, nodeInputName, nodeInputUrl, nodeSide, nodeWrapper, openPopoutButton,
           _this = this;
-        $container = $('<div id="topbarcreate">').appendTo($('#buildbar'));
-        $nodeSide = $('<div id="nodeside">').appendTo($container);
-        $nodeHolder = $('<textarea placeholder="Add Node" id="nodeHolder" name="textin" rows="1" cols="35"></textarea>').appendTo($nodeSide);
-        this.$nodeWrapper = $('<div id="NodeCreateContainer">').appendTo($nodeSide);
-        this.$nodeInputName = $('<textarea id="NodeCreateName" placeholder=\"Node Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
-        this.$nodeInputUrl = $('<textarea id="NodeCreateUrl" placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
-        this.$nodeInputDesc = $('<textarea id="NodeCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
-        $nodeInputForm = $('<form id="NodeCreateForm"></form>').appendTo(this.$nodeWrapper);
-        nodeInputNumber = 0;
-        $nodeMoreFields = $("<input id=\"moreNodeCreateFields\" type=\"button\" value=\"+\">").appendTo(this.$nodeWrapper);
-        $nodeMoreFields.click(function() {
-          _this.addField(nodeInputNumber, "NodeCreate");
-          return nodeInputNumber = nodeInputNumber + 1;
+        container = $('<div id="topbarcreate">').appendTo($('#buildbar'));
+        nodeSide = $('<div id="nodeside">').appendTo(container);
+        nodeHolder = $('<textarea placeholder="Add Node" id="nodeHolder" name="textin" rows="1" cols="35">').appendTo(nodeSide);
+        nodeWrapper = $('<div class="small-form">').appendTo(nodeSide).hide();
+        nodeInputName = $('<input type="text" placeholder=\"Node Name [optional]\">').appendTo(nodeWrapper);
+        nodeInputUrl = $('<input type="text" placeholder="Url [optional]">').appendTo(nodeWrapper);
+        nodeInputDesc = $('<textarea placeholder="Description [optional]" rows="1" cols="35"></textarea>').appendTo(nodeWrapper);
+        nodeHolder.focus(function() {
+          nodeWrapper.show();
+          nodeInputName.focus();
+          return nodeHolder.hide();
         });
-        $createNodeButton = $('<input id="queryform" type="button" value="Create Node">').appendTo(this.$nodeWrapper);
-        $createNodeButton.click(this.createNode);
-        $openPopoutButton = $('<i class="right fa fa-expand"></i>').appendTo(this.$nodeWrapper);
-        $openPopoutButton.click(function() {
+        createNodeButton = $('<input type="button" value="Create Node">').appendTo(nodeWrapper).click(function() {
+          return _this.createNode(nodeInputName.val(), nodeInputUrl.val(), nodeInputDesc.val(), function() {
+            nodeInputName.val('');
+            nodeInputDesc.val('');
+            return nodeInputUrl.val('');
+          });
+        });
+        openPopoutButton = $('<i class="right fa fa-expand"></i>').appendTo(nodeWrapper);
+        openPopoutButton.click(function() {
           _this.trigger('popout:open');
-          _this.$nodeWrapper.hide();
-          return $nodeHolder.show();
+          nodeWrapper.hide();
+          return nodeHolder.show();
         });
-        $linkSide = $('<div id="linkside">').appendTo($container);
-        $linkHolder = $('<textarea placeholder="Add Link" id="linkHolder" name="textin" rows="1" cols="35"></textarea>').appendTo($linkSide);
-        this.$linkWrapper = $('<div id="LinkCreateContainer">').appendTo($linkSide);
-        this.$linkInputName = $('<textarea id="LinkCreateName" placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
-        this.$linkInputUrl = $('<textarea id="LinkCreateUrl" placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
-        this.$linkInputDesc = $('<textarea id="LinkCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
-        $linkInputForm = $('<form id="LinkCreateForm"></form>').appendTo(this.$linkWrapper);
-        linkInputNumber = 0;
-        $linkMoreFields = $("<input id=\"moreLinkCreateFields\" type=\"button\" value=\"+\">").appendTo(this.$linkWrapper);
-        $linkMoreFields.click(function() {
-          _this.addField(linkInputNumber, "LinkCreate");
-          return linkInputNumber = linkInputNumber + 1;
-        });
-        this.$createLinkButton = $('<input id="LinkCreateButton" type="button" value="Attach & Create Link">').appendTo(this.$linkWrapper);
-        $linkingInstructions = $('<span id="toplink-instructions">').appendTo($container);
-        this.$createLinkButton.click(function() {
+        linkSide = $('<div id="linkside">').appendTo(container);
+        linkHolder = $('<input type="text" placeholder="Add Link" id="linkHolder">').appendTo(linkSide);
+        linkWrapper = $('<div class="small-form">').appendTo(linkSide).hide();
+        this.linkInputName = $('<input type="text" placeholder="Link Name [optional]">').appendTo(linkWrapper);
+        this.linkInputUrl = $('<input type="text"  placeholder="Url [optional]" >').appendTo(linkWrapper);
+        this.linkInputDesc = $('<textarea placeholder="Description [optional]" rows="1" cols="35">').appendTo(linkWrapper);
+        this.createLinkButton = $('<input id="LinkCreateButton" type="button" value="Attach & Create Link">').appendTo(linkWrapper);
+        linkingInstructions = $('<span id="toplink-instructions">').appendTo(container);
+        this.createLinkButton.click(function() {
           if (_this.buildingLink) {
             _this.buildingLink = false;
             _this.tempLink = {};
             _this.sourceSet = false;
-            $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>');
-            _this.$createLinkButton.val('Attach & Create Link');
-            return _this.$linkInputName.focus();
+            $('#toplink-instructions').text('');
+            _this.createLinkButton.val('Attach & Create Link');
+            return _this.linkInputName.focus();
           } else {
             return _this.buildLink();
           }
         });
-        this.$nodeWrapper.hide();
-        this.$linkWrapper.hide();
-        $nodeHolder.focus(function() {
-          _this.$nodeWrapper.show();
-          _this.$nodeInputName.focus();
-          return $nodeHolder.hide();
-        });
-        $linkHolder.focus(function() {
-          _this.$linkWrapper.show();
-          _this.$linkInputName.focus();
-          return $linkHolder.hide();
+        linkHolder.focus(function() {
+          linkWrapper.show();
+          _this.linkInputName.focus();
+          return linkHolder.hide();
         });
         this.graphView.on("view:click", function() {
-          if (_this.$nodeWrapper.is(':visible')) {
-            _this.$nodeWrapper.hide();
-            $nodeHolder.show();
-          }
-          if (_this.$linkWrapper.is(':visible')) {
-            _this.$linkWrapper.hide();
-            return $linkHolder.show();
-          }
+          nodeWrapper.hide();
+          nodeHolder.show();
+          linkWrapper.hide();
+          return linkHolder.show();
         });
         return this.graphView.on("enter:node:click", function(node) {
           var link;
@@ -135,149 +119,86 @@
               $('.LinkCreateDiv').each(function(i, obj) {
                 return $(this)[0].parentNode.removeChild($(this)[0]);
               });
-              _this.$linkInputName.val('');
-              _this.$linkInputDesc.val('');
-              _this.$linkInputUrl.val('');
-              $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>');
-              _this.$createLinkButton.val('Attach & Create Link');
-              return _this.$linkInputName.focus();
+              _this.linkInputName.val('');
+              _this.linkInputDesc.val('');
+              _this.linkInputUrl.val('');
+              $('#toplink-instructions').text('');
+              _this.createLinkButton.val('Attach & Create Link');
+              return _this.linkInputName.focus();
             } else {
               _this.tempLink.source = node;
               _this.sourceSet = true;
-              return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Source:' + _this.findHeader(node) + ' (' + node['_id'] + ')<br />Click a node to select it as the link target.</span>');
+              return $('#toplink-instructions').text('Source:' + node.name + ' (' + node['_id'] + ') Click a node to select it as the link target.');
             }
           }
         });
       };
 
-      TopBarCreate.prototype.update = function(node) {
-        return this.selection.getSelectedNodes();
+      TopBarCreate.prototype.sanitize = function(propertyVal) {
+        return propertyVal.replace(/'/g, "\\'");
       };
 
-      /*
-      Adds a set of property & value input fields to the form /name/, together
-      with a button for deleting them
-      The inputIndex is a counter that serves as a unique identifier for each
-      such set of fields.
-      A defaultKey and defaultValue may be specified; these will be used as
-      placeholders in the input fields.
-      */
-
-
-      TopBarCreate.prototype.addField = function(inputIndex, name, defaultKey, defaultValue) {
-        var $row;
-        if (!(defaultKey != null)) {
-          defaultKey = "property";
-        }
-        if (!(defaultValue != null)) {
-          defaultValue = "value";
-        }
-        $row = $("<div id=\"" + name + "Div" + inputIndex + "\" class=\"" + name + "Div\">\n<input style=\"width:80px\" name=\"property" + name + inputIndex + "\" placeholder=\"" + defaultKey + "\" class=\"property" + name + "\">\n<input style=\"width:80px\" name=\"value" + name + inputIndex + "\" placeholder=\"" + defaultValue + "\" class=\"value" + name + "\">\n<input type=\"button\" id=\"remove" + name + inputIndex + "\" value=\"x\" onclick=\"this.parentNode.parentNode.removeChild(this.parentNode);\">\n</div>");
-        return $("#" + name + "Form").append($row);
-      };
-
-      /*
-      Takes the input form /form_name/ and populates a propertyObject with the
-      property-value pairs contained in it, checking the property names for
-      legality in the process
-      Returns: [submitOK, {property1: value1, property2: value2, ...}], where
-               /submitOK/ is a boolean indicating whether all property names are
-               legal
-      */
-
-
-      TopBarCreate.prototype.assign_properties = function(form_name, is_illegal) {
-        var createDate, propertyObject, submitOK;
-        if (is_illegal == null) {
-          is_illegal = this.dataController.is_illegal;
-        }
-        submitOK = true;
-        propertyObject = {};
-        createDate = new Date();
-        propertyObject["_Creation_Date"] = createDate;
-        if (!($("#" + form_name + "Name").val() === void 0 || $("#" + form_name + "Name").val() === "")) {
-          propertyObject["name"] = $("#" + form_name + "Name").val().replace(/'/g, "\\'");
-        }
-        if (!($("#" + form_name + "Desc").val() === void 0 || $("#" + form_name + "Desc").val() === "")) {
-          propertyObject["description"] = $("#" + form_name + "Desc").val().replace(/'/g, "\\'");
-        }
-        if (!($("#" + form_name + "Url").val() === void 0 || $("#" + form_name + "Url").val() === "")) {
-          propertyObject["url"] = $("#" + form_name + "Url").val().replace(/'/g, "\\'");
-        }
-        $("." + form_name + "Div").each(function(i, obj) {
-          var property, value;
-          property = $(this).children(".property" + form_name).val();
-          value = $(this).children(".value" + form_name).val();
-          if (is_illegal(property, "Property")) {
-            alert("Property '" + property + "' is not allowed.");
-            return submitOK = false;
-          } else if (property in propertyObject) {
-            alert("Property '" + property + "' already assigned.\nFirst value: " + propertyObject[property] + "\nSecond value: " + value);
-            return submitOK = false;
-          } else {
-            return propertyObject[property] = value.replace(/'/g, "\\'");
-          }
-        });
-        return [submitOK, propertyObject];
-      };
-
-      /*
-      Creates a node using the information in @$nodeInputName, @$nodeInputDesc,
-      and NodeCreateDiv; resets the input forms if creation is successful
-      */
-
-
-      TopBarCreate.prototype.createNode = function() {
-        var nodeObject,
+      TopBarCreate.prototype.createNode = function(name, url, description, onSuccess) {
+        var i, properties, val, _i, _len,
           _this = this;
-        nodeObject = this.assign_properties("NodeCreate");
-        if (nodeObject[0] && (_.size(nodeObject[1]) > 1 || confirm("The node you are creating has no information associated with it. Do you really want to proceed?"))) {
-          $('.NodeCreateDiv').each(function(i, obj) {
-            return $(this)[0].parentNode.removeChild($(this)[0]);
-          });
-          this.$nodeInputName.val('');
-          this.$nodeInputDesc.val('');
-          this.$nodeInputUrl.val('');
-          this.$nodeInputName.focus();
-          return this.dataController.nodeAdd(nodeObject[1], function(datum) {
+        if (name == null) {
+          name = '';
+        }
+        if (url == null) {
+          url = '';
+        }
+        if (description == null) {
+          description = '';
+        }
+        properties = {
+          'name': name,
+          'url': url,
+          'description': description,
+          '_Creation_Date': new Date()
+        };
+        for (i = _i = 0, _len = properties.length; _i < _len; i = ++_i) {
+          val = properties[i];
+          properties[i] = sanitize(val);
+        }
+        if (!name) {
+          return alert("Your node does not have a name! Please assign your node a name.");
+        } else {
+          this.dataController.nodeAdd(properties, function(datum) {
             datum.fixed = true;
             datum.px = ($(window).width() / 2 - _this.graphView.currentTranslation[0]) / _this.graphView.currentScale;
             datum.py = ($(window).height() / 2 - _this.graphView.currentTranslation[1]) / _this.graphView.currentScale;
             _this.graphModel.putNode(datum);
             return _this.selection.toggleSelection(datum);
           });
+          return onSuccess();
         }
       };
 
-      /*
-      */
-
-
-      TopBarCreate.prototype.buildLink = function() {
-        var linkProperties;
-        console.log("Building Link");
-        linkProperties = this.assign_properties("LinkCreate");
-        if (linkProperties[0]) {
-          this.tempLink["properties"] = linkProperties[1];
-          this.buildingLink = true;
-          $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click a node to select it as the link source.</span>');
-          return this.$createLinkButton.val('Cancel Link Creation');
+      TopBarCreate.prototype.buildLink = function(name, url, description, on_success) {
+        var i, properties, val, _i, _len;
+        if (name == null) {
+          name = '';
         }
-      };
-
-      /*
-      To Do: replace this with a "to string" method for nodes
-      */
-
-
-      TopBarCreate.prototype.findHeader = function(node) {
-        if (node.name != null) {
-          return node.name;
-        } else if (node.title != null) {
-          return node.title;
-        } else {
-          return '';
+        if (url == null) {
+          url = '';
         }
+        if (description == null) {
+          description = '';
+        }
+        properties = {
+          'name': name,
+          'url': url,
+          'description': description,
+          '_Creation_Date': new Date()
+        };
+        for (i = _i = 0, _len = properties.length; _i < _len; i = ++_i) {
+          val = properties[i];
+          properties[i] = sanitize(val);
+        }
+        this.tempLink["properties"] = properties;
+        this.buildingLink = true;
+        $('#toplink-instructions').text('Click a node to select it as the link source.');
+        return this.createLinkButton.val('Cancel Link Creation');
       };
 
       return TopBarCreate;
