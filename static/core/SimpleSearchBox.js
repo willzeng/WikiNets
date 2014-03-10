@@ -32,13 +32,11 @@
       };
 
       SimpleSearchBox.prototype.render = function() {
-        var $autofillWrapper, $button, $container, $searchBox, films,
+        var $button, $container, $searchBox, films,
           _this = this;
         $container = $("<div id='visual-search-container'>").appendTo(this.$el);
         $searchBox = $('<input type="text" id="searchBox">').css("width", "235px").css("height", "25px").css("box-shadow", "2px 2px 4px #888888").css("border", "1px solid blue").appendTo($container);
         $button = $("<input type=\"button\" value=\"Go\" style='float:right' />").appendTo($container);
-        $autofillWrapper = $('<div class="autofillWrapperClass" style="border: 1px solid black; border-top: none;"></div>').appendTo($container);
-        $autofillWrapper.hide();
         films = new Bloodhound({
           datumTokenizer: function(d) {
             return Bloodhound.tokenizers.whitespace(d.name);
@@ -52,16 +50,6 @@
           source: films.ttAdapter(),
           templates: {
             suggestion: Handlebars.compile('<p><strong>{{name}}</strong> – {{name}}</p>')
-          }
-        });
-        $(document).on("click", function() {
-          return $autofillWrapper.hide();
-        });
-        $searchBox.on("click", function(e) {
-          $autofillWrapper.show();
-          e.stopPropagation();
-          if ($searchBox.val() > 0) {
-            return $searchBox.show();
           }
         });
         return $button.click(function() {

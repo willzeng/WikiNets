@@ -39,8 +39,8 @@ define [], () ->
         .css("border", "1px solid blue")
         .appendTo $container
       $button = $("<input type=\"button\" value=\"Go\" style='float:right' />").appendTo $container
-      $autofillWrapper = $('<div class="autofillWrapperClass" style="border: 1px solid black; border-top: none;"></div>').appendTo $container
-      $autofillWrapper.hide()
+      #$autofillWrapper = $('<div class="autofillWrapperClass" style="border: 1px solid black; border-top: none;"></div>').appendTo $container
+      #$autofillWrapper.hide()
 
 
       films = new Bloodhound({
@@ -84,13 +84,13 @@ define [], () ->
       #   else if($searchBox.val()=="")
       #     $autofillWrapper.empty()
 
-      $(document).on "click", ()->
-        $autofillWrapper.hide()
-      $searchBox.on "click", (e)->
-        $autofillWrapper.show()
-        e.stopPropagation()
-        if($searchBox.val()>0)
-          $searchBox.show()
+      # $(document).on "click", ()->
+      #   $autofillWrapper.hide()
+      # $searchBox.on "click", (e)->
+      #   $autofillWrapper.show()
+      #   e.stopPropagation()
+      #   if($searchBox.val()>0)
+      #     $searchBox.show()
 
       #call search functionality with input text
       $button.click () =>
