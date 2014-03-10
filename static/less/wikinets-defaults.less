@@ -226,7 +226,8 @@ body {
     margin-top: 10px;    
     .node-profile-helper {
         margin-top:3px;
-        overflow:scroll;
+        overflow-y:auto;
+        overflow-x:hidden;
     }
     #visual-search-container{
         width:auto;
@@ -679,11 +680,18 @@ body {
     width: 100%;
     /*overflow: scroll;*/
     .node-profile {
+        word-wrap: break-word;
+
         background-color: white;
         border: 1px solid gray;
         padding: 5px;
         //box-shadow: 2px 2px 4px #888888;
         margin-bottom: 6px;
+
+        input {
+            padding:4px;
+        }
+
         .node-profile-property {
             font-size: 12px;
             max-height: 148px;
@@ -711,7 +719,7 @@ body {
 /* listview profiles */
 .listview-profile-helper {
     width: 86%;
-    overflow: scroll;
+    overflow: auto;
     float: left;
     height:600px;
     margin: 50px;

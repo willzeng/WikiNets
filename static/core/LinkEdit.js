@@ -31,7 +31,6 @@
         this.graphModel.on("change", this.update.bind(this));
         this.graphView = instances['GraphView'];
         this.selection = instances["LinkSelection"];
-        this.selection.on("change", this.update.bind(this));
         this.listenTo(instances["KeyListener"], "down:16:80", function() {
           return _this.$el.toggle();
         });
@@ -46,6 +45,7 @@
         this.$el.empty();
         selectedLinks = this.selection.getSelectedLinks();
         $container = $('.node-profile-helper');
+        $container.empty();
         blacklist = ["selected", "source", "target", "strength", "_type", "_id"];
         return _.each(selectedLinks, function(link) {
           var $linkDiv, _ref;
