@@ -16,8 +16,7 @@
       }
 
       SimpleSearchBox.prototype.init = function(instances) {
-        var $addProfileHelper,
-          _this = this;
+        var _this = this;
         this.graphModel = instances["GraphModel"];
         this.selection = instances["NodeSelection"];
         this.listenTo(instances["KeyListener"], "down:191", function(e) {
@@ -25,12 +24,7 @@
           return e.preventDefault();
         });
         this.render();
-<<<<<<< HEAD
-        $(this.el).attr('id', 'ssplug').appendTo($('#omniBox'));
-        $addProfileHelper = $('<div class="node-profile-helper"></div>').appendTo($('#omniBox'));
-=======
         $(this.el).attr('id', 'ssplug').prependTo($('#omniBox'));
->>>>>>> 8f0b6578eced2427402addaa5db807601cc91043
         this.searchableKeys = {};
         return $.get("/get_all_node_keys", function(keys) {
           return _this.searchableKeys = keys;

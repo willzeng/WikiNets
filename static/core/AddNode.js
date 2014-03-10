@@ -14,12 +14,14 @@
       }
 
       AddNode.prototype.init = function(instances) {
-        return this.selection = instances["NodeSelection"];
-      };
-
-      AddNode.prototype.update = function() {
-        var $addNode;
-        return $addNode = $("<div id='add-node' class='result-element'><span>Add Node</span><br/><span>Person</span><span>Project</span><span>Theme</span><span>Other</span></div>").appendTo($('#omniBox'));
+        var $addNode, $addProfileHelper,
+          _this = this;
+        this.dataController = instances['local/Neo4jDataController'];
+        $addNode = $("<div id='add-node' class='result-element'><span>Add Node</span><br/><span id='add-node-button'>Person</span><span>Project</span><span>Theme</span><span>Other</span></div>").appendTo($('#omniBox'));
+        $addProfileHelper = $("<div class='node-profile-helper'></div>").appendTo($('#omniBox'));
+        return $('.add-node-button').click(function() {
+          return _this.dataController.nodeAdd();
+        });
       };
 
       return AddNode;

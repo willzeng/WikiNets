@@ -97,8 +97,6 @@
                 return alert("You clicked a link!", d_2, i_2);
               });
             }
-            /* should eventually implement directed arrows here*/
-
           }
           this.frame.append("circle").attr("class", "node").attr("stroke", "darkgrey").attr("stroke-width", 3).attr("fill", this.mostRecentNode.selected ? "steelblue" : "white").attr("cx", sub_width / 2 + central_width / 2).attr("cy", sub_height / 2 + central_width / 2).attr("r", central_width).on("click", function() {
             return _this.selection.toggleSelection(_this.mostRecentNode);
