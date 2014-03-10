@@ -424,7 +424,7 @@ module.exports = class MyApp
       theKeys = request.body.checkKeys
       query = request.body.query
       condition = "where "
-      condition+="n.#{key}=~\".*#{query}.*\" OR " for key in theKeys
+      condition+="n.#{key}=~'(?i).*#{query}.*' OR " for key in theKeys
       condition+="False"
       cypherQuery = "start n=node(*) #{condition} return n;"
 
@@ -437,7 +437,8 @@ module.exports = class MyApp
 
           #check which of the keys themselves match the query
           regexpression = ".*#{query}.*"
-          pattern = new RegExp(regexpression)          
+          pattern = new RegExp(regexpression, "i")
+          matchedKeys = []          
           matchedKeys = (key for key in theKeys when key.match(pattern)?)
 
           #if some keys match the search query 
