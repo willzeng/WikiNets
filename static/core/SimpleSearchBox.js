@@ -16,7 +16,8 @@
       }
 
       SimpleSearchBox.prototype.init = function(instances) {
-        var _this = this;
+        var $addNode,
+          _this = this;
         this.graphModel = instances["GraphModel"];
         this.selection = instances["NodeSelection"];
         this.listenTo(instances["KeyListener"], "down:191", function(e) {
@@ -25,6 +26,7 @@
         });
         this.render();
         $(this.el).attr('id', 'ssplug').appendTo($('#omniBox'));
+        $addNode = $("<div id='add-node' class='result-element'><span>Add Node</span><br/><span>Person</span><span>Resource</span><span>Project</span><span>Concept</span><span>Other</span></div>").appendTo($('#omniBox'));
         this.searchableKeys = {};
         return $.get("/get_all_node_keys", function(keys) {
           return _this.searchableKeys = keys;
@@ -35,8 +37,8 @@
         var $button, $container, $searchBox,
           _this = this;
         $container = $("<div id='visual-search-container'>").appendTo(this.$el);
-        $searchBox = $('<input type="text" id="searchBox" data-intro="Search the graph" data-position="right">').css("width", "235px").css("height", "24px").css("border", "1px solid gray").css("outline", "none").css("float", "left").css("border-right", "0px").css("line-height", "16pt").css("font-size", "15pt").css("padding", "2px").appendTo($container);
-        $button = $("<input type=\"button\" value=\"Go\" style='float:left' />").appendTo($container);
+        $searchBox = $('<input type="text" id="searchBox" data-intro="Search the graph" data-position="right">"').appendTo($container);
+        $button = $("<div id='goButton'><i class='fa fa-search'></i></div>").appendTo($container);
         $searchBox.keyup(function(e) {
           if (e.keyCode === 13) {
             _this.searchNodesSimple($searchBox.val());

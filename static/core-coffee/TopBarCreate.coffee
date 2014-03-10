@@ -28,7 +28,7 @@ define [], () ->
       @linkSelection = instances["LinkSelection"]
 
     render: ->
-
+      """
       $container = $('<div id="topbarcreate">').appendTo @$el
 
       $nodeSide = $('<div id="nodeside" data-intro="Add a Node and connect it to other nodes in the graph" data-position="left">').appendTo $container
@@ -127,7 +127,7 @@ define [], () ->
             @tempLink.source = node
             @sourceSet = true
             $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click two Nodes to link them.</span>')
-
+    """
     update: (node) ->
       @selection.getSelectedNodes()
 

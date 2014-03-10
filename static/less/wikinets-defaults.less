@@ -45,7 +45,38 @@ body {
 
 #omniBox {
     float:left;
-    width:280px;
+    width:305px;
+
+    #add-node{
+
+        span { 
+            color:royalblue;
+            cursor:pointer;
+            font-size:12px;
+            padding-right:10px;
+        }
+        span .fa {
+            padding-right:5px;
+        }
+        span:first-child{
+            font-size:18px;
+            color:#333;
+            cursor:default;
+        }
+        span:hover {
+            text-decoration: underline;
+        }
+        span:first-child:hover{
+            text-decoration: none;
+        }
+    }
+    .result-element{
+        border:1px solid gray;
+        top:3px;
+        background:white;
+        margin-top:35px;
+        padding:10px 10px 10px 10px;
+    }
 }
 
 #toolbox {
@@ -67,7 +98,7 @@ body {
     user-select: none;
     font-size:24px;
     vertical-align:center;
-    border-radius:4px;
+    //border-radius:4px;
 
     div {
         width:24px;
@@ -137,7 +168,7 @@ body {
     height:auto;
     width:auto;
     border:1px solid gray;
-    border-radius:4px;
+    //border-radius:4px;
     font-size:20px;
     color:#555;
     background:white;
@@ -147,6 +178,7 @@ body {
         background-repeat:no-repeat;
         padding:10px;
     }
+    /*
     div:first-child{
         border-top-right-radius:4px;
         border-top-left-radius:4px;
@@ -155,6 +187,7 @@ body {
         border-bottom-right-radius:4px;
         border-bottom-left-radius:4px;
     }
+    */
     div:hover{
         background:lightgray;
     }
@@ -186,23 +219,48 @@ body {
 
 #buildbar {
     vertical-align: middle;
-    display:inline;
-
+    margin-top: 10px;    
+    .node-profile-helper {
+        margin-top:3px;
+    }
     #visual-search-container{
         width:auto;
         display:inline;
+        #searchBox {
+            font-family: Roboto,Arial,sans-serif;
+            width:217px;
+            height:24px;
+            border:1px solid gray;
+            outline:none;
+            float:left;
+            border-right:0px;
+            line-height:16pt;
+            font-size:11pt;
+            color:#333;
+            padding:2px 10px 3px 10px;
+        }
+        #searchBox:focus {
+            border:1px solid royalblue;
+            border-right:0px;
+        }
 
-        input[type="button"]{
-            background:blue;
-            height:30px;
-            width:40px;
+        #goButton{
+            i {
+                padding-top:4px;
+                vertical-align:middle;
+            }
+            float:left;
+            //height:31px;
+            width:65px;
             -webkit-font-smoothing: antialiased;
-            -webkit-transition-delay: 0s;
-            -webkit-transition-duration: 0.1s;
-            -webkit-transition-property: all;
-            -webkit-transition-timing-function: linear;
-            background-color: rgb(0, 104, 153);
-            background-image: linear-gradient(rgb(10, 177, 255), rgb(0, 104, 153));
+            
+            -moz-box-shadow:inset 0px 1px 0px 0px #97c4fe;
+            -webkit-box-shadow:inset 0px 1px 0px 0px #97c4fe;
+            box-shadow:inset 0px 1px 0px 0px #97c4fe;
+            background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3d94f6), color-stop(1, #1e62d0) );
+            background:-moz-linear-gradient( center top, #3d94f6 5%, #1e62d0 100% );
+            filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#3d94f6', endColorstr='#1e62d0');
+            background-color:#3d94f6;
             background-repeat: repeat-x;
             border-bottom-color: rgb(0, 85, 125);
             border-bottom-style: solid;
@@ -216,51 +274,42 @@ body {
             border-top-color: rgb(0, 104, 153);
             border-top-style: solid;
             border-top-width: 1px;
-            box-shadow: rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
             color: rgb(255, 255, 255);
             float: left;
             cursor:pointer;
             font-size: 16px;
-            //border-bottom-right-radius:3px;
-            //border-top-right-radius:3px;
+            text-align:center;
+            height:29px;
 
-            padding-bottom: 4px;
-            padding-top: 4px;
             text-rendering: auto;
             text-shadow: rgba(0, 0, 0, 0.360784) 0px -1px 0px;
-            transition-delay: 0s;
-            transition-duration: 0.1s;
-            transition-property: all;
-            transition-timing-function: linear;
-            vertical-align: baseline;
+            
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
         
-        input[type="button"]:hover{
-            -webkit-appearance: none;
-            -webkit-box-shadow: rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+        #goButton:hover{
             -webkit-font-smoothing: antialiased;
-            -webkit-transition-delay: 0s;
-            -webkit-transition-duration: 0.1s;
-            -webkit-transition-property: all;
-            -webkit-transition-timing-function: linear;
-            background-color: rgb(0, 104, 153);
-            background-image: linear-gradient(rgb(10, 177, 255), rgb(0, 104, 153));
-            background-repeat: repeat-x;
+            -moz-box-shadow:inset 0px 1px 0px 0px #97c4fe;
+            -webkit-box-shadow:inset 0px 1px 0px 0px #97c4fe;
+            box-shadow:inset 0px 1px 0px 0px #97c4fe;
+            background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #57AEFF), color-stop(1, #1e62d0) );
+            background:-moz-linear-gradient( center top, #57AEFF 5%, #1e62d0 100% );
+            filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#57AEFF', endColorstr='#1e62d0');
+            background-color:#3d94f6;
+            
 
             text-decoration: none;
-            text-rendering: auto;
             text-shadow: rgba(0, 0, 0, 0.360784) 0px -1px 0px;
-            transition-delay: 0s;
-            transition-duration: 0.1s;
-            transition-property: all;
-            transition-timing-function: linear;
             vertical-align: baseline;
         }
-        input[type="button"]:active{
-            background-image: linear-gradient(rgb(0, 104, 153),rgb(10, 177, 255));
-            background-repeat: repeat-x;
-
+        #goButton:active{
+            -moz-box-shadow:inset 0px 1px 0px 0px #97c4fe;
+            -webkit-box-shadow:inset 0px 1px 0px 0px #97c4fe;
+            box-shadow:inset 0px 1px 0px 0px #97c4fe;
+            background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #247BDD), color-stop(1, #1e62d0) );
+            background:-moz-linear-gradient( center top, #247BDD 5%, #1e62d0 100% );
+            filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#57AEFF', endColorstr='#1e62d0');
+            background-color:#3d94f6;
         }
 
         .visual_search{
@@ -313,7 +362,7 @@ body {
         font-size:16pt;
         padding-left: 10px;
         padding-right: 10px;
-        padding-bottom: 2px;
+        padding-bottom: 3px;
         padding-top: 3px;
         margin-top:0px;
         margin-bottom:0px;
@@ -621,9 +670,9 @@ body {
     /*overflow: scroll;*/
     .node-profile {
         background-color: #ccc;
-        border: 1px solid black;
+        border: 1px solid gray;
         padding: 5px;
-        box-shadow: 2px 2px 4px #888888;
+        //box-shadow: 2px 2px 4px #888888;
         margin-bottom: 6px;
         .node-profile-property {
             font-size: 12px;
@@ -747,3 +796,33 @@ body {
 .right {
     float: right;
 }
+
+input[type='range'] {
+        -webkit-appearance: none;
+        border-radius: 5px;
+        background-color: #999;
+        height: 2px;
+        vertical-align: middle;
+    }
+    input[type='range']::-moz-range-track {
+        -moz-appearance: none;
+        border-radius: 5px;
+        background-color: #999;
+        height: 10px;
+    }
+    input[type='range']::-webkit-slider-thumb {
+        -webkit-appearance: none !important;
+        border-radius: 20px;
+        background-color: #fff;
+        border: 1px solid #999;
+        height: 20px;
+        width: 20px;
+    }
+    input[type='range']::-moz-range-thumb {
+        -moz-appearance: none;
+        border-radius: 20px;
+        background-color: #fff;
+        border: 1px solid #999;
+        height: 20px;
+        width: 20px;
+    }

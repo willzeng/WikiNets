@@ -22,6 +22,7 @@ define [], () ->
       $container = $("<div id=\"visual-search-container\" style='padding-top:2px'/>").appendTo @$el
       $input = $("<div class=\"visual_search\" />").appendTo $container
       $button = $("<input type=\"button\" value=\"Go\" style='float:left' />").appendTo $container
+
       @searchQuery = {}
       $button.click(() =>
         #console.log @searchQuery

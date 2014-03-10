@@ -30,7 +30,7 @@
       };
 
       ToolBox.prototype.render = function() {
-        var $chooseSelectButton, $clearAllButton, $clearSelectedButton, $container, $deselectAllButton, $expandSelectionButton, $pinSelectedButton, $selectAllButton, $showAllButton, $showLearningButton, $showResearchButton, $showStudentLifeButton, $unpinAllButton, $unpinSelectedButton,
+        var $chooseSelectButton, $clearAllButton, $clearSelectedButton, $container, $deselectAllButton, $expandSelectionButton, $pinSelectedButton, $selectAllButton, $showAllButton, $unpinAllButton, $unpinSelectedButton,
           _this = this;
         $container = $("<div id=\"show-all-container\">").appendTo(this.$el);
         $('#listviewButton').click(function() {
@@ -158,24 +158,7 @@
           }
           return _results;
         });
-        $showLearningButton = $("<input type=\"button\" id=\"showLearningButton\" value=\"Learning\"></input>").appendTo($container);
-        $showLearningButton.click(function() {
-          return _this.searchNodes({
-            Theme: "Learning"
-          });
-        });
-        $showStudentLifeButton = $("<input type=\"button\" id=\"showStudentLifeButton\" value=\"Student Life\"></input>").appendTo($container);
-        $showStudentLifeButton.click(function() {
-          return _this.searchNodes({
-            Theme: "Student Life"
-          });
-        });
-        $showResearchButton = $("<input type=\"button\" id=\"showResearchButton\" value=\"Research\"></input>").appendTo($container);
-        return $showResearchButton.click(function() {
-          return _this.searchNodes({
-            Theme: "Research"
-          });
-        });
+        return "$showLearningButton = $(\"<input type=\"button\" id=\"showLearningButton\" value=\"Learning\"></input>\").appendTo $container\n$showLearningButton.click(() =>\n  @searchNodes({Theme:\"Learning\"})\n  )\n\n$showStudentLifeButton = $(\"<input type=\"button\" id=\"showStudentLifeButton\" value=\"Student Life\"></input>\").appendTo $container\n$showStudentLifeButton.click(() =>\n  @searchNodes({Theme:\"Student Life\"})\n  )\n      \n$showResearchButton = $(\"<input type=\"button\" id=\"showResearchButton\" value=\"Research\"></input>\").appendTo $container\n$showResearchButton.click(() =>\n  @searchNodes({Theme:\"Research\"})\n  )";
       };
 
       ToolBox.prototype.loadAllNodes = function(nodes) {

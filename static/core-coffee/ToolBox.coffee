@@ -132,7 +132,7 @@ define [], () ->
       $pinSelectedButton.click(() =>
         node.fixed = true for node in @selection.getSelectedNodes()
         )
-
+      """
       $showLearningButton = $("<input type=\"button\" id=\"showLearningButton\" value=\"Learning\"></input>").appendTo $container
       $showLearningButton.click(() =>
         @searchNodes({Theme:"Learning"})
@@ -147,6 +147,7 @@ define [], () ->
       $showResearchButton.click(() =>
         @searchNodes({Theme:"Research"})
         )
+      """
 
     loadAllNodes: (nodes) =>
       @graphModel.putNode node for node in nodes
