@@ -11,13 +11,12 @@
 
       function VisualSearchBox(options) {
         this.options = options;
-        this.searchNodes = __bind(this.searchNodes, this);
+        this.searchDatabase = __bind(this.searchDatabase, this);
         VisualSearchBox.__super__.constructor.call(this);
       }
 
       VisualSearchBox.prototype.init = function(instances) {
-        var x,
-          _this = this;
+        var _this = this;
         this.graphModel = instances["GraphModel"];
         this.selection = instances["NodeSelection"];
         this.listenTo(instances["KeyListener"], "down:191", function(e) {
@@ -25,19 +24,32 @@
           return e.preventDefault();
         });
         this.render();
-        $(this.el).attr('id', 'vsplug').appendTo($('#omniBox'));
-        return console.log(x = this.el);
+        $(this.el).attr('id', 'vsplug').prependTo($('#omniBox'));
+        $("#vsplug").hide();
+        return this.keys = ['search'];
       };
 
       VisualSearchBox.prototype.render = function() {
-        var $button, $container, $input,
+        var $button, $container, $input, $switchSearch,
           _this = this;
-        $container = $("<div id=\"visual-search-container\" style='padding-top:2px'/>").appendTo(this.$el);
+        $container = $("<div id=\"visual-search-container\" class='search-box' style='padding-top:2px'/>").appendTo(this.$el);
         $input = $("<div class=\"visual_search\" />").appendTo($container);
         $button = $("<input type=\"button\" value=\"Go\" style='float:left' />").appendTo($container);
+        $switchSearch = $("<input type=\"button\" value=\"Advanced Search\" id='search-switch'/>").appendTo($('#omniBox'));
         this.searchQuery = {};
         $button.click(function() {
-          return _this.searchNodes(_this.searchQuery);
+          return _this.searchDatabase(_this.searchQuery);
+        });
+        $switchSearch.click(function() {
+          if ($('#vsplug').is(':visible')) {
+            $('#vsplug').hide();
+            $('#ssplug').show();
+            return $switchSearch.val("Advanced Search");
+          } else {
+            $('#ssplug').hide();
+            $('#vsplug').show();
+            return $switchSearch.val("Simple Search");
+          }
         });
         $.get("/get_all_node_keys", function(data) {
           _this.keys = data;
@@ -54,17 +66,37 @@
                   });
                 },
                 facetMatches: function(callback) {
-                  return $.get("/get_all_node_keys", function(data) {
-                    _this.keys = data;
-                    return callback(data);
-                  });
+                  if (visualSearch.searchBox.value().indexOf('search: "nodes"') > -1) {
+                    return $.get("/get_all_node_keys", function(data) {
+                      _this.keys = data;
+                      return callback(data);
+                    });
+                  } else if (visualSearch.searchBox.value().indexOf('search: "links"') > -1) {
+                    return $.get("/get_all_link_keys", function(data) {
+                      _this.keys = data;
+                      return callback(data);
+                    });
+                  } else {
+                    _this.keys = ['search'];
+                    return callback(_this.keys);
+                  }
                 },
                 valueMatches: function(facet, searchTerm, callback) {
-                  return $.post("/get_all_key_values", {
-                    property: facet
-                  }, function(data) {
-                    return callback(data);
-                  });
+                  if (facet === 'search') {
+                    return callback(['links', 'nodes']);
+                  } else if (visualSearch.searchBox.value().indexOf('search: "nodes"') > -1) {
+                    return $.post("/get_all_node_key_values", {
+                      property: facet
+                    }, function(data) {
+                      return callback(data);
+                    });
+                  } else {
+                    return $.post("/get_all_link_key_values", {
+                      property: facet
+                    }, function(data) {
+                      return callback(data);
+                    });
+                  }
                 }
               }
             });
@@ -74,17 +106,41 @@
         return this;
       };
 
-      VisualSearchBox.prototype.searchNodes = function(searchQuery) {
+      VisualSearchBox.prototype.searchDatabase = function(searchQuery) {
         var _this = this;
-        return $.post("/search_nodes", searchQuery, function(nodes) {
-          var node, _i, _len, _results;
-          _results = [];
-          for (_i = 0, _len = nodes.length; _i < _len; _i++) {
-            node = nodes[_i];
-            _results.push(_this.graphModel.putNode(node));
+        if (_.size(searchQuery) === 0) {
+          return alert("Please enter a search query.");
+        } else if (searchQuery['search'] === 'nodes') {
+          if (_.size(searchQuery) === 1) {
+            return alert("Please enter a further search query for nodes.");
+          } else {
+            delete searchQuery['search'];
+            return $.post("/search_nodes", searchQuery, function(nodes) {
+              var node, _i, _len, _results;
+              _results = [];
+              for (_i = 0, _len = nodes.length; _i < _len; _i++) {
+                node = nodes[_i];
+                _results.push(_this.graphModel.putNode(node));
+              }
+              return _results;
+            });
           }
-          return _results;
-        });
+        } else {
+          if (_.size(searchQuery) === 1) {
+            return alert("Please enter a further search query for links.");
+          } else {
+            delete searchQuery['search'];
+            return $.post("/search_links", searchQuery, function(nodes) {
+              var node, _i, _len, _results;
+              _results = [];
+              for (_i = 0, _len = nodes.length; _i < _len; _i++) {
+                node = nodes[_i];
+                _results.push(_this.graphModel.putNode(node));
+              }
+              return _results;
+            });
+          }
+        }
       };
 
       return VisualSearchBox;

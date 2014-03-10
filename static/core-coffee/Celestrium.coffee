@@ -23,6 +23,7 @@ requirejs.config
       exports: 'VS'
     "../lib/jquery.ui.autocomplete": ["../lib/jquery.ui.core", "../lib/jquery.ui.menu", "../lib/jquery.ui.position", "../lib/jquery.ui.widget"]
     "../lib/jquery.ui.menu": ["../lib/jquery.ui.core", "../lib/jquery.ui.position", "../lib/jquery.ui.widget"]
+    "../lib/colorPicker/jquery.colorPicker": ["../../lib/jquery"]
 
 globalLibs = [
   '../lib/jquery',

@@ -119,8 +119,6 @@ define [], () ->
               # Need to add actual functionality here once it's available
               alert("You clicked a link!", d_2, i_2)
             ) for k in [0..(neighbors.length-1)]
-            ### should eventually implement directed arrows here ###
-            #.attr("marker-end", "url(#subNetTriangle)")
 
         #Draws the central node in the minimap as a light blue square
         @frame.append("circle")
