@@ -59,20 +59,20 @@ define [], () ->
       #   limit: 100
       #return this
 
-      films = new Bloodhound({
-        datumTokenizer: (d) -> Bloodhound.tokenizers.whitespace(d.name),
-        queryTokenizer: Bloodhound.tokenizers.whitespace,
-        # remote: '../data/films/queries/%QUERY.json',
-        prefetch: '../node_index_search_prefetch'
-      });
+      # films = new Bloodhound({
+      #   datumTokenizer: (d) -> Bloodhound.tokenizers.whitespace(d.name),
+      #   queryTokenizer: Bloodhound.tokenizers.whitespace,
+      #   # remote: '../data/films/queries/%QUERY.json',
+      #   prefetch: '../node_index_search_prefetch'
+      # });
 
-      films.initialize();
+      # films.initialize();
       
-      $searchBox.typeahead
-        displayKey: 'name'
-        source: films.ttAdapter()
-        templates:
-          suggestion: Handlebars.compile '<p><strong>{{name}}</strong> – {{name}}</p>' 
+      # $searchBox.typeahead
+      #   displayKey: 'name'
+      #   source: films.ttAdapter()
+      #   templates:
+      #     suggestion: Handlebars.compile '<p><strong>{{name}}</strong> – {{name}}</p>' 
         
       
 
