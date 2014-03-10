@@ -106,7 +106,7 @@ define ["DataController"], (DataController) ->
     # checks whether property names will break the cypher queries or are any of
     # the reserved terms
     is_illegal: (property, type) ->
-      reserved_keys = ["_id", "text", "_type", "Last_Edit_Date", "Creation_Date"]
+      reserved_keys = ["_id", "text", "_type", "_Last_Edit_Date", "_Creation_Date", "search"]
       if (property == '') then (
         alert type + " name must not be empty." 
         return true

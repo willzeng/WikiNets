@@ -63,7 +63,7 @@ require ["Celestrium"], (Celestrium) ->
     LinkSelection: {}
 
     # Build the faceted Visual Search box
-    #"local/VisualSearch": {}
+    "local/VisualSearch": {}
     
     # Is a full text search box
     "local/SimpleSearchBox": {}

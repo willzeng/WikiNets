@@ -48,6 +48,7 @@
       "local/WikiNetsDataProvider": {},
       NodeSelection: {},
       LinkSelection: {},
+      "local/VisualSearch": {},
       "local/SimpleSearchBox": {},
       "local/NodeEdit": {},
       "local/LinkEdit": {},
