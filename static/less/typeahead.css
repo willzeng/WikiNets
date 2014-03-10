@@ -11,20 +11,18 @@
 .typeahead,
 .tt-query,
 .tt-hint {
-  width: 396px;
-  height: 30px;
   padding: 8px 12px;
   font-size: 24px;
-  line-height: 30px;
+  line-height: 25px;
   border: 2px solid #ccc;
-  -webkit-border-radius: 8px;
-     -moz-border-radius: 8px;
-          border-radius: 8px;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
   outline: none;
 }
 
 .typeahead {
-  background-color: #fff;
+  background: grba(0,0,0,0);
 }
 
 .typeahead:focus {
@@ -42,8 +40,8 @@
 }
 
 .tt-dropdown-menu {
-  width: 422px;
-  margin-top: 12px;
+  width: 235px;
+  margin-top: 20px;
   padding: 8px 0;
   background-color: #fff;
   border: 1px solid #ccc;

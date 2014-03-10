@@ -32,9 +32,9 @@ define [], () ->
 
       #build HTML elements
       $container = $("<div id='visual-search-container'>").appendTo @$el
-      $searchBox = $('<input type="text" id="searchBox">')
-        .css("width", "235px")
-        .css("height", "25px")
+      $searchBox = $('<input class="typeahead" type="text" id="searchBox">')
+        .css("width","235")
+        .css("height","25")
         .css("box-shadow", "2px 2px 4px #888888")
         .css("border", "1px solid blue")
         .appendTo $container
@@ -42,25 +42,26 @@ define [], () ->
       #$autofillWrapper = $('<div class="autofillWrapperClass" style="border: 1px solid black; border-top: none;"></div>').appendTo $container
       #$autofillWrapper.hide()
 
+      $(document).ready ->
 
-      films = new Bloodhound({
-          datumTokenizer: (d) -> Bloodhound.tokenizers.whitespace(d.name); ,
-          queryTokenizer: Bloodhound.tokenizers.whitespace,
-          # remote: '../data/films/queries/%QUERY.json',
-          prefetch: '../node_index_search_prefetch'
-        });
+        films = new Bloodhound({
+            datumTokenizer: (d) -> Bloodhound.tokenizers.whitespace(d.name); ,
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            # remote: '../data/films/queries/%QUERY.json',
+            prefetch: '../node_index_search_prefetch'
+          });
 
-        films.initialize();
+          films.initialize();
 
-        $searchBox.typeahead(null, {
-          displayKey: 'value',
-          source: films.ttAdapter(),
-          templates: {
-            suggestion: Handlebars.compile(
-              '<p><strong>{{name}}</strong> – {{name}}</p>'
-            )
-          }
-        });
+          $searchBox.typeahead(null, {
+            displayKey: 'name',
+            source: films.ttAdapter(),
+            templates: {
+              suggestion: Handlebars.compile(
+                '<p><strong>{{name}}</strong> – {{name}}</p>'
+              )
+            }
+          });
 
 
       #call search functionality with press of ENTER key
