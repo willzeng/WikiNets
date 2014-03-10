@@ -30,6 +30,7 @@ define [], () ->
         @$el.empty()
         selectedNodes = @selection.getSelectedNodes()
         $container = $(".node-profile-helper")
+        $container.empty();
         #these are they peoperties that are not shown in the profile
         blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color","shouldLoad"]
         _.each selectedNodes, (node) =>
@@ -45,7 +46,7 @@ define [], () ->
 
           #TODO these color settings should probably go in a settings plugin
           origColor = "#A9A9A9" #TODO: map this to the CSS file color choice for node color
-                    
+          
           header = @findHeader(node)
 
           nodeDiv.html("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view. It is shown here because it is either selected on the graph or a search result' data-position='right'>Editing #{header} (id: #{node['_id']})</div><form id=\"Node#{node['_id']}EditForm\"></form>")
