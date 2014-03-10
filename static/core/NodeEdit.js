@@ -56,7 +56,7 @@
             } else if (!(_ref = node.color.toUpperCase(), __indexOf.call(colors, _ref) >= 0)) {
               node.color = "#A9A9A9";
             }
-            $nodeDiv = $("<div class=\"node-profile\" />").css("background-color", "" + node.color).appendTo($container);
+            $nodeDiv = $("<div class=\"node-profile\"/>").css("background-color", "" + node.color).appendTo($container);
             return _this.renderProfile(node, $nodeDiv, blacklist, 4);
           });
         }
@@ -285,17 +285,12 @@
           });
         }
         this.addLinker(node, nodeDiv);
-<<<<<<< HEAD
-        $spokeHolder = $("<div class='spokeHolder' data-intro='Connections between this node and another node' data-position='right'></div>").appendTo(nodeDiv);
-        return this.addSpokes(node, $spokeHolder, 5);
-=======
         initialSpokeNumber = 5;
         $spokeHolder = $("<div class='spokeHolder'></div>").appendTo(nodeDiv);
         this.addSpokes(node, $spokeHolder, initialSpokeNumber);
         return nodeDiv.on("click", function() {
           return _this.graphView.centerOn(node);
         });
->>>>>>> dev
       };
 
       NodeEdit.prototype.addLinker = function(node, nodeDiv) {

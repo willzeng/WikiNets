@@ -245,10 +245,7 @@ define [], () ->
       #Adds button that creates link from selected node to user-inputted node
       @addLinker node, nodeDiv
 
-<<<<<<< HEAD
-      $spokeHolder = $("<div class='spokeHolder' data-intro='Connections between this node and another node' data-position='right'></div>").appendTo nodeDiv
-      @addSpokes node, $spokeHolder, 5
-=======
+
       #Adds the links from this node to its neighbors
       initialSpokeNumber = 5
       $spokeHolder = $("<div class='spokeHolder'></div>").appendTo nodeDiv
@@ -256,7 +253,6 @@ define [], () ->
 
       nodeDiv.on "click", () =>
         @graphView.centerOn(node)
->>>>>>> dev
 
 
     addLinker: (node, nodeDiv) =>
