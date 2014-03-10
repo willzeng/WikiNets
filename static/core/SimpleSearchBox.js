@@ -24,7 +24,7 @@
           return e.preventDefault();
         });
         this.render();
-        $(this.el).attr('id', 'ssplug').appendTo($('#omniBox'));
+        $(this.el).attr('id', 'ssplug').prependTo($('#omniBox'));
         this.searchableKeys = {};
         return $.get("/get_all_node_keys", function(keys) {
           return _this.searchableKeys = keys;

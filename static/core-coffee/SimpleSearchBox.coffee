@@ -20,7 +20,7 @@ define [], () ->
       @render()
       
       #identify the plugin and place it in the omniBox
-      $(@el).attr('id','ssplug').appendTo $('#omniBox')
+      $(@el).attr('id','ssplug').prependTo $('#omniBox')
 
       #choose which keys will be searched by the fultext search.
       #we initially set this to all keys

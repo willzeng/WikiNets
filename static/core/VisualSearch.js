@@ -24,7 +24,7 @@
           return e.preventDefault();
         });
         this.render();
-        $(this.el).attr('id', 'vsplug').appendTo($('#omniBox'));
+        $(this.el).attr('id', 'vsplug').prependTo($('#omniBox'));
         $("#vsplug").hide();
         return this.keys = ['search'];
       };
@@ -32,10 +32,10 @@
       VisualSearchBox.prototype.render = function() {
         var $button, $container, $input, $switchSearch,
           _this = this;
-        $container = $("<div id=\"visual-search-container\" style='padding-top:2px'/>").appendTo(this.$el);
+        $container = $("<div id=\"visual-search-container\" class='search-box' style='padding-top:2px'/>").appendTo(this.$el);
         $input = $("<div class=\"visual_search\" />").appendTo($container);
         $button = $("<input type=\"button\" value=\"Go\" style='float:left' />").appendTo($container);
-        $switchSearch = $("<input type=\"button\" value=\"Advanced Search\" style='float:right' />").appendTo($('#omniBox'));
+        $switchSearch = $("<input type=\"button\" value=\"Advanced Search\" id='search-switch'/>").appendTo($('#omniBox'));
         this.searchQuery = {};
         $button.click(function() {
           return _this.searchDatabase(_this.searchQuery);
