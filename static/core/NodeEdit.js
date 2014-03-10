@@ -47,7 +47,7 @@
         if (!this.buildingLink) {
           this.$el.empty();
           selectedNodes = this.selection.getSelectedNodes();
-          $container = $("<div class=\"node-profile-helper\"/>").appendTo(this.$el);
+          $container = $(".node-profile-helper");
           blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color", "shouldLoad"];
           return _.each(selectedNodes, function(node) {
             var $nodeDiv, _ref;
@@ -56,7 +56,7 @@
             } else if (!(_ref = node.color.toUpperCase(), __indexOf.call(colors, _ref) >= 0)) {
               node.color = "#A9A9A9";
             }
-            $nodeDiv = $("<div class=\"node-profile\"/>").css("background-color", "" + node.color).appendTo($container);
+            $nodeDiv = $("<div class=\"node-profile\"/>").css("border", "2px solid " + node.color).appendTo($container);
             return _this.renderProfile(node, $nodeDiv, blacklist, 4);
           });
         }
@@ -400,7 +400,7 @@
               spoke.color = "#A9A9A9";
             }
             spokeID = "spokeDiv";
-            $spokeDiv = $('<div class=' + spokeID + '>' + spoke.name + "..." + '</div>').css("background-color", "" + spoke.color).css("padding", "4px").css("margin", "1px").css("border", "1px solid black").css("font-size", "12px").appendTo($spokesDiv);
+            $spokeDiv = $('<div class=' + spokeID + '>' + spoke.name + "..." + '</div>').css("border", "1px solid " + spoke.color).css("padding", "4px").css("margin", "1px").css("border", "1px solid black").css("font-size", "12px").appendTo($spokesDiv);
             $spokeDiv.data("link", [spoke]);
             $spokeDiv.on("click", function(e) {
               var clickedLink;

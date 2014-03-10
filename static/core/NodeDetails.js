@@ -28,7 +28,7 @@
         var $container, blacklist, selectedNodes;
         this.$el.empty();
         selectedNodes = this.selection.getSelectedNodes();
-        $container = $("<div class=\"node-profile-helper\" />").appendTo(this.$el);
+        $container = $('.node-profile-helper');
         blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight"];
         return _.each(selectedNodes, function(node) {
           var $nodeDiv;

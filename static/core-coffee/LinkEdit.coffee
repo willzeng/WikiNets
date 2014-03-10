@@ -39,7 +39,7 @@ define [], () ->
       _.each selectedLinks, (link) =>
         if !(link.color?) then link.color="#A9A9A9"
         else if !(link.color.toUpperCase() in colors) then link.color="#A9A9A9"
-        $linkDiv = $("<div class=\"node-profile\"/>").css("background-color","#{link.color}").appendTo($container)
+        $linkDiv = $(".node-profile-helper")
         @renderProfile(link, $linkDiv, blacklist)
         
 

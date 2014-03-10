@@ -16,7 +16,7 @@
       }
 
       SimpleSearchBox.prototype.init = function(instances) {
-        var $addNode,
+        var $addNode, $addProfileHelper,
           _this = this;
         this.graphModel = instances["GraphModel"];
         this.selection = instances["NodeSelection"];
@@ -27,6 +27,7 @@
         this.render();
         $(this.el).attr('id', 'ssplug').appendTo($('#omniBox'));
         $addNode = $("<div id='add-node' class='result-element'><span>Add Node</span><br/><span>Person</span><span>Project</span><span>Theme</span><span>Other</span></div>").appendTo($('#omniBox'));
+        $addProfileHelper = $('<div class="node-profile-helper"></div>').appendTo($('#omniBox'));
         this.searchableKeys = {};
         return $.get("/get_all_node_keys", function(keys) {
           return _this.searchableKeys = keys;
