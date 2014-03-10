@@ -21,7 +21,6 @@ define [], () ->
       
       #identify the plugin and place it in the omniBox
       $(@el).attr('id','ssplug').appendTo $('#omniBox')
-      $addNode = $("<div id='add-node' class='result-element'><span>Add Node</span><br/><span>Person</span><span>Project</span><span>Theme</span><span>Other</span></div>").appendTo $('#omniBox')
       $addProfileHelper = $('<div class="node-profile-helper"></div>').appendTo $('#omniBox')
       #choose which keys will be searched by the fultext search.
       #we initially set this to all keys

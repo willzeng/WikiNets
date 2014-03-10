@@ -63,10 +63,13 @@ require ["Celestrium"], (Celestrium) ->
     LinkSelection: {}
 
     # Build the faceted Visual Search box
-    #"local/VisualSearch": {}
+    "local/VisualSearch": {}
     
     # Is a full text search box
     "local/SimpleSearchBox": {}
+
+    # To add nodes to the database
+    "local/AddNode": {}
 
     # Displays selected node details and allows editing
     "local/NodeEdit": {}
