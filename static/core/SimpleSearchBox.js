@@ -35,11 +35,29 @@
       };
 
       SimpleSearchBox.prototype.render = function() {
-        var $button, $container, $searchBox,
+        var $autofillWrapper, $button, $container, $searchBox, films,
           _this = this;
-        $container = $("<div id='visual-search-container'>").appendTo(this.$el);
+        $container = $("<div id='visual-search-container'>");
         $searchBox = $('<input type="text" id="searchBox" data-intro="Search the graph" data-position="right" placeholder="Search or Add Node">"').appendTo($container);
         $button = $("<div id='goButton'><i class='fa fa-search'></i></div>").appendTo($container);
+        $autofillWrapper = $('<div class="autofillWrapperClass" style="border: 1px solid black; border-top: none;"></div>').appendTo($container);
+        $autofillWrapper.hide();
+        this.$el.append($container);
+        films = new Bloodhound({
+          datumTokenizer: function(d) {
+            return Bloodhound.tokenizers.whitespace(d.name);
+          },
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          prefetch: '../node_index_search_prefetch'
+        });
+        films.initialize();
+        $searchBox.typeahead({
+          displayKey: 'name',
+          source: films.ttAdapter(),
+          templates: {
+            suggestion: Handlebars.compile('<p><strong>{{name}}</strong> – {{name}}</p>')
+          }
+        });
         $searchBox.keyup(function(e) {
           if (e.keyCode === 13) {
             _this.searchNodesSimple($searchBox.val());

@@ -33,7 +33,9 @@ globalLibs = [
   '../lib/less',
   '../lib/visualsearch',
   '../lib/colorPicker/jquery.colorPicker',
-  '../lib/chardinjs.min'
+  '../lib/chardinjs.min',
+  '../lib/typeaheadjs/typeahead.bundle.min',
+  '../lib/typeaheadjs/handlebars',
 ]
 
 define globalLibs, () ->
