@@ -30,7 +30,7 @@ define [], () ->
         @searchDatabase @searchQuery
         )
       # not sure why we still need this outer search query, but it won't work otherwise
-      $.get "/get_all_node_keys", (data) =>
+      $.post "/get_all_keys", {type: "node"}, (data) =>
         @keys = data
         #console.log @keys
         $(document).ready(() =>
@@ -46,11 +46,11 @@ define [], () ->
                 # this finds a new facet for the search
                 # if the searchBox is currently empty, the user is prompted to decide whether to search nodes or links
                 if visualSearch.searchBox.value().indexOf('search: "nodes"') > -1
-                  $.get "/get_all_node_keys", (data) =>
+                  $.post "/get_all_keys", {type: "node"}, (data) =>
                     @keys = data
                     callback data
                 else if visualSearch.searchBox.value().indexOf('search: "links"') > -1
-                  $.get "/get_all_link_keys", (data) =>
+                  $.post "/get_all_keys", {type: "rel"}, (data) =>
                     @keys = data
                     callback data
                 else

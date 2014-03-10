@@ -40,7 +40,9 @@
         $button.click(function() {
           return _this.searchDatabase(_this.searchQuery);
         });
-        $.get("/get_all_node_keys", function(data) {
+        $.post("/get_all_keys", {
+          type: "node"
+        }, function(data) {
           _this.keys = data;
           $(document).ready(function() {
             var visualSearch;
@@ -56,12 +58,16 @@
                 },
                 facetMatches: function(callback) {
                   if (visualSearch.searchBox.value().indexOf('search: "nodes"') > -1) {
-                    return $.get("/get_all_node_keys", function(data) {
+                    return $.post("/get_all_keys", {
+                      type: "node"
+                    }, function(data) {
                       _this.keys = data;
                       return callback(data);
                     });
                   } else if (visualSearch.searchBox.value().indexOf('search: "links"') > -1) {
-                    return $.get("/get_all_link_keys", function(data) {
+                    return $.post("/get_all_keys", {
+                      type: "rel"
+                    }, function(data) {
                       _this.keys = data;
                       return callback(data);
                     });

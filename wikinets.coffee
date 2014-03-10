@@ -291,6 +291,27 @@ module.exports = class MyApp
           )
     )
 
+    # Returnss a list of all node or link properties occuring in the database
+    # If two properties are the same up to case, only one of them will be in the list
+    # Used in VisualSearch
+    # Request should be {type:"node"} or {type:"rel"}
+    app.post('/get_all_keys', (request,response)->
+      graphDb.cypher.execute("start n="+request.body.type+"(*) return n;").then(
+        (noderes)->
+          console.log "Get All Keys (" + request.body.type + "): Query Executed"
+          nodeData = (n[0].data for n in noderes.data)
+          keys = []
+          test = ''
+          for n in nodeData
+            for key, value of n
+              pattern = new RegExp(key, "i")
+              if not (test.match(pattern)?)
+                test = test + " " + key
+                keys.push key
+          response.json keys.sort()
+          )
+    )
+
     # Gets a list of all node properties occuring in the database
     # Used in VisualSearch
     # Request may be empty
