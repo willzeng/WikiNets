@@ -16,19 +16,35 @@ define [], () ->
       @render()
       #instances["Layout"].addPlugin @el, @options.pluginOrder, 'Visual Search', true
       $(@el).attr('id','vsplug').appendTo $('#omniBox')
-      console.log x=@el
+      $("#vsplug").hide()
 
       @keys = ['search']
 
     render: ->
+
       $container = $("<div id=\"visual-search-container\" style='padding-top:2px'/>").appendTo @$el
       $input = $("<div class=\"visual_search\" />").appendTo $container
       $button = $("<input type=\"button\" value=\"Go\" style='float:left' />").appendTo $container
+
+      $switchSearch = $("<input type=\"button\" value=\"Advanced Search\" style='float:right' />").appendTo $('#omniBox')
+
       @searchQuery = {}
+
       $button.click(() =>
         #console.log @searchQuery
         @searchDatabase @searchQuery
         )
+
+      $switchSearch.click () =>
+        if $('#vsplug').is(':visible')
+          $('#vsplug').hide()
+          $('#ssplug').show()
+          $switchSearch.val("Advanced Search")
+        else
+          $('#ssplug').hide()
+          $('#vsplug').show()
+          $switchSearch.val("Simple Search")
+
       # not sure why we still need this outer search query, but it won't work otherwise
       $.get "/get_all_node_keys", (data) =>
         @keys = data

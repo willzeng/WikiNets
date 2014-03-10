@@ -66,7 +66,7 @@ require ["Celestrium"], (Celestrium) ->
     "local/VisualSearch": {}
     
     # Is a full text search box
-    #"local/SimpleSearchBox": {}
+    "local/SimpleSearchBox": {}
 
     # Displays selected node details and allows editing
     "local/NodeEdit": {}

@@ -16,8 +16,7 @@
       }
 
       VisualSearchBox.prototype.init = function(instances) {
-        var x,
-          _this = this;
+        var _this = this;
         this.graphModel = instances["GraphModel"];
         this.selection = instances["NodeSelection"];
         this.listenTo(instances["KeyListener"], "down:191", function(e) {
@@ -26,19 +25,31 @@
         });
         this.render();
         $(this.el).attr('id', 'vsplug').appendTo($('#omniBox'));
-        console.log(x = this.el);
+        $("#vsplug").hide();
         return this.keys = ['search'];
       };
 
       VisualSearchBox.prototype.render = function() {
-        var $button, $container, $input,
+        var $button, $container, $input, $switchSearch,
           _this = this;
         $container = $("<div id=\"visual-search-container\" style='padding-top:2px'/>").appendTo(this.$el);
         $input = $("<div class=\"visual_search\" />").appendTo($container);
         $button = $("<input type=\"button\" value=\"Go\" style='float:left' />").appendTo($container);
+        $switchSearch = $("<input type=\"button\" value=\"Advanced Search\" style='float:right' />").appendTo($('#omniBox'));
         this.searchQuery = {};
         $button.click(function() {
           return _this.searchDatabase(_this.searchQuery);
+        });
+        $switchSearch.click(function() {
+          if ($('#vsplug').is(':visible')) {
+            $('#vsplug').hide();
+            $('#ssplug').show();
+            return $switchSearch.val("Advanced Search");
+          } else {
+            $('#ssplug').hide();
+            $('#vsplug').show();
+            return $switchSearch.val("Simple Search");
+          }
         });
         $.get("/get_all_node_keys", function(data) {
           _this.keys = data;
