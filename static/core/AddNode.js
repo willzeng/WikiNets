@@ -17,10 +17,53 @@
         var $addNode, $addProfileHelper,
           _this = this;
         this.dataController = instances['local/Neo4jDataController'];
-        $addNode = $("<div id='add-node' class='result-element'><span>Add Node</span><br/><span id='add-node-button'>Person</span><span>Project</span><span>Theme</span><span>Other</span></div>").appendTo($('#omniBox'));
+        this.graphModel = instances['GraphModel'];
+        this.selection = instances['NodeSelection'];
+        this.graphView = instances['GraphView'];
+        this.nodeEdit = instances['local/NodeEdit'];
+        $addNode = $("<div id='add-node' class='result-element'><span>Add Node</span><br/><span id='add-person-button'>Person</span><span id='add-project-button'>Project</span><span id='add-theme-button'>Theme</span><span id='add-other-button'>Other</span></div>").appendTo($('#omniBox'));
         $addProfileHelper = $("<div class='node-profile-helper'></div>").appendTo($('#omniBox'));
-        return $('.add-node-button').click(function() {
-          return _this.dataController.nodeAdd();
+        $('#add-person-button').click(function() {
+          return _this.createNode({
+            "name": "",
+            "url": "",
+            "description": "",
+            "type": "person"
+          });
+        });
+        $('#add-project-button').click(function() {
+          return _this.createNode({
+            "name": "",
+            "url": "",
+            "description": "",
+            "type": "project"
+          });
+        });
+        $('#add-theme-button').click(function() {
+          return _this.createNode({
+            "name": "",
+            "description": "",
+            "type": "theme"
+          });
+        });
+        return $('#add-other-button').click(function() {
+          return _this.createNode({
+            "name": "",
+            "url": "",
+            "description": ""
+          });
+        });
+      };
+
+      AddNode.prototype.createNode = function(node) {
+        var _this = this;
+        return this.dataController.nodeAdd(node, function(datum) {
+          datum.fixed = true;
+          datum.px = ($(window).width() / 2 - _this.graphView.currentTranslation[0]) / _this.graphView.currentScale;
+          datum.py = ($(window).height() / 2 - _this.graphView.currentTranslation[1]) / _this.graphView.currentScale;
+          _this.graphModel.putNode(datum);
+          _this.selection.toggleSelection(datum);
+          return _this.nodeEdit.editNode(datum, $($('.node-profile').slice(-1)[0]), _this.nodeEdit.blacklist);
         });
       };
 

@@ -68,11 +68,11 @@ require ["Celestrium"], (Celestrium) ->
     # Is a full text search box
     "local/SimpleSearchBox": {}
 
-    # To add nodes to the database
-    "local/AddNode": {}
-
     # Displays selected node details and allows editing
     "local/NodeEdit": {}
+
+    # To add nodes to the database
+    "local/AddNode": {}
 
     # Displays selected link details and allows editing
     "local/LinkEdit": {}

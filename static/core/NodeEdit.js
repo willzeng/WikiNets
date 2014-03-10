@@ -49,6 +49,7 @@
           selectedNodes = this.selection.getSelectedNodes();
           $container = $(".node-profile-helper");
           blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color", "shouldLoad", "_Last_Edit_Date", "_Creation_Date"];
+          this.blacklist = blacklist;
           return _.each(selectedNodes, function(node) {
             var $nodeDiv, _ref;
             if (!(node.color != null)) {

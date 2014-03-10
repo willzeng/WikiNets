@@ -31,8 +31,9 @@ define [], () ->
         $container = $(".node-profile-helper")
         
 
-        #these are they peoperties that are not shown in the profile
+        #these are they properties that are not shown in the profile
         blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color","shouldLoad","_Last_Edit_Date", "_Creation_Date"]
+        @blacklist = blacklist
         _.each selectedNodes, (node) =>
           if !(node.color?) then node.color="#A9A9A9"
           else if !(node.color.toUpperCase() in colors) then node.color="#A9A9A9"
