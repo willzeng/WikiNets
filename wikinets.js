@@ -6,7 +6,7 @@ express = require('express');
 
 module.exports = MyApp = (function() {
   function MyApp(graphDb) {
-    var addID, addStrength, app, getvizjson, port, shorten, trim;
+    var addID, addStrength, app, getvizjson, makeNodeJsonFromCypherQuery, port, shorten, trim;
     this.graphDb = graphDb;
     graphDb = this.graphDb;
     app = express.createServer(express.logger());
@@ -40,18 +40,9 @@ module.exports = MyApp = (function() {
       cypherQuery = "start n=node(*) return n;";
       console.log("Executing " + cypherQuery);
       return graphDb.cypher.execute(cypherQuery).then(function(noderes) {
-        var n, nodeList;
+        var nodeList;
         console.log("get_nodes Lookup Executed");
-        nodeList = (function() {
-          var _i, _len, _ref, _results;
-          _ref = noderes.data;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            n = _ref[_i];
-            _results.push(addID(n[0].data, trim(n[0].self)[0]));
-          }
-          return _results;
-        })();
+        nodeList = makeNodeJsonFromCypherQuery(noderes);
         return response.json(nodeList);
       });
     });
@@ -610,26 +601,19 @@ module.exports = MyApp = (function() {
       cypherQuery = "start n=node(*) return n;";
       console.log("Executing " + cypherQuery);
       return graphDb.cypher.execute(cypherQuery).then(function(noderes) {
-        var n, node, nodeList, tokens, typeaheadNode, typeaheadNodeList, _i, _len;
+        var node, nodeList, tokens, typeaheadNode, typeaheadNodeList, _i, _len;
         console.log("get_nodes Lookup Executed");
-        nodeList = (function() {
-          var _i, _len, _ref, _results;
-          _ref = noderes.data;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            n = _ref[_i];
-            _results.push(addID(n[0].data, trim(n[0].self)[0]));
-          }
-          return _results;
-        })();
+        nodeList = makeNodeJsonFromCypherQuery(noderes);
         typeaheadNodeList = [];
         for (_i = 0, _len = nodeList.length; _i < _len; _i++) {
           node = nodeList[_i];
           typeaheadNode = {};
           typeaheadNode['name'] = node['name'];
           tokens = [];
-          typeaheadNode['tokens'] = tokens;
-          typeaheadNodeList.push(typeaheadNode);
+          if (typeaheadNode['name'] != null) {
+            typeaheadNode['tokens'] = typeaheadNode['name'].split(" ");
+            typeaheadNodeList.push(typeaheadNode);
+          }
         }
         return response.json(typeaheadNodeList);
       });
@@ -725,6 +709,20 @@ module.exports = MyApp = (function() {
           return callback(displaydata);
         });
       });
+    };
+    makeNodeJsonFromCypherQuery = function(noderes) {
+      var n, nodeList;
+      nodeList = (function() {
+        var _i, _len, _ref, _results;
+        _ref = noderes.data;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          n = _ref[_i];
+          _results.push(addID(n[0].data, trim(n[0].self)[0]));
+        }
+        return _results;
+      })();
+      return nodeList;
     };
   }
 

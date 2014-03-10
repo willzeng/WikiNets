@@ -11,6 +11,7 @@
 
       function SimpleSearchBox(options) {
         this.options = options;
+        this.nodeSearchJSONConvert = __bind(this.nodeSearchJSONConvert, this);
         this.searchNodesSimple = __bind(this.searchNodesSimple, this);
         SimpleSearchBox.__super__.constructor.call(this);
       }
@@ -32,42 +33,44 @@
       };
 
       SimpleSearchBox.prototype.render = function() {
-        var $autofillWrapper, $button, $container, $searchBox, films,
-          _this = this;
-        $container = $("<div id='visual-search-container'>").appendTo(this.$el);
-        $searchBox = $('<input type="text" id="searchBox">').css("width", "235px").css("height", "25px").css("box-shadow", "2px 2px 4px #888888").css("border", "1px solid blue").appendTo($container);
-        $button = $("<input type=\"button\" value=\"Go\" style='float:right' />").appendTo($container);
-        $autofillWrapper = $('<div class="autofillWrapperClass" style="border: 1px solid black; border-top: none;"></div>').appendTo($container);
-        $autofillWrapper.hide();
-        films = new Bloodhound({
-          datumTokenizer: function(d) {
-            return Bloodhound.tokenizers.whitespace(d.name);
-          },
-          queryTokenizer: Bloodhound.tokenizers.whitespace,
-          prefetch: '../node_index_search_prefetch'
+        $(function() {
+          var $button, $container, $input, films,
+            _this = this;
+          films = new Bloodhound({
+            datumTokenizer: function(d) {
+              return Bloodhound.tokenizers.whitespace(d.name);
+            },
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            prefetch: '../node_index_search_prefetch'
+          });
+          films.initialize();
+          $('.typeahead').typeahead(null, {
+            displayKey: 'value',
+            source: films.ttAdapter(),
+            templates: {
+              suggestion: Handlebars.compile('<p><strong>{{name}}</strong> – {{name}}</p>')
+            }
+          });
+          $container = $("<div />").addClass("node-search-container");
+          $input = $("<input type=\"text\" placeholder=\"Node Search...\">").addClass("typeahead").css("width", "235px").css("height", "25px").css("box-shadow", "2px 2px 4px #888888").css("border", "1px solid blue");
+          $container.append($input);
+          $button = $("<input type=\"button\" value=\"Go\" style='float:right' />").appendTo($container);
+          this.$el.append($container);
+          $input.typeahead({
+            displayKey: 'value',
+            source: films.ttAdapter(),
+            templates: {
+              suggestion: Handlebars.compile('<p><strong>{{name}}</strong> – {{name}}</p>')
+            },
+            name: "nodes",
+            limit: 100
+          });
+          return $button.click(function() {
+            _this.searchNodesSimple($searchBox.val());
+            return $searchBox.val("");
+          });
         });
-        films.initialize();
-        $searchBox.typeahead(null, {
-          displayKey: 'value',
-          source: films.ttAdapter(),
-          templates: {
-            suggestion: Handlebars.compile('<p><strong>{{name}}</strong> – {{name}}</p>')
-          }
-        });
-        $(document).on("click", function() {
-          return $autofillWrapper.hide();
-        });
-        $searchBox.on("click", function(e) {
-          $autofillWrapper.show();
-          e.stopPropagation();
-          if ($searchBox.val() > 0) {
-            return $searchBox.show();
-          }
-        });
-        return $button.click(function() {
-          _this.searchNodesSimple($searchBox.val());
-          return $searchBox.val("");
-        });
+        return this;
       };
 
       SimpleSearchBox.prototype.searchNodesSimple = function(searchQuery) {
@@ -96,6 +99,8 @@
           return _results;
         });
       };
+
+      SimpleSearchBox.prototype.nodeSearchJSONConvert = function(searchResponse) {};
 
       return SimpleSearchBox;
 

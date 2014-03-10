@@ -32,38 +32,38 @@ define [], () ->
 
       #build HTML elements
       $container = $("<div id='visual-search-container'>").appendTo @$el
-      $searchBox = $('<input class="typeahead" type="text" id="searchBox" placeholder="Rhizi Search">')
+      $searchBox = $('<input type="text" id="searchBox">')
         .css("width", "235px")
         .css("height", "25px")
         .css("box-shadow", "2px 2px 4px #888888")
         .css("border", "1px solid blue")
         .appendTo $container
       $button = $("<input type=\"button\" value=\"Go\" style='float:right' />").appendTo $container
-      #$autofillWrapper = $('<div class="autofillWrapperClass" style="border: 1px solid black; border-top: none;"></div>').appendTo $container
-      #$autofillWrapper.hide()
+      $autofillWrapper = $('<div class="autofillWrapperClass" style="border: 1px solid black; border-top: none;"></div>').appendTo $container
+      $autofillWrapper.hide()
 
-      # typeahead search
+
       films = new Bloodhound({
-        datumTokenizer: (d) -> Bloodhound.tokenizers.whitespace(d.value),
-        queryTokenizer: Bloodhound.tokenizers.whitespace,
-        #remote: '/sample1.json',
-        prefetch: '/sample1.json'
-      });
+          datumTokenizer: (d) -> Bloodhound.tokenizers.whitespace(d.name); ,
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          # remote: '../data/films/queries/%QUERY.json',
+          prefetch: '../node_index_search_prefetch'
+        });
 
-      films.initialize();
+        films.initialize();
 
-      $('.typeahead').typeahead(null, {
-        displayKey: 'value',
-        source: films.ttAdapter(),
-        templates: {
-          suggestion: Handlebars.compile(
-            '<p><strong>{{value}}</strong> – {{year}}</p>'
-          )
-        }
-      });
+        $searchBox.typeahead(null, {
+          displayKey: 'value',
+          source: films.ttAdapter(),
+          templates: {
+            suggestion: Handlebars.compile(
+              '<p><strong>{{name}}</strong> – {{name}}</p>'
+            )
+          }
+        });
+
 
       #call search functionality with press of ENTER key
-      #old simple search box code
       # $searchBox.keyup (e)=>
       #   if(e.keyCode == 13)
       #     @searchNodesSimple $searchBox.val()
@@ -74,7 +74,6 @@ define [], () ->
       #     #@searchNodesAutofill $searchBox.val(),$autofillWrapper
       #     $tempquery = $searchBox.val()
       #     $.post "/node_index_search", {checkKeys: @searchableKeys, query: $searchBox.val()}, (nodes) =>
-      #       console.log nodes
       #       if($tempquery!=$searchBox.val())
       #         return
       #       $autofillWrapper.empty()
@@ -85,13 +84,13 @@ define [], () ->
       #   else if($searchBox.val()=="")
       #     $autofillWrapper.empty()
 
-      # $(document).on "click", ()->
-      #   $autofillWrapper.hide()
-      # $searchBox.on "click", (e)->
-      #   $autofillWrapper.show()
-      #   e.stopPropagation()
-      #   if($searchBox.val()>0)
-      #     $searchBox.show()
+      $(document).on "click", ()->
+        $autofillWrapper.hide()
+      $searchBox.on "click", (e)->
+        $autofillWrapper.show()
+        e.stopPropagation()
+        if($searchBox.val()>0)
+          $searchBox.show()
 
       #call search functionality with input text
       $button.click () =>
@@ -107,9 +106,6 @@ define [], () ->
           modelNode = theNode for theNode in @graphModel.getNodes() when theNode['_id'] is node['_id']
           @selection.selectNode(modelNode)
 
-    nodeSearchJSONConvert: (searchResponse) =>
-      
-
     # searchNodesAutofill: (searchQuery,autofillWrapper) =>
     #     $.post "/node_index_search", {checkKeys: @searchableKeys, query: searchQuery}, (nodes) =>
     #       $autofillWrapper.empty()
@@ -117,7 +113,3 @@ define [], () ->
     #         #console.log node
     #         $autofillField = $("<p>" + node.name + "</p>").appendTo $autofillWrapper
           
-
-
-
-

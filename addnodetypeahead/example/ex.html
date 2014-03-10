@@ -39,7 +39,7 @@
           datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.value); },
           queryTokenizer: Bloodhound.tokenizers.whitespace,
           //remote: '../data/films/queries/%QUERY.json',
-          prefetch: 'node_index_search_prefetch'
+          prefetch: 'localhost:3000/node_index_search_prefetch'
         });
 
         films.initialize();

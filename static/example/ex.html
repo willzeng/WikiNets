@@ -36,20 +36,21 @@
         var numbers, countries, repos, arabic, nba, nhl, films, anExcitedSource;
 
         films = new Bloodhound({
-          datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.value); },
+          datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.name); },
           queryTokenizer: Bloodhound.tokenizers.whitespace,
           //remote: '../data/films/queries/%QUERY.json',
-          prefetch: 'node_index_search_prefetch'
+          // prefetch: 'sample1.json'
+          prefetch: '../node_index_search_prefetch'
         });
 
         films.initialize();
 
         $('.example-films .typeahead').typeahead(null, {
-          displayKey: 'value',
+          displayKey: 'name',
           source: films.ttAdapter(),
           templates: {
             suggestion: Handlebars.compile(
-              '<p><strong>{{value}}</strong> – {{year}}</p>'
+              '<p><strong>{{name}}</strong> – {{name}}</p>'
             )
           }
         });

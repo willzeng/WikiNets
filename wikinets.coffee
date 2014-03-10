@@ -35,7 +35,7 @@ module.exports = class MyApp
       graphDb.cypher.execute(cypherQuery).then(
         (noderes)->
           console.log "get_nodes Lookup Executed"
-          nodeList = (addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
+          nodeList = makeNodeJsonFromCypherQuery(noderes) #(addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
           response.json nodeList
       )
     )
@@ -472,16 +472,16 @@ module.exports = class MyApp
       graphDb.cypher.execute(cypherQuery).then(
         (noderes)->
           console.log "get_nodes Lookup Executed"
-          nodeList = (addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
+          nodeList = makeNodeJsonFromCypherQuery(noderes)
 
           typeaheadNodeList = []
           for node in nodeList
             typeaheadNode = {}
             typeaheadNode['name'] = node['name']
             tokens = []
-            typeaheadNode['tokens'] = tokens
-            typeaheadNodeList.push(typeaheadNode)
-
+            if typeaheadNode['name']?
+              typeaheadNode['tokens'] = typeaheadNode['name'].split(" ")
+              typeaheadNodeList.push(typeaheadNode)
           response.json typeaheadNodeList
       )
     )
@@ -550,4 +550,7 @@ module.exports = class MyApp
           )
       )
 
+    makeNodeJsonFromCypherQuery = (noderes) ->
+        nodeList = (addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
+        nodeList
 
