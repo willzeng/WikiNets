@@ -26,13 +26,15 @@ requirejs.config
 
 globalLibs = [
   '../lib/jquery',
-  '../lib/jquery.typeahead',
   '../lib/underscore',
   '../lib/backbone',
   '../lib/d3',
   '../lib/less',
   '../lib/visualsearch',
-  '../lib/colorPicker/jquery.colorPicker'
+  '../lib/colorPicker/jquery.colorPicker',
+  '../lib/typeaheadjs/handlebars',
+  '../lib/typeaheadjs/jquery-1.11.0.min',
+  '../lib/typeaheadjs/typeahead.bundle.min',
 ]
 
 define globalLibs, () ->

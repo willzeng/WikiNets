@@ -32,7 +32,7 @@ exposes an object with an `init` function which takes two arguments.
     }
   });
 
-  globalLibs = ['../lib/jquery', '../lib/jquery.typeahead', '../lib/underscore', '../lib/backbone', '../lib/d3', '../lib/less', '../lib/visualsearch', '../lib/colorPicker/jquery.colorPicker'];
+  globalLibs = ['../lib/jquery', '../lib/underscore', '../lib/backbone', '../lib/d3', '../lib/less', '../lib/visualsearch', '../lib/colorPicker/jquery.colorPicker', '../lib/typeaheadjs/handlebars', '../lib/typeaheadjs/jquery-1.11.0.min', '../lib/typeaheadjs/typeahead.bundle.min'];
 
   define(globalLibs, function() {
     return {

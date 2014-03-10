@@ -574,6 +574,66 @@ module.exports = MyApp = (function() {
         }
       });
     });
+    app.get('/node_index_search_prefetch1', function(request, response) {
+      var cypherQuery;
+      console.log("get_nodes Query Requested");
+      cypherQuery = "start n=node(*) return n;";
+      console.log("Executing " + cypherQuery);
+      return graphDb.cypher.execute(cypherQuery).then(function(noderes) {
+        var n, node, nodeList, tokens, typeaheadNode, typeaheadNodeList, _i, _len;
+        console.log("node index search prefeterh Executed");
+        nodeList = (function() {
+          var _i, _len, _ref, _results;
+          _ref = noderes.data;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            n = _ref[_i];
+            _results.push(addID(n[0].data, trim(n[0].self)[0]));
+          }
+          return _results;
+        })();
+        typeaheadNodeList = [];
+        for (_i = 0, _len = nodeList.length; _i < _len; _i++) {
+          node = nodeList[_i];
+          typeaheadNode = {};
+          typeaheadNode['name'] = node.name;
+          tokens = node.name.split();
+          typeaheadNode['tokens'] = tokens;
+          typeaheadNodeList.append(typeaheadNode);
+        }
+        return response.json(typeaheadNodeList);
+      });
+    });
+    app.get('/node_index_search_prefetch', function(request, response) {
+      var cypherQuery;
+      console.log("get_nodes Query Requested");
+      cypherQuery = "start n=node(*) return n;";
+      console.log("Executing " + cypherQuery);
+      return graphDb.cypher.execute(cypherQuery).then(function(noderes) {
+        var n, node, nodeList, tokens, typeaheadNode, typeaheadNodeList, _i, _len;
+        console.log("get_nodes Lookup Executed");
+        nodeList = (function() {
+          var _i, _len, _ref, _results;
+          _ref = noderes.data;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            n = _ref[_i];
+            _results.push(addID(n[0].data, trim(n[0].self)[0]));
+          }
+          return _results;
+        })();
+        typeaheadNodeList = [];
+        for (_i = 0, _len = nodeList.length; _i < _len; _i++) {
+          node = nodeList[_i];
+          typeaheadNode = {};
+          typeaheadNode['name'] = node['name'];
+          tokens = [];
+          typeaheadNode['tokens'] = tokens;
+          typeaheadNodeList.push(typeaheadNode);
+        }
+        return response.json(typeaheadNodeList);
+      });
+    });
     port = process.env.PORT || 3000;
     app.listen(port, function() {
       return console.log("Listening on " + port);
