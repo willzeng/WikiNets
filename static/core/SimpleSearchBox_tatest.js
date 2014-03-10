@@ -11,13 +11,13 @@
 
       function SimpleSearchBox(options) {
         this.options = options;
+        this.nodeSearchJSONConvert = __bind(this.nodeSearchJSONConvert, this);
         this.searchNodesSimple = __bind(this.searchNodesSimple, this);
         SimpleSearchBox.__super__.constructor.call(this);
       }
 
       SimpleSearchBox.prototype.init = function(instances) {
-        var $addNode, $addProfileHelper,
-          _this = this;
+        var _this = this;
         this.graphModel = instances["GraphModel"];
         this.selection = instances["NodeSelection"];
         this.listenTo(instances["KeyListener"], "down:191", function(e) {
@@ -26,8 +26,6 @@
         });
         this.render();
         $(this.el).attr('id', 'ssplug').appendTo($('#omniBox'));
-        $addNode = $("<div id='add-node' class='result-element'><span>Add Node</span><br/><span>Person</span><span>Project</span><span>Theme</span><span>Other</span></div>").appendTo($('#omniBox'));
-        $addProfileHelper = $('<div class="node-profile-helper"></div>').appendTo($('#omniBox'));
         this.searchableKeys = {};
         return $.get("/get_all_node_keys", function(keys) {
           return _this.searchableKeys = keys;
@@ -35,30 +33,44 @@
       };
 
       SimpleSearchBox.prototype.render = function() {
-        var $button, $container, $searchBox, films,
-          _this = this;
-        $container = $("<div id='visual-search-container'>").appendTo(this.$el);
-        $searchBox = $('<input type="text" id="searchBox" data-intro="Search the graph" data-position="right" placeholder="Search or Add Node">"').appendTo($container);
-        $button = $("<div id='goButton'><i class='fa fa-search'></i></div>").appendTo($container);
-        films = new Bloodhound({
-          datumTokenizer: function(d) {
-            return Bloodhound.tokenizers.whitespace(d.name);
-          },
-          queryTokenizer: Bloodhound.tokenizers.whitespace,
-          prefetch: '../node_index_search_prefetch'
+        $(function() {
+          var $button, $container, $input, films,
+            _this = this;
+          films = new Bloodhound({
+            datumTokenizer: function(d) {
+              return Bloodhound.tokenizers.whitespace(d.name);
+            },
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            prefetch: '../node_index_search_prefetch'
+          });
+          films.initialize();
+          $('.typeahead').typeahead(null, {
+            displayKey: 'value',
+            source: films.ttAdapter(),
+            templates: {
+              suggestion: Handlebars.compile('<p><strong>{{name}}</strong> – {{name}}</p>')
+            }
+          });
+          $container = $("<div />").addClass("node-search-container");
+          $input = $("<input type=\"text\" placeholder=\"Node Search...\">").addClass("typeahead").css("width", "235px").css("height", "25px").css("box-shadow", "2px 2px 4px #888888").css("border", "1px solid blue");
+          $container.append($input);
+          $button = $("<input type=\"button\" value=\"Go\" style='float:right' />").appendTo($container);
+          this.$el.append($container);
+          $input.typeahead({
+            displayKey: 'value',
+            source: films.ttAdapter(),
+            templates: {
+              suggestion: Handlebars.compile('<p><strong>{{name}}</strong> – {{name}}</p>')
+            },
+            name: "nodes",
+            limit: 100
+          });
+          return $button.click(function() {
+            _this.searchNodesSimple($searchBox.val());
+            return $searchBox.val("");
+          });
         });
-        films.initialize();
-        $searchBox.typeahead(null, {
-          displayKey: 'name',
-          source: films.ttAdapter(),
-          templates: {
-            suggestion: Handlebars.compile('<p><strong>{{name}}</strong> – {{name}}</p>')
-          }
-        });
-        return $button.click(function() {
-          _this.searchNodesSimple($searchBox.val());
-          return $searchBox.val("");
-        });
+        return this;
       };
 
       SimpleSearchBox.prototype.searchNodesSimple = function(searchQuery) {
@@ -87,6 +99,8 @@
           return _results;
         });
       };
+
+      SimpleSearchBox.prototype.nodeSearchJSONConvert = function(searchResponse) {};
 
       return SimpleSearchBox;
 

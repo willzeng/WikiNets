@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title> - jsFiddle demo by dvfurlong</title>
+  
+  <script type='text/javascript' src='http://code.jquery.com/jquery-git2.js'></script>
+  
+  
+  
+  <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+  
+    
+      <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    
+  
+  <style type='text/css'>
+    #addToMap {
+    background:#ddd;
+    font-size:14px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    width:430px;
+}
+.link {
+    cursor:pointer;
+}
+.blue {
+    color:royalblue;
+    padding-top:3px;
+    padding-bottom:3px;
+    font-size:12px;
+}
+.blue:hover{
+    text-decoration:underline;
+}
+#controlsNode {
+    text-align:center;
+    background:#eee;
+    border:1px solid gray;
+    border-top:0px;
+    color:royalblue;
+    padding-top:3px;
+    padding-bottom:3px;
+    font-size:12px;
+}
+#addNode {
+   border:1px solid gray;
+   padding:5px;
+   padding-left:10px;
+   height:auto;
+   vertical-align:top;
+}
+.expandedConnection {
+    border:1px solid gray;
+    border-top:0px;
+    padding:5px;
+    padding-left:10px;
+    height:auto;
+    vertical-align:top;
+}
+.expandedConnection td ul li {
+    width:100%;
+} 
+#addNode ul,.expandedConnection ul {
+    list-style:none;
+    padding:0px;
+    margin:0px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size:12px;
+}
+#addNode ul li input,.expandedConnection ul li input {
+    background:transparent;
+    border:0px;
+    outline:none;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+}
+#connections table {
+    background:white;
+    width:100%;
+    padding:0px;
+    border-collapse: collapse;
+	border-spacing: 0;
+}
+#connections table tr {
+    height:30px;
+    padding:0px;
+    
+    border-left:1px solid gray;
+    border-right:1px solid gray;
+}
+#connections table tr:first-child {
+    border-top:0px;
+}
+#connections table tr td {
+    padding:0px;
+    border-left:1px solid gray;
+    text-align:middle;
+    border-bottom:1px solid gray;
+}
+#connections table tr td:first-child {
+    padding:0px;
+    border-left:0px;
+}
+.removeConnection, .arrows {
+    width:30px;
+    text-align:center;
+    cursor:pointer;
+}
+.arrows div:first-child {
+    border-bottom:1px solid gray;
+}
+.arrows .selected {
+    background:rgb(178,214,251);
+}
+
+.relation, .selectNode {
+    height:100%;
+    border:0px;
+    box-shadow:0px;
+    outline:none;
+    padding:2px 4px 2px 6px;
+}
+.dynamicwidthtext {
+    outline:none;
+}
+.nodeProperty input, .connectionProperty input {
+    font-size:12px;
+    color:#666;
+    width:200px;
+    padding-left:5px;
+}
+.expandedConnection td ul {
+    padding:5px;
+}
+.fa-plus-square, .fa-minus-square {
+    margin-right:5px;
+}
+
+  </style>
+  
+
+
+<script type='text/javascript'>//<![CDATA[ 
+$(window).load(function(){
+$('#addConnection').click(function(){
+    $('#connections table').prepend('<tr><td class="removeConnection"><i class="fa fa-trash-o"></i></td><td class="arrows"><div class="selected"><i class="fa fa-long-arrow-left"></i></div><div class="selected"><i class="fa fa-long-arrow-right"></i></div></td><td><input type="text" placeholder="Connection name" class="relation"/><i class="fa fa-plus-square showExpansion link"></i> <i class="fa fa-code-fork cloneRelation link"></i></td><td><input type="text" placeholder="Node name" class="selectNode"/></td></tr>');
+});
+
+$('#connections').on("click",".arrows div",function(){
+    if($(this).hasClass('selected')){
+        $(this).removeClass('selected');
+    }
+    else {
+        $(this).addClass('selected');
+    }
+});
+
+$('#connections').on("click",".cloneRelation",function(){
+    var cn = $(this).parent().children().first().val();
+    var arrow1 = $(this).parent().parent().find('.fa-long-arrow-left').parent().hasClass('selected') ? "selected" : "";
+    var arrow2 = $(this).parent().parent().find('.fa-long-arrow-right').parent().hasClass('selected') ? "selected" : "";
+    $(this).parent().parent().after('<tr><td class="removeConnection"><i class="fa fa-trash-o"></i></td><td class="arrows"><div class="'+arrow1+'"><i class="fa fa-long-arrow-left"></i></div><div class="'+arrow2+'"><i class="fa fa-long-arrow-right"></i></div></td><td><input type="text" placeholder="Connection name" value="'+cn+'" class="relation"/><i class="fa fa-plus-square showExpansion link"></i> <i class="fa fa-code-fork cloneRelation link"></i></td><td><input type="text" placeholder="Node name" class="selectNode"/></td></tr>');
+});
+
+$('#connections').on("click",".removeConnection",function(){
+    if($(this).parent().next().hasClass('expandedConnection'))
+       $(this).parent().next().remove();
+    $(this).parent().remove();
+    
+});
+
+$('#addPropertyToNode').click(function(){
+    $(this).parent().before('<li class="nodeProperty"><span class="removeProperty link" style="font-size:16px;">×</span> <span class="dynamicwidthtext" contentEditable=true>Property Name</span>:<input type="text" placeholder="Property Value"/></li>');
+});
+
+$('#connections').on('click','#addPropertyToConnection',function(){
+    $(this).parent().before('<li class="connectionProperty"><span class="removeProperty link" style="font-size:16px;">×</span> <span class="dynamicwidthtext" contentEditable=true>Property Name</span>:<input type="text" placeholder="Property Value"/></li>');
+});
+
+$('#addNode').on("focus",'.dynamicwidthtext',function(e){
+});
+$('#addNode').on("blur",'.dynamicwidthtext',function(){
+    
+    if($(this).html()=="")
+        $(this).html("Property Name");
+});
+
+$('#addToMap').on('click','.removeProperty',function(){
+    $(this).parent().remove();
+});
+
+$('#connections').on("focus",".relation", function(){
+    if(!$(this).hasClass('expanded')){
+        $(this).next().addClass('fa-minus-square');
+        $(this).next().removeClass('fa-plus-square');
+        $(this).addClass('expanded');
+        $(this).next().addClass('hideExpansion');
+        $(this).next().removeClass('showExpansion');
+        if($(this).hasClass('hidden')){
+            $(this).removeClass('hidden');
+            $(this).parent().parent().next().show();
+        }
+        else {
+        $(this).parent().parent().after('<tr class="expandedConnection"><td colspan="2"></td><td colspan="2"><ul><li class="connectionProperty">name:<input type="text" placeholder="What do we call this thing?" value="'+$(this).val()+'" class="connectionName"/></li><li class="connectionProperty">url:<input type="text" placeholder="Where is this thing?"/></li><li class="connectionProperty">description:<input type="text" placeholder="What is this thing?"/></li><li  class=" blue"><span id="addPropertyToConnection" class="link">+ Add Property</span></li></ul></td></tr>');
+        $(this).parent().css("border-bottom-width","0px");
+        }
+    }
+    else {
+                       //$(this).parent().parent().next().find('.connectionProperty')[0].find('input').val($(this).val());                                                                                    
+    }
+});
+
+function executeCreate(){
+    
+}
+
+$('#connections').on("click",".hideExpansion", function(){
+    $(this).addClass('fa-plus-square');
+    $(this).removeClass('fa-minus-square');
+    $(this).prev().removeClass('expanded');
+    $(this).removeClass('hideExpansion');
+    $(this).addClass('showExpansion');
+    $(this).parent().css("border-bottom-width","1px");
+    $(this).parents('tr').next().hide();
+});
+$('#connections').on("click",".showExpansion", function(){
+    
+    if(!$(this).hasClass('expanded')){
+        $(this).removeClass('fa-plus-square');
+        $(this).addClass('fa-minus-square');
+        $(this).prev().addClass('expanded');
+        $(this).addClass('hideExpansion');
+        $(this).removeClass('showExpansion');
+        if($(this).hasClass('hidden')){
+            $(this).removeClass('hidden');
+            $(this).parent().parent().next().show();
+        }
+        else {
+        $(this).parent().parent().after('<tr class="expandedConnection"><td colspan="2"></td><td colspan="2"><ul><li class="connectionProperty">name:<input type="text" placeholder="What do we call this thing?" value="'+$(this).val()+'" class="connectionName"/></li><li class="connectionProperty">url:<input type="text" placeholder="Where is this thing?"/></li><li class="connectionProperty">description:<input type="text" placeholder="What is this thing?"/></li><li  class=" blue"><span id="addPropertyToConnection" class="link">+ Add Property</span></li></ul></td></tr>');
+        $(this).parent().css("border-bottom-width","0px");
+        }
+    }
+    else {
+                       //$(this).parent().parent().next().find('.connectionProperty')[0].find('input').val($(this).val());                                                                                    
+    }
+});
+
+$('#connections').on('keyup','.relation',function(){
+     $(this).parents('tr').next().find('.connectionName').val($(this).val());
+
+});
+$('#connections').on('keyup','.connectionName',function(){
+  $(this).parents('tr').prev().find('.relation').val($(this).val());
+});
+});//]]>  
+
+</script>
+
+
+</head>
+<body>
+  <div id="addToMap">
+    <div id="addNode">      
+         <ul>
+            <li class="nodeProperty">name:<input type="text" placeholder="What do we call this thing?"/></li>
+            <li class="nodeProperty">url:<input type="text" placeholder="Where is this thing?"/></li>
+            <li class="nodeProperty">description:<input type="text" placeholder="What is this thing?"/></li>
+             <li  class=" blue"><span id="addPropertyToNode" class="link">+ Add Property</span></li>
+        </ul>
+    </div>
+    <div id="controlsNode">
+        <span class="link blue" id="addConnection">
+            + Add Connection
+        </span>
+    </div>
+    <div id="connections">
+       <table>
+            <tr>
+                <td class="removeConnection"><i class="fa fa-trash-o"></i></td> 
+                <td class="arrows">
+                    <div class="selected"><i class="fa fa-long-arrow-left"></i></div>
+                    <div class="selected"><i class="fa fa-long-arrow-right"></i></div>
+                </td>
+                <td><input type="text" placeholder="Connection name" class="relation"/><i class="fa fa-plus-square link showExpansion"></i> <i class="fa fa-code-fork cloneRelation link"></i></td>
+                    <td><input type="text" placeholder="Node name" class="selectNode"/></td>
+            </tr>
+        </table>
+    </div>
+</div>
+  
+</body>
+
+
+</html>
+

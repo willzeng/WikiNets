@@ -481,6 +481,47 @@ module.exports = class MyApp
       )
 
 
+    #prefetch all nodes for typeahead
+    app.get('/node_index_search_prefetch1', (request, response)->
+      console.log "get_nodes Query Requested"
+      cypherQuery = "start n=node(*) return n;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes)->
+          console.log "node index search prefeterh Executed"
+          nodeList = (addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
+          typeaheadNodeList = []
+          for node in nodeList
+            typeaheadNode = {}
+            typeaheadNode['name'] = node.name
+            tokens = node.name.split()
+            typeaheadNode['tokens'] = tokens
+            typeaheadNodeList.append(typeaheadNode)
+          response.json typeaheadNodeList
+      )
+    )
+
+    app.get('/node_index_search_prefetch', (request,response)->
+      console.log "get_nodes Query Requested"
+      cypherQuery = "start n=node(*) return n;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes)->
+          console.log "get_nodes Lookup Executed"
+          nodeList = makeNodeJsonFromCypherQuery(noderes)
+
+          typeaheadNodeList = []
+          for node in nodeList
+            typeaheadNode = {}
+            typeaheadNode['name'] = node['name']
+            tokens = []
+            if typeaheadNode['name']?
+              typeaheadNode['tokens'] = typeaheadNode['name'].split(" ")
+              typeaheadNodeList.push(typeaheadNode)
+          response.json typeaheadNodeList
+      )
+    )
+
     #Tells the server where to listen
     port = process.env.PORT || 3000
     app.listen port, -> console.log("Listening on " + port)
