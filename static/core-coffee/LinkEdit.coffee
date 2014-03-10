@@ -21,7 +21,7 @@ define [], () ->
       @graphView = instances['GraphView']
 
       @selection = instances["LinkSelection"]
-      @selection.on "change", @update.bind(this)
+      #@selection.on "change", @update.bind(this)
       @listenTo instances["KeyListener"], "down:16:80", () => @$el.toggle()
       #instances["Layout"].addPlugin @el, @options.pluginOrder, 'Link Edit', true
       $(@el).appendTo $('#omniBox')
@@ -34,6 +34,7 @@ define [], () ->
       @$el.empty()
       selectedLinks = @selection.getSelectedLinks()
       $container = $('.node-profile-helper')
+      $container.empty()
       blacklist = ["selected", "source", "target", "strength", "_type", "_id"]
       # not sure whether "strength" should be in the blacklist or not...?
       _.each selectedLinks, (link) =>

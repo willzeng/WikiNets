@@ -48,8 +48,7 @@
           this.$el.empty();
           selectedNodes = this.selection.getSelectedNodes();
           $container = $(".node-profile-helper");
-          $container.empty();
-          blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color", "shouldLoad"];
+          blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color", "shouldLoad", "_Last_Edit_Date", "_Creation_Date"];
           return _.each(selectedNodes, function(node) {
             var $nodeDiv, _ref;
             if (!(node.color != null)) {
@@ -83,6 +82,11 @@
             }
           }
         });
+        $nodeMoreFields = $("<input id=\"moreNode" + node['_id'] + "EditFields\" type=\"button\" value=\"+ Add Attribute\">").appendTo(nodeDiv);
+        $nodeMoreFields.click(function() {
+          _this.addField(nodeInputNumber, "Node" + node['_id'] + "Edit");
+          return nodeInputNumber = nodeInputNumber + 1;
+        });
         colorEditingField = '\
             <form action="#" method="post">\
                 <div class="controlset">Color<input id="color' + node['_id'] + '" name="color' + node['_id'] + '" type="text" value="' + origColor + '"/></div>\
@@ -99,11 +103,6 @@
         }
         $loaderHolder = $('<span> Load by default <br> </span>').css("font-size", "12px").appendTo(nodeDiv);
         $loaderToggle = $('<input type="checkbox" id=\"shouldLoad' + node._id + '\">').attr("checked", shouldLoad).prependTo($loaderHolder);
-        $nodeMoreFields = $("<input id=\"moreNode" + node['_id'] + "EditFields\" type=\"button\" value=\"+\">").appendTo(nodeDiv);
-        $nodeMoreFields.click(function() {
-          _this.addField(nodeInputNumber, "Node" + node['_id'] + "Edit");
-          return nodeInputNumber = nodeInputNumber + 1;
-        });
         $nodeSave = $("<input name=\"nodeSaveButton\" type=\"button\" value=\"Save\">").appendTo(nodeDiv);
         $nodeSave.click(function() {
           var newNodeObj;

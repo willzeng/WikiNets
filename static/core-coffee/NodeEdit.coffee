@@ -21,7 +21,6 @@ define [], () ->
       @listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
 
       @linkSelection = instances["LinkSelection"]
-      
       #place the plugin on the whole window
       $(@el).appendTo $('#omniBox')
 
@@ -30,9 +29,10 @@ define [], () ->
         @$el.empty()
         selectedNodes = @selection.getSelectedNodes()
         $container = $(".node-profile-helper")
-        $container.empty();
+        
+
         #these are they peoperties that are not shown in the profile
-        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color","shouldLoad"]
+        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color","shouldLoad","_Last_Edit_Date", "_Creation_Date"]
         _.each selectedNodes, (node) =>
           if !(node.color?) then node.color="#A9A9A9"
           else if !(node.color.toUpperCase() in colors) then node.color="#A9A9A9"
@@ -66,6 +66,12 @@ define [], () ->
                 origColor = value
 
 
+          $nodeMoreFields = $("<input id=\"moreNode#{node['_id']}EditFields\" type=\"button\" value=\"+ Add Attribute\">").appendTo(nodeDiv)
+          $nodeMoreFields.click(() =>
+            @addField(nodeInputNumber, "Node#{node['_id']}Edit")
+            nodeInputNumber = nodeInputNumber+1
+          )
+
           colorEditingField = '
             <form action="#" method="post">
                 <div class="controlset">Color<input id="color'+node['_id']+'" name="color'+node['_id']+'" type="text" value="'+origColor+'"/></div>
@@ -81,11 +87,7 @@ define [], () ->
             .attr("checked", shouldLoad)
             .prependTo $loaderHolder 
 
-          $nodeMoreFields = $("<input id=\"moreNode#{node['_id']}EditFields\" type=\"button\" value=\"+\">").appendTo(nodeDiv)
-          $nodeMoreFields.click(() =>
-            @addField(nodeInputNumber, "Node#{node['_id']}Edit")
-            nodeInputNumber = nodeInputNumber+1
-          )
+          
 
           $nodeSave = $("<input name=\"nodeSaveButton\" type=\"button\" value=\"Save\">").appendTo(nodeDiv)
           $nodeSave.click () => 
