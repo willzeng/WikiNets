@@ -41,7 +41,7 @@
         this.graphView.on("enter:node:shift:click", function(datum) {
           return _this.toggleSelection(datum);
         });
-        this.graphView.on("enter:node:dblclick", function(datum) {
+        this.graphView.on("enter:node:ctrl:click", function(datum) {
           return _this.selectConnectedComponent(datum);
         });
         this.graphView.on("enter:link:click", function(datum) {

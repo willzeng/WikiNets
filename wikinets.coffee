@@ -40,6 +40,21 @@ module.exports = class MyApp
       )
     )
 
+    ### Responds with a list of all the nodes 
+        that have the shouldLoad attribute as true
+    ###
+    app.get('/get_default_nodes', (request,response)->
+      console.log "get_default_nodes Query Requested"
+      cypherQuery = "start n=node(*) where n.shouldLoad=\"true\" return n;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes)->
+          console.log "get_default_nodes Lookup Executed"
+          nodeList = (addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
+          response.json nodeList
+      )
+    )
+
     ### Creates a node using a Cypher query ###
     app.post('/create_node', (request, response) ->
       console.log "Node Creation Requested"
@@ -409,7 +424,7 @@ module.exports = class MyApp
       theKeys = request.body.checkKeys
       query = request.body.query
       condition = "where "
-      condition+="n.#{key}=~\".*#{query}.*\" OR " for key in theKeys
+      condition+="n.#{key}=~'(?i).*#{query}.*' OR " for key in theKeys
       condition+="False"
       cypherQuery = "start n=node(*) #{condition} return n;"
 
@@ -422,7 +437,8 @@ module.exports = class MyApp
 
           #check which of the keys themselves match the query
           regexpression = ".*#{query}.*"
-          pattern = new RegExp(regexpression)          
+          pattern = new RegExp(regexpression, "i")
+          matchedKeys = []          
           matchedKeys = (key for key in theKeys when key.match(pattern)?)
 
           #if some keys match the search query 

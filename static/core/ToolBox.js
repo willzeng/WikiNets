@@ -14,6 +14,7 @@
         this.searchNodes = __bind(this.searchNodes, this);
         this.expandSelection = __bind(this.expandSelection, this);
         this.loadAllNodes = __bind(this.loadAllNodes, this);
+        this.addZoomButtons = __bind(this.addZoomButtons, this);
         ToolBox.__super__.constructor.call(this);
       }
 
@@ -33,6 +34,7 @@
         var $chooseSelectButton, $clearAllButton, $clearSelectedButton, $container, $deselectAllButton, $expandSelectionButton, $pinSelectedButton, $selectAllButton, $showAllButton, $unpinAllButton, $unpinSelectedButton,
           _this = this;
         $container = $("<div id=\"show-all-container\">").appendTo(this.$el);
+        this.addZoomButtons();
         $('#listviewButton').click(function() {
           $(_this.listView.el).show();
           $('#listviewButton').css("background", "url(\"images/icons/blue/list_nested_24x21.png\")");
@@ -159,6 +161,48 @@
           return _results;
         });
         return "$showLearningButton = $(\"<input type=\"button\" id=\"showLearningButton\" value=\"Learning\"></input>\").appendTo $container\n$showLearningButton.click(() =>\n  @searchNodes({Theme:\"Learning\"})\n  )\n\n$showStudentLifeButton = $(\"<input type=\"button\" id=\"showStudentLifeButton\" value=\"Student Life\"></input>\").appendTo $container\n$showStudentLifeButton.click(() =>\n  @searchNodes({Theme:\"Student Life\"})\n  )\n      \n$showResearchButton = $(\"<input type=\"button\" id=\"showResearchButton\" value=\"Research\"></input>\").appendTo $container\n$showResearchButton.click(() =>\n  @searchNodes({Theme:\"Research\"})\n  )";
+      };
+
+      ToolBox.prototype.addZoomButtons = function() {
+        var _this = this;
+        $('#zoomin').click(function() {
+          var center, diff, newScale, translate, translate0, view;
+          center = [$(window).width() / 2, $(window).height() / 2];
+          translate = _this.graphView.zoom.translate();
+          view = {
+            x: translate[0],
+            y: translate[1],
+            k: _this.graphView.zoom.scale()
+          };
+          newScale = view.k * 1.3;
+          translate0 = [(center[0] - view.x) / view.k, (center[1] - view.y) / view.k];
+          view.k = newScale;
+          diff = [translate0[0] * view.k + view.x, translate0[1] * view.k + view.y];
+          view.x += center[0] - diff[0];
+          view.y += center[1] - diff[1];
+          _this.graphView.zoom.translate([view.x, view.y]);
+          _this.graphView.zoom.scale(newScale);
+          return _this.graphView.workspace.transition().ease("linear").attr("transform", "translate(" + [view.x, view.y] + ") scale(" + newScale + ")");
+        });
+        return $('#zoomout').click(function() {
+          var center, diff, newScale, translate, translate0, view;
+          center = [$(window).width() / 2, $(window).height() / 2];
+          translate = _this.graphView.zoom.translate();
+          view = {
+            x: translate[0],
+            y: translate[1],
+            k: _this.graphView.zoom.scale()
+          };
+          newScale = view.k / 1.3;
+          translate0 = [(center[0] - view.x) / view.k, (center[1] - view.y) / view.k];
+          view.k = newScale;
+          diff = [translate0[0] * view.k + view.x, translate0[1] * view.k + view.y];
+          view.x += center[0] - diff[0];
+          view.y += center[1] - diff[1];
+          _this.graphView.zoom.translate([view.x, view.y]);
+          _this.graphView.zoom.scale(newScale);
+          return _this.graphView.workspace.transition().ease("linear").attr("transform", "translate(" + [view.x, view.y] + ") scale(" + newScale + ")");
+        });
       };
 
       ToolBox.prototype.loadAllNodes = function(nodes) {

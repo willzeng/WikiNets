@@ -94,6 +94,8 @@ define [], () ->
 
       # outermost wrapper - this is used to capture all zoom events
       zoomCapture = svg.append("g")
+      zoomCapture
+        .attr("height","100%")
 
       # this is in the background to capture events not on any node
       # should be added first so appended nodes appear above this
@@ -102,7 +104,6 @@ define [], () ->
              .attr("height", "100%")
              .style("fill-opacity", "0%")
              .attr("fill", "white")
-
 
       # Panning on Drag
       # lock infrastracture to ignore zoom changes that would
@@ -120,9 +121,12 @@ define [], () ->
       # ignore zoom event if it's due to a node being dragged
       # otherwise, translate and scale according to zoom
       # disabled dragging for clicking
-      
-      zoomCapture.call(zoom.on("zoom", -> # ignore double click to zoom
+      @currentTranslation = [0,0]
+      @currentScale = 1
+      zoomCapture.call(zoom.on("zoom", => # ignore double click to zoom
         return  if translateLock
+        @currentTranslation = d3.event.translate
+        @currentScale = d3.event.scale
         workspace.attr "transform", "translate(#{d3.event.translate}) scale(#{d3.event.scale})"
       )).on("dblclick.zoom", null)
 
@@ -141,10 +145,10 @@ define [], () ->
       $(@el).mousedown (e) => 
         if e.which is 3 then @trigger "view:rightclick"
       $(@el).on "dblclick", (e) => 
-        @trigger "view:click"
+        #@trigger "view:click"
 
-      #Center node on shift+click
-      #@addCentering()
+      #Center node on dblclick
+      @addCentering()
 
       return this
 
@@ -229,12 +233,14 @@ define [], () ->
         return  if d3.event.defaultPrevented
         d3.event.stopPropagation()
         if d3.event.shiftKey then shifted = true else shifted = false
+        if d3.event.ctrlKey then ctrl = true else ctrl = false
         datum.fixed = true
         clickSemaphore += 1
         savedClickSemaphore = clickSemaphore
         setTimeout (=>
           if clickSemaphore is savedClickSemaphore
             if shifted then @trigger "enter:node:shift:click", datum
+            else if ctrl then @trigger "enter:node:ctrl:click", datum
             else @trigger "enter:node:click", datum
             datum.fixed = false
           else
@@ -275,21 +281,33 @@ define [], () ->
       #   nodeEnter.each (d)->d.fixed = true
       #   ), @loadtime
 
+    centerOn: (node) =>
+      translateParams = [$(window).width()/2-node.x*@currentScale,$(window).height()/2-node.y*@currentScale]
+      #update translate values
+      @zoom.translate([translateParams[0], translateParams[1]])
+      #translate workspace
+      @workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{@currentScale})"
+
+
     addCentering: () ->
-      width = $(@el).width()
-      height = $(@el).height() 
 
       translateParams=[0,0]
            
-      @on "enter:node:shift:click", (node) ->
-        x = node.x
-        y = node.y
-        scale = @zoom.scale()
-        translateParams = [(width/2 -x)/scale,(height/2-y)/scale]
-        #translateParams = [x,y]
+      @on "enter:node:rightclick", (node) =>
+        translateParams = [$(window).width()/2-node.x*@currentScale,$(window).height()/2-node.y*@currentScale]
         #update translate values
         @zoom.translate([translateParams[0], translateParams[1]])
-        @workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{scale})"
+        #translate workspace
+        @workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{@currentScale})"
+
+      @on "enter:link:rightclick", (link) =>
+        linkCenterX = (link.target.x-link.source.x)/2+link.source.x
+        linkCenterY = (link.target.y-link.source.y)/2+link.source.y
+        translateParams = [$(window).width()/2-linkCenterX*@currentScale,$(window).height()/2-linkCenterY*@currentScale]
+        #update translate values
+        @zoom.translate([translateParams[0], translateParams[1]])
+        #translate workspace
+        @workspace.transition().ease("linear").attr "transform", "translate(#{translateParams}) scale(#{@currentScale})"
 
     #fast-forward force graph rendering to prevent bouncing http://stackoverflow.com/questions/13463053/calm-down-initial-tick-of-a-force-layout  
     # forwardAlpha: (layout, alpha, max) ->

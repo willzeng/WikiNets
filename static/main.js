@@ -52,10 +52,10 @@
       "local/NodeEdit": {},
       "local/LinkEdit": {},
       "local/ToolBox": {},
+      "local/TopBarCreate": {},
       DropdownMenu: {},
       Expander: {},
       LinkHover: {},
-      "local/TopBarCreate": {},
       MiniMap: {},
       "Sliders": {},
       "ForceSliders": {},
@@ -72,7 +72,7 @@
         }
         return _results;
       };
-      $.get('/get_nodes', loadEverything);
+      $.get('/get_default_nodes', loadEverything);
       return instances["GraphView"].getLinkFilter().set("threshold", 0);
     });
   });

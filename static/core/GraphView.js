@@ -40,6 +40,7 @@
       __extends(GraphView, _super);
 
       function GraphView() {
+        this.centerOn = __bind(this.centerOn, this);
         this.update = __bind(this.update, this);
         _ref1 = GraphView.__super__.constructor.apply(this, arguments);
         return _ref1;
@@ -79,6 +80,7 @@
         gradient.attr("id", "gradFill").attr("cx", "50%").attr("cy", "50%").attr("r", "75%").attr("fx", "50%").attr("fy", "50%").append("stop").attr("offset", "0%").attr("style", "stop-color:steelblue;stop-opacity:1");
         gradient.append("stop").attr("offset", "100%").attr("style", "stop-color:rgb(255,255,255);stop-opacity:1");
         zoomCapture = svg.append("g");
+        zoomCapture.attr("height", "100%");
         zoomCapture.append("svg:rect").attr("width", "100%").attr("height", "100%").style("fill-opacity", "0%").attr("fill", "white");
         translateLock = false;
         currentZoom = void 0;
@@ -89,10 +91,14 @@
           zoom.translate(currentZoom);
           return translateLock = false;
         });
+        this.currentTranslation = [0, 0];
+        this.currentScale = 1;
         zoomCapture.call(zoom.on("zoom", function() {
           if (translateLock) {
             return;
           }
+          _this.currentTranslation = d3.event.translate;
+          _this.currentScale = d3.event.scale;
           return workspace.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
         })).on("dblclick.zoom", null);
         workspace = zoomCapture.append("svg:g");
@@ -107,9 +113,8 @@
             return _this.trigger("view:rightclick");
           }
         });
-        $(this.el).on("dblclick", function(e) {
-          return _this.trigger("view:click");
-        });
+        $(this.el).on("dblclick", function(e) {});
+        this.addCentering();
         return this;
       };
 
@@ -189,7 +194,7 @@
         }).attr("fill", "white").attr("stroke-width", 3);
         clickSemaphore = 0;
         nodeEnter.on("click", function(datum, index) {
-          var savedClickSemaphore, shifted;
+          var ctrl, savedClickSemaphore, shifted;
           if (d3.event.defaultPrevented) {
             return;
           }
@@ -199,6 +204,11 @@
           } else {
             shifted = false;
           }
+          if (d3.event.ctrlKey) {
+            ctrl = true;
+          } else {
+            ctrl = false;
+          }
           datum.fixed = true;
           clickSemaphore += 1;
           savedClickSemaphore = clickSemaphore;
@@ -206,6 +216,8 @@
             if (clickSemaphore === savedClickSemaphore) {
               if (shifted) {
                 _this.trigger("enter:node:shift:click", datum);
+              } else if (ctrl) {
+                _this.trigger("enter:node:ctrl:click", datum);
               } else {
                 _this.trigger("enter:node:click", datum);
               }
@@ -245,19 +257,29 @@
         return this.nodeEnter = nodeEnter;
       };
 
+      GraphView.prototype.centerOn = function(node) {
+        var translateParams;
+        translateParams = [$(window).width() / 2 - node.x * this.currentScale, $(window).height() / 2 - node.y * this.currentScale];
+        this.zoom.translate([translateParams[0], translateParams[1]]);
+        return this.workspace.transition().ease("linear").attr("transform", "translate(" + translateParams + ") scale(" + this.currentScale + ")");
+      };
+
       GraphView.prototype.addCentering = function() {
-        var height, translateParams, width;
-        width = $(this.el).width();
-        height = $(this.el).height();
+        var translateParams,
+          _this = this;
         translateParams = [0, 0];
-        return this.on("enter:node:shift:click", function(node) {
-          var scale, x, y;
-          x = node.x;
-          y = node.y;
-          scale = this.zoom.scale();
-          translateParams = [(width / 2 - x) / scale, (height / 2 - y) / scale];
-          this.zoom.translate([translateParams[0], translateParams[1]]);
-          return this.workspace.transition().ease("linear").attr("transform", "translate(" + translateParams + ") scale(" + scale + ")");
+        this.on("enter:node:rightclick", function(node) {
+          translateParams = [$(window).width() / 2 - node.x * _this.currentScale, $(window).height() / 2 - node.y * _this.currentScale];
+          _this.zoom.translate([translateParams[0], translateParams[1]]);
+          return _this.workspace.transition().ease("linear").attr("transform", "translate(" + translateParams + ") scale(" + _this.currentScale + ")");
+        });
+        return this.on("enter:link:rightclick", function(link) {
+          var linkCenterX, linkCenterY;
+          linkCenterX = (link.target.x - link.source.x) / 2 + link.source.x;
+          linkCenterY = (link.target.y - link.source.y) / 2 + link.source.y;
+          translateParams = [$(window).width() / 2 - linkCenterX * _this.currentScale, $(window).height() / 2 - linkCenterY * _this.currentScale];
+          _this.zoom.translate([translateParams[0], translateParams[1]]);
+          return _this.workspace.transition().ease("linear").attr("transform", "translate(" + translateParams + ") scale(" + _this.currentScale + ")");
         });
       };
 

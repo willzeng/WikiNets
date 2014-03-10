@@ -31,12 +31,13 @@ define [], () ->
         selectedNodes = @selection.getSelectedNodes()
         $container = $("<div class=\"node-profile-helper\"/>").appendTo(@$el)
         #these are they peoperties that are not shown in the profile
-        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color"]
+        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color","shouldLoad"]
         _.each selectedNodes, (node) =>
           if !(node.color?) then node.color="#A9A9A9"
           else if !(node.color.toUpperCase() in colors) then node.color="#A9A9A9"
-          $nodeDiv = $("<div class=\"node-profile\" />").css("background-color","#{node.color}").appendTo($container)
-          @renderProfile(node, $nodeDiv, blacklist, 4) 
+
+          $nodeDiv = $("<div class=\"node-profile\"/>").css("background-color","#{node.color}").appendTo($container)
+          @renderProfile(node, $nodeDiv, blacklist, 4)
 
     editNode: (node, nodeDiv, blacklist) ->
           console.log "Editing node: " + node['_id']
@@ -70,7 +71,14 @@ define [], () ->
             </form>
           '
           $(colorEditingField).appendTo(nodeDiv)
-          $("#color#{node['_id']}").colorPicker {showHexField: false} 
+          $("#color#{node['_id']}").colorPicker {showHexField: false}
+
+          #Adds a checkbox to determine if the node should be loaded initially
+          if node.shouldLoad? then shouldLoad = node.shouldLoad else shouldLoad = false
+          $loaderHolder = $('<span> Load by default <br> </span>').css("font-size","12px").appendTo nodeDiv
+          $loaderToggle = $('<input type="checkbox" id=\"shouldLoad'+node._id+'\">')
+            .attr("checked", shouldLoad)
+            .prependTo $loaderHolder 
 
           $nodeMoreFields = $("<input id=\"moreNode#{node['_id']}EditFields\" type=\"button\" value=\"+\">").appendTo(nodeDiv)
           $nodeMoreFields.click(() =>
@@ -82,17 +90,24 @@ define [], () ->
           $nodeSave.click () => 
             newNodeObj = @assign_properties("Node#{node['_id']}Edit")
             if newNodeObj[0]
-              newNode = newNodeObj[1]
-              newNode['color'] = $("#color"+node['_id']).val()
-              newNode['_id'] = node['_id']
-              newNode['_Creation_Date'] = node['_Creation_Date']
-              @dataController.nodeEdit(node,newNode, (savedNode) =>           
-                @graphModel.filterNodes (node) ->
-                  !(savedNode['_id'] == node['_id'])
-                @graphModel.putNode(savedNode)
-                @selection.toggleSelection(savedNode)
-                @cancelEditing(savedNode, nodeDiv, blacklist)
-              )
+              $.post "/get_node_by_id", {'nodeid': node['_id']}, (data) =>
+                if data['_Last_Edit_Date'] == node['_Last_Edit_Date'] or confirm("Node " + @findHeader(node) + " (id: #{node['_id']}) has changed on server. Are you sure you want to risk overwriting the changes?")
+                  # possibly list all changes?
+                  newNode = newNodeObj[1]
+                  newNode['color'] = $("#color"+node['_id']).val()
+                  newNode['_id'] = node['_id']
+                  newNode['_Creation_Date'] = node['_Creation_Date']
+                  newNode["shouldLoad"] = $("#shouldLoad#{node._id}").prop('checked')
+                  @dataController.nodeEdit(node,newNode, (savedNode) =>           
+                    @graphModel.filterNodes (node) ->
+                      !(savedNode['_id'] == node['_id'])
+                    @graphModel.putNode(savedNode)
+                    @selection.toggleSelection(savedNode)
+                    @cancelEditing(savedNode, nodeDiv, blacklist)
+                  )
+                else
+                  alert("Did not save node " + @findHeader(node) + " (id: #{node['_id']}).")
+
 
           $nodeDelete = $("<input name=\"NodeDeleteButton\" type=\"button\" value=\"Delete\">").appendTo(nodeDiv)
           $nodeDelete.click () => 
@@ -137,11 +152,11 @@ define [], () ->
     # returns: submitOK: a boolean indicating whether the property names were all
     #                    legal
     #          propertyObject: a dictionary of property-value pairs
-    assign_properties: (form_name, is_illegal = @dataController.is_illegal) => 
+    assign_properties: (form_name, is_illegal = @dataController.is_illegal, node) => 
         submitOK = true
         propertyObject = {}
         editDate = new Date()
-        propertyObject["_Last_Edit_Date"]=editDate
+        propertyObject["_Last_Edit_Date"] = editDate
         $("."+ form_name + "Div").each (i, obj) ->
             property = $(this).children(".property" + form_name).val()
             value = $(this).children(".value" + form_name).val()
@@ -168,7 +183,7 @@ define [], () ->
       if node.name?
         if node.url?
           realurl = ""
-          result = node.url.search(new RegExp(/^http:\/\//i));
+          result = node.url.search(new RegExp(/^(https?|ftp|dict):\/\//i));
           if !result
             realurl = node.url
           else
@@ -230,8 +245,18 @@ define [], () ->
       #Adds button that creates link from selected node to user-inputted node
       @addLinker node, nodeDiv
 
+<<<<<<< HEAD
       $spokeHolder = $("<div class='spokeHolder' data-intro='Connections between this node and another node' data-position='right'></div>").appendTo nodeDiv
       @addSpokes node, $spokeHolder, 5
+=======
+      #Adds the links from this node to its neighbors
+      initialSpokeNumber = 5
+      $spokeHolder = $("<div class='spokeHolder'></div>").appendTo nodeDiv
+      @addSpokes node, $spokeHolder, initialSpokeNumber
+
+      nodeDiv.on "click", () =>
+        @graphView.centerOn(node)
+>>>>>>> dev
 
 
     addLinker: (node, nodeDiv) =>

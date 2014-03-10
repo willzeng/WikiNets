@@ -38,7 +38,7 @@ define [], () ->
         #.css("border", "1px solid gray")
       $container.appendTo @$el
 
-      $about = $("<div class=\"dropdownMenuItem\"> <a href=\"http://rhizi.org\" target='_blank'> About </a></div>")
+      $about = $("<div class=\"dropdownMenuItem\"> <a href=\"http://rhizi.net\" target='_blank'> About </a></div>")
         .css("margin","5px")
         .css("font-size", "16px")
       $about.appendTo $container

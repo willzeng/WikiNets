@@ -38,7 +38,7 @@
         $bbar = $("<div id=\"bbar\"></div>").css("width", "10px").appendTo(this.$el);
         $container = $("<div id=\"dropdownMenu\"></div>");
         $container.appendTo(this.$el);
-        $about = $("<div class=\"dropdownMenuItem\"> <a href=\"http://rhizi.org\" target='_blank'> About </a></div>").css("margin", "5px").css("font-size", "16px");
+        $about = $("<div class=\"dropdownMenuItem\"> <a href=\"http://rhizi.net\" target='_blank'> About </a></div>").css("margin", "5px").css("font-size", "16px");
         $about.appendTo($container);
         $clearAllButton = $("<div><input type=\"button\" id=\"clearAllButtonDropdown\" value=\"Clear All\"></input></div>").appendTo($container);
         $clearAllButton.click(function() {

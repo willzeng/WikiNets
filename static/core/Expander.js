@@ -22,18 +22,19 @@
         this.linkFilter = this.graphView.getLinkFilter();
         this.graphModel = instances['GraphModel'];
         this.dataProvider = instances["local/WikiNetsDataProvider"];
+        this.topBarCreate = instances['local/TopBarCreate'];
         this.loading = false;
         this.graphView.on("enter:node:mouseover", function(d) {
-          if (!this.loading) {
-            return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Right-click to find connections.</span>');
+          if (!_this.loading && (!_this.topBarCreate.buildingLink)) {
+            return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Dbl-click to find connections.</span>');
           }
         });
         this.graphView.on("enter:node:mouseout", function(d) {
-          if (!_this.loading) {
+          if (!_this.loading && (!_this.topBarCreate.buildingLink)) {
             return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px"></span>');
           }
         });
-        return this.graphView.on("enter:node:rightclick", function(d) {
+        return this.graphView.on("enter:node:dblclick", function(d) {
           return _this.expandSelection(d);
         });
       };
