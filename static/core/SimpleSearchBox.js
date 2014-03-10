@@ -26,7 +26,7 @@
         });
         this.render();
         $(this.el).attr('id', 'ssplug').appendTo($('#omniBox'));
-        $addNode = $("<div id='add-node' class='result-element'><span>Add Node</span><br/><span>Person</span><span>Resource</span><span>Project</span><span>Concept</span><span>Other</span></div>").appendTo($('#omniBox'));
+        $addNode = $("<div id='add-node' class='result-element'><span>Add Node</span><br/><span>Person</span><span>Project</span><span>Theme</span><span>Other</span></div>").appendTo($('#omniBox'));
         this.searchableKeys = {};
         return $.get("/get_all_node_keys", function(keys) {
           return _this.searchableKeys = keys;
@@ -37,7 +37,7 @@
         var $button, $container, $searchBox,
           _this = this;
         $container = $("<div id='visual-search-container'>").appendTo(this.$el);
-        $searchBox = $('<input type="text" id="searchBox" data-intro="Search the graph" data-position="right">"').appendTo($container);
+        $searchBox = $('<input type="text" id="searchBox" data-intro="Search the graph" data-position="right" placeholder="Search or Add Node">"').appendTo($container);
         $button = $("<div id='goButton'><i class='fa fa-search'></i></div>").appendTo($container);
         $searchBox.keyup(function(e) {
           if (e.keyCode === 13) {
