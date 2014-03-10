@@ -45,7 +45,7 @@
           _this = this;
         this.$el.empty();
         selectedLinks = this.selection.getSelectedLinks();
-        $container = $("<div class=\"node-profile-helper\"/>").appendTo(this.$el);
+        $container = $('.node-profile-helper');
         blacklist = ["selected", "source", "target", "strength", "_type", "_id"];
         return _.each(selectedLinks, function(link) {
           var $linkDiv, _ref;
@@ -54,7 +54,7 @@
           } else if (!(_ref = link.color.toUpperCase(), __indexOf.call(colors, _ref) >= 0)) {
             link.color = "#A9A9A9";
           }
-          $linkDiv = $(".node-profile-helper");
+          $linkDiv = $("<div class='node-profile'></div>").appendTo($container);
           return _this.renderProfile(link, $linkDiv, blacklist);
         });
       };

@@ -33,13 +33,13 @@ define [], () ->
     update: ->
       @$el.empty()
       selectedLinks = @selection.getSelectedLinks()
-      $container = $("<div class=\"node-profile-helper\"/>").appendTo(@$el)
+      $container = $('.node-profile-helper')
       blacklist = ["selected", "source", "target", "strength", "_type", "_id"]
       # not sure whether "strength" should be in the blacklist or not...?
       _.each selectedLinks, (link) =>
         if !(link.color?) then link.color="#A9A9A9"
         else if !(link.color.toUpperCase() in colors) then link.color="#A9A9A9"
-        $linkDiv = $(".node-profile-helper")
+        $linkDiv = $("<div class='node-profile'></div>").appendTo $container
         @renderProfile(link, $linkDiv, blacklist)
         
 
