@@ -34,7 +34,7 @@ define([], function() {
       var $button, $container, $searchBox,
         _this = this;
       $container = $("<div id='visual-search-container'>").appendTo(this.$el);
-      $searchBox = $('<input class="typeahead" type="text" id="searchBox">').css("width", "235").css("height", "25").css("box-shadow", "2px 2px 4px #888888").css("border", "1px solid blue").appendTo($container);
+      $searchBox = $('<input class="typeahead" type="text" id="searchBox">').css("width", "205").css("height", "15").css("box-shadow", "2px 2px 4px #888888").css("border", "1px solid blue").appendTo($container);
       $button = $("<input type=\"button\" value=\"Go\" style='float:right' />").appendTo($container);
       $(document).ready(function() {
         var films;

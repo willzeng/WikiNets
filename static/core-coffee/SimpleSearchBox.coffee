@@ -33,8 +33,8 @@ define [], () ->
       #build HTML elements
       $container = $("<div id='visual-search-container'>").appendTo @$el
       $searchBox = $('<input class="typeahead" type="text" id="searchBox">')
-        .css("width","235")
-        .css("height","25")
+        .css("width","205")
+        .css("height","15")
         .css("box-shadow", "2px 2px 4px #888888")
         .css("border", "1px solid blue")
         .appendTo $container
