@@ -302,7 +302,7 @@
         $linkSide = $('<div ' + linkSideID + '><hr style="margin:3px"></div>').appendTo(nodeDiv);
         holderClassName = "'profilelinkHolder" + nodeID + "'";
         className = "class=" + holderClassName;
-        $linkHolder = $('<input type="button"' + className + 'value="Add Link"></input><br>').css("width", 100).css("margin-left", 85).appendTo($linkSide);
+        $linkHolder = $('<input type="button"' + className + 'value="Add Link"/><br>').css("width", 100).css("margin-left", 85).appendTo($linkSide);
         linkWrapperDivID = "id=" + "'source-container" + nodeID + "'";
         $linkWrapper = $('<div ' + linkWrapperDivID + ' class="linkWrapperClass">').appendTo($linkSide);
         $linkInputName = $('<textarea placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo($linkWrapper);
@@ -326,8 +326,10 @@
         $linkWrapper.on("click", function(e) {
           return e.stopPropagation();
         });
-        $linkHolder.focus(function() {
+        $linkHolder.on("click", function(e) {
+          e.stopPropagation();
           $linkWrapper.show();
+          $linkWrapper.css("display", "visible");
           $linkInputName.focus();
           return $linkHolder.hide();
         });

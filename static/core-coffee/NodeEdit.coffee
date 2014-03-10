@@ -263,7 +263,7 @@ define [], () ->
       
       holderClassName = "'profilelinkHolder" + nodeID + "'"
       className = "class=" + holderClassName
-      $linkHolder = $('<input type="button"' + className + 'value="Add Link"></input><br>')
+      $linkHolder = $('<input type="button"' + className + 'value="Add Link"/><br>')
         .css("width",100)
         .css("margin-left",85)
         .appendTo $linkSide
@@ -300,8 +300,10 @@ define [], () ->
       $linkWrapper.on "click", (e)->
         e.stopPropagation()
 
-      $linkHolder.focus () =>
+      $linkHolder.on "click", (e)->
+        e.stopPropagation()
         $linkWrapper.show()
+        $linkWrapper.css("display","visible")
         $linkInputName.focus()
         $linkHolder.hide()
 
