@@ -31,7 +31,8 @@ Then go to `localhost:3000` in your browser.
 
 To Run on a local WikiNet, you will need to install a copy of Neo4j (version 2.0.0-RC1 or higher):
 
-Install neo4j [here](http://www.neo4j.org/download). Then follow these commands:
+Install neo4j [here](http://www.neo4j.org/download).
+For Debian / Ubuntu, just follow these commands:
 
     # start root shell
     sudo -s
