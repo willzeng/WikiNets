@@ -17,7 +17,7 @@ define [], () ->
       $addProfileHelper = $("<div class='node-profile-helper'></div>").appendTo $('#omniBox')
 
       $('#add-person-button').click () =>
-        @createNode({"name":"","url":"", "description":"", "type":"person"})
+        @createNode({"name":"","url":"", "email":"", "type":"person"})
 
       $('#add-project-button').click () =>
         @createNode({"name":"","url":"", "description":"", "type":"project"})
