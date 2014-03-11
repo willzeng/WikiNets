@@ -27,7 +27,7 @@
           return _this.createNode({
             "name": "",
             "url": "",
-            "description": "",
+            "email": "",
             "type": "person"
           });
         });

@@ -24,11 +24,11 @@ define [], () ->
       @linkSelection = instances["LinkSelection"]
 
     render: ->
-      """
+      
       #$container = $('<div id="topbarcreate">').appendTo @$el
 
       $container = $('<div id="topbarcreate">').appendTo $('#buildbar')
-
+      """
       $nodeSide = $('<div id="nodeside" data-intro="Add a Node and connect it to other nodes in the graph" data-position="left">').appendTo $container
 
       $nodeHolder = $('<textarea placeholder="Add Node" id="nodeHolder" name="textin" rows="1" cols="35"></textarea>').appendTo $nodeSide
@@ -85,9 +85,9 @@ define [], () ->
         )
 
       @$createLinkButton = $('<input id="LinkCreateButton" type="button" value="Attach & Create Link">').appendTo @$linkWrapper
-
+      """
       $linkingInstructions = $('<span id="toplink-instructions">').appendTo $container
-
+      """
       @$createLinkButton.click () =>
         if @buildingLink
           @buildingLink = false
@@ -119,7 +119,7 @@ define [], () ->
         if @$linkWrapper.is(':visible')
           @$linkWrapper.hide()
           $linkHolder.show()
-
+      """
       @graphView.on "enter:node:click", (node) =>
         if @buildingLink
           if @sourceSet
@@ -147,7 +147,7 @@ define [], () ->
             @tempLink.source = node
             @sourceSet = true
             $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Source:' + @findHeader(node) + ' (' + node['_id'] + ')<br />Click a node to select it as the link target.</span>')
-    """
+   
 
     update: (node) ->
       @selection.getSelectedNodes()

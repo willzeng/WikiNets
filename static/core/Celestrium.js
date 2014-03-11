@@ -29,7 +29,8 @@ exposes an object with an `init` function which takes two arguments.
       },
       "../lib/jquery.ui.autocomplete": ["../lib/jquery.ui.core", "../lib/jquery.ui.menu", "../lib/jquery.ui.position", "../lib/jquery.ui.widget"],
       "../lib/jquery.ui.menu": ["../lib/jquery.ui.core", "../lib/jquery.ui.position", "../lib/jquery.ui.widget"],
-      "../lib/colorPicker/jquery.colorPicker": ["../../lib/jquery"]
+      "../lib/colorPicker/jquery.colorPicker": ["../../lib/jquery"],
+      '../lib/chardinjs.min': ["../lib/jquery"]
     }
   });
 
