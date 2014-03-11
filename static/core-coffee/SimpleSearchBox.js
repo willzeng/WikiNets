@@ -15,8 +15,7 @@ define([], function() {
     }
 
     SimpleSearchBox.prototype.init = function(instances) {
-      var $addNode, $addProfileHelper,
-        _this = this;
+      var _this = this;
       this.graphModel = instances["GraphModel"];
       this.selection = instances["NodeSelection"];
       this.listenTo(instances["KeyListener"], "down:191", function(e) {
@@ -24,9 +23,7 @@ define([], function() {
         return e.preventDefault();
       });
       this.render();
-      $(this.el).attr('id', 'ssplug').appendTo($('#omniBox'));
-      $addNode = $("<div id='add-node' class='result-element'><span>Add Node</span><br/><span>Person</span><span>Project</span><span>Theme</span><span>Other</span></div>").appendTo($('#omniBox'));
-      $addProfileHelper = $('<div class="node-profile-helper"></div>').appendTo($('#omniBox'));
+      $(this.el).attr('id', 'ssplug').prependTo($('#omniBox'));
       this.searchableKeys = {};
       return $.get("/get_all_node_keys", function(keys) {
         return _this.searchableKeys = keys;
@@ -37,7 +34,7 @@ define([], function() {
       var $autofillWrapper, $button, $container, $searchBox, sugg,
         _this = this;
       $container = $("<div id='visual-search-container'>");
-      $searchBox = $('<input type="text" id="searchBox" data-intro="Search the graph" data-position="right" placeholder="Search or Add Node">"').appendTo($container);
+      $searchBox = $('<input type="text" class="typeahead" id="searchBox" data-intro="Search the graph" data-position="right" placeholder="Search or Add Node">"').appendTo($container);
       $button = $("<div id='goButton'><i class='fa fa-search'></i></div>").appendTo($container);
       $autofillWrapper = $('<div class="autofillWrapperClass" style="border: 1px solid black; border-top: none;"></div>').appendTo($container);
       $autofillWrapper.hide();

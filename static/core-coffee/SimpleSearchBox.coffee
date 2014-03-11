@@ -39,7 +39,7 @@ define [], () ->
 
       #build HTML elements
       $container = $("<div id='visual-search-container'>")
-      $searchBox = $('<input type="text" id="searchBox" data-intro="Search the graph" data-position="right" placeholder="Search or Add Node">"')
+      $searchBox = $('<input type="text" class="typeahead" id="searchBox" data-intro="Search the graph" data-position="right" placeholder="Search or Add Node">"')
         .appendTo $container
       $button = $("<div id='goButton'><i class='fa fa-search'></i></div>")
         .appendTo $container
