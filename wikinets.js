@@ -364,13 +364,109 @@ module.exports = MyApp = (function() {
         return response.json(keys.sort());
       });
     });
-    app.post('/get_all_key_values', function(request, response) {
+    app.get('/get_all_link_keys', function(request, response) {
+      return graphDb.cypher.execute("start r=rel(*) return r;").then(function(noderes) {
+        var key, keys, n, nodeData, value, _i, _len;
+        console.log("Get All Link Keys: Query Executed");
+        nodeData = (function() {
+          var _i, _len, _ref, _results;
+          _ref = noderes.data;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            n = _ref[_i];
+            _results.push(n[0].data);
+          }
+          return _results;
+        })();
+        keys = [];
+        for (_i = 0, _len = nodeData.length; _i < _len; _i++) {
+          n = nodeData[_i];
+          for (key in n) {
+            value = n[key];
+            if (!(__indexOf.call(keys, key) >= 0)) {
+              keys.push(key);
+            }
+          }
+        }
+        return response.json(keys.sort());
+      });
+    });
+    app.get('/get_all_keys', function(request, response) {
+      return graphDb.cypher.execute("start n=node(*) return n;").then(function(noderes) {
+        var allKeys, key, n, nodeData, nodeKeys, value, _i, _j, _len, _len1, _ref,
+          _this = this;
+        console.log("Get All Node Keys: Query Executed");
+        nodeData = (function() {
+          var _i, _len, _ref, _results;
+          _ref = noderes.data;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            n = _ref[_i];
+            _results.push(n[0].data);
+          }
+          return _results;
+        })();
+        nodeKeys = [];
+        allKeys = [];
+        for (_i = 0, _len = nodeData.length; _i < _len; _i++) {
+          n = nodeData[_i];
+          for (key in n) {
+            value = n[key];
+            if (!(__indexOf.call(nodeKeys, key) >= 0)) {
+              nodeKeys.push(key);
+            }
+          }
+        }
+        _ref = nodeKeys.sort();
+        for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+          key = _ref[_j];
+          allKeys.push({
+            'label': key + ' ',
+            'category': 'node'
+          });
+        }
+        return graphDb.cypher.execute("start r=rel(*) return r;").then(function(linkres) {
+          var linkData, linkKeys, _k, _l, _len2, _len3, _ref1;
+          console.log("Get All Link Keys: Query Executed");
+          linkData = (function() {
+            var _k, _len2, _ref1, _results;
+            _ref1 = linkres.data;
+            _results = [];
+            for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
+              n = _ref1[_k];
+              _results.push(n[0].data);
+            }
+            return _results;
+          })();
+          linkKeys = [];
+          for (_k = 0, _len2 = linkData.length; _k < _len2; _k++) {
+            n = linkData[_k];
+            for (key in n) {
+              value = n[key];
+              if (!(__indexOf.call(linkKeys, key) >= 0)) {
+                linkKeys.push(key);
+              }
+            }
+          }
+          _ref1 = linkKeys.sort();
+          for (_l = 0, _len3 = _ref1.length; _l < _len3; _l++) {
+            key = _ref1[_l];
+            allKeys.push({
+              'label': key,
+              'category': 'link'
+            });
+          }
+          return response.json(allKeys);
+        });
+      });
+    });
+    app.post('/get_all_node_key_values', function(request, response) {
       var cypherQuery;
       cypherQuery = "start n=node(*) where has(n." + request.body.property + ") return n;";
       console.log("Executing " + cypherQuery);
       return graphDb.cypher.execute(cypherQuery).then(function(noderes) {
         var n, nodeData, values, _i, _len, _ref;
-        console.log("Get All Key values: Query Executed");
+        console.log("Get All Node Key values: Query Executed");
         nodeData = (function() {
           var _i, _len, _ref, _results;
           _ref = noderes.data;
@@ -384,6 +480,33 @@ module.exports = MyApp = (function() {
         values = ['(any)'];
         for (_i = 0, _len = nodeData.length; _i < _len; _i++) {
           n = nodeData[_i];
+          if (!(_ref = shorten(n[request.body.property]), __indexOf.call(values, _ref) >= 0)) {
+            values.push(shorten(n[request.body.property]));
+          }
+        }
+        return response.json(values.sort());
+      });
+    });
+    app.post('/get_all_link_key_values', function(request, response) {
+      var cypherQuery;
+      cypherQuery = "start r=rel(*) where has(r." + request.body.property + ") return r;";
+      console.log("Executing " + cypherQuery);
+      return graphDb.cypher.execute(cypherQuery).then(function(noderes) {
+        var linkData, n, values, _i, _len, _ref;
+        console.log("Get All Link Key values: Query Executed");
+        linkData = (function() {
+          var _i, _len, _ref, _results;
+          _ref = noderes.data;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            n = _ref[_i];
+            _results.push(n[0].data);
+          }
+          return _results;
+        })();
+        values = ['(any)'];
+        for (_i = 0, _len = linkData.length; _i < _len; _i++) {
+          n = linkData[_i];
           if (!(_ref = shorten(n[request.body.property]), __indexOf.call(values, _ref) >= 0)) {
             values.push(shorten(n[request.body.property]));
           }
@@ -405,6 +528,41 @@ module.exports = MyApp = (function() {
             cypherQuery += "n." + property + " =~ '" + (value.slice(0, -2)) + "*' and ";
           } else {
             cypherQuery += "n." + property + " = '" + value + "' and ";
+          }
+        }
+        cypherQuery = cypherQuery.substring(0, cypherQuery.length - 4);
+      }
+      cypherQuery += "return n;";
+      console.log("Executing " + cypherQuery);
+      return graphDb.cypher.execute(cypherQuery).then(function(noderes) {
+        var n, nodeList;
+        nodeList = (function() {
+          var _i, _len, _ref1, _results;
+          _ref1 = noderes.data;
+          _results = [];
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            n = _ref1[_i];
+            _results.push(addID(n[0].data, trim(n[0].self)[0]));
+          }
+          return _results;
+        })();
+        return response.json(nodeList);
+      });
+    });
+    app.post('/search_links', function(request, response) {
+      var cypherQuery, property, value, _ref;
+      console.log("Searching links");
+      cypherQuery = "start n=node(*) match (n)-[r]-() where ";
+      if (JSON.stringify(request.body) !== '{}') {
+        _ref = request.body;
+        for (property in _ref) {
+          value = _ref[property];
+          if (value === '(any)') {
+            cypherQuery += "has(r." + property + ") and ";
+          } else if (value.substr(-3) === '...') {
+            cypherQuery += "r." + property + " =~ '" + (value.slice(0, -2)) + "*' and ";
+          } else {
+            cypherQuery += "r." + property + " = '" + value + "' and ";
           }
         }
         cypherQuery = cypherQuery.substring(0, cypherQuery.length - 4);
@@ -550,6 +708,9 @@ module.exports = MyApp = (function() {
     app.post('/node_index_search', function(request, response) {
       var condition, cypherQuery, key, query, theKeys, _i, _len;
       theKeys = request.body.checkKeys;
+      if (theKeys == null) {
+        theKeys = [];
+      }
       query = request.body.query;
       condition = "where ";
       for (_i = 0, _len = theKeys.length; _i < _len; _i++) {
