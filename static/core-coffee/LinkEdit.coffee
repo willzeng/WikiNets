@@ -159,7 +159,7 @@ define [], () ->
     renderProfile: (link, linkDiv, blacklist) =>
       header = @findHeader(link)
       $linkHeader = $("<div class=\"node-profile-title\">#{header}</div>").appendTo linkDiv
-      $linkEdit = $("<i class=\"fa fa-pencil-square-o\"></i>").prependTo $linkHeader
+      $linkEdit = $("<i class=\"fa fa-pencil-square\"></i>").css("margin","6px").appendTo $linkHeader
 
       $linkDeselect = $("<i class=\"right fa fa-times\"></i>").appendTo $linkHeader
       $linkDeselect.click () => @selection.toggleSelection(link)
