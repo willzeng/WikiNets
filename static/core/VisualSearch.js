@@ -61,10 +61,9 @@
               callbacks: {
                 search: function(query, searchCollection) {
                   _this.searchQuery = {};
-                  searchCollection.each(function(term) {
+                  return searchCollection.each(function(term) {
                     return _this.searchQuery[term.attributes.category] = term.attributes.value;
                   });
-                  return visualSearch.searchBox.value("");
                 },
                 facetMatches: function(callback) {
                   if (visualSearch.searchBox.value().indexOf('search: "nodes"') > -1) {
