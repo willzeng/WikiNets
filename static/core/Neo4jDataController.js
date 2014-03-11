@@ -42,10 +42,6 @@
             deleted_props.push(property);
           }
         }
-        if (((deleted_props.length === 1) && (!(confirm("Are you sure you want to delete the following property? " + deleted_props)))) || ((deleted_props.length > 1) && (!(confirm("Are you sure you want to delete the following properties? " + deleted_props))))) {
-          alert("Cancelled saving of node " + oldNode['_id'] + ".");
-          return false;
-        }
         return $.post('/edit_node', {
           nodeid: oldNode['_id'],
           properties: newNode,
@@ -54,7 +50,6 @@
           if (data === "error") {
             return alert("Failed to save changes to node " + oldNode['_id'] + ".");
           } else {
-            alert("Saved changes to node " + oldNode['_id'] + ".");
             return callback(data);
           }
         });
@@ -87,10 +82,6 @@
             deleted_props.push(property);
           }
         }
-        if (((deleted_props.length === 1) && (!(confirm("Are you sure you want to delete the following property? " + deleted_props)))) || ((deleted_props.length > 1) && (!(confirm("Are you sure you want to delete the following properties? " + deleted_props))))) {
-          alert("Cancelled saving of link " + oldLink['_id'] + ".");
-          return false;
-        }
         return $.post('/edit_link', {
           id: oldLink['_id'],
           properties: newLink,
@@ -99,7 +90,6 @@
           if (data === "error") {
             return alert("Failed to save changes to link " + oldLink['_id'] + ".");
           } else {
-            alert("Saved changes to link " + oldLink['_id'] + ".");
             return callback(data);
           }
         });

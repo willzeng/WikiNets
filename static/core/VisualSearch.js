@@ -61,9 +61,10 @@
               callbacks: {
                 search: function(query, searchCollection) {
                   _this.searchQuery = {};
-                  return searchCollection.each(function(term) {
+                  searchCollection.each(function(term) {
                     return _this.searchQuery[term.attributes.category] = term.attributes.value;
                   });
+                  return visualSearch.searchBox.value("");
                 },
                 facetMatches: function(callback) {
                   if (visualSearch.searchBox.value().indexOf('search: "nodes"') > -1) {
@@ -120,7 +121,8 @@
               _results = [];
               for (_i = 0, _len = nodes.length; _i < _len; _i++) {
                 node = nodes[_i];
-                _results.push(_this.graphModel.putNode(node));
+                _this.graphModel.putNode(node);
+                _results.push(_this.selection.toggleSelection(node));
               }
               return _results;
             });

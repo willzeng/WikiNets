@@ -35,15 +35,15 @@ define ["DataController"], (DataController) ->
 
       # ask for confirmation before deleting properties
       # (two different messages in the interest of grammar)
-      if (((deleted_props.length is 1) and (!(confirm("Are you sure you want to delete the following property? " + deleted_props)))) || ((deleted_props.length > 1) && (!(confirm("Are you sure you want to delete the following properties? " + deleted_props)))))
-        alert "Cancelled saving of node " + oldNode['_id'] + "." 
-        return false
+      #if (((deleted_props.length is 1) and (!(confirm("Are you sure you want to delete the following property? " + deleted_props)))) || ((deleted_props.length > 1) && (!(confirm("Are you sure you want to delete the following properties? " + deleted_props)))))
+      #  alert "Cancelled saving of node " + oldNode['_id'] + "." 
+      #  return false
 
       $.post '/edit_node', {nodeid: oldNode['_id'], properties: newNode, remove: deleted_props}, (data) ->
         if data == "error"
           alert "Failed to save changes to node " + oldNode['_id'] + "."
         else
-          alert("Saved changes to node " + oldNode['_id'] + ".")
+          #alert("Saved changes to node " + oldNode['_id'] + ".")
           callback(data)
 
     #should add a link to the database
@@ -75,15 +75,15 @@ define ["DataController"], (DataController) ->
 
       # ask for confirmation before deleting properties
       # (two different messages in the interest of grammar)
-      if (((deleted_props.length is 1) and (!(confirm("Are you sure you want to delete the following property? " + deleted_props)))) || ((deleted_props.length > 1) && (!(confirm("Are you sure you want to delete the following properties? " + deleted_props)))))
-        alert "Cancelled saving of link " + oldLink['_id'] + "." 
-        return false
+      #if (((deleted_props.length is 1) and (!(confirm("Are you sure you want to delete the following property? " + deleted_props)))) || ((deleted_props.length > 1) && (!(confirm("Are you sure you want to delete the following properties? " + deleted_props)))))
+      #  alert "Cancelled saving of link " + oldLink['_id'] + "." 
+      #  return false
 
       $.post '/edit_link', {id: oldLink['_id'], properties: newLink, remove: deleted_props}, (data) ->
         if data == "error"
           alert "Failed to save changes to link " + oldLink['_id'] + "."
         else
-          alert("Saved changes to link " + oldLink['_id'] + ".")
+          #alert("Saved changes to link " + oldLink['_id'] + ".")
           callback(data)
 
 

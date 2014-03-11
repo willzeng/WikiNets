@@ -59,6 +59,7 @@ define [], () ->
                 # parse the search query
                 @searchQuery = {}
                 searchCollection.each((term) => @searchQuery[term.attributes.category] = term.attributes.value)
+                visualSearch.searchBox.value("")
               facetMatches : (callback) =>
                 # this finds a new facet for the search
                 # if the searchBox is currently empty, the user is prompted to decide whether to search nodes or links
@@ -101,7 +102,7 @@ define [], () ->
           $.post "/search_nodes", searchQuery, (nodes) =>
             for node in nodes
               @graphModel.putNode(node)
-              #@selection.toggleSelection(node)
+              @selection.toggleSelection(node)
       else
         if  _.size(searchQuery) == 1
           # i.e. the searchBox contains only the term 'search: "links"'
