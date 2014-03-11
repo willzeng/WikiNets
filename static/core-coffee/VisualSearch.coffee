@@ -59,7 +59,6 @@ define [], () ->
                 # parse the search query
                 @searchQuery = {}
                 searchCollection.each((term) => @searchQuery[term.attributes.category] = term.attributes.value)
-                visualSearch.searchBox.value("")
               facetMatches : (callback) =>
                 # this finds a new facet for the search
                 # if the searchBox is currently empty, the user is prompted to decide whether to search nodes or links
