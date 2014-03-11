@@ -56,33 +56,11 @@
           }
         });
         $searchBox.keyup(function(e) {
-          var $tempquery;
           if (e.keyCode === 13) {
             _this.searchNodesSimple($searchBox.val());
             $searchBox.val("");
             $autofillWrapper.empty();
             return $autofillWrapper.hide();
-          } else if ($searchBox.val() !== "") {
-            $tempquery = $searchBox.val();
-            $.post("/node_index_search", {
-              checkKeys: _this.searchableKeys,
-              query: $searchBox.val()
-            }, function(nodes) {
-              var $autofillField, node, _i, _len, _results;
-              if ($tempquery !== $searchBox.val()) {
-                return;
-              }
-              $autofillWrapper.empty();
-              _results = [];
-              for (_i = 0, _len = nodes.length; _i < _len; _i++) {
-                node = nodes[_i];
-                _results.push($autofillField = $("<span>" + node.name + "</span><br>").appendTo($autofillWrapper));
-              }
-              return _results;
-            });
-            return $autofillWrapper.show();
-          } else if ($searchBox.val() === "") {
-            return $autofillWrapper.empty();
           }
         });
         return $button.click(function() {

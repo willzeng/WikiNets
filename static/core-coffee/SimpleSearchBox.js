@@ -34,7 +34,7 @@ define([], function() {
       var $autofillWrapper, $button, $container, $searchBox, sugg,
         _this = this;
       $container = $("<div id='visual-search-container'>");
-      $searchBox = $('<input type="text" class="typeahead" id="searchBox" data-intro="Search the graph" data-position="right" placeholder="Search or Add Node">"').appendTo($container);
+      $searchBox = $('<input type="text" class="typeahead" autocomplete="off" id="searchBox" data-intro="Search the graph" data-position="right" placeholder="Search or Add Node">"').appendTo($container);
       $button = $("<div id='goButton'><i class='fa fa-search'></i></div>").appendTo($container);
       $autofillWrapper = $('<div class="autofillWrapperClass" style="border: 1px solid black; border-top: none;"></div>').appendTo($container);
       $autofillWrapper.hide();
@@ -52,6 +52,14 @@ define([], function() {
         source: sugg.ttAdapter(),
         templates: {
           suggestion: Handlebars.compile('<p><strong>{{name}}</strong></p>')
+        }
+      });
+      $searchBox.keyup(function(e) {
+        if (e.keyCode === 13) {
+          _this.searchNodesSimple($searchBox.val());
+          $searchBox.val("");
+          $autofillWrapper.empty();
+          return $autofillWrapper.hide();
         }
       });
       return $button.click(function() {
