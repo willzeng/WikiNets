@@ -45,10 +45,9 @@
         var $container, blacklist, selectedNodes,
           _this = this;
         if (!this.buildingLink) {
-          this.$el.empty();
+          $(".node-profile-helper").empty();
           selectedNodes = this.selection.getSelectedNodes();
           $container = $(".node-profile-helper");
-          $container.find('.node-edit').remove();
           blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color", "shouldLoad", "_Last_Edit_Date", "_Creation_Date"];
           this.blacklist = blacklist;
           return _.each(selectedNodes, function(node) {
@@ -58,7 +57,7 @@
             } else if (!(_ref = node.color.toUpperCase(), __indexOf.call(colors, _ref) >= 0)) {
               node.color = "#A9A9A9";
             }
-            $nodeDiv = $("<div class=\"node-profile node-edit\"/>").css("border", "1px solid " + node.color).prependTo($container);
+            $nodeDiv = $("<div class=\"node-profile\"/>").css("border", "2px solid " + node.color).appendTo($container);
             return _this.renderProfile(node, $nodeDiv, blacklist, 4);
           });
         }
@@ -403,15 +402,15 @@
             }
             spokeID = "spokeDiv";
             $spokeDiv = $('<div class=' + spokeID + '>' + spoke.name + "..." + '</div>').css("border", "1px solid " + spoke.color).css("padding", "4px").css("margin", "1px").css("border", "1px solid black").css("font-size", "12px").appendTo($spokesDiv);
+            if (spoke.selected) {
+              $spokeDiv.css("background-color", "steelblue");
+            } else {
+              $spokeDiv.css("background-color", "white");
+            }
             $spokeDiv.data("link", [spoke]);
             $spokeDiv.on("click", function(e) {
               var clickedLink;
               clickedLink = $(e.target).data("link")[0];
-              if (!clickedLink.selected) {
-                $(e.target).css("background-color", "steelblue");
-              } else {
-                $(e.target).css("background-color", "" + clickedLink.color);
-              }
               return _this.linkSelection.toggleSelection(clickedLink);
             });
           }

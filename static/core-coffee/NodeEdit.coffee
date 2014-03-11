@@ -26,10 +26,9 @@ define [], () ->
 
     update: ->
       if !@buildingLink
-        @$el.empty()
+        $(".node-profile-helper").empty()
         selectedNodes = @selection.getSelectedNodes()
         $container = $(".node-profile-helper")
-        $container.find('.node-edit').remove();
 
         #these are they properties that are not shown in the profile
         blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color","shouldLoad","_Last_Edit_Date", "_Creation_Date"]
@@ -38,7 +37,7 @@ define [], () ->
           if !(node.color?) then node.color="#A9A9A9"
           else if !(node.color.toUpperCase() in colors) then node.color="#A9A9A9"
 
-          $nodeDiv = $("<div class=\"node-profile node-edit\"/>").css("border","1px solid #{node.color}").prependTo($container)
+          $nodeDiv = $("<div class=\"node-profile\"/>").css("border","2px solid #{node.color}").appendTo($container)
           @renderProfile(node, $nodeDiv, blacklist, 4)
 
     editNode: (node, nodeDiv, blacklist) ->
@@ -353,13 +352,17 @@ define [], () ->
             .css("font-size", "12px")
             .appendTo $spokesDiv
 
+          if spoke.selected
+            $spokeDiv.css("background-color","steelblue")
+          else $spokeDiv.css("background-color","white")
+
           $spokeDiv.data("link", [spoke])
           $spokeDiv.on "click", (e) =>
             clickedLink = $(e.target).data("link")[0]
-            if !clickedLink.selected
-              $(e.target).css("background-color","steelblue")
-            else 
-              $(e.target).css("background-color","#{clickedLink.color}")
+            # if !clickedLink.selected
+            #   $(e.target).css("background-color","steelblue")
+            # else 
+            #   $(e.target).css("background-color","#{clickedLink.color}")
             @linkSelection.toggleSelection(clickedLink)
 
       if maxSpokes < spokes.length
