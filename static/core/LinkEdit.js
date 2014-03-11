@@ -164,7 +164,7 @@
       LinkEdit.prototype.findHeader = function(link) {
         var headerName, realurl, result;
         headerName = link.name;
-        if (link.url != null) {
+        if ((link.url != null) && link.url !== "") {
           realurl = "";
           result = link.url.search(new RegExp(/^http:\/\//i));
           if (!result) {
@@ -175,13 +175,13 @@
           headerName = '<a href=' + realurl + ' target="_blank">' + link.name + '</a>';
         }
         if (this.graphView.findText(link.source) && this.graphView.findText(link.target)) {
-          return "(" + (this.graphView.findText(link.source)) + ")-" + headerName + "-(" + (this.graphView.findText(link.target)) + ")";
+          return "" + (this.graphView.findText(link.source)) + "-" + headerName + "-" + (this.graphView.findText(link.target));
         } else if (this.graphView.findText(link.source)) {
-          return "(" + (this.graphView.findText(link.source)) + ")-" + headerName + "-(" + link.end + ")";
+          return "" + (this.graphView.findText(link.source)) + "-" + headerName + "-" + link.end;
         } else if (this.graphView.findText(link.target)) {
-          return "(" + link.start + ")-" + headerName + "-(" + (this.graphView.findText(link.target)) + ")";
+          return "" + link.start + "-" + headerName + "-" + (this.graphView.findText(link.target));
         } else {
-          return "(" + link.start + ")-" + headerName + "-(" + link.end + ")";
+          return "" + link.start + "-" + headerName + "-" + link.end;
         }
       };
 

@@ -216,7 +216,7 @@
       NodeEdit.prototype.findHeader = function(node) {
         var realurl, result;
         if (node.name != null) {
-          if (node.url != null) {
+          if ((node.url != null) && node.url !== "") {
             realurl = "";
             result = node.url.search(new RegExp(/^(https?|ftp|dict):\/\//i));
             if (!result) {

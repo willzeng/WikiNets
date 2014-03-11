@@ -185,7 +185,7 @@ define [], () ->
     #TODO would be to define a .toString method for nodes
     findHeader: (node) ->
       if node.name?
-        if node.url?
+        if node.url? and node.url isnt ""
           realurl = ""
           result = node.url.search(new RegExp(/^(https?|ftp|dict):\/\//i));
           if !result
