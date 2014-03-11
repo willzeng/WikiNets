@@ -529,6 +529,9 @@ module.exports = class MyApp
     #or have a value of a key in checkKeys that contains the query
     app.post '/node_index_search', (request, response)->
       theKeys = request.body.checkKeys
+      if not theKeys?
+        theKeys=[]
+        
       query = request.body.query
       condition = "where "
       condition+="n.#{key}=~'(?i).*#{query}.*' OR " for key in theKeys

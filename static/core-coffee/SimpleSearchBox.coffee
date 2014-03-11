@@ -43,9 +43,9 @@ define [], () ->
         .appendTo $container
       $button = $("<div id='goButton'><i class='fa fa-search'></i></div>")
         .appendTo $container
-      $autofillWrapper = $('<div class="autofillWrapperClass" style="border: 1px solid black; border-top: none;"></div>')
-        .appendTo $container
-      $autofillWrapper.hide()
+      # $autofillWrapper = $('<div class="autofillWrapperClass" style="border: 1px solid black; border-top: none;"></div>')
+      #   .appendTo $container
+      # $autofillWrapper.hide()
       @$el.append $container
 
       # $container = $("<div />").addClass("node-search-container")
@@ -149,10 +149,10 @@ define [], () ->
       #call search functionality with press of ENTER key
       $searchBox.keyup (e)=>
         if(e.keyCode == 13) # enter key
-          @searchNodesSimple $searchBox.val()
-          $searchBox.val("")
-          $autofillWrapper.empty()
-          $autofillWrapper.hide()
+          @searchNodesSimple $('#searchBox').val()
+          $('#searchBox').typeahead('val','')
+          # $autofillWrapper.empty()
+          # $autofillWrapper.hide()
         # else if($searchBox.val()!="")
         #   #@searchNodesAutofill $searchBox.val(),$autofillWrapper
         #   $tempquery = $searchBox.val()
@@ -177,8 +177,8 @@ define [], () ->
 
       #call search functionality with input text
       $button.click () =>
-        @searchNodesSimple $searchBox.val()
-        $searchBox.val("")
+        @searchNodesSimple $('#searchBox').val()
+        $('#searchBox').typeahead('val','')
 
     searchNodesSimple: (searchQuery) =>
       $.post "/node_index_search", {checkKeys: @searchableKeys, query: searchQuery}, (nodes) =>

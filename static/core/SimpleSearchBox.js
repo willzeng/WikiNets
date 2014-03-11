@@ -32,13 +32,11 @@
       };
 
       SimpleSearchBox.prototype.render = function() {
-        var $autofillWrapper, $button, $container, $searchBox, sugg,
+        var $button, $container, $searchBox, sugg,
           _this = this;
         $container = $("<div id='visual-search-container'>");
         $searchBox = $('<input type="text" class="typeahead" autocomplete="off" id="searchBox" data-intro="Search the graph" data-position="right" placeholder="Search or Add Node">"').appendTo($container);
         $button = $("<div id='goButton'><i class='fa fa-search'></i></div>").appendTo($container);
-        $autofillWrapper = $('<div class="autofillWrapperClass" style="border: 1px solid black; border-top: none;"></div>').appendTo($container);
-        $autofillWrapper.hide();
         this.$el.append($container);
         sugg = new Bloodhound({
           datumTokenizer: function(d) {
@@ -57,15 +55,13 @@
         });
         $searchBox.keyup(function(e) {
           if (e.keyCode === 13) {
-            _this.searchNodesSimple($searchBox.val());
-            $searchBox.val("");
-            $autofillWrapper.empty();
-            return $autofillWrapper.hide();
+            _this.searchNodesSimple($('#searchBox').val());
+            return $('#searchBox').typeahead('val', '');
           }
         });
         return $button.click(function() {
-          _this.searchNodesSimple($searchBox.val());
-          return $searchBox.val("");
+          _this.searchNodesSimple($('#searchBox').val());
+          return $('#searchBox').typeahead('val', '');
         });
       };
 
