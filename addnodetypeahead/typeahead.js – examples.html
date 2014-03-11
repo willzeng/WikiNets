@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>typeahead.js – examples</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="http://twitter.com/favicons/favicon.ico">
+
+    <link rel="stylesheet" href="../css/examples.css">
+
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="title">examples</h1>
+
+
+      <div class="example example-films">
+        <h2 class="example-name">Prefetch Backed by Remote</h2>
+        <p class="example-description">Prefetches some data then relies on remote requests for suggestions when prefetched data is insufficient.</p>
+
+        <div class="demo">
+          <input class="typeahead" type="text" placeholder="best picture winners">
+        </div>
+
+        <div class="gist">
+        </div>
+      </div>
+
+    <script src="typeaheadjs/handlebars.js"></script>
+    <script src="typeaheadjs/jquery-1.11.0.min.js"></script>
+    <script src="typeaheadjs/typeahead.bundle.js"></script>
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+        var numbers, countries, repos, arabic, nba, nhl, films, anExcitedSource;
+
+        films = new Bloodhound({
+          datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.value); },
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          remote: '../data/films/queries/%QUERY.json',
+          prefetch: '../data/films/post_1960.json'
+        });
+
+        films.initialize();
+
+        $('.example-films .typeahead').typeahead(null, {
+          displayKey: 'value',
+          source: films.ttAdapter(),
+          templates: {
+            suggestion: Handlebars.compile(
+              '<p><strong>{{value}}</strong> – {{year}}</p>'
+            )
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
