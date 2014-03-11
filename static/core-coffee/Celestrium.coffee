@@ -32,7 +32,7 @@ globalLibs = [
   '../lib/d3',
   '../lib/less',
   '../lib/visualsearch',
-  '../lib/colorPicker/jquery.colorPicker',
+  '../lib/colorPicker/jquery.colorPicker', 
   '../lib/chardinjs.min',
   '../lib/typeaheadjs/handlebars',
   '../lib/typeaheadjs/jquery-1.11.0.min',
