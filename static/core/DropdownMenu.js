@@ -33,23 +33,12 @@
       };
 
       DropdownMenu.prototype.render = function() {
-        var $about, $bbar, $clearAllButton, $container, $showAllButton,
-          _this = this;
+        var $about, $bbar, $container;
         $bbar = $("<div id=\"bbar\"></div>").css("width", "10px").appendTo(this.$el);
         $container = $("<div id=\"dropdownMenu\"></div>");
         $container.appendTo(this.$el);
         $about = $("<div class=\"dropdownMenuItem\"> <a href=\"http://rhizi.net\" target='_blank'> About </a></div>").css("margin", "5px").css("font-size", "16px");
-        $about.appendTo($container);
-        $clearAllButton = $("<div><input type=\"button\" id=\"clearAllButtonDropdown\" value=\"Clear All\"></input></div>").appendTo($container);
-        $clearAllButton.click(function() {
-          return _this.graphModel.filterNodes(function(node) {
-            return false;
-          });
-        });
-        $showAllButton = $("<input type=\"button\" id=\"showAllButtonDropdown\" value=\"Show All\"></input>").appendTo($container);
-        return $showAllButton.click(function() {
-          return _this.dataProvider.getEverything(_this.loadAllNodes);
-        });
+        return $about.appendTo($container);
       };
 
       DropdownMenu.prototype.loadAllNodes = function(nodes) {

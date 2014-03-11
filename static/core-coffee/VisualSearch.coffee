@@ -24,7 +24,7 @@ define [], () ->
 
       $container = $("<div id=\"visual-search-container\" class='search-box' style='padding-top:2px'/>").appendTo @$el
       $input = $("<div class=\"visual_search\" />").appendTo $container
-      $button = $("<input type=\"button\" value=\"Go\" style='float:left' />").appendTo $container
+      $button = $("<div id='goButton'><i class='fa fa-search'></i></div>").appendTo $container
 
       $switchSearch = $("<input type=\"button\" value=\"Advanced Search\" id='search-switch'/>").appendTo $('#omniBox')
       #$("<input type=\"button\" value=\"Advanced Search\"/>").appendTo $('#omniBox')

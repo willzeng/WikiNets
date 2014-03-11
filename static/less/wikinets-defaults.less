@@ -29,6 +29,9 @@ body {
     font-family:helvetica;
 }
 
+#search-switch {
+    margin-top:3px;
+}
 
 .toolboxpopout {
     position:fixed;
@@ -40,6 +43,10 @@ body {
     /*border-bottom:0px;*/
     width: 189px;
     background-color: white;
+}
+
+.VS-search-box {
+    height:29px;
 }
 
 #omniBox {
@@ -70,7 +77,7 @@ body {
         }
     }
     .result-element{
-        border:1px solid gray;
+        border:1px solid #A9A9A9;
         top:3px;
         background:white;
         margin-top:53px;
@@ -255,7 +262,7 @@ body {
             border-right:0px;
         }
 
-        #goButton{
+        #goButton, input[type="button"]{
             i {
                 padding-top:4px;
                 vertical-align:middle;
@@ -695,6 +702,17 @@ body {
 
         input {
             padding:4px;
+            outline:none;
+            border:1px solid gray;
+            background:white;
+
+        }
+        input:focus, input:active {
+            border:1px solid royalblue;
+        }
+        input[type="button"]{
+            min-width:22px;
+            cursor:pointer;
         }
 
         .node-profile-property {

@@ -48,6 +48,7 @@
           this.$el.empty();
           selectedNodes = this.selection.getSelectedNodes();
           $container = $(".node-profile-helper");
+          $container.find('.node-edit').remove();
           blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color", "shouldLoad", "_Last_Edit_Date", "_Creation_Date"];
           this.blacklist = blacklist;
           return _.each(selectedNodes, function(node) {
@@ -57,7 +58,7 @@
             } else if (!(_ref = node.color.toUpperCase(), __indexOf.call(colors, _ref) >= 0)) {
               node.color = "#A9A9A9";
             }
-            $nodeDiv = $("<div class=\"node-profile\"/>").css("border", "2px solid " + node.color).appendTo($container);
+            $nodeDiv = $("<div class=\"node-profile node-edit\"/>").css("border", "1px solid " + node.color).prependTo($container);
             return _this.renderProfile(node, $nodeDiv, blacklist, 4);
           });
         }

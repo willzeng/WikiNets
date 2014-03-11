@@ -42,16 +42,16 @@ define [], () ->
         .css("margin","5px")
         .css("font-size", "16px")
       $about.appendTo $container
+      
+      # $clearAllButton = $("<div><input type=\"button\" id=\"clearAllButtonDropdown\" value=\"Clear All\"></input></div>").appendTo $container
+      # $clearAllButton.click(() =>
+      #   @graphModel.filterNodes (node) -> false
+      #   )  
 
-      $clearAllButton = $("<div><input type=\"button\" id=\"clearAllButtonDropdown\" value=\"Clear All\"></input></div>").appendTo $container
-      $clearAllButton.click(() =>
-        @graphModel.filterNodes (node) -> false
-        )  
-
-      $showAllButton = $("<input type=\"button\" id=\"showAllButtonDropdown\" value=\"Show All\"></input>").appendTo $container
-      $showAllButton.click(() =>
-        @dataProvider.getEverything(@loadAllNodes)
-        )
+      # $showAllButton = $("<input type=\"button\" id=\"showAllButtonDropdown\" value=\"Show All\"></input>").appendTo $container
+      # $showAllButton.click(() =>
+      #   @dataProvider.getEverything(@loadAllNodes)
+      #   )
 
     loadAllNodes: (nodes) =>
       @graphModel.putNode node for node in nodes

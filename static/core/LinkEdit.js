@@ -31,6 +31,7 @@
         this.graphModel.on("change", this.update.bind(this));
         this.graphView = instances['GraphView'];
         this.selection = instances["LinkSelection"];
+        this.selection.on("change", this.update.bind(this));
         this.listenTo(instances["KeyListener"], "down:16:80", function() {
           return _this.$el.toggle();
         });
@@ -45,7 +46,7 @@
         this.$el.empty();
         selectedLinks = this.selection.getSelectedLinks();
         $container = $('.node-profile-helper');
-        $container.empty();
+        $container.find('.link-edit').remove();
         blacklist = ["selected", "source", "target", "strength", "_type", "_id"];
         return _.each(selectedLinks, function(link) {
           var $linkDiv, _ref;
@@ -54,7 +55,7 @@
           } else if (!(_ref = link.color.toUpperCase(), __indexOf.call(colors, _ref) >= 0)) {
             link.color = "#A9A9A9";
           }
-          $linkDiv = $("<div class='node-profile'></div>").appendTo($container);
+          $linkDiv = $("<div class='node-profile link-edit'></div>").prependTo($container);
           return _this.renderProfile(link, $linkDiv, blacklist);
         });
       };

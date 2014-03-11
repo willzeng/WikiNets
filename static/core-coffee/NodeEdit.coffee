@@ -29,7 +29,7 @@ define [], () ->
         @$el.empty()
         selectedNodes = @selection.getSelectedNodes()
         $container = $(".node-profile-helper")
-        
+        $container.find('.node-edit').remove();
 
         #these are they properties that are not shown in the profile
         blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color","shouldLoad","_Last_Edit_Date", "_Creation_Date"]
@@ -38,7 +38,7 @@ define [], () ->
           if !(node.color?) then node.color="#A9A9A9"
           else if !(node.color.toUpperCase() in colors) then node.color="#A9A9A9"
 
-          $nodeDiv = $("<div class=\"node-profile\"/>").css("border","2px solid #{node.color}").appendTo($container)
+          $nodeDiv = $("<div class=\"node-profile node-edit\"/>").css("border","1px solid #{node.color}").prependTo($container)
           @renderProfile(node, $nodeDiv, blacklist, 4)
 
     editNode: (node, nodeDiv, blacklist) ->
