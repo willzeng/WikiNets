@@ -38,6 +38,7 @@
           return _this.$el.toggle();
         });
         this.linkSelection = instances["LinkSelection"];
+        this.linkSelection.on("change", this.update.bind(this));
         return $(this.el).appendTo($('#omniBox'));
       };
 
@@ -70,7 +71,7 @@
         nodeInputNumber = 0;
         origColor = "#A9A9A9";
         header = this.findHeader(node);
-        nodeDiv.html("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view. It is shown here because it is either selected on the graph or a search result' data-position='right'>Editing " + header + " (id: " + node['_id'] + ")</div><form id=\"Node" + node['_id'] + "EditForm\"></form>");
+        nodeDiv.html("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view. It is shown here because it is either selected on the graph or a search result' data-position='right'>Editing " + header + "</div><form id=\"Node" + node['_id'] + "EditForm\"></form>");
         _.each(node, function(value, property) {
           var newEditingFields, _ref;
           if (blacklist.indexOf(property) < 0 && ["_id", "text", "color", "_Last_Edit_Date", "_Creation_Date"].indexOf(property) < 0) {

@@ -55,7 +55,7 @@
           } else if (!(_ref = link.color.toUpperCase(), __indexOf.call(colors, _ref) >= 0)) {
             link.color = "#A9A9A9";
           }
-          $linkDiv = $("<div class='node-profile link-edit'></div>").prependTo($container);
+          $linkDiv = $("<div class='node-profile link-edit'></div>").appendTo($container);
           return _this.renderProfile(link, $linkDiv, blacklist);
         });
       };

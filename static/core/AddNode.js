@@ -21,7 +21,7 @@
         this.selection = instances['NodeSelection'];
         this.graphView = instances['GraphView'];
         this.nodeEdit = instances['local/NodeEdit'];
-        $addNode = $("<div id='add-node' class='result-element'><span>Add Node</span><br/><span id='add-person-button'>Person</span><span id='add-project-button'>Project</span><span id='add-theme-button'>Theme</span><span id='add-other-button'>Other</span></div>").appendTo($('#omniBox'));
+        $addNode = $("<div id='add-node' class='result-element'><span>Add Something</span><br/><span id='add-person-button'>Person</span><span id='add-project-button'>Project</span><span id='add-theme-button'>Theme</span><span id='add-other-button'>Other</span></div>").appendTo($('#omniBox'));
         $addProfileHelper = $("<div class='node-profile-helper'></div>").appendTo($('#omniBox'));
         $('#add-person-button').click(function() {
           return _this.createNode({

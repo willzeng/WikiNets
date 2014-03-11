@@ -21,6 +21,7 @@ define [], () ->
       @listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
 
       @linkSelection = instances["LinkSelection"]
+      @linkSelection.on "change", @update.bind(this)
       #place the plugin on the whole window
       $(@el).appendTo $('#omniBox')
 
@@ -49,7 +50,7 @@ define [], () ->
           
           header = @findHeader(node)
 
-          nodeDiv.html("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view. It is shown here because it is either selected on the graph or a search result' data-position='right'>Editing #{header} (id: #{node['_id']})</div><form id=\"Node#{node['_id']}EditForm\"></form>")
+          nodeDiv.html("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view. It is shown here because it is either selected on the graph or a search result' data-position='right'>Editing #{header}</div><form id=\"Node#{node['_id']}EditForm\"></form>")
           _.each node, (value, property) ->
             if blacklist.indexOf(property) < 0 and ["_id", "text", "color", "_Last_Edit_Date", "_Creation_Date"].indexOf(property) < 0
               newEditingFields = """
