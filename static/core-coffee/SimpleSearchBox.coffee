@@ -148,24 +148,24 @@ define [], () ->
 
       #call search functionality with press of ENTER key
       $searchBox.keyup (e)=>
-        if(e.keyCode == 13)
+        if(e.keyCode == 13) # enter key
           @searchNodesSimple $searchBox.val()
           $searchBox.val("")
           $autofillWrapper.empty()
           $autofillWrapper.hide()
-        else if($searchBox.val()!="")
-          #@searchNodesAutofill $searchBox.val(),$autofillWrapper
-          $tempquery = $searchBox.val()
-          $.post "/node_index_search", {checkKeys: @searchableKeys, query: $searchBox.val()}, (nodes) =>
-            if($tempquery!=$searchBox.val())
-              return
-            $autofillWrapper.empty()
-            for node in nodes
-              #console.log node
-              $autofillField = $("<span>" + node.name + "</span><br>").appendTo $autofillWrapper
-          $autofillWrapper.show()
-        else if($searchBox.val()=="")
-          $autofillWrapper.empty()
+        # else if($searchBox.val()!="")
+        #   #@searchNodesAutofill $searchBox.val(),$autofillWrapper
+        #   $tempquery = $searchBox.val()
+        #   $.post "/node_index_search", {checkKeys: @searchableKeys, query: $searchBox.val()}, (nodes) =>
+        #     if($tempquery!=$searchBox.val())
+        #       return
+        #     $autofillWrapper.empty()
+        #     for node in nodes
+        #       #console.log node
+        #       $autofillField = $("<span>" + node.name + "</span><br>").appendTo $autofillWrapper
+        #   $autofillWrapper.show()
+        # else if($searchBox.val()=="")
+        #   $autofillWrapper.empty()
 
       # $(document).on "click", ()->
       #   $autofillWrapper.hide()
