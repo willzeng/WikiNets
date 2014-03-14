@@ -23,6 +23,9 @@ define [], () ->
       @linkSelection = instances["LinkSelection"]
       @linkSelection.on "change", @update.bind(this)
       #place the plugin on the whole window
+
+      $addProfileHelper = $("<div class='node-profile-helper'></div>").appendTo $('#omniBox')
+
       $(@el).appendTo $('#omniBox')
 
     update: ->
@@ -32,7 +35,7 @@ define [], () ->
         $container = $(".node-profile-helper")
 
         #these are they properties that are not shown in the profile
-        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color","shouldLoad","_Last_Edit_Date", "_Creation_Date"]
+        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color","shouldLoad","_Last_Edit_Date", "_Creation_Date", "name", "text"]
         @blacklist = blacklist
         _.each selectedNodes, (node) =>
           if !(node.color?) then node.color="#A9A9A9"
@@ -208,9 +211,9 @@ define [], () ->
       
       $nodeHeader = $("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view.' data-position='right'>#{header}</div>").appendTo nodeDiv
 
-      $nodeEdit = $("<i class=\"fa fa-pencil-square \"></i>").css("margin","6px").appendTo $nodeHeader
-      $nodeEdit.click () =>
-        @editNode(node, nodeDiv, blacklist)
+      #$nodeEdit = $("<i class=\"fa fa-pencil-square \"></i>").css("margin","6px").appendTo $nodeHeader
+      #$nodeEdit.click () =>
+      #  @editNode(node, nodeDiv, blacklist)
 
       $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").css("margin","1px").appendTo $nodeHeader
       $nodeDeselect.click () => @selection.toggleSelection(node)
@@ -247,7 +250,7 @@ define [], () ->
           @renderProfile(node, nodeDiv, blacklist, propNumber+10)
           
       #Adds button that creates link from selected node to user-inputted node
-      @addLinker node, nodeDiv
+      #@addLinker node, nodeDiv
 
 
       #Adds the links from this node to its neighbors

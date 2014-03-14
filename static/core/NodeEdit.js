@@ -27,7 +27,8 @@
       }
 
       NodeEdit.prototype.init = function(instances) {
-        var _this = this;
+        var $addProfileHelper,
+          _this = this;
         this.dataController = instances['local/Neo4jDataController'];
         this.graphModel = instances['GraphModel'];
         this.graphView = instances['GraphView'];
@@ -39,6 +40,7 @@
         });
         this.linkSelection = instances["LinkSelection"];
         this.linkSelection.on("change", this.update.bind(this));
+        $addProfileHelper = $("<div class='node-profile-helper'></div>").appendTo($('#omniBox'));
         return $(this.el).appendTo($('#omniBox'));
       };
 
@@ -49,7 +51,7 @@
           $(".node-profile-helper").empty();
           selectedNodes = this.selection.getSelectedNodes();
           $container = $(".node-profile-helper");
-          blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color", "shouldLoad", "_Last_Edit_Date", "_Creation_Date"];
+          blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color", "shouldLoad", "_Last_Edit_Date", "_Creation_Date", "name", "text"];
           this.blacklist = blacklist;
           return _.each(selectedNodes, function(node) {
             var $nodeDiv, _ref;
@@ -236,15 +238,11 @@
       };
 
       NodeEdit.prototype.renderProfile = function(node, nodeDiv, blacklist, propNumber) {
-        var $nodeDeselect, $nodeEdit, $nodeHeader, $showMore, $spokeHolder, counter, header, initialSpokeNumber, nodeLength, p, v, whitelist,
+        var $nodeDeselect, $nodeHeader, $showMore, $spokeHolder, counter, header, initialSpokeNumber, nodeLength, p, v, whitelist,
           _this = this;
         nodeDiv.empty();
         header = this.findHeader(node);
         $nodeHeader = $("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view.' data-position='right'>" + header + "</div>").appendTo(nodeDiv);
-        $nodeEdit = $("<i class=\"fa fa-pencil-square \"></i>").css("margin", "6px").appendTo($nodeHeader);
-        $nodeEdit.click(function() {
-          return _this.editNode(node, nodeDiv, blacklist);
-        });
         $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").css("margin", "1px").appendTo($nodeHeader);
         $nodeDeselect.click(function() {
           return _this.selection.toggleSelection(node);
@@ -286,7 +284,6 @@
             return _this.renderProfile(node, nodeDiv, blacklist, propNumber + 10);
           });
         }
-        this.addLinker(node, nodeDiv);
         initialSpokeNumber = 5;
         $spokeHolder = $("<div class='spokeHolder'></div>").appendTo(nodeDiv);
         this.addSpokes(node, $spokeHolder, initialSpokeNumber);

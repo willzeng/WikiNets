@@ -51,7 +51,6 @@
       "local/VisualSearch": {},
       "local/SimpleSearchBox": {},
       "local/NodeEdit": {},
-      "local/AddNode": {},
       "local/LinkEdit": {},
       "local/ToolBox": {},
       "local/TopBarCreate": {},
@@ -60,8 +59,7 @@
       LinkHover: {},
       MiniMap: {},
       "Sliders": {},
-      "ForceSliders": {},
-      "local/NodeCreationPopout": {}
+      "ForceSliders": {}
     };
     return Celestrium.init(plugins, function(instances) {
       var loadEverything;

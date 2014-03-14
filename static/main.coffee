@@ -72,7 +72,7 @@ require ["Celestrium"], (Celestrium) ->
     "local/NodeEdit": {}
 
     # To add nodes to the database
-    "local/AddNode": {}
+    #"local/AddNode": {}
 
     # Displays selected link details and allows editing
     "local/LinkEdit": {}
@@ -107,7 +107,7 @@ require ["Celestrium"], (Celestrium) ->
     "ForceSliders": {}
 
     # adds a popout creation functionality to TopBarCreate
-    "local/NodeCreationPopout": {}
+    #"local/NodeCreationPopout": {}
 
     # is a plugin that filters the graphview based on link.strength
     #"LinkDistribution": {}
