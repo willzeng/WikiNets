@@ -105,7 +105,7 @@ define [], () ->
           prefetch: '../node_index_search_prefetch'
         });
 
-        sugg.initialize();
+      sugg.initialize();
 
         
       $searchBox.typeahead(null, {

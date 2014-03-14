@@ -163,7 +163,9 @@
           return _this.trigger("enter:link:mouseout", datum);
         });
         getSize = function(node) {
-          if (node.type === "topic") {
+          if (node.size > 0) {
+            return Math.min(node.size, 100);
+          } else if (node.type === "topic") {
             return 20;
           } else {
             return 8;
