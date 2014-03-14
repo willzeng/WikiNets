@@ -195,7 +195,7 @@
           return _this.selection.toggleSelection(link);
         });
         whitelist = ["description", "url"];
-        _.each(link, function(value, property) {
+        return _.each(link, function(value, property) {
           var makeLinks;
           value += "";
           if (blacklist.indexOf(property) < 0) {
@@ -216,9 +216,6 @@
               return $("<div class=\"node-profile-property\">" + property + ": " + makeLinks + "</div>").appendTo(linkDiv);
             }
           }
-        });
-        return $linkEdit.click(function() {
-          return _this.editLink(link, linkDiv, blacklist);
         });
       };
 

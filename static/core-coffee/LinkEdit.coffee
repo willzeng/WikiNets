@@ -185,6 +185,6 @@ define [], () ->
             $("<div class=\"node-profile-property\">#{property}: #{makeLinks}</div>").appendTo linkDiv
       
 
-      $linkEdit.click(() =>
-        @editLink(link, linkDiv, blacklist)
-        )
+      #$linkEdit.click(() =>
+      #  @editLink(link, linkDiv, blacklist)
+      #  )
