@@ -26,7 +26,7 @@
         this.loading = false;
         this.graphView.on("enter:node:mouseover", function(d) {
           if (!_this.loading && (!_this.topBarCreate.buildingLink)) {
-            return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Dbl-click to find connections.</span>');
+            return $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Double click to Explore.</span>');
           }
         });
         this.graphView.on("enter:node:mouseout", function(d) {

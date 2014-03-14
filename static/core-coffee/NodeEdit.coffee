@@ -35,7 +35,7 @@ define [], () ->
         $container = $(".node-profile-helper")
 
         #these are they properties that are not shown in the profile
-        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color","shouldLoad","_Last_Edit_Date", "_Creation_Date", "name", "text"]
+        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color","shouldLoad","_Last_Edit_Date", "_Creation_Date", "name", "text", "size", "type"]
         @blacklist = blacklist
         _.each selectedNodes, (node) =>
           if !(node.color?) then node.color="#A9A9A9"
@@ -254,7 +254,7 @@ define [], () ->
 
 
       #Adds the links from this node to its neighbors
-      initialSpokeNumber = 5
+      initialSpokeNumber = 3
       $spokeHolder = $("<div class='spokeHolder'></div>").appendTo nodeDiv
       @addSpokes node, $spokeHolder, initialSpokeNumber
 
@@ -344,30 +344,26 @@ define [], () ->
         spoke_counter = 0
         for spoke in spokes
           if spoke_counter >= maxSpokes then break else spoke_counter++
-          savedSpoke = spoke
-          if !(spoke.name?) or spoke.name == "" then spoke.name = "<i>empty link</i>"
-          if !(spoke.color?) then spoke.color = "#A9A9A9"
-          spokeID = "spokeDiv"
-          $spokeDiv = $('<div class='+spokeID+'>'+spoke.name+"..."+'</div>')
-            .css("border","1px solid #{spoke.color}")
-            .css("padding", "4px")
-            .css("margin", "1px")
-            .css("border", "1px solid black")
-            .css("font-size", "12px")
-            .appendTo $spokesDiv
+          if (spoke.name?) and spoke.name != "" 
+            savedSpoke = spoke
+            if !(spoke.color?) then spoke.color = "#A9A9A9"
+            spokeID = "spokeDiv"
+            $spokeDiv = $('<div class='+spokeID+'>'+spoke.name+"..."+'</div>')
+              .css("border","1px solid #{spoke.color}")
+              .css("padding", "4px")
+              .css("margin", "1px")
+              .css("border", "1px solid black")
+              .css("font-size", "12px")
+              .appendTo $spokesDiv
 
-          if spoke.selected
-            $spokeDiv.css("background-color","steelblue")
-          else $spokeDiv.css("background-color","white")
+            if spoke.selected
+              $spokeDiv.css("background-color","steelblue")
+            else $spokeDiv.css("background-color","white")
 
-          $spokeDiv.data("link", [spoke])
-          $spokeDiv.on "click", (e) =>
-            clickedLink = $(e.target).data("link")[0]
-            # if !clickedLink.selected
-            #   $(e.target).css("background-color","steelblue")
-            # else 
-            #   $(e.target).css("background-color","#{clickedLink.color}")
-            @linkSelection.toggleSelection(clickedLink)
+            $spokeDiv.data("link", [spoke])
+            $spokeDiv.on "click", (e) =>
+              clickedLink = $(e.target).data("link")[0]
+              @linkSelection.toggleSelection(clickedLink)
 
       if maxSpokes < spokes.length
         $showMoreSpokes = $("<div class=\"showMore\"><a href='#'>Show More...</a></div>").appendTo spokeHolder 

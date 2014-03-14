@@ -51,7 +51,7 @@
           $(".node-profile-helper").empty();
           selectedNodes = this.selection.getSelectedNodes();
           $container = $(".node-profile-helper");
-          blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color", "shouldLoad", "_Last_Edit_Date", "_Creation_Date", "name", "text"];
+          blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color", "shouldLoad", "_Last_Edit_Date", "_Creation_Date", "name", "text", "size", "type"];
           this.blacklist = blacklist;
           return _.each(selectedNodes, function(node) {
             var $nodeDiv, _ref;
@@ -284,7 +284,7 @@
             return _this.renderProfile(node, nodeDiv, blacklist, propNumber + 10);
           });
         }
-        initialSpokeNumber = 5;
+        initialSpokeNumber = 3;
         $spokeHolder = $("<div class='spokeHolder'></div>").appendTo(nodeDiv);
         this.addSpokes(node, $spokeHolder, initialSpokeNumber);
         return nodeDiv.on("click", function() {
@@ -391,26 +391,25 @@
             } else {
               spoke_counter++;
             }
-            savedSpoke = spoke;
-            if (!(spoke.name != null) || spoke.name === "") {
-              spoke.name = "<i>empty link</i>";
+            if ((spoke.name != null) && spoke.name !== "") {
+              savedSpoke = spoke;
+              if (!(spoke.color != null)) {
+                spoke.color = "#A9A9A9";
+              }
+              spokeID = "spokeDiv";
+              $spokeDiv = $('<div class=' + spokeID + '>' + spoke.name + "..." + '</div>').css("border", "1px solid " + spoke.color).css("padding", "4px").css("margin", "1px").css("border", "1px solid black").css("font-size", "12px").appendTo($spokesDiv);
+              if (spoke.selected) {
+                $spokeDiv.css("background-color", "steelblue");
+              } else {
+                $spokeDiv.css("background-color", "white");
+              }
+              $spokeDiv.data("link", [spoke]);
+              $spokeDiv.on("click", function(e) {
+                var clickedLink;
+                clickedLink = $(e.target).data("link")[0];
+                return _this.linkSelection.toggleSelection(clickedLink);
+              });
             }
-            if (!(spoke.color != null)) {
-              spoke.color = "#A9A9A9";
-            }
-            spokeID = "spokeDiv";
-            $spokeDiv = $('<div class=' + spokeID + '>' + spoke.name + "..." + '</div>').css("border", "1px solid " + spoke.color).css("padding", "4px").css("margin", "1px").css("border", "1px solid black").css("font-size", "12px").appendTo($spokesDiv);
-            if (spoke.selected) {
-              $spokeDiv.css("background-color", "steelblue");
-            } else {
-              $spokeDiv.css("background-color", "white");
-            }
-            $spokeDiv.data("link", [spoke]);
-            $spokeDiv.on("click", function(e) {
-              var clickedLink;
-              clickedLink = $(e.target).data("link")[0];
-              return _this.linkSelection.toggleSelection(clickedLink);
-            });
           }
         }
         if (maxSpokes < spokes.length) {
