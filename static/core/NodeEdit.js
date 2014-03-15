@@ -38,8 +38,7 @@
           return _this.$el.toggle();
         });
         this.linkSelection = instances["LinkSelection"];
-        this.linkSelection.on("change", this.update.bind(this));
-        return $(this.el).appendTo($('#omniBox'));
+        return this.linkSelection.on("change", this.update.bind(this));
       };
 
       NodeEdit.prototype.update = function() {

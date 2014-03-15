@@ -23,7 +23,7 @@ define [], () ->
       @selection = instances["LinkSelection"]
       @selection.on "change", @update.bind(this)
       @listenTo instances["KeyListener"], "down:16:80", () => @$el.toggle()
-      #instances["Layout"].addPlugin @el, @options.pluginOrder, 'Link Edit', true
+
       $(@el).appendTo $('#omniBox')
 
       @Create = instances['local/Create']
@@ -62,10 +62,6 @@ define [], () ->
               linkInputNumber = linkInputNumber + 1
             else if property == "color"
               origColor=value
-              # if value in colors 
-              #   origColor = hexColors[colors.indexOf(value)]
-              # else if origColor in hexColors 
-              #   origColor = value
 
 
           colorEditingField = '
@@ -104,7 +100,6 @@ define [], () ->
                     savedLink['target'] = link['target']
                     savedLink['strength'] = link['strength']
                     savedLink['_Creation_Date'] = link['_Creation_Date']
-                    #console.log savedLink    
                     @graphModel.filterLinks (link) ->
                       not (savedLink['_id'] == link['_id'])
                     @graphModel.putLink(savedLink)
@@ -124,8 +119,6 @@ define [], () ->
     cancelEditing: (link, linkDiv, blacklist) =>
       linkDiv.empty()
       @renderProfile(link, linkDiv, blacklist)
-
-
 
     deleteLink: (delLink, callback)=>
       @dataController.linkDelete delLink, (response) =>
