@@ -52,20 +52,19 @@ define [], () ->
 
       $createNodeButton.click(@createNode)
 
- 
       # popout button for more detailed node creation
-      $openPopoutButton = $('<i class="right fa fa-expand"></i>').appendTo @$nodeWrapper
+      $openNodeCreationPopout = $('<i class="right fa fa-expand"></i>').appendTo @$nodeWrapper
 
-      $openPopoutButton.click () =>
-        @trigger 'popout:open'
+      $openNodeCreationPopout.click () =>
+        @trigger 'node_create:popout:open'
         @$nodeWrapper.hide()
         $nodeHolder.show()
 
 
+      ## Link Creation Dropdown
       $linkSide = $('<div id="linkside">').appendTo $container
 
       $linkHolder = $('<textarea placeholder="Add Link" id="linkHolder" name="textin" rows="1" cols="35"></textarea>').appendTo $linkSide
-
 
       @$linkWrapper = $('<div id="LinkCreateContainer">').appendTo $linkSide
 
@@ -73,7 +72,6 @@ define [], () ->
       @$linkInputUrl = $('<textarea id="LinkCreateUrl" placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
       @$linkInputDesc = $('<textarea id="LinkCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
 
-      $linkInputForm = $('<form id="LinkCreateForm"></form>').appendTo @$linkWrapper
       linkInputNumber = 0
 
       $linkMoreFields = $("<input id=\"moreLinkCreateFields\" type=\"button\" value=\"+\">").appendTo @$linkWrapper
@@ -86,16 +84,16 @@ define [], () ->
 
       $linkingInstructions = $('<span id="toplink-instructions">').appendTo $container
 
+      # popout button for more detailed node creation
+      $openLinkCreationPopout = $('<i class="right fa fa-expand"></i>').appendTo @$linkWrapper
+
+      $openLinkCreationPopout.click () =>
+        @trigger 'link_create:popout:open'
+        @$linkWrapper.hide()
+        $linkHolder.show()
+
       @$createLinkButton.click () =>
-        if @buildingLink
-          @buildingLink = false
-          @tempLink = {};
-          @sourceSet = false
-          $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>')
-          @$createLinkButton.val('Attach & Create Link')
-          @$linkInputName.focus()
-        else
-          @buildLink()
+        @createLink()
 
       @$nodeWrapper.hide()
       @$linkWrapper.hide()
@@ -145,6 +143,17 @@ define [], () ->
             @tempLink.source = node
             @sourceSet = true
             $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Source:' + @findHeader(node) + ' (' + node['_id'] + ')<br />Click a node to select it as the link target.</span>')
+
+    createLink: () ->
+      if @buildingLink
+        @buildingLink = false
+        @tempLink = {};
+        @sourceSet = false
+        $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>')
+        @$createLinkButton.val('Attach & Create Link')
+        @$linkInputName.focus()
+      else
+        @buildLink()
 
     update: (node) ->
       @selection.getSelectedNodes()

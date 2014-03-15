@@ -103,8 +103,11 @@ require ["Celestrium"], (Celestrium) ->
     # adds a slider to change the force for the graph
     "ForceSliders": {}
 
-    # adds a popout creation functionality to TopBarCreate
+    # adds a popout creation functionality to TopBarCreate for nodes
     "local/NodeCreationPopout": {}
+
+    # adds popout creation functionality for links
+    "local/LinkCreationPopout": {}
 
     # is a plugin that filters the graphview based on link.strength
     #"LinkDistribution": {}
