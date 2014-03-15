@@ -47,7 +47,7 @@
         selectedLinks = this.selection.getSelectedLinks();
         $container = $('.node-profile-helper');
         $container.find('.link-edit').remove();
-        blacklist = ["selected", "source", "target", "strength", "_type", "_id", "start", "end", "_Last_Edit_Date", "_Creation_Date", "name", "text"];
+        blacklist = ["selected", "source", "target", "strength", "_type", "_id", "start", "end", "_Last_Edit_Date", "_Creation_Date", "text"];
         return _.each(selectedLinks, function(link) {
           var $linkDiv, _ref;
           if (!(link.color != null)) {
@@ -186,16 +186,17 @@
       };
 
       LinkEdit.prototype.renderProfile = function(link, linkDiv, blacklist) {
-        var $linkDeselect, $linkHeader, header, whitelist,
+        var $linkDeselect, $linkEdit, $linkHeader, header, whitelist,
           _this = this;
         header = this.findHeader(link);
         $linkHeader = $("<div class=\"node-profile-title\">" + header + "</div>").appendTo(linkDiv);
+        $linkEdit = $("<i class=\"fa fa-pencil-square\"></i>").css("margin", "6px").appendTo($linkHeader);
         $linkDeselect = $("<i class=\"right fa fa-times\"></i>").appendTo($linkHeader);
         $linkDeselect.click(function() {
           return _this.selection.toggleSelection(link);
         });
         whitelist = ["description", "url"];
-        return _.each(link, function(value, property) {
+        _.each(link, function(value, property) {
           var makeLinks;
           value += "";
           if (blacklist.indexOf(property) < 0) {
@@ -216,6 +217,9 @@
               return $("<div class=\"node-profile-property\">" + property + ": " + makeLinks + "</div>").appendTo(linkDiv);
             }
           }
+        });
+        return $linkEdit.click(function() {
+          return _this.editLink(link, linkDiv, blacklist);
         });
       };
 

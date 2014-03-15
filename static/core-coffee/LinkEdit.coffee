@@ -35,7 +35,7 @@ define [], () ->
       selectedLinks = @selection.getSelectedLinks()
       $container = $('.node-profile-helper')
       $container.find('.link-edit').remove()
-      blacklist = ["selected", "source", "target", "strength", "_type", "_id", "start", "end", "_Last_Edit_Date", "_Creation_Date", "name", "text"]
+      blacklist = ["selected", "source", "target", "strength", "_type", "_id", "start", "end", "_Last_Edit_Date", "_Creation_Date", "text"]
       # not sure whether "strength" should be in the blacklist or not...?
       _.each selectedLinks, (link) =>
         if !(link.color?) then link.color="#A9A9A9"
@@ -159,7 +159,7 @@ define [], () ->
     renderProfile: (link, linkDiv, blacklist) =>
       header = @findHeader(link)
       $linkHeader = $("<div class=\"node-profile-title\">#{header}</div>").appendTo linkDiv
-      #$linkEdit = $("<i class=\"fa fa-pencil-square\"></i>").css("margin","6px").appendTo $linkHeader
+      $linkEdit = $("<i class=\"fa fa-pencil-square\"></i>").css("margin","6px").appendTo $linkHeader
 
       $linkDeselect = $("<i class=\"right fa fa-times\"></i>").appendTo $linkHeader
       $linkDeselect.click () => @selection.toggleSelection(link)
@@ -185,6 +185,6 @@ define [], () ->
             $("<div class=\"node-profile-property\">#{property}: #{makeLinks}</div>").appendTo linkDiv
       
 
-      #$linkEdit.click(() =>
-      #  @editLink(link, linkDiv, blacklist)
-      #  )
+      $linkEdit.click(() =>
+        @editLink(link, linkDiv, blacklist)
+        )

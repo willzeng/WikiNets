@@ -72,7 +72,7 @@ require ["Celestrium"], (Celestrium) ->
     "local/NodeEdit": {}
 
     # To add nodes to the database
-    #"local/AddNode": {}
+    "local/AddNode": {}
 
     # Displays selected link details and allows editing
     "local/LinkEdit": {}
