@@ -23,8 +23,8 @@ requirejs.config
     "../lib/VisualSearch/jquery.ui.core": ["../jquery"]
     "../lib/VisualSearch/jquery.ui.position": ["../jquery"]
     "../lib/VisualSearch/jquery.ui.widget": ["../jquery"]
-    "../lib/VisualSearch/jquery.ui.autocomplete": ["./jquery.ui.core", "./jquery.ui.menu", "./jquery.ui.position", "./jquery.ui.widget"]
     "../lib/VisualSearch/jquery.ui.menu": ["./jquery.ui.core", "./jquery.ui.position", "./jquery.ui.widget"]
+    "../lib/VisualSearch/jquery.ui.autocomplete": ["./jquery.ui.core", "./jquery.ui.menu", "./jquery.ui.position", "./jquery.ui.widget"]
     "../lib/colorPicker/jquery.colorPicker": ["../jquery"]
 
 globalLibs = [
