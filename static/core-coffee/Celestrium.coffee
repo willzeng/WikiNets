@@ -17,13 +17,12 @@ requirejs.config
   shim:
     "../lib/jquery.typeahead": ["../lib/jquery"]
     "../lib/backbone": ["../lib/underscore"]
-    "../lib/backbone-0.9.10": ["../lib/underscore"]
-    "../lib/visualsearch":
-      deps: ["../lib/jquery", "../lib/jquery.ui.autocomplete", "../lib/jquery.ui.core", "../lib/jquery.ui.menu", "../lib/jquery.ui.position", "../lib/jquery.ui.widget", "../lib/underscore", "../lib/backbone-0.9.10"]
+    "../lib/VisualSearch/visualsearch":
+      deps: ["../jquery", "../../lib/VisualSearch/jquery.ui.autocomplete", "../../lib/VisualSearch/jquery.ui.core", "../../lib/VisualSearch/jquery.ui.menu", "../../lib/VisualSearch/jquery.ui.position", "../../lib/VisualSearch/jquery.ui.widget", "../underscore", "../backbone"]
       exports: 'VS'
-    "../lib/jquery.ui.autocomplete": ["../lib/jquery.ui.core", "../lib/jquery.ui.menu", "../lib/jquery.ui.position", "../lib/jquery.ui.widget"]
-    "../lib/jquery.ui.menu": ["../lib/jquery.ui.core", "../lib/jquery.ui.position", "../lib/jquery.ui.widget"]
-    "../lib/colorPicker/jquery.colorPicker": ["../../lib/jquery"]
+    "../lib/VisualSearch/jquery.ui.autocomplete": ["../../lib/VisualSearch/jquery.ui.core", "../../lib/VisualSearch/jquery.ui.menu", "../../lib/VisualSearch/jquery.ui.position", "../../lib/VisualSearch/jquery.ui.widget"]
+    "../lib/VisualSearch/jquery.ui.menu": ["../../lib/VisualSearch/jquery.ui.core", "../../lib/VisualSearch/jquery.ui.position", "../../lib/VisualSearch/jquery.ui.widget"]
+    "../lib/colorPicker/jquery.colorPicker": ["../jquery"]
 
 globalLibs = [
   '../lib/jquery',
@@ -32,7 +31,7 @@ globalLibs = [
   '../lib/backbone',
   '../lib/d3',
   '../lib/less',
-  '../lib/visualsearch',
+  '../lib/VisualSearch/visualsearch',
   '../lib/colorPicker/jquery.colorPicker'
 ]
 
