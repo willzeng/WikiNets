@@ -15,13 +15,16 @@ exposes an object with an `init` function which takes two arguments.
 
 requirejs.config
   shim:
-    "../lib/jquery.typeahead": ["../lib/jquery"]
-    "../lib/backbone": ["../lib/underscore"]
+    "../lib/jquery.typeahead": ["./jquery"]
+    "../lib/backbone": ["./underscore"]
     "../lib/VisualSearch/visualsearch":
-      deps: ["../jquery", "../../lib/VisualSearch/jquery.ui.autocomplete", "../../lib/VisualSearch/jquery.ui.core", "../../lib/VisualSearch/jquery.ui.menu", "../../lib/VisualSearch/jquery.ui.position", "../../lib/VisualSearch/jquery.ui.widget", "../underscore", "../backbone"]
+      deps: ["../jquery", "./jquery.ui.autocomplete", "./jquery.ui.core", "./jquery.ui.menu", "./jquery.ui.position", "./jquery.ui.widget", "../underscore", "../backbone"]
       exports: 'VS'
-    "../lib/VisualSearch/jquery.ui.autocomplete": ["../../lib/VisualSearch/jquery.ui.core", "../../lib/VisualSearch/jquery.ui.menu", "../../lib/VisualSearch/jquery.ui.position", "../../lib/VisualSearch/jquery.ui.widget"]
-    "../lib/VisualSearch/jquery.ui.menu": ["../../lib/VisualSearch/jquery.ui.core", "../../lib/VisualSearch/jquery.ui.position", "../../lib/VisualSearch/jquery.ui.widget"]
+    "../lib/VisualSearch/jquery.ui.core": ["../jquery"]
+    "../lib/VisualSearch/jquery.ui.position": ["../jquery"]
+    "../lib/VisualSearch/jquery.ui.widget": ["../jquery"]
+    "../lib/VisualSearch/jquery.ui.autocomplete": ["./jquery.ui.core", "./jquery.ui.menu", "./jquery.ui.position", "./jquery.ui.widget"]
+    "../lib/VisualSearch/jquery.ui.menu": ["./jquery.ui.core", "./jquery.ui.position", "./jquery.ui.widget"]
     "../lib/colorPicker/jquery.colorPicker": ["../jquery"]
 
 globalLibs = [
