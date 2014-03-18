@@ -33,7 +33,6 @@ define [], () ->
           $inputArea.focus()
 
     createTriple: (tripleList) =>
-      console.log tripleList
       if tripleList.length is 1
         node = {name: tripleList[0]}
         @dataController.nodeAdd node, (newNode) =>
@@ -69,8 +68,6 @@ define [], () ->
       tags.push match[1].trim() while match = pattern.exec(text)
 
       linkData = text.replace(/(\@[a-z][a-z0-9-_]*)/ig, "").trim()
-
-      console.log "tags", tags
 
       if tags.length > 1
         [tags[0].slice(1), linkData, tags[1].slice(1)]
