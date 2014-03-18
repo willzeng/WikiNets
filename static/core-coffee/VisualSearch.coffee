@@ -10,46 +10,49 @@ define [], () ->
     init: (instances) ->
       @graphModel = instances["GraphModel"]
       @selection = instances["NodeSelection"]
+
+      # On the '/' key focus on the search bar
       @listenTo instances["KeyListener"], "down:191", (e) =>
+        # why are we doing this.input, what is that even getting?
         @$("input").focus()
         e.preventDefault()
+
       @render()
-      #instances["Layout"].addPlugin @el, @options.pluginOrder, 'Visual Search', true
-      $(@el).attr('id','vsplug').prependTo $('#omniBox')
-      $("#vsplug").hide()
+      $(@el).attr('id','vsplug')
+        .prependTo($('#omniBox'))
+        .hide()
 
       @keys = ['search']
 
     render: ->
 
-      $container = $("<div id=\"visual-search-container\" class='search-box' style='padding-top:2px'/>").appendTo @$el
-      $input = $("<div class=\"visual_search\" />").appendTo $container
-      $button = $("<input type=\"button\" value=\"Go\" style='float:left' />").appendTo $container
+      container = $("<div id='visual-search-container' class='search-box' />").appendTo @el
+      input = $("<div class='visual_search' />").appendTo container
+      button = $("<input type='button' value='Go' class='left' />").appendTo container
 
-      $switchSearch = $("<input type=\"button\" value=\"Advanced Search\" id='search-switch'/>").appendTo $('#omniBox')
-      #$("<input type=\"button\" value=\"Advanced Search\"/>").appendTo $('#omniBox')
+      # TODO: get rid of this, there should only be one search
+      switchSearch = $("<input type='button' value='Advanced Search' id='search-switch'/>").appendTo $('#omniBox')
 
       @searchQuery = {}
 
-      $button.click(() =>
-        #console.log @searchQuery
+      button.click () =>
         @searchDatabase @searchQuery
-        )
 
-      $switchSearch.click () =>
+      # TODO: get rid of this
+      switchSearch.click () =>
         if $('#vsplug').is(':visible')
           $('#vsplug').hide()
           $('#ssplug').show()
-          $switchSearch.val("Advanced Search")
+          switchSearch.val("Advanced Search")
         else
           $('#ssplug').hide()
           $('#vsplug').show()
-          $switchSearch.val("Simple Search")
+          switchSearch.val("Simple Search")
 
       # not sure why we still need this outer search query, but it won't work otherwise
       $.get "/get_all_node_keys", (data) =>
         @keys = data
-        #console.log @keys
+        # TODO: What does this do?
         $(document).ready(() =>
           visualSearch = VS.init({
             container : $('.visual_search')
@@ -112,4 +115,3 @@ define [], () ->
             # search_links returns the start & end nodes for all links matching the searchQuery
             for node in nodes
               @graphModel.putNode(node)
-
