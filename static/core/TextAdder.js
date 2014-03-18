@@ -46,6 +46,7 @@
       TextAdder.prototype.createTriple = function(tripleList) {
         var newLink, node, sourceNode, targetNode,
           _this = this;
+        console.log(tripleList);
         if (tripleList.length === 1) {
           node = {
             name: tripleList[0]
@@ -99,7 +100,8 @@
           tags.push(match[1].trim());
         }
         linkData = text.replace(/(\@[a-z][a-z0-9-_]*)/ig, "").trim();
-        if (tags.length > 2) {
+        console.log("tags", tags);
+        if (tags.length > 1) {
           return [tags[0].slice(1), linkData, tags[1].slice(1)];
         } else {
           return [tags[0].slice(1)];
