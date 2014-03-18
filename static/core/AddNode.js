@@ -14,15 +14,14 @@
       }
 
       AddNode.prototype.init = function(instances) {
-        var $addNode, $addProfileHelper,
+        var $addNode,
           _this = this;
         this.dataController = instances['local/Neo4jDataController'];
         this.graphModel = instances['GraphModel'];
         this.selection = instances['NodeSelection'];
         this.graphView = instances['GraphView'];
         this.nodeEdit = instances['local/NodeEdit'];
-        $addNode = $("<div id='add-node' class='result-element'><span>Add Something</span><br/><span id='add-person-button'>Person</span><span id='add-project-button'>Project</span><span id='add-theme-button'>Theme</span><span id='add-other-button'>Other</span></div>").appendTo($('#omniBox'));
-        $addProfileHelper = $("<div class='node-profile-helper'></div>").appendTo($('#omniBox'));
+        $addNode = $("<div id='add-node' class='result-element'><span>Add Something</span><br/><span id='add-person-button'>Person</span><span id='add-project-button'>Project</span><span id='add-theme-button'>Theme</span><span id='add-other-button'>Other</span></div>").css("position", "absolute").css("top", "-45px").css("right", "7px").appendTo($('#omniBox'));
         $('#add-person-button').click(function() {
           return _this.createNode({
             "name": "",

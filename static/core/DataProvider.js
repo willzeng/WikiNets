@@ -10,7 +10,6 @@
         this.graphModel = instances["GraphModel"];
         instances["KeyListener"].on("down:16:187", function() {
           return _this.getLinkedNodes(instances["NodeSelection"].getSelectedNodes(), function(nodes) {
-            console.log("A list of the LINKED NODES: ", nodes);
             return _.each(nodes, function(node) {
               if (_this.nodeFilter(node)) {
                 return _this.graphModel.putNode(node);

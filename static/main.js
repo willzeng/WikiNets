@@ -52,6 +52,7 @@
       "local/SimpleSearchBox": {},
       "local/NodeEdit": {},
       "local/AddNode": {},
+      "local/TextAdder": {},
       "local/LinkEdit": {},
       "local/ToolBox": {},
       "local/TopBarCreate": {},

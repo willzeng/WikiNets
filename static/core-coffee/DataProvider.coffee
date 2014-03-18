@@ -7,7 +7,6 @@ define [], () ->
       @graphModel = instances["GraphModel"]
       instances["KeyListener"].on "down:16:187", () =>
         @getLinkedNodes instances["NodeSelection"].getSelectedNodes(), (nodes) =>
-          console.log "A list of the LINKED NODES: ", nodes 
           _.each nodes, (node) =>
             @graphModel.putNode node if @nodeFilter node
       @graphModel.on "add:node", (node) =>
