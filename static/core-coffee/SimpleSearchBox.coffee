@@ -43,11 +43,10 @@ define [], () ->
       sugg = new Bloodhound({
           datumTokenizer: (d) -> Bloodhound.tokenizers.whitespace(d.name); ,
           queryTokenizer: Bloodhound.tokenizers.whitespace,
-          # remote: '../data/sugg/queries/%QUERY.json',
           prefetch: '../node_index_search_prefetch'
-        });
+        })
 
-        sugg.initialize();
+      sugg.initialize()
 
       $searchBox.typeahead(null, {
         displayKey: 'name',
@@ -55,8 +54,7 @@ define [], () ->
         templates: {
           suggestion: Handlebars.compile(
             '<p><strong>{{name}}</strong></p>'
-          )
-        }
+          )}
         })
 
       #call search functionality with press of ENTER key
