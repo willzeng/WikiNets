@@ -561,7 +561,8 @@ module.exports = class MyApp
           console.log "get_nodes Lookup Executed"
           nodeList = makeNodeJsonFromCypherQuery(noderes)
 
-          typeaheadNodeList = ((if node.name? then {name: node.name, tokens:node.name.split(" ")}) for node in nodeList)
+          # typeaheadNodeList = ((if node.name? then {name: node.name, tokens:node.name.split(" ")}) for node in nodeList)
+          typeaheadNodeList = ((if node.name? then {name: node.name, tokens:node.name.split(" ")} else {name: "", tokens:""}) for node in nodeList)
 
           response.json typeaheadNodeList
       )

@@ -166,7 +166,7 @@
         headerName = link.name;
         if ((link.url != null) && link.url !== "") {
           realurl = "";
-          result = link.url.search(new RegExp(/^http:\/\//i));
+          result = link.url.search(new RegExp(/^(https?|ftp|dict):\/\//i));
           if (!result) {
             realurl = link.url;
           } else {

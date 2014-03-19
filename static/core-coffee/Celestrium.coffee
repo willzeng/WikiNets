@@ -36,7 +36,6 @@ globalLibs = [
   '../lib/colorPicker/jquery.colorPicker', 
   '../lib/chardinjs.min',
   '../lib/typeaheadjs/handlebars',
-  '../lib/typeaheadjs/jquery-1.11.0.min',
   '../lib/typeaheadjs/typeahead.bundle.min'
 ]
 

@@ -61,7 +61,8 @@
       MiniMap: {},
       "Sliders": {},
       "ForceSliders": {},
-      "local/NodeCreationPopout": {}
+      "local/NodeCreationPopout": {},
+      "local/LinkCreationPopout": {}
     };
     return Celestrium.init(plugins, function(instances) {
       var loadEverything;
