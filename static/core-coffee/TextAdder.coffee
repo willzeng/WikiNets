@@ -43,7 +43,7 @@ define [], () ->
         console.log "onenode"
         @dataController.nodeAdd node, (newNode) =>
           @graphModel.putNode(newNode)
-          @selection.toggleSelection(newNode)
+          #@selection.toggleSelection(newNode)
       else
         sourceNode = {name: tripleList[0]}
         newLink = {"properties":{name: tripleList[1]}}
