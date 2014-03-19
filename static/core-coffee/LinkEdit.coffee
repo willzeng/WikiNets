@@ -134,7 +134,7 @@ define [], () ->
       headerName = link.name
       if link.url? and link.url isnt ""
         realurl = ""
-        result = link.url.search(new RegExp(/^http:\/\//i));
+        result = link.url.search(new RegExp(/^(https?|ftp|dict):\/\//i));
         if !result
           realurl = link.url
         else
