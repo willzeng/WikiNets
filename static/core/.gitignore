@@ -1,0 +1,2 @@
+# This directory will include js files compiled from coffee files.
+*.js
