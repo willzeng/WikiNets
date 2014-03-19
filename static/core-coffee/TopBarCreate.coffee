@@ -82,7 +82,7 @@ define [], () ->
         )
 
       @$createLinkButton = $('<input id="LinkCreateButton" type="button" value="Attach & Create Link">').appendTo @$linkWrapper
-      """
+      
       $linkingInstructions = $('<span id="toplink-instructions">').appendTo $container
 
       # popout button for more detailed node creation
