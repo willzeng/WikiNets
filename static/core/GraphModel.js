@@ -44,7 +44,6 @@
         }
         if (link.strength !== 0) {
           this.pushDatum("links", link);
-          console.log("push link", link);
           return this.trigger("add:link", link);
         }
       };

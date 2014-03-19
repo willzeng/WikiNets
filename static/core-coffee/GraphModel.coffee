@@ -38,7 +38,6 @@ define [], () ->
       #if link.strength is 1 then link.strength = Math.random()*0.8+0.2
       if link.strength isnt 0
         @pushDatum "links", link
-        console.log "push link", link
         @trigger "add:link", link
 
     pushDatum: (attr, datum) ->

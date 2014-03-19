@@ -33,8 +33,14 @@ define [], () ->
           $inputArea.focus()
 
     createTriple: (tripleList) =>
+      console.log "tripleList", tripleList
+
+      sourceExists = false
+      targetExists = false
+
       if tripleList.length is 1
         node = {name: tripleList[0]}
+        console.log "onenode"
         @dataController.nodeAdd node, (newNode) =>
           @graphModel.putNode(newNode)
           @selection.toggleSelection(newNode)
@@ -42,26 +48,67 @@ define [], () ->
         sourceNode = {name: tripleList[0]}
         newLink = {"properties":{name: tripleList[1]}}
         targetNode = {name: tripleList[2]}
-        @dataController.nodeAdd sourceNode, (sNode) =>
-          @graphModel.putNode(sNode)
-          @selection.toggleSelection(sNode)
-          @dataController.nodeAdd targetNode, (tNode) =>
-            @graphModel.putNode(tNode)
-            @selection.toggleSelection(tNode)
-            newLink["source"] = sNode
-            newLink["target"] = tNode
-            @dataController.linkAdd newLink, (link) =>
-              if link.start == sNode['_id']
-                link.source = sNode
-                link.target = tNode
-              else
-                link.source = tNode
-                link.target = sNode
-              @graphModel.putLink link
-              @linkSelection.toggleSelection(link)
+
+        workspaceNodes = @graphModel.getNodes()
+        node = ""
+        for node in workspaceNodes
+          if node.name is sourceNode.name
+            sourceExists = true
+            sourceNode = node
+            console.log "sourceExists"
+            break
+          else
+            sourceExists = false
+
+        node = ""
+        for node in workspaceNodes
+          if node.name is targetNode.name
+            targetExists = true
+            targetNode = node
+            console.log "targetExists"
+            break
+          else
+            targetExists = false
+
+        if sourceExists
+          if targetExists
+            @makeLink(newLink, sourceNode, targetNode)
+          else
+            @dataController.nodeAdd targetNode, (tNode) =>
+              @graphModel.putNode(tNode)
+              @makeLink(newLink, sourceNode, tNode)
+        else
+          if targetExists
+            @dataController.nodeAdd sourceNode, (sNode) =>
+              @graphModel.putNode(sNode)
+              @makeLink(newLink, sNode, targetNode)
+          else
+            @dataController.nodeAdd sourceNode, (sNode) =>
+              @graphModel.putNode(sNode)
+              #@selection.toggleSelection(sNode)
+              @dataController.nodeAdd targetNode, (tNode) =>
+                @graphModel.putNode(tNode)
+                #@selection.toggleSelection(tNode)
+                @makeLink(newLink, sNode, tNode)
+
+    makeLink: (newLink, sourceNode, targetNode) =>
+      newLink["source"] = sourceNode
+      newLink["target"] = targetNode
+      console.log "the new link", newLink
+      @dataController.linkAdd newLink, (link) =>
+        if link.start == sourceNode['_id']
+          link.source = sourceNode
+          link.target = targetNode
+        else
+          link.source = targetNode
+          link.target = sourceNode
+        @graphModel.putLink link
+
 
     parseSyntax: (input) ->
       text = input
+
+      console.log "text", text
 
       pattern = new RegExp(/(\@[a-z][a-z0-9-_]*)/ig)
       tags = []

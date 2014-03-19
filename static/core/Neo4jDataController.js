@@ -60,7 +60,6 @@
         filteredLink = link;
         filteredLink.source = this.filterNode(link.source);
         filteredLink.target = this.filterNode(link.target);
-        console.log(filteredLink);
         return $.post("/create_link", filteredLink, callback);
       };
 

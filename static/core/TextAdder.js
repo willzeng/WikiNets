@@ -11,6 +11,7 @@
 
       function TextAdder(options) {
         this.options = options;
+        this.makeLink = __bind(this.makeLink, this);
         this.createTriple = __bind(this.createTriple, this);
         TextAdder.__super__.constructor.call(this);
       }
@@ -44,13 +45,16 @@
       };
 
       TextAdder.prototype.createTriple = function(tripleList) {
-        var newLink, node, sourceNode, targetNode,
+        var newLink, node, sourceExists, sourceNode, targetExists, targetNode, workspaceNodes, _i, _j, _len, _len1,
           _this = this;
-        console.log(tripleList);
+        console.log("tripleList", tripleList);
+        sourceExists = false;
+        targetExists = false;
         if (tripleList.length === 1) {
           node = {
             name: tripleList[0]
           };
+          console.log("onenode");
           return this.dataController.nodeAdd(node, function(newNode) {
             _this.graphModel.putNode(newNode);
             return _this.selection.toggleSelection(newNode);
@@ -67,40 +71,86 @@
           targetNode = {
             name: tripleList[2]
           };
-          return this.dataController.nodeAdd(sourceNode, function(sNode) {
-            _this.graphModel.putNode(sNode);
-            _this.selection.toggleSelection(sNode);
-            return _this.dataController.nodeAdd(targetNode, function(tNode) {
-              _this.graphModel.putNode(tNode);
-              _this.selection.toggleSelection(tNode);
-              newLink["source"] = sNode;
-              newLink["target"] = tNode;
-              return _this.dataController.linkAdd(newLink, function(link) {
-                if (link.start === sNode['_id']) {
-                  link.source = sNode;
-                  link.target = tNode;
-                } else {
-                  link.source = tNode;
-                  link.target = sNode;
-                }
-                _this.graphModel.putLink(link);
-                return _this.linkSelection.toggleSelection(link);
+          workspaceNodes = this.graphModel.getNodes();
+          node = "";
+          for (_i = 0, _len = workspaceNodes.length; _i < _len; _i++) {
+            node = workspaceNodes[_i];
+            if (node.name === sourceNode.name) {
+              sourceExists = true;
+              sourceNode = node;
+              console.log("sourceExists");
+              break;
+            } else {
+              sourceExists = false;
+            }
+          }
+          node = "";
+          for (_j = 0, _len1 = workspaceNodes.length; _j < _len1; _j++) {
+            node = workspaceNodes[_j];
+            if (node.name === targetNode.name) {
+              targetExists = true;
+              targetNode = node;
+              console.log("targetExists");
+              break;
+            } else {
+              targetExists = false;
+            }
+          }
+          if (sourceExists) {
+            if (targetExists) {
+              return this.makeLink(newLink, sourceNode, targetNode);
+            } else {
+              return this.dataController.nodeAdd(targetNode, function(tNode) {
+                _this.graphModel.putNode(tNode);
+                return _this.makeLink(newLink, sourceNode, tNode);
               });
-            });
-          });
+            }
+          } else {
+            if (targetExists) {
+              return this.dataController.nodeAdd(sourceNode, function(sNode) {
+                _this.graphModel.putNode(sNode);
+                return _this.makeLink(newLink, sNode, targetNode);
+              });
+            } else {
+              return this.dataController.nodeAdd(sourceNode, function(sNode) {
+                _this.graphModel.putNode(sNode);
+                return _this.dataController.nodeAdd(targetNode, function(tNode) {
+                  _this.graphModel.putNode(tNode);
+                  return _this.makeLink(newLink, sNode, tNode);
+                });
+              });
+            }
+          }
         }
+      };
+
+      TextAdder.prototype.makeLink = function(newLink, sourceNode, targetNode) {
+        var _this = this;
+        newLink["source"] = sourceNode;
+        newLink["target"] = targetNode;
+        console.log("the new link", newLink);
+        return this.dataController.linkAdd(newLink, function(link) {
+          if (link.start === sourceNode['_id']) {
+            link.source = sourceNode;
+            link.target = targetNode;
+          } else {
+            link.source = targetNode;
+            link.target = sourceNode;
+          }
+          return _this.graphModel.putLink(link);
+        });
       };
 
       TextAdder.prototype.parseSyntax = function(input) {
         var linkData, match, pattern, tags, text;
         text = input;
+        console.log("text", text);
         pattern = new RegExp(/(\@[a-z][a-z0-9-_]*)/ig);
         tags = [];
         while (match = pattern.exec(text)) {
           tags.push(match[1].trim());
         }
         linkData = text.replace(/(\@[a-z][a-z0-9-_]*)/ig, "").trim();
-        console.log("tags", tags);
         if (tags.length > 1) {
           return [tags[0].slice(1), linkData, tags[1].slice(1)];
         } else {
