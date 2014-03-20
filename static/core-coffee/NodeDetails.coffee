@@ -16,7 +16,7 @@ define [], () ->
     update: ->
       @$el.empty()
       selectedNodes = @selection.getSelectedNodes()
-      $container = $("<div class=\"node-profile-helper\"/>").appendTo(@$el)
+      $container = $('.node-profile-helper')
       blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight"]
       _.each selectedNodes, (node) ->
         $nodeDiv = $("<div class=\"node-profile\"/>").appendTo($container)

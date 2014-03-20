@@ -23,7 +23,7 @@ define [], () ->
       @selection = instances["LinkSelection"]
       @selection.on "change", @update.bind(this)
       @listenTo instances["KeyListener"], "down:16:80", () => @$el.toggle()
-      #instances["Layout"].addPlugin @el, @options.pluginOrder, 'Link Edit', true
+
       $(@el).appendTo $('#omniBox')
 
       @Create = instances['local/Create']
@@ -33,13 +33,14 @@ define [], () ->
     update: ->
       @$el.empty()
       selectedLinks = @selection.getSelectedLinks()
-      $container = $("<div class=\"node-profile-helper\"/>").appendTo(@$el)
+      $container = $('.node-profile-helper')
+      $container.find('.link-edit').remove()
       blacklist = ["selected", "source", "target", "strength", "_type", "_id"]
       # not sure whether "strength" should be in the blacklist or not...?
       _.each selectedLinks, (link) =>
         if !(link.color?) then link.color="#A9A9A9"
         else if !(link.color.toUpperCase() in colors) then link.color="#A9A9A9"
-        $linkDiv = $("<div class=\"node-profile\"/>").css("background-color","#{link.color}").appendTo($container)
+        $linkDiv = $("<div class='node-profile link-edit'></div>").appendTo $container
         @renderProfile(link, $linkDiv, blacklist)
         
 
@@ -61,10 +62,6 @@ define [], () ->
               linkInputNumber = linkInputNumber + 1
             else if property == "color"
               origColor=value
-              # if value in colors 
-              #   origColor = hexColors[colors.indexOf(value)]
-              # else if origColor in hexColors 
-              #   origColor = value
 
 
           colorEditingField = '
@@ -103,7 +100,6 @@ define [], () ->
                     savedLink['target'] = link['target']
                     savedLink['strength'] = link['strength']
                     savedLink['_Creation_Date'] = link['_Creation_Date']
-                    #console.log savedLink    
                     @graphModel.filterLinks (link) ->
                       not (savedLink['_id'] == link['_id'])
                     @graphModel.putLink(savedLink)
@@ -124,8 +120,6 @@ define [], () ->
       linkDiv.empty()
       @renderProfile(link, linkDiv, blacklist)
 
-
-
     deleteLink: (delLink, callback)=>
       @dataController.linkDelete delLink, (response) =>
         if response == "error"
@@ -138,27 +132,27 @@ define [], () ->
 
     findHeader: (link) =>
       headerName = link.name
-      if link.url?
+      if link.url? and link.url isnt ""
         realurl = ""
-        result = link.url.search(new RegExp(/^http:\/\//i));
+        result = link.url.search(new RegExp(/^(https?|ftp|dict):\/\//i));
         if !result
           realurl = link.url
         else
           realurl = 'http://'+link.url;
         headerName = '<a href='+realurl+' target="_blank">'+link.name+'</a>'
       if @graphView.findText(link.source) and @graphView.findText(link.target)
-        "(#{@graphView.findText(link.source)})-#{headerName}-(#{@graphView.findText(link.target)})"
+        "#{@graphView.findText(link.source)}-#{headerName}-#{@graphView.findText(link.target)}"
       else if @graphView.findText(link.source)
-        "(#{@graphView.findText(link.source)})-#{headerName}-(#{link.end})"
+        "#{@graphView.findText(link.source)}-#{headerName}-#{link.end}"
       else if @graphView.findText(link.target)
-        "(#{link.start})-#{headerName}-(#{@graphView.findText(link.target)})"
+        "#{link.start}-#{headerName}-#{@graphView.findText(link.target)}"
       else
-        "(#{link.start})-#{headerName}-(#{link.end})"
+        "#{link.start}-#{headerName}-#{link.end}"
 
     renderProfile: (link, linkDiv, blacklist) =>
       header = @findHeader(link)
       $linkHeader = $("<div class=\"node-profile-title\">#{header}</div>").appendTo linkDiv
-      $linkEdit = $("<i class=\"fa fa-pencil-square-o\"></i>").prependTo $linkHeader
+      $linkEdit = $("<i class=\"fa fa-pencil-square\"></i>").css("margin","6px").appendTo $linkHeader
 
       $linkDeselect = $("<i class=\"right fa fa-times\"></i>").appendTo $linkHeader
       $linkDeselect.click () => @selection.toggleSelection(link)
