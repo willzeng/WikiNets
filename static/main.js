@@ -59,7 +59,8 @@
       LinkHover: {},
       MiniMap: {},
       "Sliders": {},
-      "ForceSliders": {}
+      "ForceSliders": {},
+      "local/LinkCreationPopout": {}
     };
     return Celestrium.init(plugins, function(instances) {
       var loadEverything;

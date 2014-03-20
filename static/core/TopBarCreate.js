@@ -33,12 +33,75 @@
       };
 
       TopBarCreate.prototype.render = function() {
-        var $container, $linkingInstructions,
+        var $container, $createNodeButton, $linkHolder, $linkMoreFields, $linkSide, $linkingInstructions, $nodeHolder, $nodeInputForm, $nodeMoreFields, $nodeSide, $openLinkCreationPopout, $openNodeCreationPopout, linkInputNumber, nodeInputNumber,
           _this = this;
-        $container = $('<div id="topbarcreate">').appendTo($('#buildbar'));
-        "     $nodeSide = $('<div id=\"nodeside\" data-intro=\"Add a Node and connect it to other nodes in the graph\" data-position=\"left\">').appendTo $container\n\n     $nodeHolder = $('<textarea placeholder=\"Add Node\" id=\"nodeHolder\" name=\"textin\" rows=\"1\" cols=\"35\"></textarea>').appendTo $nodeSide\n\n     @$nodeWrapper = $('<div id=\"NodeCreateContainer\">').appendTo $nodeSide\n\n     @$nodeInputName = $('<textarea id=\"NodeCreateName\" placeholder=\"Node Name [optional]\" rows=\"1\" cols=\"35\"></textarea><br>').appendTo @$nodeWrapper\n     @$nodeInputUrl = $('<textarea id=\"NodeCreateUrl\" placeholder=\"Url [optional]\" rows=\"1\" cols=\"35\"></textarea><br>').appendTo @$nodeWrapper\n     @$nodeInputDesc = $('<textarea id=\"NodeCreateDesc\" placeholder=\"Description [optional]\" rows=\"1\" cols=\"35\"></textarea><br>').appendTo @$nodeWrapper\n     #@$nodeInputColor = $('<textarea id=\"NodeCreateColor\" placeholder=\"Color [optional]\" rows=\"1\" cols=\"35\"></textarea><br>').appendTo @$nodeWrapper\n     #@$nodeInputSize = $('<textarea id=\"NodeCreateSize\" placeholder=\"Size [optional]\" rows=\"1\" cols=\"35\"></textarea><br>').appendTo @$nodeWrapper\n\n     $nodeInputForm = $('<form id=\"NodeCreateForm\"></form>').appendTo @$nodeWrapper\n     nodeInputNumber = 0\n\n     $nodeMoreFields = $(\"<input id=\"moreNodeCreateFields\" type=\"button\" value=\"+\">\").appendTo @$nodeWrapper\n     $nodeMoreFields.click(() => \n       @addField(nodeInputNumber, \"NodeCreate\")\n       nodeInputNumber = nodeInputNumber+1\n       )\n\n     $createNodeButton = $('<input id=\"queryform\" type=\"button\" value=\"Create Node\">').appendTo @$nodeWrapper\n\n     $createNodeButton.click(@createNode)\n\n\n     # popout button for more detailed node creation\n     $openPopoutButton = $('<i class=\"right fa fa-expand\"></i>').appendTo @$nodeWrapper\n\n     $openPopoutButton.click () =>\n       @trigger 'popout:open'\n       @$nodeWrapper.hide()\n       $nodeHolder.show()\n\n\n     $linkSide = $('<div id=\"linkside\">').appendTo $container\n\n     $linkHolder = $('<textarea placeholder=\"Add Link\" id=\"linkHolder\" name=\"textin\" rows=\"1\" cols=\"35\"></textarea>').appendTo $linkSide\n\n\n     @$linkWrapper = $('<div id=\"LinkCreateContainer\">').appendTo $linkSide\n\n     @$linkInputName = $('<textarea id=\"LinkCreateName\" placeholder=\"Link Name [optional]\" rows=\"1\" cols=\"35\"></textarea><br>').appendTo @$linkWrapper\n     @$linkInputUrl = $('<textarea id=\"LinkCreateUrl\" placeholder=\"Url [optional]\" rows=\"1\" cols=\"35\"></textarea><br>').appendTo @$linkWrapper\n     @$linkInputDesc = $('<textarea id=\"LinkCreateDesc\" placeholder=\"Description [optional]\" rows=\"1\" cols=\"35\"></textarea><br>').appendTo @$linkWrapper\n\n     $linkInputForm = $('<form id=\"LinkCreateForm\"></form>').appendTo @$linkWrapper\n     linkInputNumber = 0\n\n     $linkMoreFields = $(\"<input id=\"moreLinkCreateFields\" type=\"button\" value=\"+\">\").appendTo @$linkWrapper\n     $linkMoreFields.click(() => \n       @addField(linkInputNumber, \"LinkCreate\")\n       linkInputNumber = linkInputNumber+1\n       )\n\n     @$createLinkButton = $('<input id=\"LinkCreateButton\" type=\"button\" value=\"Attach & Create Link\">').appendTo @$linkWrapper";
+        $container = $('<div id="topbarcreate">');
+        $nodeSide = $('<div id="nodeside" data-intro="Add a Node and connect it to other nodes in the graph" data-position="left">').appendTo($container);
+        $nodeHolder = $('<textarea placeholder="Add Node" id="nodeHolder" name="textin" rows="1" cols="35"></textarea>').appendTo($nodeSide);
+        this.$nodeWrapper = $('<div id="NodeCreateContainer">').appendTo($nodeSide);
+        this.$nodeInputName = $('<textarea id="NodeCreateName" placeholder=\"Node Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
+        this.$nodeInputUrl = $('<textarea id="NodeCreateUrl" placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
+        this.$nodeInputDesc = $('<textarea id="NodeCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$nodeWrapper);
+        $nodeInputForm = $('<form id="NodeCreateForm"></form>').appendTo(this.$nodeWrapper);
+        nodeInputNumber = 0;
+        $nodeMoreFields = $("<input id=\"moreNodeCreateFields\" type=\"button\" value=\"+\">").appendTo(this.$nodeWrapper);
+        $nodeMoreFields.click(function() {
+          _this.addField(nodeInputNumber, "NodeCreate");
+          return nodeInputNumber = nodeInputNumber + 1;
+        });
+        $createNodeButton = $('<input id="queryform" type="button" value="Create Node">').appendTo(this.$nodeWrapper);
+        $createNodeButton.click(this.createNode);
+        $openNodeCreationPopout = $('<i class="right fa fa-expand"></i>').appendTo(this.$nodeWrapper);
+        $openNodeCreationPopout.click(function() {
+          _this.trigger('node_create:popout:open');
+          _this.$nodeWrapper.hide();
+          return $nodeHolder.show();
+        });
+        $linkSide = $('<div id="linkside">').appendTo($container);
+        $linkHolder = $('<textarea placeholder="Add Link" id="linkHolder" name="textin" rows="1" cols="35"></textarea>').appendTo($linkSide);
+        this.$linkWrapper = $('<div id="LinkCreateContainer">').appendTo($linkSide);
+        this.$linkInputName = $('<textarea id="LinkCreateName" placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
+        this.$linkInputUrl = $('<textarea id="LinkCreateUrl" placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
+        this.$linkInputDesc = $('<textarea id="LinkCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo(this.$linkWrapper);
+        linkInputNumber = 0;
+        $linkMoreFields = $("<input id=\"moreLinkCreateFields\" type=\"button\" value=\"+\">").appendTo(this.$linkWrapper);
+        $linkMoreFields.click(function() {
+          _this.addField(linkInputNumber, "LinkCreate");
+          return linkInputNumber = linkInputNumber + 1;
+        });
+        this.$createLinkButton = $('<input id="LinkCreateButton" type="button" value="Attach & Create Link">').appendTo(this.$linkWrapper);
         $linkingInstructions = $('<span id="toplink-instructions">').appendTo($container);
-        "@$createLinkButton.click () =>\n  if @buildingLink\n    @buildingLink = false\n    @tempLink = {};\n    @sourceSet = false\n    $('#toplink-instructions').replaceWith('<span id=\"toplink-instructions\"></span>')\n    @$createLinkButton.val('Attach & Create Link')\n    @$linkInputName.focus()\n  else\n    @buildLink()\n\n@$nodeWrapper.hide()\n@$linkWrapper.hide()\n\n$nodeHolder.focus () =>\n  @$nodeWrapper.show()\n  @$nodeInputName.focus()\n  $nodeHolder.hide()\n\n$linkHolder.focus () =>\n  @$linkWrapper.show()\n  @$linkInputName.focus()\n  $linkHolder.hide()\n\n@graphView.on \"view:click\", () => \n  if @$nodeWrapper.is(':visible')\n    @$nodeWrapper.hide()\n    $nodeHolder.show()\n  if @$linkWrapper.is(':visible')\n    @$linkWrapper.hide()\n    $linkHolder.show()";
+        $openLinkCreationPopout = $('<i class="right fa fa-expand"></i>').appendTo(this.$linkWrapper);
+        $openLinkCreationPopout.click(function() {
+          _this.trigger('link_create:popout:open');
+          _this.$linkWrapper.hide();
+          return $linkHolder.show();
+        });
+        this.$createLinkButton.click(function() {
+          return _this.createLink();
+        });
+        this.$nodeWrapper.hide();
+        this.$linkWrapper.hide();
+        $nodeHolder.focus(function() {
+          _this.$nodeWrapper.show();
+          _this.$nodeInputName.focus();
+          return $nodeHolder.hide();
+        });
+        $linkHolder.focus(function() {
+          _this.$linkWrapper.show();
+          _this.$linkInputName.focus();
+          return $linkHolder.hide();
+        });
+        this.graphView.on("view:click", function() {
+          if (_this.$nodeWrapper.is(':visible')) {
+            _this.$nodeWrapper.hide();
+            $nodeHolder.show();
+          }
+          if (_this.$linkWrapper.is(':visible')) {
+            _this.$linkWrapper.hide();
+            return $linkHolder.show();
+          }
+        });
         return this.graphView.on("enter:node:click", function(node) {
           var link;
           if (_this.buildingLink) {
@@ -81,6 +144,19 @@
             }
           }
         });
+      };
+
+      TopBarCreate.prototype.createLink = function() {
+        if (this.buildingLink) {
+          this.buildingLink = false;
+          this.tempLink = {};
+          this.sourceSet = false;
+          $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>');
+          this.$createLinkButton.val('Attach & Create Link');
+          return this.$linkInputName.focus();
+        } else {
+          return this.buildLink();
+        }
       };
 
       TopBarCreate.prototype.update = function(node) {

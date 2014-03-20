@@ -8,7 +8,6 @@ define [], () ->
       super()
 
     init: (instances) ->
-      
       #require plugins
       @dataController = instances['local/Neo4jDataController']
 
@@ -22,8 +21,8 @@ define [], () ->
 
       @linkSelection = instances["LinkSelection"]
       @linkSelection.on "change", @update.bind(this)
-      #place the plugin on the whole window
-
+      
+      #place the plugin on the whol
       $addProfileHelper = $("<div class='node-profile-helper'></div>").appendTo $('#omniBox')
 
       $(@el).appendTo $('#omniBox')
@@ -32,6 +31,9 @@ define [], () ->
       if !@buildingLink
         $(".node-profile-helper").empty()
         selectedNodes = @selection.getSelectedNodes()
+
+        #find the div in which to place the profiles
+        #currently this is created in the AddNode plugin
         $container = $(".node-profile-helper")
 
         #these are they properties that are not shown in the profile
@@ -279,8 +281,7 @@ define [], () ->
 
       linkWrapperDivID = "id=" + "'source-container" + nodeID + "'"
       $linkWrapper = $('<div ' + linkWrapperDivID + ' class="linkWrapperClass">').appendTo $linkSide
-      #$linkTitleArea = $('<textarea placeholder="Title" id="nodeTitle" name="textin" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
-      # $linkInput = $('<textarea placeholder="Link : A link\'s description #key1 value1 #key2 value2" id="linkInputField" name="textin" rows="5" cols="35"></textarea><br>').appendTo @$linkWrapper
+
       $linkInputName = $('<textarea placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo $linkWrapper
       $linkInputUrl = $('<textarea placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo $linkWrapper
       $linkInputDesc = $('<textarea placeholder="Description\n #key1 value1 #key2 value2" rows="5" cols="35"></textarea><br>').appendTo $linkWrapper
@@ -291,13 +292,10 @@ define [], () ->
         @tempLink.source = node
         @buildLink(
           @parseSyntax($linkInputName.val()+" : "+$linkInputDesc.val()+" #url "+$linkInputUrl.val())
-          # if tlink.name is "" then tlink.name = "link"
-          # console.log $linkInputName.val()+" : "+$linkInputDesc.val()+" #url "+$linkInputUrl.val()
         )
         $linkInputName.val('')
         $linkInputUrl.val('')
         $linkInputDesc.val('')
-        # $linkInput.blur()
         $linkWrapper.hide()
         $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click a Node to select the target.</span>')
 
@@ -394,8 +392,3 @@ define [], () ->
       dict["_Creation_Date"]=createDate
       dict
 
-    # $(document).click(function(envent){
-
-    # });
-      # $linkWrapperSlector = $('.linkWrapperClass')
-      # console.log $linkWrapperSlector

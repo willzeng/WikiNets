@@ -109,6 +109,9 @@ require ["Celestrium"], (Celestrium) ->
     # adds a popout creation functionality to TopBarCreate
     #"local/NodeCreationPopout": {}
 
+    # adds popout creation functionality for links
+    "local/LinkCreationPopout": {}
+
     # is a plugin that filters the graphview based on link.strength
     #"LinkDistribution": {}
 
