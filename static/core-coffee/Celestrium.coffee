@@ -25,8 +25,9 @@ requirejs.config
     "../lib/VisualSearch/jquery.ui.widget": ["../jquery"]
     "../lib/VisualSearch/jquery.ui.menu": ["./jquery.ui.core", "./jquery.ui.position", "./jquery.ui.widget"]
     "../lib/VisualSearch/jquery.ui.autocomplete": ["./jquery.ui.core", "./jquery.ui.menu", "./jquery.ui.position", "./jquery.ui.widget"]
-    "../lib/colorPicker/jquery.colorPicker": ["../../lib/jquery"]
-    '../lib/chardinjs.min':["../lib/jquery"]
+    "../lib/colorPicker/jquery.colorPicker": ["../jquery"]
+    '../lib/chardinjs.min':["./jquery"]
+    '../lib/typeaheadjs/typeahead.bundle.min': ["../jquery"]
 
 
 globalLibs = [
@@ -36,7 +37,6 @@ globalLibs = [
   '../lib/d3',
   '../lib/less',
   '../lib/VisualSearch/visualsearch',
-  '../lib/colorPicker/jquery.colorPicker'
   '../lib/colorPicker/jquery.colorPicker', 
   '../lib/chardinjs.min',
   '../lib/typeaheadjs/handlebars',
