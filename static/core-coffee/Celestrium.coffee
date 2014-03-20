@@ -15,16 +15,19 @@ exposes an object with an `init` function which takes two arguments.
 
 requirejs.config
   shim:
-    "../lib/jquery.typeahead": ["../lib/jquery"]
-    "../lib/backbone": ["../lib/underscore"]
-    "../lib/backbone-0.9.10": ["../lib/underscore"]
-    "../lib/visualsearch":
-      deps: ["../lib/jquery", "../lib/jquery.ui.autocomplete", "../lib/jquery.ui.core", "../lib/jquery.ui.menu", "../lib/jquery.ui.position", "../lib/jquery.ui.widget", "../lib/underscore", "../lib/backbone-0.9.10"]
+    "../lib/jquery.typeahead": ["./jquery"]
+    "../lib/backbone": ["./underscore"]
+    "../lib/VisualSearch/visualsearch":
+      deps: ["../jquery", "./jquery.ui.autocomplete", "./jquery.ui.core", "./jquery.ui.menu", "./jquery.ui.position", "./jquery.ui.widget", "../underscore", "../backbone"]
       exports: 'VS'
-    "../lib/jquery.ui.autocomplete": ["../lib/jquery.ui.core", "../lib/jquery.ui.menu", "../lib/jquery.ui.position", "../lib/jquery.ui.widget"]
-    "../lib/jquery.ui.menu": ["../lib/jquery.ui.core", "../lib/jquery.ui.position", "../lib/jquery.ui.widget"]
+    "../lib/VisualSearch/jquery.ui.core": ["../jquery"]
+    "../lib/VisualSearch/jquery.ui.position": ["../jquery"]
+    "../lib/VisualSearch/jquery.ui.widget": ["../jquery"]
+    "../lib/VisualSearch/jquery.ui.menu": ["./jquery.ui.core", "./jquery.ui.position", "./jquery.ui.widget"]
+    "../lib/VisualSearch/jquery.ui.autocomplete": ["./jquery.ui.core", "./jquery.ui.menu", "./jquery.ui.position", "./jquery.ui.widget"]
     "../lib/colorPicker/jquery.colorPicker": ["../../lib/jquery"]
     '../lib/chardinjs.min':["../lib/jquery"]
+
 
 globalLibs = [
   '../lib/jquery',
@@ -32,7 +35,8 @@ globalLibs = [
   '../lib/backbone',
   '../lib/d3',
   '../lib/less',
-  '../lib/visualsearch',
+  '../lib/VisualSearch/visualsearch',
+  '../lib/colorPicker/jquery.colorPicker'
   '../lib/colorPicker/jquery.colorPicker', 
   '../lib/chardinjs.min',
   '../lib/typeaheadjs/handlebars',
