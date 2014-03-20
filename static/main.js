@@ -50,6 +50,7 @@
       "local/VisualSearch": {},
       "local/SimpleSearchBox": {},
       "local/NodeEdit": {},
+      "local/AddNode": {},
       "local/LinkEdit": {},
       "local/ToolBox": {},
       "local/TopBarCreate": {},

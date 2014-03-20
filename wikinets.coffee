@@ -35,7 +35,7 @@ module.exports = class MyApp
       graphDb.cypher.execute(cypherQuery).then(
         (noderes)->
           console.log "get_nodes Lookup Executed"
-          nodeList = (addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
+          nodeList = makeNodeJsonFromCypherQuery(noderes) #(addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
           response.json nodeList
       )
     )
@@ -473,8 +473,7 @@ module.exports = class MyApp
           response.send "error"
       )
     )
-
-
+    
     # Request is an array of nodes
     # Returns an array of all the nodes linked to any one of them
     app.post('/get_linked_nodes', (request,response)->
@@ -509,6 +508,9 @@ module.exports = class MyApp
     #or have a value of a key in checkKeys that contains the query
     app.post '/node_index_search', (request, response)->
       theKeys = request.body.checkKeys
+      if not theKeys?
+        theKeys=[]
+        
       query = request.body.query
       condition = "where "
       condition+="n.#{key}=~'(?i).*#{query}.*' OR " for key in theKeys
@@ -547,6 +549,24 @@ module.exports = class MyApp
             response.json nodeData
       )
 
+
+    # prefetch all nodes for typeahead
+    # this prefetches all the node names
+    app.get('/node_index_search_prefetch', (request,response)->
+      console.log "get_nodes Query Requested"
+      cypherQuery = "start n=node(*) return n;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes)->
+          console.log "get_nodes Lookup Executed"
+          nodeList = makeNodeJsonFromCypherQuery(noderes)
+
+          # typeaheadNodeList = ((if node.name? then {name: node.name, tokens:node.name.split(" ")}) for node in nodeList)
+          typeaheadNodeList = ((if node.name? then {name: node.name, tokens:node.name.split(" ")} else {name: "", tokens:""}) for node in nodeList)
+
+          response.json typeaheadNodeList
+      )
+    )
 
     #Tells the server where to listen
     port = process.env.PORT || 3000
@@ -612,4 +632,6 @@ module.exports = class MyApp
           )
       )
 
-
+    makeNodeJsonFromCypherQuery = (noderes) ->
+      nodeList = (addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
+      nodeList

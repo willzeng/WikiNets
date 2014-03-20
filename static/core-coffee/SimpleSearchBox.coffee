@@ -1,5 +1,6 @@
 # provides a search box which can add nodes to the graph
 # using fulltext search of keys and values of nodes
+# and typeahead to autocomplete the search
 define [], () ->
 
   class SimpleSearchBox extends Backbone.View
@@ -31,25 +32,41 @@ define [], () ->
     render: ->
 
       #build HTML elements
-      $container = $("<div id='visual-search-container'>").appendTo @$el
-      $searchBox = $('<input type="text" id="searchBox">')
-        .css("width", "235px")
-        .css("height", "25px")
-        .css("box-shadow", "2px 2px 4px #888888")
-        .css("border", "1px solid blue")
+      $container = $("<div id='visual-search-container'>")
+      $searchBox = $('<input type="text" class="typeahead" autocomplete="off" id="searchBox" data-intro="Search the graph" data-position="right" placeholder="Search or Add Node">"')
         .appendTo $container
-      $button = $("<input type=\"button\" value=\"Go\" style='float:right' />").appendTo $container
+      $button = $("<div id='goButton'><i class='fa fa-search'></i></div>")
+        .appendTo $container
+
+      @$el.append $container
+
+      sugg = new Bloodhound({
+          datumTokenizer: (d) -> Bloodhound.tokenizers.whitespace(d.name); ,
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          prefetch: '../node_index_search_prefetch'
+        })
+
+      sugg.initialize()
+
+      $searchBox.typeahead(null, {
+        displayKey: 'name',
+        source: sugg.ttAdapter(),
+        templates: {
+          suggestion: Handlebars.compile(
+            '<p><strong>{{name}}</strong></p>'
+          )}
+        })
 
       #call search functionality with press of ENTER key
       $searchBox.keyup (e)=>
-        if(e.keyCode == 13)
-          @searchNodesSimple $searchBox.val()
-          $searchBox.val("")
+        if(e.keyCode == 13) # enter key
+          @searchNodesSimple $('#searchBox').val()
+          $('#searchBox').typeahead('val','')
 
       #call search functionality with input text
       $button.click () =>
-        @searchNodesSimple $searchBox.val()
-        $searchBox.val("")
+        @searchNodesSimple $('#searchBox').val()
+        $('#searchBox').typeahead('val','')
 
     searchNodesSimple: (searchQuery) =>
       $.post "/node_index_search", {checkKeys: @searchableKeys, query: searchQuery}, (nodes) =>

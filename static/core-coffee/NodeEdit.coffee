@@ -20,21 +20,28 @@ define [], () ->
       @listenTo instances["KeyListener"], "down:80", () => @$el.toggle()
 
       @linkSelection = instances["LinkSelection"]
+      @linkSelection.on "change", @update.bind(this)
       
       #place the plugin on the whole window
-      $(@el).appendTo $('#omniBox')
+      #$(@el).appendTo $('#omniBox')
 
     update: ->
       if !@buildingLink
-        @$el.empty()
+        $(".node-profile-helper").empty()
         selectedNodes = @selection.getSelectedNodes()
-        $container = $("<div class=\"node-profile-helper\"/>").appendTo(@$el)
-        #these are they peoperties that are not shown in the profile
-        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color","shouldLoad"]
+
+        #find the div in which to place the profiles
+        #currently this is created in the AddNode plugin
+        $container = $(".node-profile-helper")
+
+        #these are they properties that are not shown in the profile
+        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color","shouldLoad","_Last_Edit_Date", "_Creation_Date"]
+        @blacklist = blacklist
         _.each selectedNodes, (node) =>
           if !(node.color?) then node.color="#A9A9A9"
           else if !(node.color.toUpperCase() in colors) then node.color="#A9A9A9"
-          $nodeDiv = $("<div class=\"node-profile\"/>").css("background-color","#{node.color}").appendTo($container)
+
+          $nodeDiv = $("<div class=\"node-profile\"/>").css("border","2px solid #{node.color}").appendTo($container)
           @renderProfile(node, $nodeDiv, blacklist, 4)
 
     editNode: (node, nodeDiv, blacklist) ->
@@ -43,10 +50,10 @@ define [], () ->
 
           #TODO these color settings should probably go in a settings plugin
           origColor = "#A9A9A9" #TODO: map this to the CSS file color choice for node color
-                    
+          
           header = @findHeader(node)
 
-          nodeDiv.html("<div class=\"node-profile-title\">Editing #{header} (id: #{node['_id']})</div><form id=\"Node#{node['_id']}EditForm\"></form>")
+          nodeDiv.html("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view. It is shown here because it is either selected on the graph or a search result' data-position='right'>Editing #{header}</div><form id=\"Node#{node['_id']}EditForm\"></form>")
           _.each node, (value, property) ->
             if blacklist.indexOf(property) < 0 and ["_id", "text", "color", "_Last_Edit_Date", "_Creation_Date"].indexOf(property) < 0
               newEditingFields = """
@@ -63,6 +70,12 @@ define [], () ->
                 origColor = value
 
 
+          $nodeMoreFields = $("<input id=\"moreNode#{node['_id']}EditFields\" type=\"button\" value=\"+ Add Attribute\">").appendTo(nodeDiv)
+          $nodeMoreFields.click(() =>
+            @addField(nodeInputNumber, "Node#{node['_id']}Edit")
+            nodeInputNumber = nodeInputNumber+1
+          )
+
           colorEditingField = '
             <form action="#" method="post">
                 <div class="controlset">Color<input id="color'+node['_id']+'" name="color'+node['_id']+'" type="text" value="'+origColor+'"/></div>
@@ -78,11 +91,7 @@ define [], () ->
             .attr("checked", shouldLoad)
             .prependTo $loaderHolder 
 
-          $nodeMoreFields = $("<input id=\"moreNode#{node['_id']}EditFields\" type=\"button\" value=\"+\">").appendTo(nodeDiv)
-          $nodeMoreFields.click(() =>
-            @addField(nodeInputNumber, "Node#{node['_id']}Edit")
-            nodeInputNumber = nodeInputNumber+1
-          )
+          
 
           $nodeSave = $("<input name=\"nodeSaveButton\" type=\"button\" value=\"Save\">").appendTo(nodeDiv)
           $nodeSave.click () => 
@@ -179,7 +188,7 @@ define [], () ->
     #TODO would be to define a .toString method for nodes
     findHeader: (node) ->
       if node.name?
-        if node.url?
+        if node.url? and node.url isnt ""
           realurl = ""
           result = node.url.search(new RegExp(/^(https?|ftp|dict):\/\//i));
           if !result
@@ -200,7 +209,7 @@ define [], () ->
       nodeDiv.empty()
       header = @findHeader(node)
       
-      $nodeHeader = $("<div class=\"node-profile-title\">#{header}</div>").appendTo nodeDiv
+      $nodeHeader = $("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view.' data-position='right'>#{header}</div>").appendTo nodeDiv
 
       $nodeEdit = $("<i class=\"fa fa-pencil-square \"></i>").css("margin","6px").appendTo $nodeHeader
       $nodeEdit.click () =>
@@ -243,6 +252,7 @@ define [], () ->
       #Adds button that creates link from selected node to user-inputted node
       @addLinker node, nodeDiv
 
+
       #Adds the links from this node to its neighbors
       initialSpokeNumber = 5
       $spokeHolder = $("<div class='spokeHolder'></div>").appendTo nodeDiv
@@ -269,8 +279,7 @@ define [], () ->
 
       linkWrapperDivID = "id=" + "'source-container" + nodeID + "'"
       $linkWrapper = $('<div ' + linkWrapperDivID + ' class="linkWrapperClass">').appendTo $linkSide
-      #$linkTitleArea = $('<textarea placeholder="Title" id="nodeTitle" name="textin" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
-      # $linkInput = $('<textarea placeholder="Link : A link\'s description #key1 value1 #key2 value2" id="linkInputField" name="textin" rows="5" cols="35"></textarea><br>').appendTo @$linkWrapper
+
       $linkInputName = $('<textarea placeholder=\"Link Name [optional]\" rows="1" cols="35"></textarea><br>').appendTo $linkWrapper
       $linkInputUrl = $('<textarea placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo $linkWrapper
       $linkInputDesc = $('<textarea placeholder="Description\n #key1 value1 #key2 value2" rows="5" cols="35"></textarea><br>').appendTo $linkWrapper
@@ -281,13 +290,10 @@ define [], () ->
         @tempLink.source = node
         @buildLink(
           @parseSyntax($linkInputName.val()+" : "+$linkInputDesc.val()+" #url "+$linkInputUrl.val())
-          # if tlink.name is "" then tlink.name = "link"
-          # console.log $linkInputName.val()+" : "+$linkInputDesc.val()+" #url "+$linkInputUrl.val()
         )
         $linkInputName.val('')
         $linkInputUrl.val('')
         $linkInputDesc.val('')
-        # $linkInput.blur()
         $linkWrapper.hide()
         $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Click a Node to select the target.</span>')
 
@@ -339,20 +345,20 @@ define [], () ->
           if !(spoke.color?) then spoke.color = "#A9A9A9"
           spokeID = "spokeDiv"
           $spokeDiv = $('<div class='+spokeID+'>'+spoke.name+"..."+'</div>')
-            .css("background-color","#{spoke.color}")
+            .css("border","1px solid #{spoke.color}")
             .css("padding", "4px")
             .css("margin", "1px")
             .css("border", "1px solid black")
             .css("font-size", "12px")
             .appendTo $spokesDiv
 
+          if spoke.selected
+            $spokeDiv.css("background-color","steelblue")
+          else $spokeDiv.css("background-color","white")
+
           $spokeDiv.data("link", [spoke])
           $spokeDiv.on "click", (e) =>
             clickedLink = $(e.target).data("link")[0]
-            if !clickedLink.selected
-              $(e.target).css("background-color","steelblue")
-            else 
-              $(e.target).css("background-color","#{clickedLink.color}")
             @linkSelection.toggleSelection(clickedLink)
 
       if maxSpokes < spokes.length
@@ -384,8 +390,3 @@ define [], () ->
       dict["_Creation_Date"]=createDate
       dict
 
-    # $(document).click(function(envent){
-
-    # });
-      # $linkWrapperSlector = $('.linkWrapperClass')
-      # console.log $linkWrapperSlector

@@ -39,13 +39,8 @@ define ["DataProvider"], (DataProvider) ->
 
     ###
     getLinks: (node, nodes, callback) ->
-      #console.log "NODE: ", node
-      #console.log "NODES: ", nodes"
       if nodes.length > 0
-        $.post "/get_links", {'node': node, 'nodes': nodes}, (data) -> 
-          # console.log "NODE: ", node
-          # console.log "NODES: ", nodes
-          # console.log "THE get_links POST DATA: ", data
+        $.post "/get_links", {'node': node, 'nodes': nodes}, (data) ->
           callback data
 
 
@@ -59,14 +54,11 @@ define ["DataProvider"], (DataProvider) ->
     getLinkedNodes: (nodes, callback) ->
 
       #TODO MAKE THIS GENERIC
-      makeDisplayable = (n) ->  
+      makeDisplayable = (n) ->
         n['text'] = n.name
         n
 
-      $.post "/get_linked_nodes", {'nodes': nodes}, (data) -> 
-        #console.log "NODES: ", nodes
-        #console.log "THE GET LINKED NODES POST DATA: ", data
-
+      $.post "/get_linked_nodes", {'nodes': nodes}, (data) ->
         celNodes = makeDisplayable(n) for n in data
 
         callback data
@@ -74,4 +66,3 @@ define ["DataProvider"], (DataProvider) ->
 
     getEverything: (callback) ->
       $.get('/get_nodes', callback)
-

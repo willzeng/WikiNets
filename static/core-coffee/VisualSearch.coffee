@@ -24,7 +24,7 @@ define [], () ->
 
       $container = $("<div id=\"visual-search-container\" class='search-box' style='padding-top:2px'/>").appendTo @$el
       $input = $("<div class=\"visual_search\" />").appendTo $container
-      $button = $("<input type=\"button\" value=\"Go\" style='float:left' />").appendTo $container
+      $button = $("<div id='goButton'><i class='fa fa-search'></i></div>").appendTo $container
 
       $switchSearch = $("<input type=\"button\" value=\"Advanced Search\" id='search-switch'/>").appendTo $('#omniBox')
       #$("<input type=\"button\" value=\"Advanced Search\"/>").appendTo $('#omniBox')
@@ -101,7 +101,7 @@ define [], () ->
           $.post "/search_nodes", searchQuery, (nodes) =>
             for node in nodes
               @graphModel.putNode(node)
-              #@selection.toggleSelection(node)
+              @selection.toggleSelection(node)
       else
         if  _.size(searchQuery) == 1
           # i.e. the searchBox contains only the term 'search: "links"'
