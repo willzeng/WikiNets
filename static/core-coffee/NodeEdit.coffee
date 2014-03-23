@@ -38,7 +38,7 @@ define [], () ->
         blacklist = ["index", "x", "y", "px", "py", "fixed",
                      "selected", "weight", "_id", "color",
                      "shouldLoad","_Last_Edit_Date",
-                     "_Creation_Date", "size"]
+                     "_Creation_Date"]
         @blacklist = blacklist
         _.each selectedNodes, (node) =>
           if !(node.color?) then node.color="#A9A9A9"
