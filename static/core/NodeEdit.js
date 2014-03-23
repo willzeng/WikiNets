@@ -48,7 +48,7 @@
           $(".node-profile-helper").empty();
           selectedNodes = this.selection.getSelectedNodes();
           $container = $(".node-profile-helper");
-          blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color", "shouldLoad", "_Last_Edit_Date", "_Creation_Date"];
+          blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color", "shouldLoad", "_Last_Edit_Date", "_Creation_Date", "size"];
           this.blacklist = blacklist;
           return _.each(selectedNodes, function(node) {
             var $nodeDiv, _ref;
@@ -215,7 +215,9 @@
       NodeEdit.prototype.findHeader = function(node) {
         var realurl, result;
         if (node.name != null) {
-          if ((node.url != null) && node.url !== "") {
+          if (node.email) {
+            return "<a href=\"mailto:" + node.email + "\">" + node.name + "</a>";
+          } else if (node.url) {
             realurl = "";
             result = node.url.search(new RegExp(/^(https?|ftp|dict):\/\//i));
             if (!result) {

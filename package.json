@@ -1,10 +1,27 @@
 {
-    "name":"node-example",
-    "version":"0.0.1",
-    "dependencies":{
-        "coffee-script":"*",
-        "neo4js":"0.0.3",
-        "express":"2.5.2",
-        "jade":"0.20.0"
-    }
+  "name": "rhizi",
+  "version": "0.0.1",
+  "description": "Rhizi",
+  "main": "web.js",
+  "dependencies": {
+    "express": "~2.5.2",
+    "neo4js": "~0.0.3",
+    "jade": "~0.20.0"
+  },
+  "devDependencies": {
+    "coffee-script": "~1.2.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/willzeng/WikiNets.git"
+  },
+  "author": "",
+  "license": "GPLv3",
+  "bugs": {
+    "url": "https://github.com/willzeng/WikiNets/issues"
+  },
+  "homepage": "https://github.com/willzeng/WikiNets"
 }

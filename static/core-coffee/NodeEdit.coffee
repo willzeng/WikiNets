@@ -35,7 +35,10 @@ define [], () ->
         $container = $(".node-profile-helper")
 
         #these are they properties that are not shown in the profile
-        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color","shouldLoad","_Last_Edit_Date", "_Creation_Date"]
+        blacklist = ["index", "x", "y", "px", "py", "fixed",
+                     "selected", "weight", "_id", "color",
+                     "shouldLoad","_Last_Edit_Date",
+                     "_Creation_Date", "size"]
         @blacklist = blacklist
         _.each selectedNodes, (node) =>
           if !(node.color?) then node.color="#A9A9A9"
@@ -188,7 +191,9 @@ define [], () ->
     #TODO would be to define a .toString method for nodes
     findHeader: (node) ->
       if node.name?
-        if node.url? and node.url isnt ""
+        if node.email
+          "<a href=\"mailto:#{ node.email }\">#{ node.name }</a>"
+        else if node.url
           realurl = ""
           result = node.url.search(new RegExp(/^(https?|ftp|dict):\/\//i));
           if !result

@@ -13,45 +13,113 @@
         AddNode.__super__.constructor.call(this);
       }
 
+      AddNode.prototype.buttons = [
+        {
+          id: 'participant',
+          fields: {
+            name: '',
+            url: '',
+            email: '',
+            type: 'participant',
+            size: 10,
+            color: '#66CCDD'
+          }
+        }, {
+          id: 'mentor',
+          fields: {
+            name: '',
+            url: '',
+            email: '',
+            type: 'mentor',
+            size: 10,
+            color: '#FFBB22'
+          }
+        }, {
+          id: 'project',
+          fields: {
+            name: '',
+            url: '',
+            description: '',
+            type: 'project',
+            size: 16,
+            color: '#F56545'
+          }
+        }, {
+          id: 'resource',
+          fields: {
+            name: '',
+            url: '',
+            description: '',
+            type: 'resource',
+            size: 8,
+            color: '#BBE535'
+          }
+        }, {
+          id: 'theme',
+          fields: {
+            name: '',
+            description: '',
+            type: 'theme',
+            size: 24,
+            color: '#77DDBB'
+          }
+        }, {
+          id: 'other',
+          fields: {
+            name: '',
+            description: '',
+            size: 10,
+            color: '#A9A9A9'
+          }
+        }
+      ];
+
       AddNode.prototype.init = function(instances) {
-        var $addNode, $addProfileHelper,
-          _this = this;
+        var $addNode, $addProfileHelper, $omniBox, b, button, capitalize, lazy_button_template, _i, _len, _ref, _results;
         this.dataController = instances['local/Neo4jDataController'];
         this.graphModel = instances['GraphModel'];
         this.selection = instances['NodeSelection'];
         this.graphView = instances['GraphView'];
         this.nodeEdit = instances['local/NodeEdit'];
-        $addNode = $("<div id='add-node' class='result-element'><span>Add Something</span><br/><span id='add-person-button'>Person</span><span id='add-project-button'>Project</span><span id='add-theme-button'>Theme</span><span id='add-other-button'>Other</span></div>").appendTo($('#omniBox'));
-        $addProfileHelper = $("<div class='node-profile-helper'></div>").appendTo($('#omniBox'));
-        $('#add-person-button').click(function() {
-          return _this.createNode({
-            "name": "",
-            "url": "",
-            "email": "",
-            "type": "person"
-          });
-        });
-        $('#add-project-button').click(function() {
-          return _this.createNode({
-            "name": "",
-            "url": "",
-            "description": "",
-            "type": "project"
-          });
-        });
-        $('#add-theme-button').click(function() {
-          return _this.createNode({
-            "name": "",
-            "description": "",
-            "type": "theme"
-          });
-        });
-        return $('#add-other-button').click(function() {
-          return _this.createNode({
-            "name": "",
-            "url": "",
-            "description": ""
-          });
+        capitalize = function(str) {
+          return str[0].toUpperCase() + str.slice(1);
+        };
+        lazy_button_template = function(name) {
+          return "<span id=\"add-" + name + "-button\">" + (capitalize(name)) + "</span>";
+        };
+        $omniBox = $('#omniBox');
+        $addNode = $("<div id=\"add-node\" class=\"result-element\">                      <span>Add Something</span>                      <br/>" + (((function() {
+          var _i, _len, _ref, _results;
+          _ref = this.buttons;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            b = _ref[_i];
+            _results.push(lazy_button_template(b.id));
+          }
+          return _results;
+        }).call(this)).join('')) + "</div>").appendTo($omniBox);
+        $addProfileHelper = $('<div class="node-profile-helper"></div>').appendTo($omniBox);
+        _ref = this.buttons;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          button = _ref[_i];
+          _results.push(this.initButton(button.id, button.fields));
+        }
+        return _results;
+      };
+
+      AddNode.prototype.initButton = function(name, fields) {
+        var _this = this;
+        return $("#add-" + name + "-button").click(function() {
+          var k, options, v;
+          options = {};
+          if (fields != null) {
+            for (k in fields) {
+              v = fields[k];
+              options[k] = v;
+            }
+          }
+          return _this.createNode(options);
         });
       };
 
