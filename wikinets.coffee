@@ -474,27 +474,6 @@ module.exports = class MyApp
       )
     )
     
-    app.get('/node_index_search_prefetch', (request,response)->
-      console.log "get_nodes Query Requested"
-      cypherQuery = "start n=node(*) return n;"
-      console.log "Executing " + cypherQuery
-      graphDb.cypher.execute(cypherQuery).then(
-        (noderes)->
-          console.log "get_nodes Lookup Executed"
-          nodeList = makeNodeJsonFromCypherQuery(noderes)
-
-          typeaheadNodeList = []
-          for node in nodeList
-            typeaheadNode = {}
-            typeaheadNode['name'] = node['name']
-            tokens = []
-            if typeaheadNode['name']?
-              typeaheadNode['tokens'] = typeaheadNode['name'].split(" ")
-              typeaheadNodeList.push(typeaheadNode)
-          response.json typeaheadNodeList
-      )
-    )
-
     # Request is an array of nodes
     # Returns an array of all the nodes linked to any one of them
     app.post('/get_linked_nodes', (request,response)->
@@ -571,26 +550,8 @@ module.exports = class MyApp
       )
 
 
-    #prefetch all nodes for typeahead
-    app.get('/node_index_search_prefetch1', (request, response)->
-      console.log "get_nodes Query Requested"
-      cypherQuery = "start n=node(*) return n;"
-      console.log "Executing " + cypherQuery
-      graphDb.cypher.execute(cypherQuery).then(
-        (noderes)->
-          console.log "node index search prefeterh Executed"
-          nodeList = (addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
-          typeaheadNodeList = []
-          for node in nodeList
-            typeaheadNode = {}
-            typeaheadNode['name'] = node.name
-            tokens = node.name.split()
-            typeaheadNode['tokens'] = tokens
-            typeaheadNodeList.append(typeaheadNode)
-          response.json typeaheadNodeList
-      )
-    )
-
+    # prefetch all nodes for typeahead
+    # this prefetches all the node names
     app.get('/node_index_search_prefetch', (request,response)->
       console.log "get_nodes Query Requested"
       cypherQuery = "start n=node(*) return n;"
@@ -600,14 +561,9 @@ module.exports = class MyApp
           console.log "get_nodes Lookup Executed"
           nodeList = makeNodeJsonFromCypherQuery(noderes)
 
-          typeaheadNodeList = []
-          for node in nodeList
-            typeaheadNode = {}
-            typeaheadNode['name'] = node['name']
-            tokens = []
-            if typeaheadNode['name']?
-              typeaheadNode['tokens'] = typeaheadNode['name'].split(" ")
-              typeaheadNodeList.push(typeaheadNode)
+          # typeaheadNodeList = ((if node.name? then {name: node.name, tokens:node.name.split(" ")}) for node in nodeList)
+          typeaheadNodeList = ((if node.name? then {name: node.name, tokens:node.name.split(" ")} else {name: "", tokens:""}) for node in nodeList)
+
           response.json typeaheadNodeList
       )
     )

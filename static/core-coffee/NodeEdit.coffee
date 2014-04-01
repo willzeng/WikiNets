@@ -8,7 +8,6 @@ define [], () ->
       super()
 
     init: (instances) ->
-      
       #require plugins
       @dataController = instances['local/Neo4jDataController']
 
@@ -360,10 +359,6 @@ define [], () ->
           $spokeDiv.data("link", [spoke])
           $spokeDiv.on "click", (e) =>
             clickedLink = $(e.target).data("link")[0]
-            # if !clickedLink.selected
-            #   $(e.target).css("background-color","steelblue")
-            # else 
-            #   $(e.target).css("background-color","#{clickedLink.color}")
             @linkSelection.toggleSelection(clickedLink)
 
       if maxSpokes < spokes.length

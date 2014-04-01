@@ -24,11 +24,10 @@ define [], () ->
       @linkSelection = instances["LinkSelection"]
 
     render: ->
-      
+
       #$container = $('<div id="topbarcreate">').appendTo @$el
 
       $container = $('<div id="topbarcreate">').appendTo $('#buildbar')
-      """
       $nodeSide = $('<div id="nodeside" data-intro="Add a Node and connect it to other nodes in the graph" data-position="left">').appendTo $container
 
       $nodeHolder = $('<textarea placeholder="Add Node" id="nodeHolder" name="textin" rows="1" cols="35"></textarea>').appendTo $nodeSide
@@ -45,7 +44,7 @@ define [], () ->
       nodeInputNumber = 0
 
       $nodeMoreFields = $("<input id=\"moreNodeCreateFields\" type=\"button\" value=\"+\">").appendTo @$nodeWrapper
-      $nodeMoreFields.click(() => 
+      $nodeMoreFields.click(() =>
         @addField(nodeInputNumber, "NodeCreate")
         nodeInputNumber = nodeInputNumber+1
         )
@@ -54,20 +53,19 @@ define [], () ->
 
       $createNodeButton.click(@createNode)
 
- 
       # popout button for more detailed node creation
-      $openPopoutButton = $('<i class="right fa fa-expand"></i>').appendTo @$nodeWrapper
+      $openNodeCreationPopout = $('<i class="right fa fa-expand"></i>').appendTo @$nodeWrapper
 
-      $openPopoutButton.click () =>
-        @trigger 'popout:open'
+      $openNodeCreationPopout.click () =>
+        @trigger 'node_create:popout:open'
         @$nodeWrapper.hide()
         $nodeHolder.show()
 
 
+      ## Link Creation Dropdown
       $linkSide = $('<div id="linkside">').appendTo $container
 
       $linkHolder = $('<textarea placeholder="Add Link" id="linkHolder" name="textin" rows="1" cols="35"></textarea>').appendTo $linkSide
-
 
       @$linkWrapper = $('<div id="LinkCreateContainer">').appendTo $linkSide
 
@@ -75,29 +73,28 @@ define [], () ->
       @$linkInputUrl = $('<textarea id="LinkCreateUrl" placeholder="Url [optional]" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
       @$linkInputDesc = $('<textarea id="LinkCreateDesc" placeholder="Description [optional]" rows="1" cols="35"></textarea><br>').appendTo @$linkWrapper
 
-      $linkInputForm = $('<form id="LinkCreateForm"></form>').appendTo @$linkWrapper
       linkInputNumber = 0
 
       $linkMoreFields = $("<input id=\"moreLinkCreateFields\" type=\"button\" value=\"+\">").appendTo @$linkWrapper
-      $linkMoreFields.click(() => 
+      $linkMoreFields.click(() =>
         @addField(linkInputNumber, "LinkCreate")
         linkInputNumber = linkInputNumber+1
         )
 
       @$createLinkButton = $('<input id="LinkCreateButton" type="button" value="Attach & Create Link">').appendTo @$linkWrapper
-      """
+      
       $linkingInstructions = $('<span id="toplink-instructions">').appendTo $container
-      """
+
+      # popout button for more detailed node creation
+      $openLinkCreationPopout = $('<i class="right fa fa-expand"></i>').appendTo @$linkWrapper
+
+      $openLinkCreationPopout.click () =>
+        @trigger 'link_create:popout:open'
+        @$linkWrapper.hide()
+        $linkHolder.show()
+
       @$createLinkButton.click () =>
-        if @buildingLink
-          @buildingLink = false
-          @tempLink = {};
-          @sourceSet = false
-          $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>')
-          @$createLinkButton.val('Attach & Create Link')
-          @$linkInputName.focus()
-        else
-          @buildLink()
+        @createLink()
 
       @$nodeWrapper.hide()
       @$linkWrapper.hide()
@@ -112,20 +109,20 @@ define [], () ->
         @$linkInputName.focus()
         $linkHolder.hide()
 
-      @graphView.on "view:click", () => 
+      @graphView.on "view:click", () =>
         if @$nodeWrapper.is(':visible')
           @$nodeWrapper.hide()
           $nodeHolder.show()
         if @$linkWrapper.is(':visible')
           @$linkWrapper.hide()
           $linkHolder.show()
-      """
+
       @graphView.on "enter:node:click", (node) =>
         if @buildingLink
           if @sourceSet
             @tempLink.target = node
             link = @tempLink
-            @dataController.linkAdd(link, (linkres)=> 
+            @dataController.linkAdd(link, (linkres)=>
               newLink = linkres
               allNodes = @graphModel.getNodes()
               newLink.source = n for n in allNodes when n['_id'] is link.source['_id']
@@ -147,7 +144,18 @@ define [], () ->
             @tempLink.source = node
             @sourceSet = true
             $('#toplink-instructions').replaceWith('<span id="toplink-instructions" style="color:black; font-size:20px">Source:' + @findHeader(node) + ' (' + node['_id'] + ')<br />Click a node to select it as the link target.</span>')
-   
+
+
+    createLink: () ->
+      if @buildingLink
+        @buildingLink = false
+        @tempLink = {};
+        @sourceSet = false
+        $('#toplink-instructions').replaceWith('<span id="toplink-instructions"></span>')
+        @$createLinkButton.val('Attach & Create Link')
+        @$linkInputName.focus()
+      else
+        @buildLink()
 
     update: (node) ->
       @selection.getSelectedNodes()
@@ -180,7 +188,7 @@ define [], () ->
              /submitOK/ is a boolean indicating whether all property names are
              legal
     ###
-    assign_properties: (form_name, is_illegal = @dataController.is_illegal) => 
+    assign_properties: (form_name, is_illegal = @dataController.is_illegal) =>
         submitOK = true
         propertyObject = {}
         createDate = new Date()
