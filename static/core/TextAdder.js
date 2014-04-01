@@ -56,8 +56,7 @@
           };
           console.log("onenode");
           return this.dataController.nodeAdd(node, function(newNode) {
-            _this.graphModel.putNode(newNode);
-            return _this.selection.toggleSelection(newNode);
+            return _this.graphModel.putNode(newNode);
           });
         } else {
           sourceNode = {

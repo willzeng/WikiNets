@@ -109,10 +109,10 @@ require ["Celestrium"], (Celestrium) ->
     "ForceSliders": {}
 
     # adds a popout creation functionality to TopBarCreate for nodes
-    "local/NodeCreationPopout": {}
+    #"local/NodeCreationPopout": {}
 
     # adds popout creation functionality for links
-    "local/LinkCreationPopout": {}
+    #"local/LinkCreationPopout": {}
 
     # is a plugin that filters the graphview based on link.strength
     #"LinkDistribution": {}
@@ -120,11 +120,26 @@ require ["Celestrium"], (Celestrium) ->
   # initialize the plugins and execute a callback once done
   Celestrium.init plugins, (instances) ->
 
-    loadEverything = (nodes) -> 
-      instances["GraphModel"].putNode node for node in nodes
+    #gets the global parameters passed to index.jade and set there
+    #by inline js
+    require(['global'], (global)-> 
 
-    #Prepopulate the GraphModel with all the nodes and links
-    $.get('/get_default_nodes', loadEverything)
+      loadEverything = (nodes) -> 
+        instances["GraphModel"].putNode node for node in nodes
+        #preSelects a node if there is a parameter to preselect one
+        if global.preSelection isnt false then preSelectNode() 
 
-    # this allows all link strengths to be visible
-    instances["GraphView"].getLinkFilter().set("threshold", 0)
+      #Prepopulate the GraphModel with all the nodes and links
+      $.get('/get_default_nodes', loadEverything)
+
+      # this allows all link strengths to be visible
+      instances["GraphView"].getLinkFilter().set("threshold", 0)
+
+      preSelectNode = () ->
+        theNode = node for node in instances["GraphModel"].getNodes() when node._id is ""+global.preSelection
+        if theNode? then instances["NodeSelection"].toggleSelection(theNode)
+
+    )
+
+
+

@@ -12,12 +12,16 @@ html
     link(href="/lib/chardinjs.css", rel="stylesheet")
     link(rel="stylesheet", href="/less/typeahead.css", type="text/css")
     script(type='text/javascript', data-main="main", src="/lib/require.js") //loads main.js
+    script
+      define('global', {
+            preSelection: !{nodeID},
+      })
 
   body
     #maingraph
 
     #buildbar
-      #menuButton R 
+      #menuButton R
         i(style="font-size:14px")
 
       #omniBox

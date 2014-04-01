@@ -61,22 +61,37 @@
       LinkHover: {},
       MiniMap: {},
       "Sliders": {},
-      "ForceSliders": {},
-      "local/NodeCreationPopout": {}
+      "ForceSliders": {}
     };
     return Celestrium.init(plugins, function(instances) {
-      var loadEverything;
-      loadEverything = function(nodes) {
-        var node, _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = nodes.length; _i < _len; _i++) {
-          node = nodes[_i];
-          _results.push(instances["GraphModel"].putNode(node));
-        }
-        return _results;
-      };
-      $.get('/get_default_nodes', loadEverything);
-      return instances["GraphView"].getLinkFilter().set("threshold", 0);
+      return require(['global'], function(global) {
+        var loadEverything, preSelectNode;
+        loadEverything = function(nodes) {
+          var node, _i, _len;
+          for (_i = 0, _len = nodes.length; _i < _len; _i++) {
+            node = nodes[_i];
+            instances["GraphModel"].putNode(node);
+          }
+          if (global.preSelection !== false) {
+            return preSelectNode();
+          }
+        };
+        $.get('/get_default_nodes', loadEverything);
+        instances["GraphView"].getLinkFilter().set("threshold", 0);
+        return preSelectNode = function() {
+          var node, theNode, _i, _len, _ref;
+          _ref = instances["GraphModel"].getNodes();
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            node = _ref[_i];
+            if (node._id === "" + global.preSelection) {
+              theNode = node;
+            }
+          }
+          if (theNode != null) {
+            return instances["NodeSelection"].toggleSelection(theNode);
+          }
+        };
+      });
     });
   });
 

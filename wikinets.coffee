@@ -16,7 +16,10 @@ module.exports = class MyApp
       app.use express.static(__dirname+'/static')
 
     app.get('/', (request,response)->
-      response.render('index.jade')
+      console.log "this is the query", request.query
+      args = {}
+      if request.query.nodeID? then args.nodeID = request.query.nodeID else args.nodeID = false
+      response.render('index.jade', args)
     )
 
     ###  Responds with a JSON formatted for D3JS viz of the entire Neo4j database ###
@@ -567,6 +570,7 @@ module.exports = class MyApp
           response.json typeaheadNodeList
       )
     )
+
 
     #Tells the server where to listen
     port = process.env.PORT || 3000

@@ -35,7 +35,7 @@
       TopBarCreate.prototype.render = function() {
         var $container, $createNodeButton, $linkHolder, $linkMoreFields, $linkSide, $linkingInstructions, $nodeHolder, $nodeInputForm, $nodeMoreFields, $nodeSide, $openLinkCreationPopout, $openNodeCreationPopout, linkInputNumber, nodeInputNumber,
           _this = this;
-        $container = $('<div id="topbarcreate">').appendTo($('#buildbar'));
+        $container = $('<div id="topbarcreate">');
         $nodeSide = $('<div id="nodeside" data-intro="Add a Node and connect it to other nodes in the graph" data-position="left">').appendTo($container);
         $nodeHolder = $('<textarea placeholder="Add Node" id="nodeHolder" name="textin" rows="1" cols="35"></textarea>').appendTo($nodeSide);
         this.$nodeWrapper = $('<div id="NodeCreateContainer">').appendTo($nodeSide);
