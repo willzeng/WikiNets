@@ -79,7 +79,7 @@
         $.get('/get_default_nodes', loadEverything);
         instances["GraphView"].getLinkFilter().set("threshold", 0);
         return preSelectNode = function() {
-          var node, theNode, _i, _len, _ref;
+          var node, prefiller, theNode, _i, _len, _ref;
           _ref = instances["GraphModel"].getNodes();
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             node = _ref[_i];
@@ -88,8 +88,12 @@
             }
           }
           if (theNode != null) {
-            return instances["NodeSelection"].toggleSelection(theNode);
+            instances["NodeSelection"].toggleSelection(theNode);
           }
+          prefiller = '@' + theNode.name + ' ';
+          $('#textAdder-input').val(prefiller);
+          $('#textAdder-input').focus();
+          return $('#textAdder-input')[0].setSelectionRange(prefiller.length, prefiller.length);
         };
       });
     });

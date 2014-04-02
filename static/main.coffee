@@ -138,6 +138,10 @@ require ["Celestrium"], (Celestrium) ->
       preSelectNode = () ->
         theNode = node for node in instances["GraphModel"].getNodes() when node._id is ""+global.preSelection
         if theNode? then instances["NodeSelection"].toggleSelection(theNode)
+        prefiller = '@'+theNode.name+' '
+        $('#textAdder-input').val(prefiller)
+        $('#textAdder-input').focus()
+        $('#textAdder-input')[0].setSelectionRange(prefiller.length, prefiller.length)
 
     )
 
