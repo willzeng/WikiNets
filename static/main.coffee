@@ -88,7 +88,7 @@ require ["Celestrium"], (Celestrium) ->
 
     # adds a dropdown menu on the top left with 
     # About information and some basic display commands
-    DropdownMenu: {}
+    #DropdownMenu: {}
 
     # Allows you to get the neighbors of a nodes
     # currently implemented by right click
