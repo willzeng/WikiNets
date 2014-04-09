@@ -36,7 +36,7 @@ define [], () ->
       @initialWindowHeight = initialWindowHeight
       @force = d3.layout.force()
         .size([initialWindowWidth, initialWindowHeight])
-        .charge(-2000)
+        .charge(-1200)
         .gravity(0.2)
       @linkStrength = (link) =>
         return (link.strength - @linkFilter.get("threshold")) / (1.0 - @linkFilter.get("threshold"))
@@ -202,14 +202,15 @@ define [], () ->
       
       getSize = (node) =>
         if (node.size>0) 
-        	Math.min((node.size),100)
+        	Math.min((node.size),100)/100*60+6
         else if node.type is "topic" 
-        	20
-        else 8
+        	15
+        else
+          6
 
 
       link.exit().remove()
-      link.attr "stroke-width", (link) => 10 * (@linkStrength link)
+      link.attr "stroke-width", (link) => 8 * (@linkStrength link)
       node = @nodeSelection = d3.select(@el).select(".nodeContainer").selectAll(".node").data(nodes, @model.get("nodeHash"))
       #disable node dragging
       nodeEnter = node.enter().append("g").attr("class", "node").call(@force.drag)

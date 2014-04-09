@@ -3,7 +3,7 @@ define [], () ->
   class ForceSliders
     init: (instances) ->
       scale = d3.scale.linear()
-        .domain([-20, -6000])
+        .domain([-40, -8000])
         .range([0, 100])
       force = instances["GraphView"].getForceLayout()
       instances["Sliders"].addSlider "Spacing", scale(force.charge()), (val) ->
