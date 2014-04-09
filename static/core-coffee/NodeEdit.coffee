@@ -190,20 +190,21 @@ define [], () ->
     #TODO would be to define a .toString method for nodes
     findHeader: (node) ->
       if node.name?
-        if node.url? and node.url isnt ""
+          text = node.name
+      else if node.title?
+          text = node.title
+      else
+          ''
+      if node.url? and node.url isnt ""
           realurl = ""
           result = node.url.search(new RegExp(/^(https?|ftp|dict):\/\//i));
           if !result
             realurl = node.url
           else
             realurl = 'http://'+node.url;
-          '<a href='+realurl+' target="_blank">'+node.name+'</a>'
-        else
-          node.name
-      else if node.title?
-        node.title
+          '<a href="'+realurl+'" target="_blank">'+text+'</a>'
       else
-        ''
+          text
 
     #This profile is rendered for nodes whenever they are selected.
     #Outputs: relevant properties, values, an editting button, and a deselection button
