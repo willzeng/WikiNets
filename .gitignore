@@ -1,2 +1,4 @@
 # ignore files here
 *~
+static/core/**
+static/main.js
