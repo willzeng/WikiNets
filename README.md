@@ -1,17 +1,17 @@
-WikiNets
+Rhizi
 ========
 
-This is the code for WikiNets. Feel free to contribute. It's available under a GNU GPL v3 license, the text of which is bundled, but in short: you're free to take this code and modify it as you wish, on the condition that you declare any changes you make, and pass on this freedom and responsibility in any release of your altered code. Also you should generally be nice.
+This is the code for Rhizi. Feel free to contribute. It's available under a GNU GPL v3 license, the text of which is bundled, but in short: you're free to take this code and modify it as you wish, on the condition that you declare any changes you make, and pass on this freedom and responsibility in any release of your altered code. Also you should generally be nice.
 
 **Links**
 
-+ [Home Page](http://wikinets.co.uk)
-+ [Stable Version](http://wikinets-demo.herokuapp.com)
-+ [Edge](http://wikinets-edge.herokuapp.com)
++ [Home Page](http://rhizi.net)
++ [Stable Version](http://rhizi-rhizi.herokuapp.com)
++ [Edge](http://rhizi-demo.herokuapp.com)
 
 ##Setup
 
-WikiNets can be set to work with a local WikiNet on your machine or with a WikiNet in the cloud.
+Rhizi can be set to work with a local Rhizi on your machine or with a Rhizi in the cloud.
 
 ###Cloud DB Option
 
@@ -20,7 +20,7 @@ By default it is set-up to work with one free sandbox WikiNet that everyone shar
 To run:
 
   ```
-  git clone https://github.com/willzeng/WikiNets
+  git clone https://github.com/willzeng/Rhizi
   cd wikinets
   npm install
   sh server.sh
