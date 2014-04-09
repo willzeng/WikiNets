@@ -90,6 +90,9 @@ require ["Celestrium"], (Celestrium) ->
     # About information and some basic display commands
     #DropdownMenu: {}
 
+    # adds a filter for node tags
+    NodeTagFilter: {}
+
     # Allows you to get the neighbors of a nodes
     # currently implemented by right click
     Expander: {}
