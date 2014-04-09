@@ -210,50 +210,77 @@ define [], () ->
     #Outputs: relevant properties, values, an editting button, and a deselection button
     renderProfile: (node, nodeDiv, blacklist, propNumber) =>
       nodeDiv.empty()
-      header = @findHeader(node)
+
+      if node.type == "project"
       
-      $nodeHeader = $("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view.' data-position='right'>#{header}</div>").appendTo nodeDiv
+        $nodeHeader = $("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view.' data-position='right'><a href='#{node.url}'>#{node.ProjectTitle}</a></div>").appendTo nodeDiv
 
-      #$nodeEdit = $("<i class=\"fa fa-pencil-square \"></i>").css("margin","6px").appendTo $nodeHeader
-      #$nodeEdit.click () =>
-      #  @editNode(node, nodeDiv, blacklist)
+        $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").css("margin","1px").appendTo $nodeHeader
+        $nodeDeselect.click () => @selection.toggleSelection(node)
 
-      $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").css("margin","1px").appendTo $nodeHeader
-      $nodeDeselect.click () => @selection.toggleSelection(node)
+        mainProps = ["LeadName", "LeadInstitution", "Description"]
+        otherProps = ["Theme", "Votes", "Organisations"]
+        if node.VideoUrl?
+            $("<iframe width=\"280\" height=\"210\" src=\"#{node.VideoUrl}\" frameborder=\"0\" allowfullscreen></iframe>").appendTo nodeDiv
+        for info in mainProps
+           if node[info]?
+               if node[info].length > 50
+                   $property = $("<div class=\"node-profile-property\">#{node[info].substring(0,47)}</div>").appendTo nodeDiv
+                   propertyFull = "<div class=\"node-profile-property\">#{node[info]}</div>"
+                   $showMore = $("<a href='#'>...</a>").appendTo $property
+                   $showMore.click () =>
+                       $property.replaceWith(propertyFull)
+               else
+                   $("<div class=\"node-profile-property\">#{node[info]}</div>").appendTo nodeDiv
+        for info in otherProps
+           if node[info]?
+               $("<div class=\"node-profile-property\">#{info}: #{node[info]}</div>").appendTo nodeDiv
 
-      whitelist = ["description", "url"]
+      else
+        header = @findHeader(node)
+      
+        $nodeHeader = $("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view.' data-position='right'>#{header}</div>").appendTo nodeDiv
 
-      #limits number of displayed properties to propNumber (default: propNumber=4)
-      nodeLength = 0
-      for p,v of node
-        if !(p in blacklist)
-          nodeLength = nodeLength+1
+        #$nodeEdit = $("<i class=\"fa fa-pencil-square \"></i>").css("margin","6px").appendTo $nodeHeader
+        #$nodeEdit.click () =>
+        #  @editNode(node, nodeDiv, blacklist)
 
-      counter = 0
-      _.each node, (value, property) ->
-        if counter >= propNumber
-          return
-        value += ""
-        if blacklist.indexOf(property) < 0
-          if value?
-            makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi,"<a href=\"$1\" target=\"_blank\" style=\"target-new: tab;\">$1</a>")
-          else
-            makeLinks = value
-          if property in whitelist
-            $("<div class=\"node-profile-property\">#{makeLinks}</div>").appendTo nodeDiv 
-          else if property == "_Last_Edit_Date" or property=="_Creation_Date"
-            $("<div class=\"node-profile-property\">#{property}:  #{makeLinks.substring(4,21)}</div>").appendTo nodeDiv  
-          else
-            $("<div class=\"node-profile-property\">#{property}:  #{makeLinks}</div>").appendTo nodeDiv
-          counter++ 
+        $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").css("margin","1px").appendTo $nodeHeader
+        $nodeDeselect.click () => @selection.toggleSelection(node)
 
-      if propNumber < nodeLength
-        $showMore = $("<div class='showMore'><a href='#'>Show More...</a></div>").appendTo nodeDiv 
-        $showMore.click () =>
-          @renderProfile(node, nodeDiv, blacklist, propNumber+10)
+        whitelist = ["description", "url"]
+
+        #limits number of displayed properties to propNumber (default: propNumber=4)
+        nodeLength = 0
+        for p,v of node
+          if !(p in blacklist)
+            nodeLength = nodeLength+1
+
+        counter = 0
+        _.each node, (value, property) ->
+          if counter >= propNumber
+            return
+          value += ""
+          if blacklist.indexOf(property) < 0
+            if value?
+              makeLinks = value.replace(/((https?|ftp|dict):[^'">\s]+)/gi,"<a href=\"$1\" target=\"_blank\" style=\"target-new: tab;\">$1</a>")
+            else
+              makeLinks = value
+            if property in whitelist
+              $("<div class=\"node-profile-property\">#{makeLinks}</div>").appendTo nodeDiv 
+            else if property == "_Last_Edit_Date" or property=="_Creation_Date"
+              $("<div class=\"node-profile-property\">#{property}:  #{makeLinks.substring(4,21)}</div>").appendTo nodeDiv  
+            else
+              $("<div class=\"node-profile-property\">#{property}:  #{makeLinks}</div>").appendTo nodeDiv
+            counter++ 
+
+        if propNumber < nodeLength
+          $showMore = $("<div class='showMore'><a href='#'>Show More...</a></div>").appendTo nodeDiv 
+          $showMore.click () =>
+            @renderProfile(node, nodeDiv, blacklist, propNumber+10)
           
-      #Adds button that creates link from selected node to user-inputted node
-      #@addLinker node, nodeDiv
+        #Adds button that creates link from selected node to user-inputted node
+        #@addLinker node, nodeDiv
 
 
       #Adds the links from this node to its neighbors
