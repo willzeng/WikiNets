@@ -218,7 +218,7 @@ define [], () ->
         $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").css("margin","1px").appendTo $nodeHeader
         $nodeDeselect.click () => @selection.toggleSelection(node)
 
-        mainProps = ["LeadName", "LeadInstitution", "Description"]
+        mainProps = ["LeadName", "LeadInstitution", "description"]
         otherProps = ["Theme", "Votes", "Organisations"]
         if node.VideoUrl?
             $("<iframe width=\"280\" height=\"210\" src=\"#{node.VideoUrl}\" frameborder=\"0\" allowfullscreen></iframe>").appendTo nodeDiv
