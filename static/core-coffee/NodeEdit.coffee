@@ -218,23 +218,31 @@ define [], () ->
         $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").css("margin","1px").appendTo $nodeHeader
         $nodeDeselect.click () => @selection.toggleSelection(node)
 
-        mainProps = ["LeadName", "LeadInstitution", "description"]
+        #mainProps = ["LeadName", "LeadInstitution", "description"]
         otherProps = ["Theme", "Votes", "Organisations"]
         if node.VideoUrl?
             $("<iframe width=\"280\" height=\"210\" src=\"#{node.VideoUrl}\" frameborder=\"0\" allowfullscreen></iframe>").appendTo nodeDiv
-        for info in mainProps
-           if node[info]?
-               if node[info].length > 50
-                   $property = $("<div class=\"node-profile-property\">#{node[info].substring(0,47)}</div>").appendTo nodeDiv
-                   propertyFull = "<div class=\"node-profile-property\">#{node[info]}</div>"
-                   $showMore = $("<a href='#'>...</a>").appendTo $property
-                   $showMore.click () =>
-                       $property.replaceWith(propertyFull)
-               else
-                   $("<div class=\"node-profile-property\">#{node[info]}</div>").appendTo nodeDiv
+        if node.LeadName? and node.LeadInstitution?
+            $("<div class=\"node-profile-property\">#{node.LeadName}, #{node.LeadInstitution}</div>").appendTo nodeDiv
+        else if node.LeadName?
+            $("<div class=\"node-profile-property\">#{node.LeadName}</div>").appendTo nodeDiv
+        else if node.LeadInstitution?
+            $("<div class=\"node-profile-property\">#{node.LeadInstitution}</div>").appendTo nodeDiv
+        if node.description?
+            $("<div class=\"node-profile-property\">#{node.description}</div>").appendTo nodeDiv
+        #for info in mainProps
+        #   if node[info]?
+        #       if node[info].length > 50
+        #           $property = $("<div class=\"node-profile-property\">#{node[info].substring(0,47)}</div>").appendTo nodeDiv
+        #           propertyFull = "<div class=\"node-profile-property\">#{node[info]}</div>"
+        #           $showMore = $("<a href='#'>...</a>").appendTo $property
+        #           $showMore.click () =>
+        #               $property.replaceWith(propertyFull)
+        #       else
+        #           $("<div class=\"node-profile-property\">#{node[info]}</div>").appendTo nodeDiv
         for info in otherProps
            if node[info]?
-               $("<div class=\"node-profile-property\">#{info}: #{node[info]}</div>").appendTo nodeDiv
+               $("<div class=\"node-profile-property\"><i>#{info}</i>: #{node[info]}</div>").appendTo nodeDiv
 
       else
         header = @findHeader(node)
