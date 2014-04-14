@@ -1,0 +1,19 @@
+{
+    "tags": {
+        "allowUnknownTags": true
+    },
+    "opts": {
+        "recurse": true,
+        "verbose": true
+    },
+    "templates": {
+        "cleverLinks": true,
+        "monospaceLinks": true,
+        "openGraph": {},
+        "meta": {}
+    },
+    "plugins": ["plugins/markdown"],
+    "markdown": {
+        "parser": "gfm"
+    }
+}

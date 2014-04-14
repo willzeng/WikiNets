@@ -1,0 +1,12 @@
+apidocs:
+  - 'clean:apidocs'
+  - 'jsdoc'
+
+docs:
+  - 'clean:docs'
+  - 'bfdocs'
+  - 'apidocs'
+
+rtfm:
+  - 'docs'
+  - 'connect:docs'
