@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Beautiful Docs</title>
+
+    <link type="text/css" rel="stylesheet" href="assets/css/reset.css">
+    <link type="text/css" rel="stylesheet" href="http://yandex.st/highlightjs/6.1/styles/sunburst.min.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/docs.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/print.css" media="print">
+    
+
+    <script type="text/javascript" src="assets/js/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="http://yandex.st/highlightjs/6.1/highlight.min.js"></script>
+    <script type="text/javascript" src="assets/js/lunr.min.js"></script>
+
+    
+
+    <script type="text/javascript">var BASE_URL = "";</script>
+    <script type="text/javascript" src="assets/js/viewer.js"></script>
+
+    
+</head>
+<body>
+    <div id="page">
+        <a name="top" />
+        <header id="header">
+            <h1><a href="">Beautiful Docs</a></h1>
+        </header>
+        
+
+<div id="sidebar">
+    <form action="search.html"><input id="search" type="text" placeholder="Search" name="q" /></form>
+    <nav id="toc">
+        
+    <ol>
+    
+        <li>
+            <a href="readme.html#readme">Readme</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+        <li>
+            <a href="index.html#index">Index</a>
+            
+                
+    <ol>
+    
+</ol>
+
+            
+        </li>
+    
+</ol>
+
+    </nav>
+    
+    <nav id="links">
+        <ul>
+            
+        </ul>
+    </nav>
+    
+</div>
+
+        <div id="content">
+            <h1 id="wikinets">WikiNets</h1>
+<p>This is the code for WikiNets. Feel free to contribute. It&#39;s available under a GNU GPL v3 license, the text of which is bundled, but in short: you&#39;re free to take this code and modify it as you wish, on the condition that you declare any changes you make, and pass on this freedom and responsibility in any release of your altered code. Also you should generally be nice.</p>
+<p><strong>Links</strong></p>
+<ul>
+<li><a href="http://wikinets.co.uk">Home Page</a></li>
+<li><a href="http://wikinets-demo.herokuapp.com">Stable Version</a></li>
+<li><a href="http://wikinets-edge.herokuapp.com">Edge</a></li>
+</ul>
+<h2 id="setup">Setup</h2>
+<p>WikiNets can be set to work with a local WikiNet on your machine or with a WikiNet in the cloud.</p>
+<h3 id="cloud-db-option">Cloud DB Option</h3>
+<p>By default it is set-up to work with one free sandbox WikiNet that everyone shares.</p>
+<p>To run:</p>
+<pre><code>  git clone https://github.com/willzeng/WikiNets
+  cd wikinets
+  npm install
+  sh server.sh
+</code></pre><p>Then go to <code>localhost:3000</code> in your browser.</p>
+<h3 id="local-db-option">Local DB Option</h3>
+<p>To Run on a local WikiNet, you will need to install a copy of Neo4j (version 2.0.0-RC1 or higher):</p>
+<p>Install neo4j <a href="http://www.neo4j.org/download">here</a>.
+For Debian / Ubuntu, just follow these commands:</p>
+<pre><code># start root shell
+sudo -s
+# Import our signing key
+wget -O - http://debian.neo4j.org/neotechnology.gpg.key | apt-key add - 
+# Create an Apt sources.list file
+echo &#39;deb http://debian.neo4j.org/repo stable/&#39; &gt; /etc/apt/sources.list.d/neo4j.list
+# Find out about the files in our repository
+apt-get update
+# Install Neo4j, community edition
+apt-get install neo4j
+# start neo4j server, available at http://localhost:7474 of the target machine
+neo4j start
+</code></pre><p>Change one line in web.js:</p>
+<pre><code>var url = &#39;http://localhost:7474&#39;;
+</code></pre><p>Then run the following in your terminal:</p>
+<pre><code>sh server.sh
+</code></pre><p>Then go to <code>localhost:3000</code> in your browser.</p>
+<p>For sublime 3 text highlighting for coffee:
+  <a href="https://github.com/aponxi/sublime-better-coffeescript">https://github.com/aponxi/sublime-better-coffeescript</a></p>
+
+<p>Hello Rhizi!</p>
+
+
+
+
+
+        </div>
+        <footer id="footer">
+            Powered by <a href="http://github.com/maximebf/beautiful-docs">beautiful-docs</a> -
+            <a href="#top">Back to top</a> - <a href="all.html">Everything on a single page</a>
+            - <a href="?print=1">Print current page</a> - <a href="all.html?print=1">Print all pages</a>
+            
+        </footer>
+    </div>
+</body>
+</html>
