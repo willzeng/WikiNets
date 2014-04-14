@@ -66,3 +66,6 @@ define ["DataProvider"], (DataProvider) ->
 
     getEverything: (callback) ->
       $.get('/get_nodes', callback)
+
+    getDefault: (callback) ->
+      $.get('/get_default_nodes', callback)

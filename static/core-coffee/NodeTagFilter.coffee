@@ -34,18 +34,25 @@ define [], () ->
           (function(theme, _this){
             themeButton = $("<div><input type=\"button\" class=\"theme-button\" value=\""+theme+"\"></input></div>").appendTo($container)
             $(themeButton).click(function(){
-              console.log(theme);
               _this.searchNodes({'Theme':theme});
               });
             })(themesList[k], this)
         }`
 
-      $clearAllButton = $("<div><input type=\"button\" id=\"clearAllButtonDropdown\" value=\"Clear All\"></input></div>").appendTo $container
+      $showAllButton = $("<div><input type=\"button\" class=\"theme-button\" value=\"Show All Themes\"></input></div>").appendTo $container
+      $showAllButton.click () =>
+        @dataProvider.getDefault(@loadAllNodes)
+
+      $clearAllButton = $("<div><input type=\"button\" class=\"theme-button\" value=\"Clear All\"></input></div>").appendTo $container
       $clearAllButton.click () =>
-        @graphModel.filterNodes (node) -> false
+        @graphModel.filterNodes (node) -> false        
+
+    loadAllNodes: (nodes) =>
+      @graphModel.putNode node for node in nodes
 
     searchNodes: (searchQuery) =>
       $.post "/search_nodes", searchQuery, (nodes) =>
+        @graphModel.filterNodes (node) -> false
         for node in nodes
           @graphModel.putNode(node)
 
