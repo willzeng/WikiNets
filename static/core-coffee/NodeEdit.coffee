@@ -213,7 +213,12 @@ define [], () ->
 
       if node.type == "project"
       
-        $nodeHeader = $("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view.' data-position='right'><a href='#{node.url}'>#{node.title}</a></div>").appendTo nodeDiv
+        #$nodeHeader = $("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view.' data-position='right'><a href='#{node.url}'>#{node.title}</a></div>").appendTo nodeDiv
+        $nodeHeader = $("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view.' data-position='right'>#{node.title}</div>").appendTo nodeDiv
+
+        $nodeEdit = $("<i class=\"fa fa-pencil-square \"></i>").css("margin","6px").appendTo $nodeHeader
+        $nodeEdit.click () =>
+          @editNode(node, nodeDiv, blacklist)
 
         $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").css("margin","1px").appendTo $nodeHeader
         $nodeDeselect.click () => @selection.toggleSelection(node)
@@ -249,9 +254,9 @@ define [], () ->
       
         $nodeHeader = $("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view.' data-position='right'>#{header}</div>").appendTo nodeDiv
 
-        #$nodeEdit = $("<i class=\"fa fa-pencil-square \"></i>").css("margin","6px").appendTo $nodeHeader
-        #$nodeEdit.click () =>
-        #  @editNode(node, nodeDiv, blacklist)
+        $nodeEdit = $("<i class=\"fa fa-pencil-square \"></i>").css("margin","6px").appendTo $nodeHeader
+        $nodeEdit.click () =>
+          @editNode(node, nodeDiv, blacklist)
 
         $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").css("margin","1px").appendTo $nodeHeader
         $nodeDeselect.click () => @selection.toggleSelection(node)
@@ -288,7 +293,7 @@ define [], () ->
             @renderProfile(node, nodeDiv, blacklist, propNumber+10)
           
         #Adds button that creates link from selected node to user-inputted node
-        #@addLinker node, nodeDiv
+        @addLinker node, nodeDiv
 
 
       #Adds the links from this node to its neighbors
