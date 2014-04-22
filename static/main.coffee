@@ -72,7 +72,7 @@ require ["Celestrium"], (Celestrium) ->
     "local/NodeEdit": {}
 
     # To add nodes to the database
-    #"local/AddNode": {}
+    "local/AddNode": {}
 
     # Displays selected link details and allows editing
     "local/LinkEdit": {}
@@ -85,6 +85,9 @@ require ["Celestrium"], (Celestrium) ->
     # Adds a topbar with link/node creation functionality
     # and the "#toplink-instructions" box
     "local/TopBarCreate": {}
+
+    # Adds a button with XML import functionality
+    "local/ImportXML": {}
 
     # adds a dropdown menu on the top left with 
     # About information and some basic display commands
