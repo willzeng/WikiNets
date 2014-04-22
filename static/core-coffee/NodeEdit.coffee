@@ -57,7 +57,7 @@ define [], () ->
 
           nodeDiv.html("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view. It is shown here because it is either selected on the graph or a search result' data-position='right'>Editing #{header}</div><form id=\"Node#{node['_id']}EditForm\"></form>")
           _.each node, (value, property) ->
-            if blacklist.indexOf(property) < 0 and ["_id", "text", "color", "_Last_Edit_Date", "_Creation_Date"].indexOf(property) < 0
+            if blacklist.indexOf(property) < 0 and ["_id", "text", "color", "_Last_Edit_Date", "_Creation_Date"].indexOf(property) < 0 or property == "type"
               newEditingFields = """
                 <div id=\"Node#{node['_id']}EditDiv#{nodeInputNumber}\" class=\"Node#{node['_id']}EditDiv\">
                   <input style=\"width:80px\" id=\"Node#{node['_id']}EditProperty#{nodeInputNumber}\" value=\"#{property}\" class=\"propertyNode#{node['_id']}Edit\"/> 
@@ -224,7 +224,7 @@ define [], () ->
         $nodeDeselect.click () => @selection.toggleSelection(node)
 
         #mainProps = ["LeadName", "LeadInstitution", "description"]
-        otherProps = ["Theme", "Votes", "Organisations"]
+        otherProps = ["Theme", "Votes", "Status"]
         if node.VideoUrl?
             $("<iframe width=\"280\" height=\"210\" src=\"#{node.VideoUrl}\" frameborder=\"0\" allowfullscreen></iframe>").appendTo nodeDiv
         if node.LeadName? and node.LeadInstitution?
