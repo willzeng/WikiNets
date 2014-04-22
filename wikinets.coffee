@@ -568,6 +568,11 @@ module.exports = class MyApp
       )
     )
 
+    # update database from xml feed
+    app.post '/update_from_xml', (request, response) ->
+      console.log "update from XML requested"
+      console.log request.body
+
     #Tells the server where to listen
     port = process.env.PORT || 3000
     app.listen port, -> console.log("Listening on " + port)

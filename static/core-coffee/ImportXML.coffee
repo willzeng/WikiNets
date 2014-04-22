@@ -22,6 +22,12 @@ define [], () ->
       @$el.appendTo @parent
 
     render: ->
-      $updateButton = $("<div><input type=\"button\" class=\"theme-button\" value=\"Update from XML\"></input></div>").appendTo @$el
+      $container = $("<div id=\"xml-update-box\" data-intro='Update database from XML' data-position='left'></div>")
+      $container.appendTo @$el
+
+      $container.append("<textarea rows=\"4\" id=\"xmlbox\"></textarea>")
+
+      $updateButton = $("<input type=\"button\" value=\"Update from XML\"></input>").appendTo $container
       $updateButton.click () =>
-          alert("Will be installed on Tuesday...")
+        $.post "/update_from_xml", $.xml2json($("#xmlbox").val()), (data) =>
+          alert(data)
