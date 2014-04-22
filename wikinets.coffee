@@ -568,10 +568,50 @@ module.exports = class MyApp
       )
     )
 
-    # update database from xml feed
-    app.post '/update_from_xml', (request, response) ->
-      console.log "update from XML requested"
-      console.log request.body
+    # update database from given data
+    app.post '/update', (request, response) ->
+      console.log "update requested"
+      cypherQuery = "start n=node(*) where n.type='project' and n.title='#{request.body.Title}' return n;"
+      console.log "Executing " + cypherQuery
+      graphDb.cypher.execute(cypherQuery).then(
+        (noderes)->
+          if noderes.data.length == 0
+            # project does not yet exist in database
+            # (this is assuming project titles will not change)
+            # TODO: escape apostrophes/single quotes in properties
+            cypherQuery = "create (n {type:'project', title:'#{request.body.Title}', LeadName:'#{request.body.FirstName} #{request.body.LastName}', LeadInstitution:'#{request.body.Organisation}', description:'#{request.body.Description}', VideoUrl:'#{request.body.Video}', Votes:'#{request.body.Votes}', Status:'#{request.body.State}', StudentType:'#{request.body.StudentType}'}) return n;"
+            graphDb.cypher.execute(cypherQuery).then(
+              (noderes)->
+                nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
+                nodeID = noderes.data[0][0]["self"].slice(nodeIDstart)
+                console.log "Created node '#{request.body.Title}' (ID: #{nodeID})"
+                response.send "Created node '#{request.body.Title}' (ID: #{nodeID})"
+            )
+          else if noderes.data.length == 1
+            # project already exists
+            nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
+            nodeID = noderes.data[0][0]["self"].slice(nodeIDstart)
+            console.log "Matching project, node ID: " + nodeID
+            cypherQuery = "start n=node(#{nodeID}) "
+            if noderes.data[0][0]["data"]["Votes"] != request.body.Votes
+              cypherQuery += "set n.Votes='#{request.body.Votes}' "
+            if noderes.data[0][0]["data"]["Status"] != request.body.State
+              cypherQuery += "set n.Status='#{request.body.State}' "
+            if cypherQuery != "start n=node(#{nodeID}) "
+              cypherQuery += "return n;"
+              graphDb.cypher.execute(cypherQuery).then(
+                (noderes)->
+                  console.log "Updated node '#{request.body.Title}' (ID: #{nodeID})"
+                  response.send "Updated node '#{request.body.Title}' (ID: #{nodeID})"
+              )
+            else
+              console.log "Votes and status of node '#{request.body.Title}' (ID: #{nodeID}) unchanged"
+              response.send "Votes and status of node '#{request.body.Title}' (ID: #{nodeID}) unchanged"
+          else
+            # multiple matching projects -- this should not happen
+            console.log "ERROR -- multiple projects matching '#{request.body.Title}'"
+            response.send "Error -- multiple projects matching '#{request.body.Title}'"
+      )
 
     #Tells the server where to listen
     port = process.env.PORT || 3000

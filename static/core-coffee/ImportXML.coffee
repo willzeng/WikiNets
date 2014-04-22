@@ -29,5 +29,7 @@ define [], () ->
 
       $updateButton = $("<input type=\"button\" value=\"Update from XML\"></input>").appendTo $container
       $updateButton.click () =>
-        $.post "/update_from_xml", $.xml2json($("#xmlbox").val()), (data) =>
-          alert(data)
+        jsondata = $.xml2json($("#xmlbox").val())
+        for node in jsondata['node']
+          $.post "/update", node, (data) =>
+            console.log data
