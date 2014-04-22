@@ -577,9 +577,11 @@ module.exports = class MyApp
         (noderes)->
           if noderes.data.length == 0
             # project does not yet exist in database
-            # (this is assuming project titles will not change)
+            # (this is assuming project titles will not change and that
+            # all properties are well-defined)
             # TODO: escape apostrophes/single quotes in properties
-            cypherQuery = "create (n {type:'project', title:'#{request.body.Title}', LeadName:'#{request.body.FirstName} #{request.body.LastName}', LeadInstitution:'#{request.body.Organisation}', description:'#{request.body.Description}', VideoUrl:'#{request.body.Video}', Votes:'#{request.body.Votes}', Status:'#{request.body.State}', StudentType:'#{request.body.StudentType}'}) return n;"
+            videoUrl = request.body.Video.replace("watch?v=", "embed/")
+            cypherQuery = "create (n {type:'project', title:'#{request.body.Title}', LeadName:'#{request.body.FirstName} #{request.body.LastName}', LeadInstitution:'#{request.body.Organisation}', description:'#{request.body.Description}', VideoUrl:'#{videoUrl}', Votes:'#{request.body.Votes}', Status:'#{request.body.State}', StudentType:'#{request.body.StudentType}'}) return n;"
             graphDb.cypher.execute(cypherQuery).then(
               (noderes)->
                 nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
