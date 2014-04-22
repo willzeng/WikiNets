@@ -20,7 +20,7 @@ define [], () ->
         @createNode({"name":"","url":"", "email":"", "type":"person"})
 
       $('#add-project-button').click () =>
-        @createNode({"name":"","url":"", "description":"", "type":"project"})
+        @createNode({"type":"project", "title":"", "url":"", "description":"", "LeadName":"", "LeadInstitution":"", "Status":"", "Theme":"", "VideoUrl":"", "Votes":""})
 
       $('#add-theme-button').click () =>
         @createNode({"name":"", "description":"", "type":"theme"})
