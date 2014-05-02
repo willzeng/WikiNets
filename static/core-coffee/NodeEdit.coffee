@@ -37,7 +37,7 @@ define [], () ->
         $container = $(".node-profile-helper")
 
         #these are they properties that are not shown in the profile
-        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color","shouldLoad","_Last_Edit_Date", "_Creation_Date", "name", "text", "size", "type"]
+        blacklist = ["index", "x", "y", "px", "py", "fixed", "selected", "weight", "_id", "color","shouldLoad","_Last_Edit_Date", "_Creation_Date"]
         @blacklist = blacklist
         _.each selectedNodes, (node) =>
           if !(node.color?) then node.color="#A9A9A9"
@@ -57,7 +57,7 @@ define [], () ->
 
           nodeDiv.html("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view. It is shown here because it is either selected on the graph or a search result' data-position='right'>Editing #{header}</div><form id=\"Node#{node['_id']}EditForm\"></form>")
           _.each node, (value, property) ->
-            if blacklist.indexOf(property) < 0 and ["_id", "text", "color", "_Last_Edit_Date", "_Creation_Date"].indexOf(property) < 0 or property == "type"
+            if blacklist.indexOf(property) < 0 and ["_id", "text", "color", "_Last_Edit_Date", "_Creation_Date"].indexOf(property) < 0
               newEditingFields = """
                 <div id=\"Node#{node['_id']}EditDiv#{nodeInputNumber}\" class=\"Node#{node['_id']}EditDiv\">
                   <input style=\"width:80px\" id=\"Node#{node['_id']}EditProperty#{nodeInputNumber}\" value=\"#{property}\" class=\"propertyNode#{node['_id']}Edit\"/> 
