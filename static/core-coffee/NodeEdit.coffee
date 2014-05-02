@@ -213,7 +213,7 @@ define [], () ->
 
       if node.type == "project"
       
-        $nodeHeader = $("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view.' data-position='right'><a href='#{node.url}'>#{node.title}</a></div>").appendTo nodeDiv
+        $nodeHeader = $("<div class=\"node-profile-title\" data-intro='This node can be edited and linked to other nodes from this view.' data-position='right'><a href='#{node.url}' target='_blank'>#{node.title}</a></div>").appendTo nodeDiv
 
         $nodeDeselect = $("<i class=\"right fa fa-times\"></i>").css("margin","1px").appendTo $nodeHeader
         $nodeDeselect.click () => @selection.toggleSelection(node)
