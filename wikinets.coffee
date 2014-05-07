@@ -581,7 +581,12 @@ module.exports = class MyApp
             # all properties are well-defined)
             # TODO: escape apostrophes/single quotes in properties
             videoUrl = request.body.Video.replace("watch?v=", "embed/")
-            cypherQuery = "create (n {type:'project', title:'#{request.body.Title}', LeadName:'#{request.body.FirstName} #{request.body.LastName}', LeadInstitution:'#{request.body.Organisation}', description:'#{request.body.Description}', VideoUrl:'#{videoUrl}', Votes:'#{request.body.Votes}', Status:'#{request.body.State}', StudentType:'#{request.body.StudentType}'}) return n;"
+            color = "#a9a9a9"
+            if request.body.State == "voted"
+              color = "#2f435a"
+            if request.body.State == "funded"
+              color = "#e85e12"
+            cypherQuery = "create (n {type:'project', title:'#{request.body.Title}', LeadName:'#{request.body.FirstName} #{request.body.LastName}', LeadInstitution:'#{request.body.Organisation}', description:'#{request.body.Description}', VideoUrl:'#{videoUrl}', Votes:'#{request.body.Votes}', Status:'#{request.body.State}', StudentType:'#{request.body.StudentType}', color:'#{color}'}) return n;"
             graphDb.cypher.execute(cypherQuery).then(
               (noderes)->
                 nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
@@ -599,6 +604,10 @@ module.exports = class MyApp
               cypherQuery += "set n.Votes='#{request.body.Votes}' "
             if noderes.data[0][0]["data"]["Status"] != request.body.State
               cypherQuery += "set n.Status='#{request.body.State}' "
+              if request.body.State == "voted"
+                cypherQuery += "set n.color='#2f435a' "
+              if request.body.State == "funded"
+                cypherQuery += "set n.color='#e85e12' "
             if cypherQuery != "start n=node(#{nodeID}) "
               cypherQuery += "return n;"
               graphDb.cypher.execute(cypherQuery).then(
