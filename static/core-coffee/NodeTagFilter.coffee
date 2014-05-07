@@ -59,7 +59,7 @@ define [], () ->
         .css("font-size", "12px")
       $keyContainer.appendTo @$el
       # should replace colour squares with svg circles
-      $("<ul style=\"list-style-type:none;\"><li><span style=\"background-color:#a9a9a9;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Submitted</li><li><span style=\"background-color:#2f435a;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Qualified</li><li><span style=\"background-color:#e85e12;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Selected</li></ul>").appendTo $keyContainer
+      $("<ul style=\"list-style-type:none;\"><li><svg width=\"12\" height=\"12\"><circle cx=\"6\" cy=\"6\" r=\"5\" stroke=\"#a9a9a9\" stroke-width=\"2\" fill=\"white\"/></svg> Submitted</li><li><svg width=\"12\" height=\"12\"><circle cx=\"6\" cy=\"6\" r=\"5\" stroke=\"#2f435a\" stroke-width=\"2\" fill=\"white\"/></svg> Qualified</li><li><svg width=\"12\" height=\"12\"><circle cx=\"6\" cy=\"6\" r=\"5\" stroke=\"#e85e12\" stroke-width=\"2\" fill=\"white\"/></svg> Selected</li></ul>").appendTo $keyContainer
 
     loadAllNodes: (nodes) =>
       @graphModel.putNode node for node in nodes
