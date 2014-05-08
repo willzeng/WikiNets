@@ -3,7 +3,8 @@ define [], () ->
 
   class NodeEdit extends Backbone.View
 
-    colors = ['#F56545', '#FFBB22', '#BBE535', '#77DDBB', '#66CCDD', '#A9A9A9']
+    #colors = ['#F56545', '#FFBB22', '#BBE535', '#77DDBB', '#66CCDD', '#A9A9A9']
+    colors = ['#A9A9A9', '#2F435A', '#E85E12']
     constructor: (@options) ->
       super()
 
