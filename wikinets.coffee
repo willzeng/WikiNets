@@ -586,7 +586,8 @@ module.exports = class MyApp
               color = "#2f435a"
             if request.body.State == "funded"
               color = "#e85e12"
-            cypherQuery = "create (n {type:'project', title:'#{request.body.Title}', LeadName:'#{request.body.FirstName} #{request.body.LastName}', LeadInstitution:'#{request.body.Organisation}', description:'#{request.body.Description}', VideoUrl:'#{videoUrl}', Votes:'#{request.body.Votes}', Status:'#{request.body.State}', StudentType:'#{request.body.StudentType}', color:'#{color}'}) return n;"
+            size = findNodeSize(parseInt(request.body.Votes))
+            cypherQuery = "create (n {type:'project', title:'#{request.body.Title}', LeadName:'#{request.body.FirstName} #{request.body.LastName}', LeadInstitution:'#{request.body.Organisation}', description:'#{request.body.Description}', VideoUrl:'#{videoUrl}', Votes:'#{request.body.Votes}', Status:'#{request.body.State}', StudentType:'#{request.body.StudentType}', color:'#{color}', size:'#{size}', shouldLoad:'true'}) return n;"
             graphDb.cypher.execute(cypherQuery).then(
               (noderes)->
                 nodeIDstart = noderes.data[0][0]["self"].lastIndexOf('/') + 1
@@ -602,6 +603,8 @@ module.exports = class MyApp
             cypherQuery = "start n=node(#{nodeID}) "
             if noderes.data[0][0]["data"]["Votes"] != request.body.Votes
               cypherQuery += "set n.Votes='#{request.body.Votes}' "
+              size = findNodeSize(parseInt(request.body.Votes))
+              cypherQuery += "set n.size='#{size}' "
             if noderes.data[0][0]["data"]["Status"] != request.body.State
               cypherQuery += "set n.Status='#{request.body.State}' "
               if request.body.State == "voted"
@@ -691,3 +694,9 @@ module.exports = class MyApp
     makeNodeJsonFromCypherQuery = (noderes) ->
       nodeList = (addID(n[0].data,trim(n[0].self)[0]) for n in noderes.data)
       nodeList
+
+    findNodeSize = (votes) ->
+      if votes > 250
+        return 25
+      else
+        return Math.round(votes/10)
