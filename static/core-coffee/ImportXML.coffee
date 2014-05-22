@@ -32,7 +32,7 @@ define [], () ->
         jsondata = $.xml2json($("#xmlbox").val())
         for node in jsondata['node']
           for property,value of node
-            node[property] = value.replace(/[']/g, "&#039;")
+            node[property] = value.replace(/[']/g, "\\'")
           console.log node
           $.post "/update", node, (data) =>
             console.log data
