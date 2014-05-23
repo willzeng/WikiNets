@@ -10,7 +10,7 @@ This is the code for a prototype of WikiNets. Feel free to contribute. It's avai
 
 ##Setup
 
-Rhizi can be set to work with a local Rhizi on your machine or with a Rhizi in the cloud.
+Rhizi can be set to work with a local WikiNet on your machine or with a WikiNet in the cloud.
 
 ###Cloud DB Option
 
