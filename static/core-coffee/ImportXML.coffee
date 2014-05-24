@@ -33,6 +33,6 @@ define [], () ->
         for node in jsondata['node']
           for property,value of node
             node[property] = value.replace(/[']/g, "\\'")
-          console.log node
+          #console.log node
           $.post "/update", node, (data) =>
             console.log data
